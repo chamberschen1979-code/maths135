@@ -25,7 +25,6 @@ const MODEL_NAME = 'qwen-plus'
 // LaTeX 渲染组件
 const LatexRenderer = ({ content }) => {
   if (!content) return null
-  // 彻底删除所有自作聪明的反斜杠拯救正则，它们破坏了原生 LaTeX
   const safeContent = content
     .replace(/\\n/g, '\n')
     .replace(/\\r/g, '\r')
@@ -540,7 +539,7 @@ const generateAIProblem = async (targetId, level, encounter, knowledgeEntry, isU
    - 错误示例：$已知 f(x)=x^2，求切线；$
    - 正确示例：已知 $f(x)=x^2$，求切线；
    - KaTeX 无法解析中文，违规将导致整个前端系统崩溃！
-5. 【公式规范】：行内公式必须用单 $ 包裹两端，独立公式用双 $$ 包裹两端。绝不允许出现一端单 $ 一端双 $$ 的语法错误！`
+5. 【标准 LaTeX 规范】：请使用标准的 Markdown 数学语法。行内公式使用单 $ 包裹。请保持数学表达式的自然连贯，严禁将中文汉字或中文标点包裹在 $ 内部。`
 
     // ============================================================
     // 【V3.1 核心：全学科泛化摇骰子与随机熵】
@@ -548,17 +547,22 @@ const generateAIProblem = async (targetId, level, encounter, knowledgeEntry, isU
     const randomEntropy = Math.floor(Math.random() * 1000000) // 防伪流水号，打破缓存
     const coefficientSalt = Math.floor(Math.random() * 8) + 2 // 生成 2-9 的特征特征数
     
-    // 泛化兜底方向（不写死"函数"）
-    let forcedVariant = "结合本考点的其他核心数学模型或表现形式"
-    const levelKey = tier // tier 已经是 "L2", "L3", "L4" 格式
+    // 全学科泛化兜底方向（利用数学元认知强力打散结构，适用于任何模块！）
+    const fallbackVariants = [
+      "【逆向思维变式】：将原样题的结论作为已知条件，去反求原题中的某个已知参数（条件与结论互换）。",
+      "【约束边界变式】：改变原题的几何位置、定义域、或者参数的取值范围，引发分类讨论。",
+      "【跨维/降维变式】：在核心考点不变的前提下，改变题目的背景模型（例如增加一个新的干扰条件，或改变基础图形/函数外壳）。",
+      "【设问升华变式】：将原本简单的求解或求值问题，升级为含有参变量的探索性问题或证明性问题。"
+    ]
+    let forcedVariant = fallbackVariants[iterationIndex % fallbackVariants.length]
+    const levelKey = tier
     
-    // 从 JSON 战术蓝图中抽取变例
+    // 从 JSON 战术蓝图中抽取变例（如果 JSON 配置了，优先使用 JSON）
     if (motifObj?.evolutionBlueprint?.[levelKey]?.lateral_variants?.length > 0) {
       const variants = motifObj.evolutionBlueprint[levelKey].lateral_variants
-      // 【核心修复】：放弃随机，使用并发索引强行错开，彻底杜绝重复题！
       forcedVariant = variants[iterationIndex % variants.length]
-      console.log(`【全学科强制变异】${targetName} 任务${iterationIndex} 获得方向:`, forcedVariant)
     }
+    console.log(`【全学科强制变异】${targetName} 任务${iterationIndex} 获得方向:`, forcedVariant)
     console.log(`【防伪流水号】${randomEntropy} | 【特征数】${coefficientSalt}`)
 
     const userPrompt = `
@@ -687,12 +691,12 @@ ${effectiveElo > 2000 ? `检测到当前战力 > 2000。禁止生成基础计算
         }
         
       } catch (error) {
-        console.error('【JSON解析失败】', error)
-        // 回退逻辑
+        console.error('【AI生成严重损坏】', error)
+        // 彻底切断样题回退通路
         aiResult = {
-          question: prototype.question,
-          analysis: prototype.analysis || '请根据题目要求进行解答。',
-          answer: prototype.answer || '答案待计算'
+          question: "【AI 生成中断】由于该题目的数学推导极其复杂，超出了单次输出限制，请点击重新生成。",
+          analysis: "数据截断异常：JSON Parsing Error。",
+          answer: "生成失败"
         }
       }
       
@@ -1008,7 +1012,7 @@ function WeeklyMission({
     // 筑基环节禁止返回 null：如果没有子目标，强制生成 AI 题目
     if (targetSubs.length === 0) {
       if (forceGenerate) {
-        const aiProblem = await generateAIProblem(targetId, targetLevel, encounter, CROSS_FILE_INDEX[targetId], isUserSelected)
+        const aiProblem = await generateAIProblem(targetId, targetLevel, encounter, CROSS_FILE_INDEX[targetId], isUserSelected, iterationIndex)
         if (!aiProblem) return null
         return {
           targetId,
@@ -1203,7 +1207,7 @@ function WeeklyMission({
     
     // 最后兜底：强制生成 AI 题目
     if (forceGenerate) {
-      const aiProblem = await generateAIProblem(targetId, targetLevel, encounter, CROSS_FILE_INDEX[targetId], isUserSelected)
+      const aiProblem = await generateAIProblem(targetId, targetLevel, encounter, CROSS_FILE_INDEX[targetId], isUserSelected, iterationIndex)
       if (!aiProblem) return null
       return {
         targetId,
@@ -1220,7 +1224,7 @@ function WeeklyMission({
       }
     }
     
-    const aiProblem = await generateAIProblem(targetId, targetLevel, encounter, CROSS_FILE_INDEX[targetId], isUserSelected)
+    const aiProblem = await generateAIProblem(targetId, targetLevel, encounter, CROSS_FILE_INDEX[targetId], isUserSelected, iterationIndex)
     if (!aiProblem) return null
     const aiSubId = `${targetId}_${targetLevel.toLowerCase()}_ai_${Date.now()}_${Math.random().toString(36).slice(2)}`
     return {
@@ -1705,6 +1709,9 @@ function WeeklyMission({
               body {
                 padding: 0;
               }
+            }
+            .hide-in-print {
+              display: none !important;
             }
           </style>
         </head>
@@ -2544,7 +2551,7 @@ function WeeklyMission({
                   <div className="draft-area h-[180px] border-2 border-dashed border-gray-400 rounded bg-slate-50 p-2 mb-4">
                     <span className="text-xs text-gray-500">📝 草稿区（请在下方演算）</span>
                   </div>
-                  <div className="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600 print:break-before-avoid">
+                  <div className="hide-in-print mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600 print:break-before-avoid">
                     <p className="font-medium mb-1">📖 解析：</p>
                     <div className="whitespace-pre-line"><LatexRenderer content={item.variant?.analysis} /></div>
                     <p className="mt-2 font-medium">✅ 答案：{item.variant?.answer}</p>
@@ -2571,7 +2578,7 @@ function WeeklyMission({
                   <div className="draft-area h-[180px] border-2 border-dashed border-gray-400 rounded bg-slate-50 p-2 mb-4">
                     <span className="text-xs text-gray-500">📝 草稿区（请在下方演算）</span>
                   </div>
-                  <div className="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600 print:break-before-avoid">
+                  <div className="hide-in-print mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600 print:break-before-avoid">
                     <p className="font-medium mb-1">📖 解析：</p>
                     <div className="whitespace-pre-line"><LatexRenderer content={item.variant?.analysis} /></div>
                     <div className="mt-2 font-medium flex items-start gap-1"><span>✅ 答案：</span><div className="flex-1"><LatexRenderer content={item.variant?.answer} /></div></div>
@@ -2598,7 +2605,7 @@ function WeeklyMission({
                   <div className="draft-area h-[180px] border-2 border-dashed border-gray-400 rounded bg-slate-50 p-2 mb-4">
                     <span className="text-xs text-gray-500">📝 草稿区（请在下方演算）</span>
                   </div>
-                  <div className="mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600 print:break-before-avoid">
+                  <div className="hide-in-print mt-4 p-3 bg-gray-50 rounded text-sm text-gray-600 print:break-before-avoid">
                     <p className="font-medium mb-1">📖 解析：</p>
                     <div className="whitespace-pre-line"><LatexRenderer content={item.variant?.analysis} /></div>
                     <div className="mt-2 font-medium flex items-start gap-1"><span>✅ 答案：</span><div className="flex-1"><LatexRenderer content={item.variant?.answer} /></div></div>
