@@ -1,0 +1,819 @@
+{
+  "motif_id": "M09",
+  "motif_name": "立体几何基础",
+  "logic_schema_version": "9.6-GEO-FINAL",
+  "last_updated": "2026-03-09",
+  "mastery_logic": "ELO_THRESHOLD_AND_SPECIALTY_FULL_CLEAR",
+  "description": "【深度同步版 v3.0-Final】在 v9.0 全国题库基础上，彻底重构 master_benchmarks 和 variable_knobs。样题完全对标 2023-2025 新高考 I 卷及山东、浙江强省模考的命题逻辑；变量因子新增‘模型补形策略’与‘建系原点选择’维度。依托中央军火库 strategy_lib.json，核心武器：降维转化、空间向量建系、等体积法、外接球模型识别。已彻底清除解析伪迹。",
+  "specialties": [
+    {
+      "spec_id": "V1",
+      "spec_name": "位置关系的逻辑博弈",
+      "variations": [
+        {
+          "var_id": "1.1",
+          "name": "平行与垂直的判定与证明",
+          "logic_core": "【新高考逻辑】核心是“降维转化”与“辅助线构造”。证明平行需锁定“线线平行”（中位线、平行四边形、线面平行性质）；证明垂直需锁定“线面垂直”（线线垂直×2）。**铁律**：见到“中点”必连中位线；见到“面面垂直”必作交线垂线找高。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 识别目标 (平行/垂直)",
+              "2. 寻找辅助线 (中点/垂足)",
+              "3. 应用判定定理",
+              "4. 书写逻辑链条"
+            ],
+            "linked_weapons": [
+              "S-VIS-01",
+              "S-GEO-01"
+            ],
+            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-GEO-01 (降维转化与辅助线构造)"
+          },
+          "variable_knobs": {
+            "proof_target": [
+              {
+                "type": "line_plane_parallel",
+                "weight": 0.4,
+                "desc": "线面平行证明"
+              },
+              {
+                "type": "plane_plane_perp",
+                "weight": 0.3,
+                "difficulty_delta": "+0.5",
+                "desc": "面面垂直证明"
+              },
+              {
+                "type": "line_line_perp",
+                "weight": 0.3,
+                "desc": "线线垂直证明 (异面)"
+              }
+            ],
+            "auxiliary_strategy": [
+              {
+                "type": "midpoint_connect",
+                "weight": 0.6,
+                "desc": "中点连线 (中位线)"
+              },
+              {
+                "type": "perp_drop",
+                "weight": 0.3,
+                "difficulty_delta": "+0.5",
+                "desc": "作垂线 (面面垂直性质)"
+              },
+              {
+                "type": "parallel_construct",
+                "weight": 0.1,
+                "desc": "构造平行四边形"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "missing_condition",
+                "weight": 0.7,
+                "desc": "忽略'线在面外'或'相交'条件"
+              },
+              {
+                "type": "logic_gap",
+                "weight": 0.3,
+                "desc": "逻辑链条断裂"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 四棱锥 P-ABCD，底面正方形，PA⊥底面，E 为 PC 中点，证 PA//平面 BDE。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 八省联考] 直三棱柱 ABC-A1B1C1 中，D 为 BC 中点，证 A1B//平面 ADC1。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 华附一模] 四棱锥 P-ABCD，PA⊥底面，ABCD 为菱形，∠ABC=60°，证平面 PBD⊥平面 PAC。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 山东济南一模] 在四面体 ABCD 中，AB=AC, DB=DC，E 为 BC 中点，证 BC⊥AD。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 已知平面 α⊥β，α∩β=l，A∈α，AB⊥l，证 AB⊥β。",
+              "level": "L2"
+            },
+            {
+              "desc": "[23 新高考 I] 如图，正方体 ABCD-A1B1C1D1 中，E,F 分别为 BB1, DD1 中点，证平面 AEF//平面 BDC1。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 深中二月考] 四棱锥 P-ABCD，底面梯形，AD//BC，PA⊥底面，证平面 PAB⊥平面 PBC。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 省实期中] 三棱锥 S-ABC，SA⊥平面 ABC，AB⊥BC，证 BC⊥平面 SAB。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 直四棱柱 ABCD-A1B1C1D1，底面菱形，证平面 A1BD⊥平面 ACC1A1。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 广州一模] 四棱锥 P-ABCD，PA=PB=PC=PD，底面矩形，证平面 PAC⊥平面 PBD。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 深圳一模] 已知 E,F,G,H 分别为空间四边形 ABCD 各边中点，证四边形 EFGH 为平行四边形。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 在三棱锥 P-ABC 中，PA⊥平面 ABC，AC⊥BC，证平面 PAC⊥平面 PBC。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 华附零模] 设 M,N 分别为正方体棱 AA1, CC1 中点，证平面 MB1D1//平面 NBD。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 广东二模] 四棱锥 P-ABCD，底面正方形，侧面 PAD⊥底面，证 CD⊥平面 PAD。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 已知三棱柱 ABC-A1B1C1，侧棱垂直底面，AB=AC，D 为 BC 中点，证 A1D⊥BC。",
+              "level": "L3"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L2",
+              "id": "M09_V1.1_MB_L2_V96",
+              "problem": "[基础巩固] 在四棱锥 $P-ABCD$ 中，底面 $ABCD$ 是正方形，$PA \\perp$ 底面 $ABCD$。$E$ 为 $PC$ 的中点。求证：$PA // $ 平面 $BDE$。",
+              "logic_key": "中位线构造与线面平行判定",
+              "analysis": {
+                "core_idea": "基础题。利用对角线交点构造中位线。",
+                "key_steps": [
+                  "1. 连接 $AC$ 交 $BD$ 于点 $O$。因底面 $ABCD$ 是正方形，故 $O$ 为 $AC$ 中点。",
+                  "2. 连接 $OE$。在 $\\triangle PAC$ 中，$O$ 为 $AC$ 中点，$E$ 为 $PC$ 中点，故 $OE$ 为中位线，$OE // PA$。",
+                  "3. 因 $OE \\subset$ 平面 $BDE$，$PA \\not\\subset$ 平面 $BDE$，故 $PA // $ 平面 $BDE$。",
+                  "4. 结论：得证。"
+                ],
+                "common_pitfalls": [
+                  "忘记说明 $PA$ 在平面外。",
+                  "未指出 $O$ 是中点，直接说平行。",
+                  "辅助线连接错误。"
+                ],
+                "conclusion": "Proof Complete"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M09_V1.1_MB_L3_V96",
+              "problem": "[2024·广东一模·T18 风格] 在四棱锥 $P-ABCD$ 中，$PA \\perp$ 底面 $ABCD$，底面 $ABCD$ 为菱形，$\\angle ABC = 60^\\circ$。求证：平面 $PBD \\perp$ 平面 $PAC$。",
+              "logic_key": "线面垂直推导面面垂直",
+              "analysis": {
+                "core_idea": "新高考中档题。核心是证明 $BD \\perp$ 平面 $PAC$。",
+                "key_steps": [
+                  "1. 因底面 $ABCD$ 为菱形，故 $AC \\perp BD$。",
+                  "2. 因 $PA \\perp$ 底面 $ABCD$，且 $BD \\subset$ 底面 $ABCD$，故 $PA \\perp BD$。",
+                  "3. 因 $BD \\perp AC$，$BD \\perp PA$，且 $AC \\cap PA = A$，$AC, PA \\subset$ 平面 $PAC$，故 $BD \\perp$ 平面 $PAC$。",
+                  "4. 因 $BD \\subset$ 平面 $PBD$，故平面 $PBD \\perp$ 平面 $PAC$。",
+                  "5. 结论：得证。"
+                ],
+                "common_pitfalls": [
+                  "忘记证明 $BD \\perp PA$。",
+                  "未说明 $AC$ 与 $PA$ 相交。",
+                  "逻辑顺序颠倒。"
+                ],
+                "conclusion": "Proof Complete"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M09_V1.1_MB_L4_V96",
+              "problem": "[2025·浙江绍兴一模·T19 风格] 在正方体 $ABCD-A_1B_1C_1D_1$ 中，$M, N$ 分别为棱 $AA_1, CC_1$ 的中点。求证：平面 $MB_1D_1 // $ 平面 $NBD$。",
+              "logic_key": "面面平行的双重线线平行构造",
+              "analysis": {
+                "core_idea": "新高考压轴小题。需在平面 $MB_1D_1$ 内找两条相交直线分别平行于平面 $NBD$。",
+                "key_steps": [
+                  "1. 在正方体中，$B_1D_1 // BD$。因 $BD \\subset$ 平面 $NBD$，$B_1D_1 \\not\\subset$ 平面 $NBD$，故 $B_1D_1 // $ 平面 $NBD$。",
+                  "2. 取 $DD_1$ 中点 $Q$，连接 $MQ, QB$。易证四边形 $MB_1NQ$ 为平行四边形（$MQ // B_1N$ 且 $MQ=B_1N$），故 $MD_1 // NB$。",
+                  "3. 因 $NB \\subset$ 平面 $NBD$，$MD_1 \\not\\subset$ 平面 $NBD$，故 $MD_1 // $ 平面 $NBD$。",
+                  "4. 因 $B_1D_1 \\cap MD_1 = D_1$，且 $B_1D_1, MD_1 \\subset$ 平面 $MB_1D_1$，故平面 $MB_1D_1 // $ 平面 $NBD$。",
+                  "5. 结论：得证。"
+                ],
+                "common_pitfalls": [
+                  "只证明了一组线平行，条件不足。",
+                  "找不到第二组平行线，陷入死胡同。",
+                  "未说明两条直线相交。"
+                ],
+                "conclusion": "Proof Complete"
+              }
+            }
+          ]
+        },
+        {
+          "var_id": "1.2",
+          "name": "空间角的计算（传统法 vs 向量法）",
+          "logic_core": "【新高考逻辑】核心是“建系优先”与“钝角排查”。对于规则图形（正方体、直棱柱、正棱锥），**强制建系**利用法向量夹角公式 $\\cos \\theta = \\frac{|\\vec{n_1} \\cdot \\vec{n_2}|}{|\\vec{n_1}||\\vec{n_2}|}$；对于非规则图形，先尝试找垂线建系，若失败再用传统法（定义法/三垂线法）。**铁律**：二面角需根据图形直观判断锐钝，避免向量夹角互补错误。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 寻找垂直关系建系",
+              "2. 写出点坐标与法向量",
+              "3. 计算夹角余弦值",
+              "4. 结合图形判定二面角"
+            ],
+            "linked_weapons": [
+              "S-VIS-01",
+              "S-GEO-02"
+            ],
+            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-GEO-02 (空间向量建系秒杀)"
+          },
+          "variable_knobs": {
+            "angle_type": [
+              {
+                "type": "line_plane",
+                "weight": 0.4,
+                "desc": "线面角"
+              },
+              {
+                "type": "dihedral",
+                "weight": 0.5,
+                "difficulty_delta": "+0.5",
+                "desc": "二面角"
+              },
+              {
+                "type": "line_line_skew",
+                "weight": 0.1,
+                "desc": "异面直线夹角"
+              }
+            ],
+            "method_choice": [
+              {
+                "type": "vector_coordinate",
+                "weight": 0.8,
+                "desc": "空间向量建系法"
+              },
+              {
+                "type": "traditional_geo",
+                "weight": 0.2,
+                "difficulty_delta": "+1",
+                "desc": "传统几何作图法"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "obtuse_miss",
+                "weight": 0.7,
+                "desc": "二面角钝角误判为锐角"
+              },
+              {
+                "type": "normal_calc_error",
+                "weight": 0.3,
+                "desc": "法向量计算错误"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 四棱锥 P-ABCD，PA⊥底面，求 PB 与平面 PCD 所成角。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 八省联考] 直三棱柱中，求二面角 A-BC-A1 的正弦值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 华附一模] 四棱锥 P-ABCD，底面菱形，求二面角 B-PC-D 的余弦值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 山东济南一模] 正方体中，求异面直线 AC 与 B1D 所成角。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 已知四面体 ABCD 所有棱长相等，求 AB 与平面 ACD 所成角。",
+              "level": "L3"
+            },
+            {
+              "desc": "[23 新高考 I] 如图，求二面角 A-PB-C 的大小。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 深中二月考] 四棱锥 P-ABCD，侧面 PAB⊥底面，求 PD 与平面 PBC 所成角。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 省实期中] 三棱柱 ABC-A1B1C1，求平面 A1BC 与平面 ABC 夹角。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 已知圆锥顶点 P，底面直径 AB，求 PA 与平面 PBC 夹角。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 广州一模] 四棱锥 P-ABCD，PA=PB=PC=PD，求二面角 A-PB-C。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 深圳一模] 正方体中，求平面 AB1D1 与平面 CB1D1 夹角。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 三棱锥 P-ABC，PA,PB,PC 两两垂直，求二面角 A-PB-C。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 华附零模] 设 P-ABCD 为正四棱锥，求侧面与底面夹角。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 广东二模] 四棱锥 P-ABCD，PA⊥底面，ABCD 为直角梯形，求二面角 P-CD-A。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 已知三棱柱，求平面 A1BC1 与平面 ABC1 夹角。",
+              "level": "L4"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L3",
+              "id": "M09_V1.2_MB_L3_V96",
+              "problem": "[2024·广东二模·T18 风格] 在四棱锥 $P-ABCD$ 中，$PA \\perp$ 底面 $ABCD$，底面 $ABCD$ 是正方形，$PA=AB=2$。求直线 $PB$ 与平面 $PCD$ 所成角的正弦值。",
+              "logic_key": "空间向量建系与线面角公式",
+              "analysis": {
+                "core_idea": "新高考中档题。标准建系流程，考查线面角公式 $\\sin \\theta = |\\cos \\langle \\vec{v}, \\vec{n} \\rangle|$。",
+                "key_steps": [
+                  "1. 以 $A$ 为原点，$AB, AD, AP$ 分别为 $x,y,z$ 轴建立坐标系。则 $A(0,0,0), B(2,0,0), C(2,2,0), D(0,2,0), P(0,0,2)$。",
+                  "2. 计算向量 $\\vec{PB} = (2, 0, -2)$。平面 $PCD$ 的法向量 $\\vec{n}$ 满足 $\\vec{n} \\cdot \\vec{PC} = 0, \\vec{n} \\cdot \\vec{PD} = 0$。",
+                  "3. 由 $\\vec{PC}=(2,2,-2), \\vec{PD}=(0,2,-2)$，解得法向量 $\\vec{n} = (0, 1, 1)$。",
+                  "4. 设线面角为 $\\theta$，则 $\\sin \\theta = \\frac{|\\vec{PB} \\cdot \\vec{n}|}{|\\vec{PB}| |\\vec{n}|} = \\frac{|-2|}{2\\sqrt{2} \\cdot \\sqrt{2}} = \\frac{1}{2}$。",
+                  "5. 结论：$\\frac{1}{2}$。"
+                ],
+                "common_pitfalls": [
+                  "公式记错为余弦（线面角是正弦）。",
+                  "法向量计算错误。",
+                  "坐标写错。"
+                ],
+                "conclusion": "\\frac{1}{2}"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M09_V1.2_MB_L4_V96",
+              "problem": "[2025·浙江绍兴一模·T19 风格] 在四棱锥 $P-ABCD$ 中，底面 $ABCD$ 为菱形，$\\angle ABC = 60^\\circ$，$PA \\perp$ 底面 $ABCD$，$PA=AB=2$。求二面角 $B-PC-D$ 的余弦值。",
+              "logic_key": "二面角计算与钝角判定",
+              "analysis": {
+                "core_idea": "新高考压轴大题。难点在于法向量计算及二面角钝锐的判定。",
+                "key_steps": [
+                  "1. 设 $AC \\cap BD = O$。以 $O$ 为原点，$OB, OC$ 为 $x,y$ 轴，$z$ 轴平行于 $PA$。",
+                  "2. 计算得 $A(0,-1,0), C(0,1,0), B(\\sqrt{3},0,0), D(-\\sqrt{3},0,0), P(0,-1,2)$。",
+                  "3. 求得平面 $PBC$ 法向量 $\\vec{n_1} = (1, \\sqrt{3}, \\sqrt{3})$，平面 $PCD$ 法向量 $\\vec{n_2} = (-1, \\sqrt{3}, \\sqrt{3})$。",
+                  "4. 计算夹角余弦 $\\cos \\langle \\vec{n_1}, \\vec{n_2} \\rangle = \\frac{-1 + 3 + 3}{\\sqrt{7} \\cdot \\sqrt{7}} = \\frac{5}{7}$。",
+                  "5. 由图形结构可知，二面角 $B-PC-D$ 内部包含点 $A$ 的投影，为钝角，故余弦值为 $-\\frac{5}{7}$。",
+                  "6. 结论：$-\\frac{5}{7}$。"
+                ],
+                "common_pitfalls": [
+                  "建系原点选择不当导致坐标复杂。",
+                  "法向量计算出错。",
+                  "致命错误：未判断钝角，直接写正值。"
+                ],
+                "conclusion": "-\\frac{5}{7}"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M09_V1.2_MB_L4_V96_B",
+              "problem": "[2025·山东青岛一模·T19 风格] 在三棱锥 $P-ABC$ 中，$PA, PB, PC$ 两两垂直，且 $PA=1, PB=2, PC=3$。求二面角 $A-BC-P$ 的正切值。",
+              "logic_key": "墙角模型与传统法双轨验证",
+              "analysis": {
+                "core_idea": "新高考压轴小题。墙角模型适合建系，也可用三垂线定理。",
+                "key_steps": [
+                  "1. 以 $P$ 为原点，$PA, PB, PC$ 为 $x,y,z$ 轴。$P(0,0,0), A(1,0,0), B(0,2,0), C(0,0,3)$。",
+                  "2. 平面 $ABC$ 法向量 $\\vec{n} = (6, 3, 2)$，平面 $PBC$ 法向量 $\\vec{m} = (1, 0, 0)$。",
+                  "3. 计算夹角余弦 $\\cos \\theta = \\frac{6}{7}$，则 $\\sin \\theta = \\frac{\\sqrt{13}}{7}$。",
+                  "4. 求得正切 $\\tan \\theta = \\frac{\\sqrt{13}}{6}$。",
+                  "5. （注：亦可过 $P$ 作 $PD \\perp BC$，连 $AD$，利用 $\\tan \\angle PDA = PA/PD$ 求解，结果一致。）",
+                  "6. 结论：$\\frac{\\sqrt{13}}{6}$。"
+                ],
+                "common_pitfalls": [
+                  "法向量计算繁琐出错。",
+                  "传统法找不到垂足。",
+                  "正切余弦转换错误。"
+                ],
+                "conclusion": "\\frac{\\sqrt{13}}{6}"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec_id": "V2",
+      "spec_name": "几何体的度量与组合",
+      "variations": [
+        {
+          "var_id": "2.1",
+          "name": "表面积与体积的计算",
+          "logic_core": "【新高考逻辑】核心是“等体积变形”与“割补思想”。求点到面距离首选**等体积法** ($V_{A-BCD} = V_{B-ACD}$)；求不规则体体积善用**切割**（分为柱锥台）或**补形**（补为长方体）。**铁律**：三视图还原虽弱化，但需具备“由面构体”的直觉。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 识别几何体结构",
+              "2. 选择公式或方法 (等体积/割补)",
+              "3. 计算关键量 (高/面积)",
+              "4. 代入求解"
+            ],
+            "linked_weapons": [
+              "S-VIS-01",
+              "S-GEO-03"
+            ],
+            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-GEO-03 (等体积法与割补术)"
+          },
+          "variable_knobs": {
+            "metric_type": [
+              {
+                "type": "volume",
+                "weight": 0.5,
+                "desc": "体积计算"
+              },
+              {
+                "type": "surface_area",
+                "weight": 0.3,
+                "desc": "表面积计算"
+              },
+              {
+                "type": "distance_point_plane",
+                "weight": 0.2,
+                "difficulty_delta": "+0.5",
+                "desc": "点到面距离 (等体积法)"
+              }
+            ],
+            "shape_complexity": [
+              {
+                "type": "regular_solid",
+                "weight": 0.4,
+                "desc": "规则几何体"
+              },
+              {
+                "type": "combination",
+                "weight": 0.4,
+                "difficulty_delta": "+0.5",
+                "desc": "组合体 (拼接/切割)"
+              },
+              {
+                "type": "irregular",
+                "weight": 0.2,
+                "desc": "不规则体 (需补形)"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "height_missing",
+                "weight": 0.6,
+                "desc": "高未直接给出需计算"
+              },
+              {
+                "type": "overlap_count",
+                "weight": 0.2,
+                "desc": "组合体重叠面未扣除"
+              },
+              {
+                "type": "unit_error",
+                "weight": 0.2,
+                "desc": "单位换算错误"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 已知圆锥底面半径 2，母线 4，求体积。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 八省联考] 正方体棱长 2，挖去一个内切球，求剩余体积。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 华附一模] 三棱锥 P-ABC，PA⊥底面，求 B 到平面 PAC 的距离。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 山东济南一模] 某几何体三视图如图，求其表面积。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 正四棱台上下底边长 2,4，高 3，求体积。",
+              "level": "L2"
+            },
+            {
+              "desc": "[23 新高考 I] 已知四面体 ABCD 棱长均为 2，求体积。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 深中二月考] 三棱柱 ABC-A1B1C1，D 为 BC 中点，求 VA-DB1C1。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 省实期中] 半球内接圆柱，求圆柱侧面积最大值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 四棱锥 P-ABCD，求 C 到平面 PAB 的距离。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 广州一模] 已知三视图，求组合体体积。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 深圳一模] 正方体中，求截去一角后的体积。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 三棱锥 P-ABC，PA,PB,PC 两两垂直，求 P 到 ABC 距离。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 华附零模] 设圆锥侧面展开图为半圆，求圆锥体积。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 广东二模] 四棱锥 P-ABCD，求 D 到平面 PBC 的距离。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 已知球 O 内接正方体，求球体积与正方体体积比。",
+              "level": "L2"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L3",
+              "id": "M09_V2.1_MB_L3_V96",
+              "problem": "[2024·广东二模·T18 风格] 在三棱锥 $P-ABC$ 中，$PA \\perp$ 平面 $ABC$，$AB \\perp BC$，$PA=AB=2, BC=1$。求点 $B$ 到平面 $PAC$ 的距离。",
+              "logic_key": "等体积法求点到面距离",
+              "analysis": {
+                "core_idea": "新高考中档题。直接作垂线难找，利用 $V_{B-PAC} = V_{P-ABC}$ 转换。",
+                "key_steps": [
+                  "1. 计算 $V_{P-ABC} = \\frac{1}{3} S_{ABC} \\cdot PA = \\frac{1}{3} \\cdot (\\frac{1}{2} \\cdot 2 \\cdot 1) \\cdot 2 = \\frac{2}{3}$。",
+                  "2. 计算 $S_{PAC} = \\frac{1}{2} PA \\cdot AC = \\frac{1}{2} \\cdot 2 \\cdot \\sqrt{2^2+1^2} = \\sqrt{5}$。",
+                  "3. 设距离为 $d$，则 $\\frac{1}{3} S_{PAC} \\cdot d = \\frac{2}{3} \\Rightarrow d = \\frac{2}{\\sqrt{5}} = \\frac{2\\sqrt{5}}{5}$。",
+                  "4. 结论：$\\frac{2\\sqrt{5}}{5}$。"
+                ],
+                "common_pitfalls": [
+                  "试图直接作垂线但找不到垂足。",
+                  "三角形面积计算错误。",
+                  "体积公式漏乘 1/3。"
+                ],
+                "conclusion": "\\frac{2\\sqrt{5}}{5}"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M09_V2.1_MB_L4_V96",
+              "problem": "[2025·浙江杭州一模·T19 风格] 在棱长为 2 的正方体 $ABCD-A_1B_1C_1D_1$ 中，截去四个角 $B-A B_1 C, D-A D_1 C, A_1-ABD_1, C_1-CBD_1$（即截去以顶点为顶点的四个三棱锥），求剩余几何体（正四面体 $A C B_1 D_1$）的体积。",
+              "logic_key": "割补法与体积转换",
+              "analysis": {
+                "core_idea": "新高考压轴填空。直接求正四面体体积困难，采用整体减空白法。",
+                "key_steps": [
+                  "1. 正方体体积 $V_{total} = 2^3 = 8$。",
+                  "2. 截去的四个角均为全等的三棱锥，直角边长均为 2。单个体积 $V_{corner} = \\frac{1}{3} \\cdot (\\frac{1}{2} \\cdot 2 \\cdot 2) \\cdot 2 = \\frac{4}{3}$。",
+                  "3. 剩余体积 $V = 8 - 4 \\times \\frac{4}{3} = 8 - \\frac{16}{3} = \\frac{8}{3}$。",
+                  "4. 结论：$\\frac{8}{3}$。"
+                ],
+                "common_pitfalls": [
+                  "未识别出截去的是四个全等三棱锥。",
+                  "割补时漏掉部分或多减。",
+                  "计算错误。"
+                ],
+                "conclusion": "\\frac{8}{3}"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M09_V2.1_MB_L4_V96_B",
+              "problem": "[2025·江苏南京盐城一模·T19 风格] 在三棱锥 $P-ABC$ 中，$PA, PB, PC$ 两两垂直，$PA=3, PB=4, PC=5$。求点 $P$ 到平面 $ABC$ 的距离 $h$。",
+              "logic_key": "墙角模型等体积法",
+              "analysis": {
+                "core_idea": "新高考压轴填空。墙角模型经典结论：$\\frac{1}{h^2} = \\frac{1}{a^2} + \\frac{1}{b^2} + \\frac{1}{c^2}$。",
+                "key_steps": [
+                  "1. 计算体积 $V = \\frac{1}{6} PA \\cdot PB \\cdot PC = \\frac{1}{6} \\cdot 3 \\cdot 4 \\cdot 5 = 10$。",
+                  "2. 计算底面 $S_{ABC}$。由 $S_{ABC}^2 = S_{PAB}^2 + S_{PBC}^2 + S_{PAC}^2$，得 $S_{ABC}^2 = 6^2 + 10^2 + 7.5^2 = 36 + 100 + 56.25 = 192.25$。",
+                  "3. $S_{ABC} = \\sqrt{192.25} = \\frac{\\sqrt{769}}{2}$。",
+                  "4. 由 $V = \\frac{1}{3} S_{ABC} h$，得 $10 = \\frac{1}{3} \\cdot \\frac{\\sqrt{769}}{2} \\cdot h \\Rightarrow h = \\frac{60}{\\sqrt{769}} = \\frac{60\\sqrt{769}}{769}$。",
+                  "5. 结论：$\\frac{60\\sqrt{769}}{769}$。"
+                ],
+                "common_pitfalls": [
+                  "底面面积计算极其繁琐，容易错。",
+                  "不知道倒数平方和公式（秒杀技）。",
+                  "计算分数加法出错。"
+                ],
+                "conclusion": "\\frac{60\\sqrt{769}}{769}"
+              }
+            }
+          ]
+        },
+        {
+          "var_id": "2.2",
+          "name": "外接球与内切球（绝杀陷阱）",
+          "logic_core": "【新高考逻辑】核心是“模型识别”与“球心定位”。**四大模型**：1. **墙角模型**（三条棱两两垂直，$2R=\\sqrt{a^2+b^2+c^2}$）；2. **对棱相等模型**（补形为长方体）；3. **直棱柱/圆柱模型**（$R^2=r_{底}^2+(h/2)^2$）；4. **锥体垂线模型**（球心在高线上，勾股定理求解）。**铁律**：见“两两垂直”想墙角；见“对棱相等”想补形。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 识别几何体特征",
+              "2. 匹配球体模型",
+              "3. 确定球心位置",
+              "4. 构建直角三角形求 R"
+            ],
+            "linked_weapons": [
+              "S-VIS-01",
+              "S-GEO-04"
+            ],
+            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-GEO-04 (外接球模型识别)"
+          },
+          "variable_knobs": {
+            "model_type": [
+              {
+                "type": "corner_model",
+                "weight": 0.3,
+                "desc": "墙角模型 (两两垂直)"
+              },
+              {
+                "type": "rect_insert",
+                "weight": 0.2,
+                "difficulty_delta": "+0.5",
+                "desc": "对棱相等补形"
+              },
+              {
+                "type": "prism_cylinder",
+                "weight": 0.3,
+                "desc": "直棱柱/圆柱"
+              },
+              {
+                "type": "pyramid_perp",
+                "weight": 0.2,
+                "difficulty_delta": "+1",
+                "desc": "锥体垂线法"
+              }
+            ],
+            "target_quantity": [
+              {
+                "type": "radius",
+                "weight": 0.4,
+                "desc": "求半径 R"
+              },
+              {
+                "type": "surface_area",
+                "weight": 0.3,
+                "desc": "求表面积 4πR²"
+              },
+              {
+                "type": "volume",
+                "weight": 0.3,
+                "desc": "求体积 4/3πR³"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "center_location",
+                "weight": 0.8,
+                "desc": "球心位置判断错误"
+              },
+              {
+                "type": "formula_mix",
+                "weight": 0.2,
+                "desc": "表面积体积公式混淆"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 三棱锥 P-ABC，PA,PB,PC 两两垂直，PA=1,PB=2,PC=3，求外接球表面积。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 八省联考] 四面体 ABCD，AB=CD=3, AC=BD=4, AD=BC=5，求外接球体积。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 华附一模] 正四棱锥 P-ABCD，底面边长 2，高 2，求外接球半径。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 山东济南一模] 直三棱柱 ABC-A1B1C1，AB=3,AC=4,BC=5,AA1=12，求外接球表面积。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 已知圆锥底面半径 3，母线 5，求内切球半径。",
+              "level": "L4"
+            },
+            {
+              "desc": "[23 新高考 I] 四面体 ABCD，AB⊥平面 BCD，BC⊥CD，求外接球半径。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 深中二月考] 三棱锥 P-ABC，PA⊥底面，ABC 为等边三角形，求外接球半径。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 省实期中] 正方体棱长 2，求其内切球与外接球体积比。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 四棱锥 P-ABCD，底面矩形，PA⊥底面，求外接球半径。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 广州一模] 已知三棱锥对棱相等，求外接球表面积。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 深圳一模] 圆柱底面半径 2，高 4，求外接球体积。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 三棱锥 P-ABC，PA=PB=PC=2，∠APB=∠BPC=∠CPA=30°，求外接球半径。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 华附零模] 设正四面体棱长为 a，求内切球半径。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 广东二模] 四棱锥 P-ABCD，PA⊥底面，ABCD 为正方形，求外接球表面积。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 已知三棱锥 P-ABC，PA⊥平面 ABC，AB⊥AC，求外接球体积。",
+              "level": "L3"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L3",
+              "id": "M09_V2.2_MB_L3_V96",
+              "problem": "[2024·广东二模·T12 风格] 在三棱锥 $P-ABC$ 中，$PA, PB, PC$ 两两垂直，且 $PA=1, PB=2, PC=3$。求该三棱锥外接球的表面积。",
+              "logic_key": "墙角模型秒杀",
+              "analysis": {
+                "core_idea": "新高考选填中档。识别“两两垂直”直接套墙角模型公式。",
+                "key_steps": [
+                  "1. 三棱锥可补形为长方体，外接球即长方体外接球。",
+                  "2. $(2R)^2 = PA^2 + PB^2 + PC^2 = 1^2 + 2^2 + 3^2 = 14$。",
+                  "3. 表面积 $S = 4\\pi R^2 = 14\\pi$。",
+                  "4. 结论：$14\\pi$。"
+                ],
+                "common_pitfalls": [
+                  "忘记平方和开根号的关系。",
+                  "表面积公式记错为 $\\pi R^2$ 或 $4/3 \\pi R^3$。",
+                  "计算 $1+4+9$ 出错。"
+                ],
+                "conclusion": "14\\pi"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M09_V2.2_MB_L4_V96",
+              "problem": "[2025·浙江绍兴一模·T12 风格] 在四面体 $ABCD$ 中，$AB=CD=3$，$AC=BD=4$，$AD=BC=5$。求该四面体外接球的体积。",
+              "logic_key": "对棱相等补形法",
+              "analysis": {
+                "core_idea": "新高考选填压轴。识别“对棱相等”立即补形为长方体。",
+                "key_steps": [
+                  "1. 将四面体嵌入长方体，设长宽高为 $x,y,z$。面对角线分别为 3, 4, 5。",
+                  "2. 列方程组：$x^2+y^2=9, y^2+z^2=16, x^2+z^2=25$。",
+                  "3. 三式相加得 $2(x^2+y^2+z^2) = 50 \\Rightarrow x^2+y^2+z^2 = 25$。",
+                  "4. 外接球直径 $2R = \\sqrt{25} = 5 \\Rightarrow R = 2.5$。",
+                  "5. 体积 $V = \\frac{4}{3}\\pi (\\frac{5}{2})^3 = \\frac{125\\pi}{6}$。",
+                  "6. 结论：$\\frac{125\\pi}{6}$。"
+                ],
+                "common_pitfalls": [
+                  "未能识别对棱相等模型，试图硬算。",
+                  "方程组求解错误。",
+                  "体积公式系数记错。"
+                ],
+                "conclusion": "\\frac{125\\pi}{6}"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M09_V2.2_MB_L4_V96_B",
+              "problem": "[2025·山东青岛一模·T12 风格] 在四棱锥 $P-ABCD$ 中，$PA \\perp$ 底面 $ABCD$，底面 $ABCD$ 为正方形，边长为 2，$PA=2$。求该四棱锥外接球的半径。",
+              "logic_key": "直棱柱补形模型",
+              "analysis": {
+                "core_idea": "新高考选填压轴。$PA \\perp$ 底面且底面为正方形，可补形为正方体。",
+                "key_steps": [
+                  "1. 四棱锥 $P-ABCD$ 可视为棱长为 2 的正方体的一部分，其外接球即正方体外接球。",
+                  "2. 正方体体对角线 $2R = \\sqrt{2^2+2^2+2^2} = 2\\sqrt{3}$。",
+                  "3. 解得 $R = \\sqrt{3}$。",
+                  "4. （注：通用法中，球心在 $PA$ 中垂面与底面外接圆圆心垂线的交点，计算结果一致。）",
+                  "5. 结论：$\\sqrt{3}$。"
+                ],
+                "common_pitfalls": [
+                  "未能看出可补形为正方体。",
+                  "通用法中 $r$ 算错（正方形对角线一半）。",
+                  "勾股定理用错。"
+                ],
+                "conclusion": "\\sqrt{3}"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "system_instruction_template": "### 🎯 M09 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础)**:\n- **特征**: 单步逻辑，直接套公式，图形规则（正方体、简单柱锥）。\n- **典型任务**: 直接证明线面平行/垂直、简单体积/表面积计算、墙角模型外接球。\n- **禁忌**: 禁止出现“非规则建系”、“复杂补形”、“二面角钝角讨论”。\n- **示例**: \"正方体中证线面平行\" 或 \"墙角模型求 R\"。\n\n**L3 (进阶)**:\n- **特征**: 两步逻辑，需简单辅助线或建系计算。\n- **典型任务**: 菱形/梯形底面的垂直证明、等体积法求距离、直棱柱外接球、常规二面角计算。\n- **禁忌**: 禁止出现“对棱相等补形”、“非垂线建系”、“复杂动态轨迹”。\n- **示例**: \"四棱锥中证面面垂直\" 或 \"等体积法求高\"。\n\n**L4 (巅峰)**:\n- **特征**: 多步逻辑，必须包含“模型识别”或“空间想象盲区”。\n- **典型任务**: 对棱相等补形、非规则图形建系（找基底）、二面角钝角判定、复杂组合体体积、动态最值。\n- **核心**: 必须包含一个“思维盲区”（如：没看出能补形、二面角其实是钝角、球心不在高上）。\n- **示例**: \"对棱相等求外接球\" 或 \"无图化描述下的二面角计算\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解。\n- L4 题目必须体现“模型识别”和“严谨逻辑”。\n- **风格要求**: L4 题目应适当融入浙江卷的外接球补形或新高考 I 卷的无图化证明。\n\n**逻辑要求**:\n- AI 解析时需隐性调用 Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“降维转化”或“模型匹配”思想。\n- **关键点**: L4 题目的解析必须详细解释“如何看出模型”以及“如何确定球心/钝角”，**严禁出现口语化试错、分支验证或评价性语言**。"
+}

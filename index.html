@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>私家数学教研组长</title>
+    <style>
+      /* ==========================================
+         学术模式 (Light Mode) KaTeX 强制深色适配
+         ========================================== */
+      html:not(.dark) .katex,
+      html:not(.dark) .katex-html,
+      html:not(.dark) .katex .base,
+      html:not(.dark) .katex .mord,
+      html:not(.dark) .katex .mbin,
+      html:not(.dark) .katex .mrel,
+      html:not(.dark) .katex .mopen,
+      html:not(.dark) .katex .mclose,
+      html:not(.dark) .katex .mpunct,
+      html:not(.dark) .katex .mfrac,
+      html:not(.dark) .katex .msupsub,
+      html:not(.dark) .katex .vlist,
+      html:not(.dark) .katex .delimsizing,
+      html:not(.dark) .katex .op-symbol,
+      html:not(.dark) .katex .sqrt-sign,
+      html:not(.dark) .katex .mathit,
+      html:not(.dark) .katex .mathrm,
+      html:not(.dark) .katex .mathbf,
+      html:not(.dark) .katex .mathcal,
+      html:not(.dark) .katex .mathbb {
+        color: #1e293b !important; /* 对应 Tailwind slate-800 极客蓝/黑 */
+      }
+      html:not(.dark) .katex .mtext {
+        color: #475569 !important; /* 对应 Tailwind slate-600 */
+      }
+      html:not(.dark) .katex .frac-line,
+      html:not(.dark) .katex .sqrt-line {
+        border-color: #1e293b !important;
+      }
+
+      /* ==========================================
+         暗区战术模式 (Dark Mode) KaTeX 强制浅色适配
+         ========================================== */
+      html.dark .katex,
+      html.dark .katex-html,
+      html.dark .katex .base,
+      html.dark .katex .mord,
+      html.dark .katex .mbin,
+      html.dark .katex .mrel,
+      html.dark .katex .mopen,
+      html.dark .katex .mclose,
+      html.dark .katex .mpunct,
+      html.dark .katex .mfrac,
+      html.dark .katex .msupsub,
+      html.dark .katex .vlist,
+      html.dark .katex .delimsizing,
+      html.dark .katex .op-symbol,
+      html.dark .katex .sqrt-sign,
+      html.dark .katex .mathit,
+      html.dark .katex .mathrm,
+      html.dark .katex .mathbf,
+      html.dark .katex .mathcal,
+      html.dark .katex .mathbb {
+        color: #e4e4e7 !important; /* 对应 Tailwind zinc-200 */
+      }
+      html.dark .katex .mtext {
+        color: #a1a1aa !important;
+      }
+      html.dark .katex .frac-line,
+      html.dark .katex .sqrt-line {
+        border-color: #e4e4e7 !important;
+      }
+
+      /* 隐藏 KaTeX 的 MathML 输出（防止重复显示且破坏排版） */
+      .katex-mathml {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

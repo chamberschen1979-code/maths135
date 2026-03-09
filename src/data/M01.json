@@ -1,0 +1,1079 @@
+{
+  "motif_id": "M01",
+  "motif_name": "集合、逻辑用语与复数",
+  "logic_schema_version": "9.6-SET-ELITE",
+  "last_updated": "2026-03-09",
+  "mastery_logic": "ELO_THRESHOLD_AND_SPECIALTY_FULL_CLEAR",
+  "description": "【深度同步版 v3.0】集合、逻辑与复数模块。依托中央军火库 strategy_lib.json。参数问题全面启用防御性思维工具（空集陷阱、端点验证）。复数专项新增几何意义与最值问题。",
+  "specialties": [
+    {
+      "spec_id": "V1",
+      "spec_name": "集合的运算与关系",
+      "variations": [
+        {
+          "var_id": "1.1",
+          "name": "基本运算与要素识别",
+          "logic_core": "【新高考逻辑】核心不是复杂的运算，而是'看穿伪装'。关键在于识别代表元素：是数集 {y|y=...}（值域）、定义域 {x|y=...} 还是点集 {(x,y)|...}。同时必须时刻警惕集合元素的互异性，这是 T1 题最常见的陷阱。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 识别代表元素 (数/点/式)",
+              "2. 化简集合 (解方程/不等式)",
+              "3. 验证互异性",
+              "4. 执行交并补运算"
+            ],
+            "linked_weapons": [
+              "S-SET-02"
+            ],
+            "weapon_map_note": "S-SET-02 (端点取舍代回验身)"
+          },
+          "variable_knobs": {
+            "element_type": [
+              {
+                "type": "number_set",
+                "weight": 0.6,
+                "desc": "数集 (定义域/值域)"
+              },
+              {
+                "type": "point_set",
+                "weight": 0.3,
+                "difficulty_delta": "+0.5",
+                "desc": "点集 (曲线/区域)"
+              },
+              {
+                "type": "abstract_set",
+                "weight": 0.1,
+                "difficulty_delta": "+1",
+                "desc": "抽象集合 (新定义)"
+              }
+            ],
+            "operation_type": [
+              {
+                "type": "intersection",
+                "weight": 0.5,
+                "desc": "交集运算"
+              },
+              {
+                "type": "union_complement",
+                "weight": 0.3,
+                "desc": "并集/补集"
+              },
+              {
+                "type": "venn_diagram",
+                "weight": 0.2,
+                "desc": "Venn 图应用"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "mutual_exclusivity",
+                "weight": 0.7,
+                "desc": "互异性验证陷阱"
+              },
+              {
+                "type": "domain_restrict",
+                "weight": 0.3,
+                "desc": "定义域限制导致的空集"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 已知集合 A={x|x^2-3x+2=0}, B={1, 2, 3}，求 A∩B。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 八省联考] 若集合 A={y|y=x^2, x∈R}, B={x|y=lg(x-1)}，求 A∩B。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 华附一模] 已知集合 A={(x,y)|x+y=2}, B={(x,y)|x-y=0}，求 A∩B 的元素个数。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 山东济南一模] 若集合 A={1, a, a^2-2}, B={1, 2}，且 A=B，求 a 的值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 已知全集 U=R, A={x|x<1}, B={x|x>0}，求 (CuA)∩B。",
+              "level": "L2"
+            },
+            {
+              "desc": "[23 新高考 I] 已知集合 M={x|-2<x<1}, N={x|x^2-x-6<0}，求 M∩N。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 深中二月考] 若集合 A={x|ax^2-3x+2=0} 只有一个元素，求 a 的值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 省实期中] 求集合 {x∈Z | -1<x<3} 的子集个数。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 已知 A={x|x^2-4x+3<0}, B={x|2<x<4}，求 A∪B。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 广州一模] 若集合 A={x|x^2-2x-3≤0}, B={x|x>m}，且 A∩B≠∅，求 m 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 深圳一模] 已知集合 A={1, 2, 3}, B={x|x^2-ax+1=0}，若 B⊆A，求 a 的值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 设集合 A={x|x=2k, k∈Z}, B={x|x=2k+1, k∈Z}，求 A∩B。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 华附零模] 已知集合 A={x|lg(x-1)<1}, B={x|x^2-3x-4<0}，求 A∩B。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 广东二模] 若集合 A={x|x^2-5x+6=0}, B={2, 3, 4}，求 A 的真子集个数。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 已知集合 A={(x,y)|x^2+y^2=1}, B={(x,y)|y=x}，求 A∩B 的元素个数。",
+              "level": "L3"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L2",
+              "id": "M01_V1.1_MB_L2_V96",
+              "problem": "[基础巩固] 已知集合 $A = \\{x | x^2 - 3x + 2 = 0\\}$，$B = \\{1, 2, 3\\}$，求 $A \\cap B$。",
+              "logic_key": "解方程 + 交集运算",
+              "analysis": {
+                "core_idea": "基础题，考查集合的基本表示和交集运算。关键是准确解出一元二次方程。",
+                "key_steps": [
+                  "1. 解方程化简 A：$x^2 - 3x + 2 = 0 \\Rightarrow (x-1)(x-2)=0 \\Rightarrow x=1$ 或 $x=2$。故 $A = \\{1, 2\\}$。",
+                  "2. 执行交集：$A \\cap B = \\{1, 2\\} \\cap \\{1, 2, 3\\} = \\{1, 2\\}$。"
+                ],
+                "common_pitfalls": [
+                  "解方程错误。",
+                  "交集符号看错成并集。",
+                  "列举元素时遗漏。"
+                ],
+                "conclusion": "$\\{1, 2\\}$"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M01_V1.1_MB_L3_V96",
+              "problem": "[2024·广东一模·T2 风格] 若集合 $A = \\{y | y = x^2, x \\in \\mathbb{R}\\}$，$B = \\{x | y = \\lg(x-1)\\}$，求 $A \\cap B$。",
+              "logic_key": "看穿伪装 (值域 vs 定义域)",
+              "analysis": {
+                "core_idea": "新高考中档题特点：集合代表元素不同，一个是值域 ($y$)，一个是定义域 ($x$)。必须先化简为具体的数集范围。",
+                "key_steps": [
+                  "1. 化简 A (值域)：$y = x^2 \\ge 0$，故 $A = [0, +\\infty)$。",
+                  "2. 化简 B (定义域)：对数真数大于 0，即 $x-1 > 0 \\Rightarrow x > 1$，故 $B = (1, +\\infty)$。",
+                  "3. 执行交集：$[0, +\\infty) \\cap (1, +\\infty) = (1, +\\infty)$。"
+                ],
+                "common_pitfalls": [
+                  "未区分 $x$ 和 $y$，直接联立方程求解。",
+                  "忽略 $x^2 \\ge 0$ 的非负性。",
+                  "对数定义域忘记大于 0（写成 $\\ge 0$）。",
+                  "区间开闭搞错。"
+                ],
+                "conclusion": "$(1, +\\infty)$"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M01_V1.1_MB_L4_V96",
+              "problem": "[2025·浙江绍兴一模·T16 风格] 已知集合 $A = \\{1, a, a^2-2\\}$，$B = \\{1, 2\\}$，且 $A = B$，求实数 $a$ 的值。",
+              "logic_key": "集合相等与互异性验证",
+              "analysis": {
+                "core_idea": "新高考难题。利用集合相等列方程，但**必须验证互异性**。这是 90% 学生容易丢分的地方。",
+                "key_steps": [
+                  "1. 分析相等条件：因 $A=B$，且 $B$ 只有两个元素 $\\{1, 2\\}$，故 $A$ 中的三个表达式 $1, a, a^2-2$ 必有两个相等，且剩下的那个等于 2。",
+                  "2. 分类讨论：",
+                  "   情况一：$a = 1$。此时 $A = \\{1, 1, -1\\} = \\{1, -1\\} \\neq B$。舍去。",
+                  "   情况二：$a^2 - 2 = 1 \\Rightarrow a = \\pm\\sqrt{3}$。此时 $A = \\{1, \\pm\\sqrt{3}, 1\\} = \\{1, \\pm\\sqrt{3}\\} \\neq B$。舍去。",
+                  "   情况三：$a = 2$。此时 $a^2-2 = 2$。$A = \\{1, 2, 2\\} = \\{1, 2\\} = B$。符合。",
+                  "   情况四：$a^2 - 2 = 2 \\Rightarrow a = \\pm 2$。",
+                  "     若 $a=2$ (同上，符合)。",
+                  "     若 $a=-2$，则 $A = \\{1, -2, 2\\}$，有三个元素，而 $B$ 只有两个。不符。",
+                  "3. 验证互异性：当 $a=2$ 时，$A$ 化简后为 $\\{1, 2\\}$，满足互异性且与 $B$ 相等。",
+                  "4. 结论：$a=2$。"
+                ],
+                "common_pitfalls": [
+                  "列出方程后忘记验证集合元素的互异性。",
+                  "忽略 $A$ 中写了三个表达式但实际元素个数可能与 $B$ 相同的情况（隐含重复）。",
+                  "分类讨论不全。"
+                ],
+                "conclusion": "2"
+              }
+            }
+          ]
+        },
+        {
+          "var_id": "1.2",
+          "name": "包含关系与参数求解",
+          "logic_core": "【新高考逻辑】核心是“逆向思维”与“空集陷阱”。由 $A \\subseteq B$ 反求参数时，**首要讨论 $A = \\emptyset$** 的情况（最易漏）。其次，在解出参数范围后，必须代回**端点值**验证是否满足包含关系及互异性。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 讨论 A 是否为空集",
+              "2. 若 A 非空，化简 A 和 B",
+              "3. 利用数轴列不等式",
+              "4. 验证端点和互异性"
+            ],
+            "linked_weapons": [
+              "S-SET-01",
+              "S-SET-02"
+            ],
+            "weapon_map_note": "S-SET-01 (空集陷阱自动检测), S-SET-02 (端点取舍代回验身)"
+          },
+          "variable_knobs": {
+            "subset_type": [
+              {
+                "type": "proper_subset",
+                "weight": 0.4,
+                "desc": "真子集"
+              },
+              {
+                "type": "subset",
+                "weight": 0.6,
+                "desc": "子集 (含相等)"
+              }
+            ],
+            "set_structure": [
+              {
+                "type": "interval",
+                "weight": 0.7,
+                "desc": "连续区间 (不等式)"
+              },
+              {
+                "type": "discrete",
+                "weight": 0.3,
+                "difficulty_delta": "+0.5",
+                "desc": "离散整数集"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "empty_set_miss",
+                "weight": 0.8,
+                "desc": "漏掉空集讨论 (核心难点)"
+              },
+              {
+                "type": "endpoint_error",
+                "weight": 0.2,
+                "desc": "端点等号取舍错误"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 II] 已知 A={x|1<x<3}, B={x|x>a}，若 A⊆B，求 a 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 八省联考] 若集合 A={x|x^2-2x+a=0}⊆{1, 2}，求 a 的值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 华附一模] 已知 A={x|-2≤x≤5}, B={x|m+1≤x≤2m-1}，若 B⊆A，求 m 的范围。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 山东济南一模] 若 A={x|x^2-4x+3<0}, B={x|x<a}，且 A⊆B，求 a 的最小值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 已知集合 A={1, 2}, B={x|x^2-ax+1=0}，若 B⊆A，求 a 的取值集合。",
+              "level": "L4"
+            },
+            {
+              "desc": "[23 新高考 I] 设 A={x|x^2-3x+2=0}, B={x|mx-2=0}，若 B⊆A，求 m 的值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 深中二月考] 若 A={x|x>1}, B={x|x>a}，且 A⊇B，求 a 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 省实期中] 已知 A={x|x^2-5x+6≤0}, B={x|x<m}，若 A∩B=A，求 m 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 若集合 A={x|-1<x<2}, B={x|2a<x<a+3}，且 B⊆A，求 a 的范围。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 广州一模] 已知 A={x|x^2-2x-3≤0}, B={x|x≥m}，若 A∩B≠∅，求 m 的最大值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 深圳一模] 设 A={x|x^2-4x+3<0}, B={x|x^2-ax+a-1<0}，若 A⊆B，求 a 的值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 若 A={x|x^2-2x<0}, B={x|x<a}，且 A⊂B (真子集)，求 a 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 华附零模] 已知 A={x|x^2-3x+2=0}, B={x|ax-2=0}，若 B⊆A，求所有可能的 a 值之和。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 广东二模] 若集合 A={x|1≤x≤2}, B={x|x≥a}，且 A⊆B，求 a 的值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 已知 A={x|x^2-5x+4≤0}, B={x|x^2-(a+1)x+a≤0}，若 B⊆A，求 a 的范围。",
+              "level": "L4"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L3",
+              "id": "M01_V1.2_MB_L3_V96",
+              "problem": "[2024·广东二模·T14 风格] 已知集合 $A = \\{x | 1 < x < 3\\}$，$B = \\{x | x > a\\}$，若 $A \\subseteq B$，求实数 $a$ 的取值范围。",
+              "logic_key": "区间包含与数轴法",
+              "analysis": {
+                "core_idea": "新高考中档题。利用数轴直观判断包含关系。关键是端点 $a$ 能否取到 1。",
+                "key_steps": [
+                  "1. 画数轴：$A$ 是 $(1, 3)$，$B$ 是 $(a, +\\infty)$。",
+                  "2. 包含条件：要使 $(1, 3) \\subseteq (a, +\\infty)$，需 $B$ 的左端点 $a$ 在 $A$ 左端点 $1$ 的左侧或重合。",
+                  "3. 列不等式：$a \\le 1$。",
+                  "4. 验证端点：若 $a=1$，则 $B=(1, +\\infty)$，显然 $(1, 3) \\subseteq (1, +\\infty)$ 成立。故可取等号。",
+                  "5. 结论：$a \\le 1$。"
+                ],
+                "common_pitfalls": [
+                  "忘记验证端点，误以为 $a < 1$。",
+                  "方向搞反（写成 $a \\ge 3$）。",
+                  "混淆开区间与闭区间的包含条件。"
+                ],
+                "conclusion": "$(-\\infty, 1]$"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M01_V1.2_MB_L4_V96",
+              "problem": "[2025·浙江杭州一模·T17 风格] 已知集合 $A = \\{x | -2 \\le x \\le 5\\}$，$B = \\{x | m+1 \\le x \\le 2m-1\\}$，若 $B \\subseteq A$，求实数 $m$ 的取值范围。",
+              "logic_key": "空集陷阱与分类讨论 (绝杀)",
+              "analysis": {
+                "core_idea": "新高考压轴小题。核心陷阱：$B$ 可能是空集！这是 90% 学生的失分点。必须分 $B=\\emptyset$ 和 $B \\neq \\emptyset$ 讨论。",
+                "key_steps": [
+                  "1. 情况一：$B = \\emptyset$。",
+                  "   条件：$m+1 > 2m-1 \\Rightarrow m < 2$。",
+                  "   此时 $\\emptyset \\subseteq A$ 恒成立。故 $m < 2$ 符合。",
+                  "2. 情况二：$B \\neq \\emptyset$。",
+                  "   条件：$m+1 \\le 2m-1 \\Rightarrow m \\ge 2$。",
+                  "   包含关系：需 $\\begin{cases} m+1 \\ge -2 \\\\ 2m-1 \\le 5 \\end{cases}$。",
+                  "   解得：$\\begin{cases} m \\ge -3 \\\\ m \\le 3 \\end{cases} \\Rightarrow -3 \\le m \\le 3$。",
+                  "   结合前提 $m \\ge 2$，得 $2 \\le m \\le 3$。",
+                  "3. 综合结论：取并集。$m < 2$ 或 $2 \\le m \\le 3 \\Rightarrow m \\le 3$。",
+                  "4. 结论：$m \\in (-\\infty, 3]$。"
+                ],
+                "common_pitfalls": [
+                  "**致命错误**：完全忽略 $B=\\emptyset$ 的情况，只算出 $2 \\le m \\le 3$。",
+                  "端点验证错误（如 $m+1 > -2$ 写错方向）。",
+                  "最后忘记取并集。"
+                ],
+                "conclusion": "$(-\\infty, 3]$"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M01_V1.2_MB_L4_V96_B",
+              "problem": "[2025·山东青岛一模·T12 风格] 设集合 $A = \\{x | x^2 - 3x + 2 = 0\\}$，$B = \\{x | mx - 2 = 0\\}$，若 $B \\subseteq A$，求所有可能的实数 $m$ 的值之和。",
+              "logic_key": "离散集合包含与多解讨论",
+              "analysis": {
+                "core_idea": "新高考压轴填空。$A$ 是离散集，$B$ 含参。需讨论 $B$ 为空集、单元素集的情况。",
+                "key_steps": [
+                  "1. 化简 A：$x^2 - 3x + 2 = 0 \\Rightarrow x=1, 2$。故 $A = \\{1, 2\\}$。",
+                  "2. 分析 B：方程 $mx - 2 = 0$。",
+                  "3. 情况一：$B = \\emptyset$。",
+                  "   当 $m=0$ 时，$-2=0$ 无解，$B=\\emptyset$。$\\emptyset \\subseteq A$ 成立。故 $m=0$ 是一个解。",
+                  "4. 情况二：$B \\neq \\emptyset$。",
+                  "   此时 $m \\neq 0$，解得 $x = 2/m$。",
+                  "   因 $B \\subseteq A$，故 $2/m \\in \\{1, 2\\}$。",
+                  "   若 $2/m = 1 \\Rightarrow m = 2$。",
+                  "   若 $2/m = 2 \\Rightarrow m = 1$。",
+                  "5. 汇总：$m$ 的可能值为 $0, 1, 2$。",
+                  "6. 求和：$0 + 1 + 2 = 3$。"
+                ],
+                "common_pitfalls": [
+                  "忽略 $m=0$ 导致 $B=\\emptyset$ 的情况。",
+                  "解方程 $mx-2=0$ 时默认 $m \\neq 0$。",
+                  "计算求和时遗漏。"
+                ],
+                "conclusion": "3"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec_id": "V2",
+      "spec_name": "常用逻辑用语",
+      "variations": [
+        {
+          "var_id": "2.1",
+          "name": "量词及其否定",
+          "logic_core": "【新高考逻辑】核心是“形式规范”与“肌肉记忆”。全称量词 $\\forall$ 与存在量词 $\\exists$ 的否定互换规则必须形成条件反射。特别注意：**否定只改量词和结论，不改条件（定义域）**。复合命题真假判定需结合“且/或”的真值表。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 识别量词 (∀/∃)",
+              "2. 互换量词 (∀↔∃)",
+              "3. 否定结论 (p→¬p)",
+              "4. 保持条件不变"
+            ],
+            "linked_weapons": [
+              "S-SET-02"
+            ],
+            "weapon_map_note": "S-SET-02 (端点取舍代回验身)"
+          },
+          "variable_knobs": {
+            "quantifier_type": [
+              {
+                "type": "universal",
+                "weight": 0.5,
+                "desc": "全称量词 (∀)"
+              },
+              {
+                "type": "existential",
+                "weight": 0.5,
+                "desc": "存在量词 (∃)"
+              }
+            ],
+            "statement_complexity": [
+              {
+                "type": "simple_inequality",
+                "weight": 0.6,
+                "desc": "简单不等式/等式"
+              },
+              {
+                "type": "compound_logic",
+                "weight": 0.3,
+                "difficulty_delta": "+0.5",
+                "desc": "含且/或非"
+              },
+              {
+                "type": "hidden_quantifier",
+                "weight": 0.1,
+                "difficulty_delta": "+1",
+                "desc": "省略量词的命题"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "condition_keep",
+                "weight": 0.7,
+                "desc": "错误地否定了条件/定义域"
+              },
+              {
+                "type": "connective_de_morgan",
+                "weight": 0.3,
+                "desc": "德摩根律应用错误"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 命题“∀x∈R, x^2≥0”的否定是？",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 八省联考] 命题“∃x>0, x^2-x+1<0”的否定是？",
+              "level": "L2"
+            },
+            {
+              "desc": "[24 华附一模] 若命题 p: ∀x∈[1, 2], x^2-a≥0 为真，求 a 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 山东济南一模] 已知命题 p: ∃x∈R, x^2+2x+m≤0 为假命题，求 m 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 命题“有些三角形是等腰三角形”的否定是？",
+              "level": "L2"
+            },
+            {
+              "desc": "[23 新高考 I] 已知 p: ∀x>0, ln(x+1)>0; q: ∃x∈R, x^2+x+1<0。判断 p∧q, p∨q 的真假。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 深中二月考] 若命题“∀x∈R, ax^2+2x+1>0”为真，求 a 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 省实期中] 命题“若 x>1，则 x^2>1”的否命题是？",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 已知命题 p: ∃x∈[0, π], sinx>m 为假，求 m 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 广州一模] 命题“∀x∈Z, x^2+x 是偶数”的否定是？",
+              "level": "L2"
+            },
+            {
+              "desc": "[24 深圳一模] 若命题 p: ∃x∈R, x^2+ax+1<0 为真，求 a 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 已知 p: ∀x∈[1, 2], x^2-a≥0; q: ∃x∈R, x^2+2ax+2-a=0。若 p∧q 为真，求 a 的范围。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 华附零模] 命题“所有能被 5 整除的数都是偶数”的否定是？",
+              "level": "L2"
+            },
+            {
+              "desc": "[24 广东二模] 若命题“∃x∈[1, 2], x^2-a≤0”为真，求 a 的最小值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 已知命题 p: ∀x>0, x+1/x≥a; q: ∃x∈R, x^2+2ax+a+2=0。若 p∨q 为真且 p∧q 为假，求 a 的范围。",
+              "level": "L4"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L2",
+              "id": "M01_V2.1_MB_L2_V96",
+              "problem": "[基础巩固] 写出命题“$\\forall x \\in \\mathbb{R}, x^2 \\ge 0$”的否定。",
+              "logic_key": "全称量词否定规则",
+              "analysis": {
+                "core_idea": "基础题，考查量词否定的基本规则：$\\forall$ 变 $\\exists$，结论否定。",
+                "key_steps": [
+                  "1. 改量词：$\\forall$ 改为 $\\exists$。",
+                  "2. 否结论：$x^2 \\ge 0$ 的否定是 $x^2 < 0$。",
+                  "3. 组合：$\\exists x \\in \\mathbb{R}, x^2 < 0$。"
+                ],
+                "common_pitfalls": [
+                  "只改量词不改结论。",
+                  "只改结论不改量词。",
+                  "错误地否定了条件（如写成 $x \\notin \\mathbb{R}$）。",
+                  "$\\ge$ 的否定写成 $\\le$（应为 $<$）。"
+                ],
+                "conclusion": "$\\exists x \\in \\mathbb{R}, x^2 < 0$"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M01_V2.1_MB_L3_V96",
+              "problem": "[2024·广东一模·T6 风格] 已知命题 $p: \\exists x \\in \\mathbb{R}, x^2 + 2x + m \\le 0$ 为**假命题**，求实数 $m$ 的取值范围。",
+              "logic_key": "命题真假与参数范围",
+              "analysis": {
+                "core_idea": "新高考中档题。命题 $p$ 为假 $\\iff$ 非 $p$ 为真。先写出非 $p$，再转化为恒成立问题。",
+                "key_steps": [
+                  "1. 转化：$p$ 为假 $\\iff \\neg p$ 为真。",
+                  "2. 写非 $p$：$\\neg p: \\forall x \\in \\mathbb{R}, x^2 + 2x + m > 0$。",
+                  "3. 恒成立条件：二次函数 $y = x^2 + 2x + m$ 恒大于 0。",
+                  "4. 判别式：需 $\\Delta < 0$（开口向上且与 x 轴无交点）。",
+                  "5. 计算：$\\Delta = 2^2 - 4m = 4 - 4m < 0 \\Rightarrow 4m > 4 \\Rightarrow m > 1$。",
+                  "6. 结论：$m > 1$。"
+                ],
+                "common_pitfalls": [
+                  "直接按 $p$ 为真计算（求 $\\Delta \\ge 0$），忘记题目说是“假命题”。",
+                  "否定命题时出错。",
+                  "恒大于 0 时忘记 $\\Delta < 0$（写成 $\\le 0$）。"
+                ],
+                "conclusion": "$(1, +\\infty)$"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M01_V2.1_MB_L4_V96",
+              "problem": "[2025·浙江绍兴一模·T16 风格] 已知命题 $p: \\forall x \\in [1, 2], x^2 - a \\ge 0$；命题 $q: \\exists x \\in \\mathbb{R}, x^2 + 2ax + 2 - a = 0$。若 $p \\land q$ 为真命题，求实数 $a$ 的取值范围。",
+              "logic_key": "复合命题真假与交集运算",
+              "analysis": {
+                "core_idea": "新高考压轴小题。$p \\land q$ 为真 $\\iff p$ 真 且 $q$ 真。需分别求出 $p, q$ 为真时的 $a$ 范围，再取交集。",
+                "key_steps": [
+                  "1. 分析 $p$ 为真：$\\forall x \\in [1, 2], a \\le x^2$。",
+                  "   即 $a \\le (x^2)_{min}$ 在 $[1, 2]$ 上。",
+                  "   $y=x^2$ 在 $[1, 2]$ 递增，最小值为 $1^2=1$。",
+                  "   故 $p$ 真 $\\Rightarrow a \\le 1$。",
+                  "2. 分析 $q$ 为真：方程 $x^2 + 2ax + 2 - a = 0$ 有实根。",
+                  "   需 $\\Delta \\ge 0$。",
+                  "   $\\Delta = (2a)^2 - 4(2-a) = 4a^2 + 4a - 8 \\ge 0$。",
+                  "   $a^2 + a - 2 \\ge 0 \\Rightarrow (a+2)(a-1) \\ge 0$。",
+                  "   解得 $a \\le -2$ 或 $a \\ge 1$。",
+                  "3. 取交集：$p$ 真且 $q$ 真 $\\Rightarrow \\begin{cases} a \\le 1 \\\\ a \\le -2 \\text{ 或 } a \\ge 1 \\end{cases}$。",
+                  "   交集为：$a \\le -2$ 或 $a = 1$。",
+                  "4. 结论：$a \\in (-\\infty, -2] \\cup \\{1\\}$。"
+                ],
+                "common_pitfalls": [
+                  "$p$ 为真时，误以为 $a \\le (x^2)_{max}$（应是小于等于最小值）。",
+                  "$q$ 为真时，忘记 $\\Delta \\ge 0$ 可以取等号。",
+                  "最后取交集时出错，特别是 $a=1$ 这个点。",
+                  "逻辑联结词理解错误（把且当成或）。"
+                ],
+                "conclusion": "$(-\\infty, -2] \\cup \\{1\\}$"
+              }
+            }
+          ]
+        },
+        {
+          "var_id": "2.2",
+          "name": "充要条件的判定与应用",
+          "logic_core": "【新高考逻辑】核心是“逻辑链条”与“集合法”。熟练运用“小推大”原则（小范围是大范围的充分条件）。新高考倾向于将充要条件与不等式、数列、向量结合，考查由充要性**反求参数范围**，这本质上是集合包含关系的逆运算。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 化简条件 p 和 q",
+              "2. 判断推导方向 (p→q? q→p?)",
+              "3. 集合法判定 (P⊆Q?)",
+              "4. 反求参数 (转化为包含关系)"
+            ],
+            "linked_weapons": [
+              "S-SET-03",
+              "S-SET-01",
+              "S-SET-02"
+            ],
+            "weapon_map_note": "S-SET-03 (充要条件小推大图示), S-SET-01 (空集陷阱自动检测), S-SET-02 (端点取舍代回验身)"
+          },
+          "variable_knobs": {
+            "condition_type": [
+              {
+                "type": "inequality",
+                "weight": 0.6,
+                "desc": "不等式条件"
+              },
+              {
+                "type": "geometry_vector",
+                "weight": 0.2,
+                "difficulty_delta": "+0.5",
+                "desc": "几何/向量背景"
+              },
+              {
+                "type": "sequence_function",
+                "weight": 0.2,
+                "difficulty_delta": "+0.5",
+                "desc": "数列/函数背景"
+              }
+            ],
+            "question_type": [
+              {
+                "type": "judge_relation",
+                "weight": 0.5,
+                "desc": "判定是什么条件"
+              },
+              {
+                "type": "find_parameter",
+                "weight": 0.5,
+                "difficulty_delta": "+0.5",
+                "desc": "已知条件类型求参数"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "subset_direction",
+                "weight": 0.7,
+                "desc": "充分/必要方向搞反"
+              },
+              {
+                "type": "boundary_equality",
+                "weight": 0.3,
+                "desc": "端点取舍错误"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] “x>1”是“x^2>1”的什么条件？",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 八省联考] 设 a, b∈R，则“a>b”是“a^2>b^2”的什么条件？",
+              "level": "L2"
+            },
+            {
+              "desc": "[24 华附一模] 若 p: |x-1|<2, q: x>a，且 p 是 q 的充分不必要条件，求 a 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 山东济南一模] 设向量 a=(1, x), b=(2, 1)，则“x=2”是“a//b”的什么条件？",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江杭州二模] “sinα=1/2”是“α=π/6”的什么条件？",
+              "level": "L2"
+            },
+            {
+              "desc": "[23 新高考 I] 设等比数列 {an} 公比为 q，则“q>1”是“{an} 递增”的什么条件？",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 深中二月考] 若 p: x^2-3x+2<0, q: x<m，且 p 是 q 的必要不充分条件，求 m 的范围。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 省实期中] “直线 l1//l2”是“斜率 k1=k2”的什么条件？",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 设 p: x>1, q: log2(x)>0，则 p 是 q 的什么条件？",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 广州一模] 若 p: x∈A={x|x^2-4x+3<0}, q: x∈B={x|2<x<m}，且 p 是 q 的充分不必要条件，求 m 的范围。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 深圳一模] 设 a∈R，则“a=1”是“直线 ax+y-1=0 与 x+ay-1=0 平行”的什么条件？",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 若 p: |x-1|<a (a>0), q: x^2-6x+5<0，且 ¬p 是 ¬q 的充分不必要条件，求 a 的范围。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 华附零模] “x(x-3)<0”是“|x-1|<2”的什么条件？",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 广东二模] 设 p: x>2, q: x>a，若 p 是 q 的充分条件，求 a 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 已知 p: x^2-2x-3≤0, q: x^2-2mx+m^2-1≤0，若 p 是 q 的必要不充分条件，求 m 的范围。",
+              "level": "L4"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L2",
+              "id": "M01_V2.2_MB_L2_V96",
+              "problem": "[基础巩固] 判断“$x > 1$”是“$x^2 > 1$”的什么条件。",
+              "logic_key": "小推大原则",
+              "analysis": {
+                "core_idea": "基础题。利用集合法：小范围推大范围（充分），大范围推不出小范围（不必要）。",
+                "key_steps": [
+                  "1. 化简集合：$p: x > 1 \\Rightarrow P = (1, +\\infty)$。",
+                  "   $q: x^2 > 1 \\Rightarrow x > 1$ 或 $x < -1 \\Rightarrow Q = (-\\infty, -1) \\cup (1, +\\infty)$。",
+                  "2. 判断包含：显然 $P \\subsetneq Q$（$P$ 是 $Q$ 的真子集）。",
+                  "3. 结论：$p \\Rightarrow q$ 但 $q \\nRightarrow p$。故为**充分不必要条件**。"
+                ],
+                "common_pitfalls": [
+                  "解 $x^2 > 1$ 时漏掉 $x < -1$。",
+                  "搞反充分/必要的定义。",
+                  "未使用集合法，纯逻辑推导容易晕。"
+                ],
+                "conclusion": "充分不必要条件"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M01_V2.2_MB_L3_V96",
+              "problem": "[2024·广东一模·T8 风格] 已知 $p: |x-1| < 2$，$q: x > a$。若 $p$ 是 $q$ 的**充分不必要条件**，求实数 $a$ 的取值范围。",
+              "logic_key": "集合法反求参数",
+              "analysis": {
+                "core_idea": "新高考中档题。$p$ 是 $q$ 的充分不必要 $\\iff P \\subsetneq Q$。",
+                "key_steps": [
+                  "1. 化简 $P$：$|x-1| < 2 \\Rightarrow -2 < x-1 < 2 \\Rightarrow -1 < x < 3$。$P = (-1, 3)$。",
+                  "2. 化简 $Q$：$Q = (a, +\\infty)$。",
+                  "3. 建立关系：$P \\subsetneq Q \\Rightarrow (-1, 3) \\subseteq (a, +\\infty)$。",
+                  "4. 数轴分析：需 $a \\le -1$。",
+                  "5. 验证真子集：若 $a = -1$，$Q = (-1, +\\infty)$，$P=(-1, 3) \\subsetneq Q$ 成立。",
+                  "   若 $a < -1$，显然成立。",
+                  "6. 结论：$a \\le -1$。"
+                ],
+                "common_pitfalls": [
+                  "解绝对值不等式出错。",
+                  "搞反方向（写成 $a \\ge 3$）。",
+                  "忘记验证是否可以取等号（$P$ 是 $Q$ 的一部分即可，端点重合不影响真子集，只要 $Q$ 比 $P$ 大）。",
+                  "混淆“充分不必要”与“必要不充分”。"
+                ],
+                "conclusion": "$(-\\infty, -1]$"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M01_V2.2_MB_L4_V96",
+              "problem": "[2025·浙江杭州一模·T17 风格] 已知 $p: x^2 - 2x - 3 \\le 0$，$q: x^2 - 2mx + m^2 - 1 \\le 0$ ($m>0$)。若 $\\neg p$ 是 $\\neg q$ 的**充分不必要条件**，求实数 $m$ 的取值范围。",
+              "logic_key": "逆否命题转化与端点绝杀",
+              "analysis": {
+                "core_idea": "新高考压轴小题。$\\neg p \\Rightarrow \\neg q$ 等价于 $q \\Rightarrow p$。即 $q$ 是 $p$ 的充分不必要条件 $\\iff Q \\subsetneq P$。",
+                "key_steps": [
+                  "1. 化简 $P$：$x^2 - 2x - 3 \\le 0 \\Rightarrow (x-3)(x+1) \\le 0 \\Rightarrow P = [-1, 3]$。",
+                  "2. 化简 $Q$：$x^2 - 2mx + m^2 - 1 \\le 0 \\Rightarrow (x-m)^2 \\le 1 \\Rightarrow -1 \\le x-m \\le 1 \\Rightarrow m-1 \\le x \\le m+1$。",
+                  "   $Q = [m-1, m+1]$。",
+                  "3. 转化条件：$\\neg p$ 是 $\\neg q$ 的充分不必要 $\\iff q$ 是 $p$ 的充分不必要 $\\iff Q \\subsetneq P$。",
+                  "4. 列不等式：需 $\\begin{cases} m-1 \\ge -1 \\\\ m+1 \\le 3 \\end{cases}$。",
+                  "   解得：$\\begin{cases} m \\ge 0 \\\\ m \\le 2 \\end{cases} \\Rightarrow 0 \\le m \\le 2$。",
+                  "5. 验证真子集：",
+                  "   若 $m=0$，$Q=[-1, 1] \\subsetneq [-1, 3]$。成立。",
+                  "   若 $m=2$，$Q=[1, 3] \\subsetneq [-1, 3]$。成立。",
+                  "   若 $0 < m < 2$，显然成立。",
+                  "   题目已知 $m>0$，故 $0 < m \\le 2$。",
+                  "6. 结论：$m \\in (0, 2]$。"
+                ],
+                "common_pitfalls": [
+                  "未利用逆否命题转化，直接在 $\\neg p, \\neg q$ 上绕晕。",
+                  "解 $Q$ 集合时配方错误或开方漏解。",
+                  "端点验证失误（特别是 $m=0$ 和 $m=2$ 时是否仍为真子集）。",
+                  "忽略题目条件 $m>0$。"
+                ],
+                "conclusion": "$(0, 2]$"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec_id": "V3",
+      "spec_name": "复数基础与几何意义",
+      "difficulty_ceiling": "L3",
+      "strategic_note": "【重要】复数是高考第 1-2 题的‘送分专项’。不存在 L4 压轴题。L1 基础运算请回归课本。本专项仅针对 L2 概念陷阱和 L3 简单综合，目标是‘零失误、快速解出’。",
+      "variations": [
+        {
+          "var_id": "3.1",
+          "name": "复数的四则运算与概念辨析",
+          "logic_core": "【新高考逻辑】核心是‘准确’而非‘难度’。考查点固定：除法（分母实数化）、$i$ 的周期性、共轭复数、纯虚数判定（实部=0 且 虚部≠0）。所谓‘难点’仅是多一步检验或解简单方程。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 观察形式：是运算还是概念判定？",
+              "2. 运算：分母实数化（乘共轭），注意 $i^2=-1$",
+              "3. 概念：纯虚数务必检查‘虚部≠0’和‘分母≠0’",
+              "4. 几何：模长即距离，直接套用两点间距离公式"
+            ],
+            "linked_weapons": [],
+            "weapon_map_note": ""
+          },
+          "variable_knobs": {
+            "operation_type": [
+              {
+                "type": "division",
+                "weight": 0.7,
+                "desc": "除法运算 (最高频)"
+              },
+              {
+                "type": "power",
+                "weight": 0.2,
+                "desc": "i 的幂次"
+              },
+              {
+                "type": "equation",
+                "weight": 0.1,
+                "desc": "简单复数方程"
+              }
+            ],
+            "concept_trap": [
+              {
+                "type": "pure_imaginary_check",
+                "weight": 0.8,
+                "desc": "纯虚数双重条件 (实部=0, 虚部≠0)"
+              },
+              {
+                "type": "denominator_validity",
+                "weight": 0.2,
+                "desc": "分母不为 0 检验"
+              }
+            ]
+          },
+          "master_benchmarks": [
+            {
+              "level": "L2",
+              "id": "M01_V3.1_MB_L2_V96",
+              "problem": "[概念易错] 若复数 $z = \\frac{m^2-1}{m+1} + (m^2-2m)i$ 是**纯虚数**，求实数 $m$ 的值。",
+              "logic_key": "纯虚数的双重条件",
+              "analysis": {
+                "core_idea": "高考 T2/T3 常见陷阱。90% 的错误源于只令实部为 0，忽略虚部≠0 和分母≠0。",
+                "key_steps": [
+                  "1. 实部为 0：$m^2-1=0 \\Rightarrow m=\\pm 1$。",
+                  "2. 分母不为 0：$m+1 \\neq 0 \\Rightarrow m \\neq -1$。故 $m=1$。",
+                  "3. 虚部不为 0：当 $m=1$ 时，$1-2 = -1 \\neq 0$。成立。",
+                  "4. 结论：$m=1$。"
+                ],
+                "common_pitfalls": [
+                  "**致命错误**：得出 $m=\\pm 1$，未舍去 $m=-1$。",
+                  "未检验虚部是否为 0。"
+                ],
+                "conclusion": "1"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M01_V3.1_MB_L3_V96",
+              "problem": "[简单综合] 已知复数 $z$ 满足 $z + |z| = 2 + i$，求 $z$。",
+              "logic_key": "设元法解方程",
+              "analysis": {
+                "core_idea": "这是复数能达到的‘最高难度’（实际仍是基础代数）。利用 $|z|$ 是实数这一特点，分离实虚部。",
+                "key_steps": [
+                  "1. 设 $z=a+bi$ ($a,b \\in \\mathbb{R}$)。",
+                  "2. 代入：$(a+\\sqrt{a^2+b^2}) + bi = 2 + i$。",
+                  "3. 对比系数：$b=1$, $a+\\sqrt{a^2+1}=2$。",
+                  "4. 解方程：$\\sqrt{a^2+1}=2-a \\Rightarrow a^2+1 = 4-4a+a^2 \\Rightarrow 4a=3 \\Rightarrow a=3/4$。",
+                  "5. 结论：$z = \\frac{3}{4} + i$。"
+                ],
+                "common_pitfalls": [
+                  "不敢设元，试图直接运算。",
+                  "平方后忘记验证 $2-a \\ge 0$。"
+                ],
+                "conclusion": "$\\frac{3}{4} + i$"
+              }
+            },
+            {
+              "level": "L2",
+              "id": "M01_V3.1_MB_L2_V97",
+              "problem": "[运算陷阱] 已知 $z(1-i) = 2i$，求 $z$ 的共轭复数 $\\bar{z}$。",
+              "logic_key": "先求 z 再求共轭",
+              "analysis": {
+                "core_idea": "很多学生求出 $z$ 后直接选答案，忘记题目问的是‘共轭’。",
+                "key_steps": [
+                  "1. 求 $z$：$z = \\frac{2i}{1-i} = \\frac{2i(1+i)}{(1-i)(1+i)} = \\frac{2i-2}{2} = -1+i$。",
+                  "2. 求共轭：$\\bar{z} = -1-i$。"
+                ],
+                "common_pitfalls": [
+                  "求出 $z$ 后忘记取共轭。",
+                  "分母实数化计算错误。"
+                ],
+                "conclusion": "$-1-i$"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M01_V3.1_MB_L3_V97",
+              "problem": "[含参讨论] 若 $z = \\frac{a+i}{1+i}$ ($a \\in \\mathbb{R}$) 是实数，求 $a$ 的值。",
+              "logic_key": "虚部为 0",
+              "analysis": {
+                "core_idea": "实数意味着虚部为 0。先化简再令虚部为 0。",
+                "key_steps": [
+                  "1. 化简：$z = \\frac{(a+i)(1-i)}{(1+i)(1-i)} = \\frac{a - ai + i - i^2}{2} = \\frac{(a+1) + (1-a)i}{2}$。",
+                  "2. 令虚部为 0：$1-a = 0 \\Rightarrow a=1$。",
+                  "3. 验证实部：当 $a=1$ 时，实部为 1，有意义。"
+                ],
+                "common_pitfalls": [
+                  "分子展开错误。",
+                  "混淆实数和纯虚数的条件。"
+                ],
+                "conclusion": "1"
+              }
+            }
+          ]
+        },
+        {
+          "var_id": "3.2",
+          "name": "复数的几何意义（轨迹与最值）",
+          "logic_core": "【新高考逻辑】核心是‘数形结合’。$|z-z_0|=r$ 是圆，$|z-z_1|=|z-z_2|$ 是中垂线。最值问题本质是‘圆心距±半径’。不涉及复杂曲线或高阶变换。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 翻译：将复数等式转化为几何图形（圆/线）",
+              "2. 画图：标出圆心、定点、原点",
+              "3. 求解：利用‘点到圆心距离’加减半径",
+              "4. 结论：直接写出最值"
+            ],
+            "linked_weapons": [
+              "S-COMP-01"
+            ],
+            "weapon_map_note": "S-COMP-01 (复数模圆心距±r)"
+          },
+          "variable_knobs": {
+            "trajectory_type": [
+              {
+                "type": "circle",
+                "weight": 0.6,
+                "desc": "圆的轨迹"
+              },
+              {
+                "type": "perpendicular_bisector",
+                "weight": 0.4,
+                "desc": "中垂线"
+              }
+            ],
+            "target_metric": [
+              {
+                "type": "max_min_distance",
+                "weight": 0.9,
+                "desc": "距离最值 (唯一考点)"
+              },
+              {
+                "type": "modulus_value",
+                "weight": 0.1,
+                "desc": "求特定模长"
+              }
+            ]
+          },
+          "master_benchmarks": [
+            {
+              "level": "L2",
+              "id": "M01_V3.2_MB_L2_V96",
+              "problem": "[基础几何] 若复数 $z$ 满足 $|z-1| = |z+i|$，则 $z$ 的轨迹是？",
+              "logic_key": "中垂线定义",
+              "analysis": {
+                "core_idea": "直接识别：到点 $(1,0)$ 和 $(0,-1)$ 距离相等的点的集合。",
+                "key_steps": [
+                  "1. 点 $A(1,0)$, $B(0,-1)$。",
+                  "2. 轨迹为线段 $AB$ 的中垂线。",
+                  "3. 中点 $(0.5, -0.5)$，斜率 $k_{AB}=1$，故中垂线斜率 $-1$。",
+                  "4. 方程：$y+0.5 = -1(x-0.5) \\Rightarrow y=-x$。"
+                ],
+                "common_pitfalls": [
+                  "坐标搞反（$-i$ 对应 $(0,-1)$ 不是 $(0,1)$）。",
+                  "计算直线方程出错。"
+                ],
+                "conclusion": "直线 $y=-x$"
+              }
+            },
+            {
+              "level": "L2",
+              "id": "M01_V3.2_MB_L2_V97",
+              "problem": "[基础最值] 已知 $|z - (1+i)| = 1$，求 $|z|$ 的最小值。",
+              "logic_key": "圆外一点到圆的最短距离",
+              "analysis": {
+                "core_idea": "圆心 $C(1,1)$，半径 $r=1$。求原点到圆上点的最小距离。",
+                "key_steps": [
+                  "1. $|OC| = \\sqrt{1^2+1^2} = \\sqrt{2}$。",
+                  "2. 最小值 = $|OC| - r = \\sqrt{2} - 1$。"
+                ],
+                "common_pitfalls": [
+                  "误以为是 $r$ 或 $|OC|$。",
+                  "忘记减半径。"
+                ],
+                "conclusion": "$\\sqrt{2}-1$"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M01_V3.2_MB_L3_V96",
+              "problem": "[简单综合] 已知 $|z-1|=1$，求 $|z-i|$ 的最大值。",
+              "logic_key": "圆上点到定点的最大距离",
+              "analysis": {
+                "core_idea": "圆心 $C(1,0)$，半径 $r=1$。定点 $P(0,1)$。",
+                "key_steps": [
+                  "1. 计算圆心到定点距离 $|CP| = \\sqrt{(1-0)^2 + (0-1)^2} = \\sqrt{2}$。",
+                  "2. 最大值 = $|CP| + r = \\sqrt{2} + 1$。"
+                ],
+                "common_pitfalls": [
+                  "搞混圆心和定点。",
+                  "忘记加半径。"
+                ],
+                "conclusion": "$\\sqrt{2}+1$"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M01_V3.2_MB_L3_V97",
+              "problem": "[几何综合] 若复数 $z$ 满足 $|z-2i|=2$，求 $|z-1|$ 的取值范围。",
+              "logic_key": "圆上点到定点的距离范围",
+              "analysis": {
+                "core_idea": "圆心 $C(0,2)$，半径 $r=2$。定点 $P(1,0)$。求 $|CP| \\pm r$。",
+                "key_steps": [
+                  "1. 计算圆心到定点距离 $|CP| = \\sqrt{(0-1)^2 + (2-0)^2} = \\sqrt{5}$。",
+                  "2. 最小值 = $|CP| - r = \\sqrt{5} - 2$。",
+                  "3. 最大值 = $|CP| + r = \\sqrt{5} + 2$。",
+                  "4. 范围：$[\\sqrt{5}-2, \\sqrt{5}+2]$。"
+                ],
+                "common_pitfalls": [
+                  "开闭区间搞错（圆上是闭区间）。",
+                  "距离公式算错。"
+                ],
+                "conclusion": "$[\\sqrt{5}-2, \\sqrt{5}+2]$"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "system_instruction_template": "### 🎯 M01 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础夯实)**:\n- **特征**: 单步逻辑，直接套定义，无参数讨论。\n- **典型任务**: 简单交并补运算、量词直接否定、具体数值充要条件判定、复数基础运算（除法、i 的幂次）、纯虚数判定。\n- **禁忌**: 禁止出现\"求参数范围\"、\"空集讨论\"、\"复杂逻辑链\"。\n- **示例**: \"求 {1,2}∩{2,3}\" 或 \"写出 ∀x>0, x²>0 的否定\" 或 \"复数除法运算\"。\n\n**L3 (能力提升)**:\n- **特征**: 两步逻辑，含单参数或简单转化，需数轴辅助或几何意义。\n- **典型任务**: 含参集合运算（非空集陷阱）、已知命题真假求单侧参数、集合法判定充要性、复数方程求解、复数几何意义（轨迹识别、距离最值）。\n- **禁忌**: 禁止出现复杂的分类讨论、双重约束、复数压轴题。\n- **示例**: \"已知 A⊆B，求 a 的范围（无需讨论空集）\" 或 \"复数满足 z+|z|=2+i，求 z\"。\n\n**L4 (实战拔高)**:\n- **特征**: 多步逻辑，必须包含\"空集陷阱\"或\"端点取舍\"，需严谨分类讨论。\n- **典型任务**: \"A⊆B 求参数\"（必考空集）、\"¬p 是 ¬q 的条件\"（逆否转化）、多重逻辑联结词。\n- **核心**: 必须包含一个\"思维盲区\"（如空集、端点、逆否转化）。\n- **示例**: \"已知 B⊆A，求 m 范围（需讨论 B=∅）\"。\n- **注意**: 复数专项不存在 L4 难度，最高为 L3。\n\n**【复数专项说明】**:\n- 复数是高考第 1-2 题的\"送分专项\"，不存在 L4 压轴题。\n- 复数 L2：概念陷阱（纯虚数判定、分母不为 0）、共轭复数、i 的周期性。\n- 复数 L3：简单综合（复数方程、轨迹识别、距离最值）、含参讨论。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（分数/区间）。\n- L4 题目必须体现\"空集\"或\"端点\"的细微差别。\n- **风格要求**: L4 题目应适当融入浙江卷的逻辑转换（如 ¬p 推 ¬q）或山东卷的分类讨论严谨性。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现\"集合法\"或\"逆否命题\"思想。\n- **关键点**: L4 题目的解析必须详细解释\"为什么讨论空集\"或\"为什么取等号\"。"
+}

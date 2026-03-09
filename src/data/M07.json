@@ -1,0 +1,895 @@
+{
+  "motif_id": "M07",
+  "motif_name": "解三角形综合",
+  "logic_schema_version": "9.6-TRI-ELITE",
+  "last_updated": "2026-03-09",
+  "mastery_logic": "ELO_THRESHOLD_AND_SPECIALTY_FULL_CLEAR",
+  "description": "【深度同步版 v3.0】解三角形模块。依托中央军火库 strategy_lib.json。核心武器：射影定理、SSA 几何判定、三角函数化最值、双驱策略。",
+  "specialties": [
+    {
+      "spec_id": "V1",
+      "spec_name": "正余弦定理的基础与互化",
+      "variations": [
+        {
+          "var_id": "1.1",
+          "name": "正弦与余弦定理的结构化选择",
+          "logic_core": "【新高考逻辑】核心是“结构识别”与“降维打击”。面对边角混合式，**一次齐次式**（如 $a\\cos B = b\\cos A$）首选正弦定理化角，利用三角恒等变换求解；**二次平方式**（如 $a^2+b^2-c^2=ab$）首选余弦定理化边或直接求角。若出现 $b\\cos C + c\\cos B$ 结构，直接利用**射影定理**秒杀消元。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 观察式子次数与结构",
+              "2. 一次化角 (正弦)，二次化边 (余弦)",
+              "3. 识别射影定理结构直接消元",
+              "4. 三角恒等变换或代数化简"
+            ],
+            "linked_weapons": [
+              "S-TRI-01",
+              "S-TRIG-01"
+            ],
+            "weapon_map_note": "S-TRI-01 (射影定理结构化消元), S-TRIG-01 (角的统一定一法)"
+          },
+          "variable_knobs": {
+            "expression_structure": [
+              {
+                "type": "linear_mixed",
+                "weight": 0.5,
+                "desc": "一次边角混合 (化角)"
+              },
+              {
+                "type": "quadratic_square",
+                "weight": 0.3,
+                "difficulty_delta": "+0.5",
+                "desc": "二次平方项 (化边/余弦)"
+              },
+              {
+                "type": "projection_pattern",
+                "weight": 0.2,
+                "difficulty_delta": "+1",
+                "desc": "射影定理结构 ($b\\cos C+c\\cos B$)"
+              }
+            ],
+            "solution_strategy": [
+              {
+                "type": "sine_rule_angle",
+                "weight": 0.6,
+                "desc": "正弦定理转角"
+              },
+              {
+                "type": "cosine_rule_side",
+                "weight": 0.4,
+                "desc": "余弦定理转边"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "strategy_mismatch",
+                "weight": 0.7,
+                "desc": "策略选择错误导致运算复杂"
+              },
+              {
+                "type": "identity_error",
+                "weight": 0.3,
+                "desc": "三角恒等变换出错"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 在△ABC 中，若 a cos B = b cos A，判断三角形形状。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 八省联考] 已知 a^2 + c^2 - b^2 = ac，求角 B。",
+              "level": "L2"
+            },
+            {
+              "desc": "[24 华附一模] 若 a sin B = b sin A，能否确定三角形形状？",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 山东济南一模] 已知 a cos C + c cos A = 2b cos B，求 B。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 设 (a+b+c)(a+b-c)=3ab，求角 C。",
+              "level": "L3"
+            },
+            {
+              "desc": "[23 新高考 I] 在△ABC 中，若 sin^2 A + sin^2 B = sin^2 C，判断形状。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 深中二月考] 已知 a = b cos C + c sin B，求 B。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 省实期中] 若 2a cos A = b cos C + c cos B，求 A。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 已知 a^2 - b^2 = c(b+c)，求 A-B。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 广州一模] 若 sin(A-B) = sin C - sin B，求 A。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 深圳一模] 已知 a cos B - b cos A = c/2，求 tan A / tan B。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 若 a^2 + b^2 = 2c^2，求 cos C 的最小值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 华附零模] 设 a sin A + b sin B = c sin C + a sin B，求 C。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 广东二模] 已知 (a-b)(sin A + sin B) = c(sin A - sin C)，求 B。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 若 a cos B + b cos A = 2c cos C，求 C。",
+              "level": "L3"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L2",
+              "id": "M07_V1.1_MB_L2_V96",
+              "problem": "[基础巩固] 在 $\\triangle ABC$ 中，已知 $a^2 + c^2 - b^2 = ac$，求角 $B$ 的大小。",
+              "logic_key": "余弦定理的直接逆用",
+              "analysis": {
+                "core_idea": "基础题。直接识别余弦定理分子结构。",
+                "key_steps": [
+                  "1. 回忆公式：$\\cos B = \\frac{a^2 + c^2 - b^2}{2ac}$。",
+                  "2. 代入已知：已知 $a^2 + c^2 - b^2 = ac$。",
+                  "3. 计算：$\\cos B = \\frac{ac}{2ac} = \\frac{1}{2}$。",
+                  "4. 确定角度：因 $B \\in (0, \\pi)$，故 $B = \\frac{\\pi}{3}$ ($60^\\circ$)。"
+                ],
+                "common_pitfalls": [
+                  "分母忘记乘 2。",
+                  "角度范围搞错（写成 $300^\\circ$ 等）。",
+                  "特殊角三角函数值记混。"
+                ],
+                "conclusion": "\\frac{\\pi}{3}"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M07_V1.1_MB_L3_V96",
+              "problem": "[2024·广东一模·T17 风格] 在 $\\triangle ABC$ 中，已知 $a \\cos C + c \\cos A = 2b \\cos B$，求角 $B$ 的大小。",
+              "logic_key": "射影定理秒杀 vs 正弦定理化角",
+              "analysis": {
+                "core_idea": "新高考中档题。考查对**射影定理**（第一余弦定理）的敏感度。若未识别，可用正弦定理硬解。",
+                "key_steps": [
+                  "1. **方法一：射影定理（秒杀）**",
+                  "   回顾射影定理：$b = a \\cos C + c \\cos A$。",
+                  "   原方程左边即为 $b$。",
+                  "   故方程化为：$b = 2b \\cos B$。",
+                  "   因 $b \\neq 0$，约去 $b$ 得 $\\cos B = \\frac{1}{2}$。",
+                  "   故 $B = \\frac{\\pi}{3}$。",
+                  "2. **方法二：正弦定理化角（通法）**",
+                  "   由正弦定理：$a=2R\\sin A, b=2R\\sin B, c=2R\\sin C$。",
+                  "   代入得：$\\sin A \\cos C + \\sin C \\cos A = 2\\sin B \\cos B$。",
+                  "   左边和角公式：$\\sin(A+C) = 2\\sin B \\cos B$。",
+                  "   因 $A+C = \\pi - B$，故 $\\sin(\\pi-B) = \\sin B$。",
+                  "   即 $\\sin B = 2\\sin B \\cos B$。",
+                  "   因 $B \\in (0, \\pi)$，$\\sin B \\neq 0$，约去得 $\\cos B = \\frac{1}{2}$。",
+                  "   故 $B = \\frac{\\pi}{3}$。"
+                ],
+                "common_pitfalls": [
+                  "未识别射影定理，强行展开导致计算量大。",
+                  "正弦定理化角后，忘记 $\\sin B \\neq 0$ 的验证。",
+                  "和角公式 $\\sin(A+C)$ 展开错误。"
+                ],
+                "conclusion": "\\frac{\\pi}{3}"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M07_V1.1_MB_L4_V96",
+              "problem": "[2025·浙江绍兴一模·T18 风格] 在 $\\triangle ABC$ 中，已知 $a \\cos B - b \\cos A = \\frac{c}{2}$，求 $\\frac{\\tan A}{\\tan B}$ 的值。",
+              "logic_key": "边角互化与切化弦",
+              "analysis": {
+                "core_idea": "新高考压轴小题。需将边化为角，利用三角恒等变换构造 $\\tan$ 形式。",
+                "key_steps": [
+                  "1. 正弦定理化边为角：",
+                  "   $a \\to \\sin A, b \\to \\sin B, c \\to \\sin C$。",
+                  "   原式变为：$\\sin A \\cos B - \\sin B \\cos A = \\frac{1}{2} \\sin C$。",
+                  "2. 识别左边：$\\sin(A-B) = \\frac{1}{2} \\sin C$。",
+                  "3. 处理右边：$\\sin C = \\sin(\\pi - (A+B)) = \\sin(A+B)$。",
+                  "   故 $\\sin(A-B) = \\frac{1}{2} \\sin(A+B)$。",
+                  "4. 展开并整理：",
+                  "   $\\sin A \\cos B - \\cos A \\sin B = \\frac{1}{2} (\\sin A \\cos B + \\cos A \\sin B)$。",
+                  "   两边同乘 2：$2\\sin A \\cos B - 2\\cos A \\sin B = \\sin A \\cos B + \\cos A \\sin B$。",
+                  "   移项合并：$\\sin A \\cos B = 3 \\cos A \\sin B$。",
+                  "5. 构造目标：",
+                  "   两边同除以 $\\cos A \\cos B$（三角形内角余弦通常不为 0）：",
+                  "   $\\frac{\\sin A}{\\cos A} = 3 \\frac{\\sin B}{\\cos B} \\Rightarrow \\tan A = 3 \\tan B$。",
+                  "   故 $\\frac{\\tan A}{\\tan B} = 3$。"
+                ],
+                "common_pitfalls": [
+                  "未能将 $\\sin C$ 转化为 $\\sin(A+B)$。",
+                  "展开后移项合并同类项出错。",
+                  "忘记目标是比值，试图求出具体角度。"
+                ],
+                "conclusion": "3"
+              }
+            }
+          ]
+        },
+        {
+          "var_id": "1.2",
+          "name": "三角形面积、周长与结构识别",
+          "logic_core": "【新高考逻辑】核心是“公式切换”与“多量联动”。面积公式 $S = \\frac{1}{2}ab\\sin C$ 是连接边、角、面积的枢纽。遇到复杂条件（如 $a=b\\cos C + c\\cos B$ 的变体），要善用**射影定理**消元。周长问题常结合正弦定理将三边表示为角的函数，转化为三角函数值域问题。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 选定面积公式",
+              "2. 利用正弦/余弦定理建立边角联系",
+              "3. 识别射影结构简化",
+              "4. 转化为单变量函数求值域"
+            ],
+            "linked_weapons": [
+              "S-TRI-03",
+              "S-INEQ-03"
+            ],
+            "weapon_map_note": "S-TRI-03 (周长面积三角函数化), S-INEQ-03 (等号同步性检验)"
+          },
+          "variable_knobs": {
+            "target_quantity": [
+              {
+                "type": "area_calc",
+                "weight": 0.4,
+                "desc": "面积计算"
+              },
+              {
+                "type": "perimeter_func",
+                "weight": 0.4,
+                "difficulty_delta": "+0.5",
+                "desc": "周长函数化"
+              },
+              {
+                "type": "radius_involve",
+                "weight": 0.2,
+                "desc": "涉及内外接圆半径"
+              }
+            ],
+            "constraint_type": [
+              {
+                "type": "given_angle_side",
+                "weight": 0.6,
+                "desc": "已知一角一边"
+              },
+              {
+                "type": "given_relation",
+                "weight": 0.4,
+                "difficulty_delta": "+0.5",
+                "desc": "已知边角关系式"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "formula_mismatch",
+                "weight": 0.6,
+                "desc": "面积公式选择不当"
+              },
+              {
+                "type": "domain_ignore",
+                "weight": 0.4,
+                "desc": "忽略角的取值范围"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 已知 a=2, B=60°, S=√3，求 b。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 八省联考] 若 a+b=4, C=60°，求面积最大值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 华附一模] 已知 S = (a^2+b^2-c^2)/4，求 C。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 山东济南一模] 在△ABC 中，a=3, b=4, c=5，求内切圆半径 r。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 已知 a=2, A=30°，求周长 a+b+c 的最大值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[23 新高考 I] 若 S = 1/2 c^2 tan C，判断形状。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 深中二月考] 已知 b cos C + c cos B = 2a cos A，且 S=√3，求 a。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 省实期中] 设 a, b, c 成等差数列，B=30°，S=3/2，求 b。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 已知外接圆半径 R=2, A=60°，求 b+c 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 广州一模] 若 a^2 = b(b+c)，求证 A=2B。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 深圳一模] 已知 S = (a+b-c)(a-b+c)/4，求 A。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 若 a=2, S=√3，求周长的最小值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 华附零模] 设 G 为重心，若 GA^2+GB^2+GC^2=...，求面积。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 广东二模] 已知 a cos B + b cos A = c，且 S=1/2 ab，求 C。",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 若 a=1, B=2A，求面积 S 的取值范围。",
+              "level": "L4"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L3",
+              "id": "M07_V1.2_MB_L3_V96",
+              "problem": "[2024·广东二模·T17 风格] 在 $\\triangle ABC$ 中，已知面积 $S = \\frac{a^2 + b^2 - c^2}{4}$，求角 $C$ 的大小。",
+              "logic_key": "面积公式与余弦定理的联立",
+              "analysis": {
+                "core_idea": "新高考中档题。考查面积公式与余弦定理结构的完美结合。",
+                "key_steps": [
+                  "1. 写出面积公式：$S = \\frac{1}{2}ab \\sin C$。",
+                  "2. 写出余弦定理变形：$a^2 + b^2 - c^2 = 2ab \\cos C$。",
+                  "3. 代入已知等式：",
+                  "   $\\frac{1}{2}ab \\sin C = \\frac{2ab \\cos C}{4}$。",
+                  "   化简右边：$\\frac{1}{2}ab \\sin C = \\frac{1}{2}ab \\cos C$。",
+                  "4. 消元求解：",
+                  "   因 $a,b \\neq 0$，约去 $\\frac{1}{2}ab$，得 $\\sin C = \\cos C$。",
+                  "   即 $\\tan C = 1$。",
+                  "5. 确定角度：因 $C \\in (0, \\pi)$，故 $C = \\frac{\\pi}{4}$ ($45^\\circ$)。"
+                ],
+                "common_pitfalls": [
+                  "余弦定理分子分母记错。",
+                  "面积公式系数记错。",
+                  "忽略 $C$ 的范围。"
+                ],
+                "conclusion": "\\frac{\\pi}{4}"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M07_V1.2_MB_L4_V96",
+              "problem": "[2025·浙江杭州一模·T18 风格] 在 $\\triangle ABC$ 中，已知 $a=2$，$A=\\frac{\\pi}{3}$。求 $\\triangle ABC$ 周长 $L = a+b+c$ 的最大值。",
+              "logic_key": "正弦定理化边为角 + 辅助角公式",
+              "analysis": {
+                "core_idea": "新高考压轴小题。已知一边一对角，求周长最值，标准做法是利用正弦定理将 $b,c$ 表示为角 $B$ 的函数。",
+                "key_steps": [
+                  "1. 正弦定理：$\\frac{a}{\\sin A} = \\frac{b}{\\sin B} = \\frac{c}{\\sin C} = 2R$。",
+                  "   $2R = \\frac{2}{\\sin(\\pi/3)} = \\frac{4}{\\sqrt{3}}$。",
+                  "2. 表达 $b, c$：",
+                  "   $b = \\frac{4}{\\sqrt{3}} \\sin B$。",
+                  "   $c = \\frac{4}{\\sqrt{3}} \\sin C = \\frac{4}{\\sqrt{3}} \\sin(\\frac{2\\pi}{3} - B)$。",
+                  "3. 构建周长函数：",
+                  "   $L = 2 + \\frac{4}{\\sqrt{3}} [\\sin B + \\sin(\\frac{2\\pi}{3} - B)]$。",
+                  "4. 三角恒等变换（辅助角）：",
+                  "   $\\sin B + \\sin(\\frac{2\\pi}{3} - B) = \\sin B + \\frac{\\sqrt{3}}{2}\\cos B + \\frac{1}{2}\\sin B = \\frac{3}{2}\\sin B + \\frac{\\sqrt{3}}{2}\\cos B$",
+                  "   $= \\sqrt{3} (\\frac{\\sqrt{3}}{2}\\sin B + \\frac{1}{2}\\cos B) = \\sqrt{3} \\sin(B + \\frac{\\pi}{6})$。",
+                  "5. 代入求最值：",
+                  "   $L = 2 + \\frac{4}{\\sqrt{3}} \\cdot \\sqrt{3} \\sin(B + \\frac{\\pi}{6}) = 2 + 4 \\sin(B + \\frac{\\pi}{6})$。",
+                  "6. 确定范围：",
+                  "   因 $A=\\frac{\\pi}{3}$，故 $B \\in (0, \\frac{2\\pi}{3})$。",
+                  "   $B + \\frac{\\pi}{6} \\in (\\frac{\\pi}{6}, \\frac{5\\pi}{6})$。",
+                  "   在此区间内，$\\sin$ 最大值为 1 (当 $B+\\frac{\\pi}{6}=\\frac{\\pi}{2} \\Rightarrow B=\\frac{\\pi}{3}$ 时)。",
+                  "7. 计算最大值：$L_{max} = 2 + 4 \\times 1 = 6$。"
+                ],
+                "common_pitfalls": [
+                  "未将 $C$ 转化为 $B$，导致双变量无法求最值。",
+                  "辅助角公式提取系数错误。",
+                  "忽略角 $B$ 的取值范围。"
+                ],
+                "conclusion": "6"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M07_V1.2_MB_L4_V96_B",
+              "problem": "[2025·山东青岛一模·T17 风格] 在 $\\triangle ABC$ 中，已知 $b \\cos C + c \\cos B = 2a \\cos A$，且面积 $S = \\sqrt{3}$，求边 $a$ 的最小值。",
+              "logic_key": "射影定理 + 面积公式 + 基本不等式",
+              "analysis": {
+                "core_idea": "新高考压轴大题第一问或填空压轴。先用射影定理求角，再结合面积和基本不等式求边。",
+                "key_steps": [
+                  "1. 求角 A：",
+                  "   由射影定理：$b \\cos C + c \\cos B = a$。",
+                  "   原式化为：$a = 2a \\cos A$。",
+                  "   因 $a \\neq 0$，得 $\\cos A = \\frac{1}{2} \\Rightarrow A = \\frac{\\pi}{3}$。",
+                  "2. 利用面积求 $bc$：",
+                  "   $S = \\frac{1}{2}bc \\sin A = \\sqrt{3}$。",
+                  "   $\\frac{1}{2}bc \\cdot \\frac{\\sqrt{3}}{2} = \\sqrt{3} \\Rightarrow bc = 4$。",
+                  "3. 利用余弦定理求 $a$：",
+                  "   $a^2 = b^2 + c^2 - 2bc \\cos A = b^2 + c^2 - 4$。",
+                  "4. 基本不等式放缩：",
+                  "   $b^2 + c^2 \\ge 2bc = 8$ (当且仅当 $b=c=2$ 时取等)。",
+                  "   故 $a^2 \\ge 8 - 4 = 4 \\Rightarrow a \\ge 2$。"
+                ],
+                "common_pitfalls": [
+                  "未识别射影定理，导致第一步卡壳。",
+                  "面积公式计算 $bc$ 时系数出错。",
+                  "基本不等式使用条件未验证。"
+                ],
+                "conclusion": "2"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec_id": "V2",
+      "spec_name": "多重约束与几何极值",
+      "variations": [
+        {
+          "var_id": "2.1",
+          "name": "边角范围与存在性讨论",
+          "logic_core": "【新高考逻辑】核心是“隐含约束”与“边界判定”。求角或边的范围时，除了显式的不等式，必须挖掘**“大边对大角”**、**“两边之和大于第三边”**以及**“$\\sin A \\le 1$”**等隐含条件。特别是在 SSA（已知两边及其中一边对角）情形下，需严格讨论解的个数（0, 1, 2 个）。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 列出显式约束",
+              "2. 挖掘隐含约束 (大边对大角、内角和)",
+              "3. 利用正弦/余弦函数单调性",
+              "4. 讨论解的存在性 (SSA)"
+            ],
+            "linked_weapons": [
+              "S-TRI-02",
+              "S-TRIG-03",
+              "S-VIS-01"
+            ],
+            "weapon_map_note": "S-TRI-02 (SSA 几何判定), S-TRIG-03 (整体换元端点验算), S-VIS-01 (函数动态图像分析)"
+          },
+          "variable_knobs": {
+            "constraint_source": [
+              {
+                "type": "explicit_inequality",
+                "weight": 0.4,
+                "desc": "显式不等式"
+              },
+              {
+                "type": "implicit_geometry",
+                "weight": 0.5,
+                "difficulty_delta": "+0.5",
+                "desc": "隐含几何约束 (大边对大角)"
+              },
+              {
+                "type": "ssa_case",
+                "weight": 0.1,
+                "difficulty_delta": "+1",
+                "desc": "SSA 多解性讨论"
+              }
+            ],
+            "target_variable": [
+              {
+                "type": "angle_range",
+                "weight": 0.6,
+                "desc": "求角范围"
+              },
+              {
+                "type": "side_range",
+                "weight": 0.4,
+                "desc": "求边范围"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "missing_constraint",
+                "weight": 0.8,
+                "desc": "遗漏隐含约束导致范围过大"
+              },
+              {
+                "type": "boundary_open_close",
+                "weight": 0.2,
+                "desc": "区间开闭判断错误"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 已知 a=2, b=3, A=30°，判断解的个数。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 八省联考] 若 sin A > sin B，则 a > b 是否一定成立？",
+              "level": "L2"
+            },
+            {
+              "desc": "[24 华附一模] 已知 a=1, b=x, A=60°，若有两解，求 x 范围。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 山东济南一模] 在锐角△ABC 中，A=60°，求 sin B + sin C 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 已知 a^2 < b^2 + c^2，能否断定是锐角三角形？",
+              "level": "L3"
+            },
+            {
+              "desc": "[23 新高考 I] 若 A > B，则 cos A < cos B 吗？",
+              "level": "L2"
+            },
+            {
+              "desc": "[25 深中二月考] 已知 a=2, b=3, c=x，若△ABC 为钝角三角形，求 x 范围。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 省实期中] 设 A=2B，求 a/b 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 已知 sin A = 2 sin B sin C，求 tan B tan C 的最小值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 广州一模] 若 a+b=2c，求 cos C 的最小值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 深圳一模] 已知 A=π/3, a=2，求 b+c 的取值范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 若△ABC 为锐角三角形，且 A=2B，求 B 的范围。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 华附零模] 已知 a=1, B=2A，求 b 的范围。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 广东二模] 若 sin^2 A + sin^2 B < sin^2 C，求 C 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 已知 a=2, A=60°，若三角形有唯一解，求 b 的范围。",
+              "level": "L4"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L3",
+              "id": "M07_V2.1_MB_L3_V96",
+              "problem": "[2024·广东一模·T17 风格] 在锐角 $\\triangle ABC$ 中，已知 $A = \\frac{\\pi}{3}$，求 $\\sin B + \\sin C$ 的取值范围。",
+              "logic_key": "三角函数值域与锐角约束",
+              "analysis": {
+                "core_idea": "新高考中档题。关键在于**锐角三角形**这一隐含约束对 $B$ 范围的压缩。",
+                "key_steps": [
+                  "1. 转化变量：$C = \\pi - A - B = \\frac{2\\pi}{3} - B$。",
+                  "   目标式 $y = \\sin B + \\sin(\\frac{2\\pi}{3} - B) = \\sqrt{3} \\sin(B + \\frac{\\pi}{6})$。",
+                  "2. 确定 $B$ 的范围（关键）：",
+                  "   因 $\\triangle ABC$ 为锐角三角形：",
+                  "   (1) $0 < B < \\frac{\\pi}{2}$。",
+                  "   (2) $0 < C < \\frac{\\pi}{2} \\Rightarrow 0 < \\frac{2\\pi}{3} - B < \\frac{\\pi}{2} \\Rightarrow B > \\frac{\\pi}{6}$。",
+                  "   (3) $A = \\frac{\\pi}{3} < \\frac{\\pi}{2}$ (已满足)。",
+                  "   综上：$B \\in (\\frac{\\pi}{6}, \\frac{\\pi}{2})$。",
+                  "3. 确定相位范围：",
+                  "   $B + \\frac{\\pi}{6} \\in (\\frac{\\pi}{3}, \\frac{2\\pi}{3})$。",
+                  "4. 求正弦值域：",
+                  "   在 $(\\frac{\\pi}{3}, \\frac{2\\pi}{3})$ 上，$\\sin$ 先增后减。",
+                  "   最大值：$\\sin(\\frac{\\pi}{2}) = 1$。",
+                  "   端点值：$\\sin(\\frac{\\pi}{3}) = \\frac{\\sqrt{3}}{2}$。",
+                  "   故 $\\sin(B+\\frac{\\pi}{6}) \\in (\\frac{\\sqrt{3}}{2}, 1]$。",
+                  "5. 计算目标范围：",
+                  "   $y = \\sqrt{3} \\cdot (\\frac{\\sqrt{3}}{2}, 1] = (\\frac{3}{2}, \\sqrt{3}]$。"
+                ],
+                "common_pitfalls": [
+                  "**致命错误**：忽略“锐角”条件，直接用 $B \\in (0, \\frac{2\\pi}{3})$，导致范围扩大。",
+                  "区间开闭判断错误。",
+                  "辅助角公式化简错误。"
+                ],
+                "conclusion": "(\\frac{3}{2}, \\sqrt{3}]"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M07_V2.1_MB_L4_V96",
+              "problem": "[2025·浙江绍兴一模·T18 风格] 在 $\\triangle ABC$ 中，已知 $a=2$，$A=\\frac{\\pi}{3}$。若该三角形有**两个不同的解**，求边 $b$ 的取值范围。",
+              "logic_key": "SSA 情形下的多解性判定",
+              "analysis": {
+                "core_idea": "新高考压轴小题。考查 SSA（边边角）多解的几何意义。",
+                "key_steps": [
+                  "1. 几何判定模型：",
+                  "   已知角 $A$、邻边 $b$ (即 $AC$)、对边 $a$ (即 $BC$)。",
+                  "   以 $C$ 为圆心，$a=2$ 为半径画弧，与射线 $AB$ 有两个不同交点的条件是：",
+                  "   (1) 半径 $a$ 大于 $C$ 到 $AB$ 的距离 $h = b \\sin A$。",
+                  "   (2) 半径 $a$ 小于邻边 $b$（保证交点在射线正向且不与 $A$ 重合）。",
+                  "   即满足不等式组：$b \\sin A < a < b$。",
+                  "2. 代入数据：",
+                  "   $b \\sin 60^\\circ < 2 < b$。",
+                  "   $\\frac{\\sqrt{3}}{2} b < 2$ 且 $b > 2$。",
+                  "3. 解不等式：",
+                  "   由前者得 $b < \\frac{4}{\\sqrt{3}} = \\frac{4\\sqrt{3}}{3}$。",
+                  "   由后者得 $b > 2$。",
+                  "4. 综合范围：",
+                  "   $2 < b < \\frac{4\\sqrt{3}}{3}$。"
+                ],
+                "common_pitfalls": [
+                  "只记得 $\\sin B < 1$，漏掉 $a < b$ 的条件。",
+                  "几何意义理解不清，记错不等式方向。",
+                  "计算分母有理化出错。"
+                ],
+                "conclusion": "(2, \\frac{4\\sqrt{3}}{3})"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M07_V2.1_MB_L4_V96_B",
+              "problem": "[2025·江苏南京盐城一模·T18 风格] 在 $\\triangle ABC$ 中，已知 $A = 2B$，且 $\\triangle ABC$ 为锐角三角形，求角 $B$ 的取值范围。",
+              "logic_key": "倍角关系与锐角约束的交集",
+              "analysis": {
+                "core_idea": "新高考压轴小题。需同时满足内角和、倍角关系及三个角均为锐角的条件。",
+                "key_steps": [
+                  "1. 表示各角：",
+                  "   $A = 2B$。",
+                  "   $C = \\pi - A - B = \\pi - 3B$。",
+                  "2. 列出锐角约束不等式组：",
+                  "   (1) $0 < A < \\frac{\\pi}{2} \\Rightarrow 0 < 2B < \\frac{\\pi}{2} \\Rightarrow B < \\frac{\\pi}{4}$。",
+                  "   (2) $0 < B < \\frac{\\pi}{2}$ (显然，因 $B < \\pi/4$)。",
+                  "   (3) $0 < C < \\frac{\\pi}{2} \\Rightarrow 0 < \\pi - 3B < \\frac{\\pi}{2}$。",
+                  "      解 $\\pi - 3B < \\frac{\\pi}{2} \\Rightarrow 3B > \\frac{\\pi}{2} \\Rightarrow B > \\frac{\\pi}{6}$。",
+                  "      解 $\\pi - 3B > 0 \\Rightarrow B < \\frac{\\pi}{3}$ (已被 $B<\\pi/4$ 覆盖)。",
+                  "3. 求交集：",
+                  "   $\\frac{\\pi}{6} < B < \\frac{\\pi}{4}$。"
+                ],
+                "common_pitfalls": [
+                  "遗漏 $C < \\frac{\\pi}{2}$ 的条件，导致下限缺失。",
+                  "遗漏 $A < \\frac{\\pi}{2}$ 的条件，导致上限过大。",
+                  "计算不等式出错。"
+                ],
+                "conclusion": "(\\frac{\\pi}{6}, \\frac{\\pi}{4})"
+              }
+            }
+          ]
+        },
+        {
+          "var_id": "2.2",
+          "name": "约束下的最值问题（周长、面积、中线）",
+          "logic_core": "【新高考逻辑】核心是“几何量代数化”与“不等式放缩”。对于中线、角平分线等几何量，需利用**向量法**（$\\vec{AD} = \\frac{1}{2}(\\vec{AB}+\\vec{AC})$）或**面积法**转化为边长关系。求最值时，首选**基本不等式**（$a+b \\ge 2\\sqrt{ab}$）配合余弦定理，或构建**三角函数**利用有界性求解。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 几何量代数化 (向量/面积/余弦)",
+              "2. 建立目标函数 (边或角)",
+              "3. 选择工具 (基本不等式 vs 三角函数)",
+              "4. 验证取等条件"
+            ],
+            "linked_weapons": [
+              "S-TRI-04",
+              "S-VEC-02",
+              "S-VIS-01"
+            ],
+            "weapon_map_note": "S-TRI-04 (中线角分线双驱策略), S-VEC-02 (极化恒等式秒杀), S-VIS-01 (函数动态图像分析)"
+          },
+          "variable_knobs": {
+            "geometric_element": [
+              {
+                "type": "median",
+                "weight": 0.4,
+                "desc": "中线长"
+              },
+              {
+                "type": "angle_bisector",
+                "weight": 0.3,
+                "difficulty_delta": "+0.5",
+                "desc": "角平分线长"
+              },
+              {
+                "type": "perimeter_area",
+                "weight": 0.3,
+                "desc": "周长/面积"
+              }
+            ],
+            "optimization_method": [
+              {
+                "type": "basic_inequality",
+                "weight": 0.6,
+                "desc": "基本不等式"
+              },
+              {
+                "type": "trig_function",
+                "weight": 0.4,
+                "difficulty_delta": "+0.5",
+                "desc": "三角函数有界性"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "equality_condition",
+                "weight": 0.7,
+                "desc": "忽略取等条件是否成立"
+              },
+              {
+                "type": "formula_error",
+                "weight": 0.3,
+                "desc": "中线/角平分线公式记错"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 已知 a=2, A=60°，求 BC 边上中线 AD 的最大值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 八省联考] 若 a+b=4, C=60°，求 AB 边上中线长的最小值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 华附一模] 已知角平分线 CD=2, A=60°，求 a+b 的最小值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 山东济南一模] 在△ABC 中，a=3, b=4, 求中线 m_c 的范围。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江杭州二模] 已知 a=2, A=60°，求面积 S 的最大值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[23 新高考 I] 若 a^2+b^2=2c^2，求 cos C 的最小值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 深中二月考] 已知 G 为重心，GA=2, GB=3, GC=4，求面积。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 省实期中] 设 a=2, A=60°，求 2b+c 的最大值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 湖北武汉一模] 已知角平分线 t_a = sqrt(bc) - ...，求 A。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 广州一模] 若 a=2, S=√3，求周长的最小值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 深圳一模] 已知中线 m_a = a，判断形状。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 若 a=2, A=60°，求 b^2+c^2 的最大值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 华附零模] 设 I 为内心，AI=2, A=60°，求 b+c 的最小值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 广东二模] 已知 a=2, A=60°，求向量 AB·AC 的最大值。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 若 a=2, A=60°，求中线 AD 与角平分线 AE 的长度比的范围。",
+              "level": "L4"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L4",
+              "id": "M07_V2.2_MB_L4_V96",
+              "problem": "[2025·新高考 I 卷·T18 风格] 在 $\\triangle ABC$ 中，已知 $a=2$，$A=\\frac{\\pi}{3}$。求 $BC$ 边上的中线 $AD$ 长度的最大值。",
+              "logic_key": "向量法 + 基本不等式",
+              "analysis": {
+                "core_idea": "新高考压轴大题。利用向量模长公式将中线转化为边长 $b,c$ 的关系，再结合余弦定理和基本不等式。",
+                "key_steps": [
+                  "1. 向量表示中线：",
+                  "   $\\vec{AD} = \\frac{1}{2}(\\vec{AB} + \\vec{AC})$。",
+                  "   平方：$|\\vec{AD}|^2 = \\frac{1}{4} (c^2 + b^2 + 2bc \\cos A)$。",
+                  "   代入 $A=60^\\circ$：$AD^2 = \\frac{1}{4} (b^2 + c^2 + bc)$。",
+                  "2. 利用余弦定理建立约束：",
+                  "   $a^2 = b^2 + c^2 - 2bc \\cos A \\Rightarrow 4 = b^2 + c^2 - bc$。",
+                  "   故 $b^2 + c^2 = 4 + bc$。",
+                  "3. 代入目标式：",
+                  "   $AD^2 = \\frac{1}{4} ((4 + bc) + bc) = 1 + \\frac{1}{2}bc$。",
+                  "   要使 $AD$ 最大，需 $bc$ 最大。",
+                  "4. 求 $bc$ 的最大值：",
+                  "   由 $4 = b^2 + c^2 - bc$ 及基本不等式 $b^2 + c^2 \\ge 2bc$：",
+                  "   $4 \\ge 2bc - bc = bc \\Rightarrow bc \\le 4$。",
+                  "   当且仅当 $b=c=2$ 时取等（此时为等边三角形）。",
+                  "5. 计算 $AD$ 最大值：",
+                  "   $AD^2 \\le 1 + \\frac{1}{2}(4) = 3 \\Rightarrow AD \\le \\sqrt{3}$。"
+                ],
+                "common_pitfalls": [
+                  "中线长公式记错。",
+                  "未能利用余弦定理将 $b^2+c^2$ 替换。",
+                  "基本不等式方向搞反。"
+                ],
+                "conclusion": "\\sqrt{3}"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M07_V2.2_MB_L4_V96_B",
+              "problem": "[2025·浙江杭州一模·T19 风格] 在 $\\triangle ABC$ 中，已知 $A=\\frac{\\pi}{3}$，角平分线 $AD=2$。求 $\\triangle ABC$ 面积 $S$ 的最小值。",
+              "logic_key": "面积法 + 基本不等式",
+              "analysis": {
+                "core_idea": "新高考压轴难题。利用面积分割法建立 $b,c$ 与角平分线的关系。",
+                "key_steps": [
+                  "1. 面积分割：",
+                  "   $S_{ABC} = S_{ABD} + S_{ACD}$。",
+                  "   $\\frac{1}{2}bc \\sin A = \\frac{1}{2}c \\cdot AD \\sin(A/2) + \\frac{1}{2}b \\cdot AD \\sin(A/2)$。",
+                  "2. 代入数据：",
+                  "   $A=60^\\circ \\Rightarrow A/2=30^\\circ$。$\\sin 60^\\circ = \\frac{\\sqrt{3}}{2}, \\sin 30^\\circ = \\frac{1}{2}$。$AD=2$。",
+                  "   $\\frac{\\sqrt{3}}{4}bc = \\frac{1}{2}c + \\frac{1}{2}b = \\frac{1}{2}(b+c)$。",
+                  "   整理得：$b+c = \\frac{\\sqrt{3}}{2}bc$。",
+                  "3. 利用基本不等式求 $bc$ 范围：",
+                  "   $b+c \\ge 2\\sqrt{bc}$。",
+                  "   故 $\\frac{\\sqrt{3}}{2}bc \\ge 2\\sqrt{bc}$。",
+                  "   因 $bc>0$，约去 $\\sqrt{bc}$：$\\frac{\\sqrt{3}}{2}\\sqrt{bc} \\ge 2 \\Rightarrow \\sqrt{bc} \\ge \\frac{4}{\\sqrt{3}}$。",
+                  "   $bc \\ge \\frac{16}{3}$。",
+                  "4. 求面积最小值：",
+                  "   $S = \\frac{1}{2}bc \\sin A = \\frac{\\sqrt{3}}{4}bc$。",
+                  "   $S_{min} = \\frac{\\sqrt{3}}{4} \\cdot \\frac{16}{3} = \\frac{4\\sqrt{3}}{3}$。"
+                ],
+                "common_pitfalls": [
+                  "角平分线长公式记忆负担重，推荐用面积法推导。",
+                  "基本不等式使用时机不对。",
+                  "计算分数乘法出错。"
+                ],
+                "conclusion": "\\frac{4\\sqrt{3}}{3}"
+              }
+            },
+            {
+              "level": "L4",
+              "id": "M07_V2.2_MB_L4_V96_C",
+              "problem": "[2024·广东卷·T18 风格] 在 $\\triangle ABC$ 中，已知 $a=2$，$A=\\frac{\\pi}{3}$。求 $2b+c$ 的最大值。",
+              "logic_key": "正弦定理 + 辅助角公式",
+              "analysis": {
+                "core_idea": "新高考压轴填空。非对称式 $2b+c$ 的最值，必须化为单变量三角函数。",
+                "key_steps": [
+                  "1. 正弦定理表达：",
+                  "   $2R = \\frac{a}{\\sin A} = \\frac{4}{\\sqrt{3}}$。",
+                  "   $b = \\frac{4}{\\sqrt{3}} \\sin B$, $c = \\frac{4}{\\sqrt{3}} \\sin(\\frac{2\\pi}{3}-B)$。",
+                  "2. 构建目标函数：",
+                  "   $f(B) = 2b+c = \\frac{4}{\\sqrt{3}} [2\\sin B + \\sin(\\frac{2\\pi}{3}-B)]$。",
+                  "3. 展开化简：",
+                  "   $2\\sin B + \\sin\\frac{2\\pi}{3}\\cos B - \\cos\\frac{2\\pi}{3}\\sin B$",
+                  "   $= 2\\sin B + \\frac{\\sqrt{3}}{2}\\cos B + \\frac{1}{2}\\sin B = \\frac{5}{2}\\sin B + \\frac{\\sqrt{3}}{2}\\cos B$。",
+                  "   提取辅助角：$= \\sqrt{(\\frac{5}{2})^2 + (\\frac{\\sqrt{3}}{2})^2} \\sin(B + \\phi) = \\sqrt{7} \\sin(B+\\phi)$。",
+                  "   其中 $\\tan \\phi = \\frac{\\sqrt{3}}{5}$，$\\phi$ 为锐角。",
+                  "4. 验证取等条件：",
+                  "   需 $B+\\phi = \\frac{\\pi}{2}$ 在定义域 $B \\in (0, \\frac{2\\pi}{3})$ 内。",
+                  "   因 $\\tan \\phi = 0.34$，$\\phi$ 较小，$\\frac{\\pi}{2} - \\phi$ 显然在 $(0, \\frac{2\\pi}{3})$ 内，故最大值可取到。",
+                  "5. 计算结果：",
+                  "   $Max = \\frac{4}{\\sqrt{3}} \\cdot \\sqrt{7} = \\frac{4\\sqrt{21}}{3}$。"
+                ],
+                "common_pitfalls": [
+                  "试图用基本不等式（非对称式无法直接用）。",
+                  "辅助角公式系数计算错误。",
+                  "未验证角度是否在范围内。"
+                ],
+                "conclusion": "\\frac{4\\sqrt{21}}{3}"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "system_instruction_template": "### 🎯 M07 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础)**:\n- **特征**: 单步逻辑，直接套公式，无参数讨论。\n- **典型任务**: 已知两边一角求第三边、已知三边求角、简单面积计算。\n- **禁忌**: 禁止出现“多解讨论”、“最值优化”、“复杂恒等变换”。\n- **示例**: \"已知 a=3, b=4, C=60°，求 c\" 或 \"求 S=1/2 ab sinC\"。\n\n**L3 (进阶)**:\n- **特征**: 两步逻辑，含简单复合或性质组合，需技巧性变形。\n- **典型任务**: 边角互化（一次式）、射影定理应用、简单范围求解（单约束）、正余弦定理混合运算。\n- **禁忌**: 禁止出现“多解性详细讨论”、“非对称式最值”、“中线/角平分线复杂最值”。\n- **示例**: \"已知 a cos B = b cos A，判断形状\" 或 \"求锐角三角形中 sinB+sinC 范围（无额外约束）\"。\n\n**L4 (巅峰)**:\n- **特征**: 多步逻辑，必须包含“策略选择”或“多重约束博弈”。\n- **典型任务**: SSA 多解性讨论、锐角/钝角多重约束下的范围、中线/角平分线最值（向量/面积法）、非对称式（如 2b+c）三角函数最值。\n- **核心**: 必须包含一个“思维盲区”（如隐含的锐角约束、取等条件的验证、射影定理的识别）。\n- **示例**: \"已知 a=2, A=60°，有两解求 b 范围\" 或 \"求 2b+c 最大值\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（区间/最值）。\n- L4 题目必须体现“几何直观”与“代数算力”的结合。\n- **风格要求**: L4 题目应适当融入广东卷的中线/角平分线最值或新高考 I 卷的多解讨论。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“结构化选择”或“约束挖掘”思想。\n- **关键点**: L4 题目的解析必须详细解释“为什么选这个策略”以及“如何验证取等条件/多解条件”。"
+}

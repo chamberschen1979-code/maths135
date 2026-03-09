@@ -1,0 +1,145 @@
+{
+  "version": "1.0",
+  "description": "动态评分心脏与反馈引擎配置",
+  "level_scores": {
+    "L1": {
+      "score": 20,
+      "description": "基础概念题",
+      "time_limit": 60,
+      "difficulty_weight": 0.5
+    },
+    "L2": {
+      "score": 40,
+      "description": "常规应用题",
+      "time_limit": 120,
+      "difficulty_weight": 1.0
+    },
+    "L3": {
+      "score": 60,
+      "description": "融合迁移题",
+      "time_limit": 180,
+      "difficulty_weight": 1.5
+    },
+    "L4": {
+      "score": 100,
+      "description": "巅峰压轴题",
+      "time_limit": 300,
+      "difficulty_weight": 2.0
+    }
+  },
+  "level_indicators": {
+    "mastered": {
+      "color": "#10b981",
+      "label": "已掌握",
+      "description": "该等级节点已攻克"
+    },
+    "practicing": {
+      "color": "#f59e0b",
+      "label": "磨合中",
+      "description": "该等级节点正在训练"
+    },
+    "failed": {
+      "color": "#ef4444",
+      "label": "未攻克",
+      "description": "该等级节点需要强化"
+    },
+    "locked": {
+      "color": "#6b7280",
+      "label": "未解锁",
+      "description": "该等级节点尚未解锁"
+    }
+  },
+  "elo_question_distribution": {
+    "low": {
+      "range": [0, 1200],
+      "recommended_levels": ["L2", "L2+L3"],
+      "description": "低分段：推送基础+进阶组合"
+    },
+    "medium": {
+      "range": [1201, 2000],
+      "recommended_levels": ["L2+L3", "L3", "L3+L4"],
+      "description": "中分段：推送进阶+挑战组合"
+    },
+    "high": {
+      "range": [2001, 2500],
+      "recommended_levels": ["L3+L4", "L4"],
+      "description": "高分段：推送挑战+巅峰组合"
+    },
+    "top": {
+      "range": [2501, 3000],
+      "recommended_levels": ["L4", "L4+L4"],
+      "description": "冲刺段：推送纯巅峰题"
+    }
+  },
+  "feedback_templates": {
+    "success": {
+      "prefix": "🎯 精准命中！",
+      "templates": [
+        "${motif_name} 的 ${level} 节点已攻克，战力值 +${score}",
+        "你的 ${weapon_name} 运用得当，${motif_name} 掌握度提升",
+        "完美！${logic_core} 思路清晰，继续保持"
+      ]
+    },
+    "partial": {
+      "prefix": "⚠️ 部分命中",
+      "templates": [
+        "${motif_name} 的 ${level} 节点仍在磨合，建议复习 ${l4_trap}",
+        "你的 ${weapon_name} 需要更多练习，注意 ${l4_trap}",
+        "思路基本正确，但 ${l4_trap} 需要特别注意"
+      ]
+    },
+    "failed": {
+      "prefix": "❌ 偏离目标",
+      "templates": [
+        "${motif_name} 的 ${level} 节点未攻克，核心问题：${l4_trap}",
+        "建议先掌握 ${prerequisite}，再挑战 ${motif_name}",
+        "你的 ${weapon_name} 使用不当，${logic_core} 思路需要重建"
+      ]
+    },
+    "decay_warning": {
+      "prefix": "⏰ 记忆衰减预警",
+      "templates": [
+        "${motif_name} 已 ${days} 天未复习，知识正在衰减",
+        "检测到 ${level} 节点记忆衰退，建议立即复习 ${l4_trap}",
+        "战力退化警告：${motif_name} 需要重新激活"
+      ]
+    }
+  },
+  "question_combinations": {
+    "L2": {
+      "total_score": 40,
+      "description": "纯基础题",
+      "recommended_for": "L1-L2 用户"
+    },
+    "L2+L3": {
+      "total_score": 100,
+      "description": "基础+进阶组合",
+      "recommended_for": "L2 用户"
+    },
+    "L3": {
+      "total_score": 60,
+      "description": "纯进阶题",
+      "recommended_for": "L2-L3 用户"
+    },
+    "L2+L4": {
+      "total_score": 140,
+      "description": "基础+巅峰组合",
+      "recommended_for": "L3 用户冲刺"
+    },
+    "L3+L4": {
+      "total_score": 160,
+      "description": "进阶+巅峰组合",
+      "recommended_for": "L3-L4 用户"
+    },
+    "L4": {
+      "total_score": 100,
+      "description": "纯巅峰题",
+      "recommended_for": "L4 用户"
+    },
+    "L4+L4": {
+      "total_score": 200,
+      "description": "双巅峰组合",
+      "recommended_for": "L4 用户冲刺满分"
+    }
+  }
+}
