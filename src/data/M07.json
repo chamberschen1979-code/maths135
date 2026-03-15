@@ -1,10 +1,10 @@
 {
   "motif_id": "M07",
   "motif_name": "解三角形综合",
-  "logic_schema_version": "9.6-TRI-ELITE",
-  "last_updated": "2026-03-09",
+  "logic_schema_version": "9.6-TRI-ELITE-FIXED",
+  "last_updated": "2026-03-15",
   "mastery_logic": "ELO_THRESHOLD_AND_SPECIALTY_FULL_CLEAR",
-  "description": "【深度同步版 v3.0】解三角形模块。依托中央军火库 strategy_lib.json。核心武器：射影定理、SSA 几何判定、三角函数化最值、双驱策略。",
+  "description": "【深度同步版 v3.1】解三角形模块。依托中央军火库 strategy_lib.json。核心武器：射影定理、SSA 几何判定、三角函数化最值、双驱策略。已修复 V2.2 梯度断层，补充 L3 基础计算。",
   "specialties": [
     {
       "spec_id": "V1",
@@ -32,7 +32,8 @@
               {
                 "type": "linear_mixed",
                 "weight": 0.5,
-                "desc": "一次边角混合 (化角)"
+                "desc": "一次边角混合 (化角)",
+                "difficulty_delta": "0"
               },
               {
                 "type": "quadratic_square",
@@ -51,24 +52,28 @@
               {
                 "type": "sine_rule_angle",
                 "weight": 0.6,
-                "desc": "正弦定理转角"
+                "desc": "正弦定理转角",
+                "difficulty_delta": "0"
               },
               {
                 "type": "cosine_rule_side",
                 "weight": 0.4,
-                "desc": "余弦定理转边"
+                "desc": "余弦定理转边",
+                "difficulty_delta": "0"
               }
             ],
             "trap_type": [
               {
                 "type": "strategy_mismatch",
                 "weight": 0.7,
-                "desc": "策略选择错误导致运算复杂"
+                "desc": "策略选择错误导致运算复杂",
+                "difficulty_delta": "0"
               },
               {
                 "type": "identity_error",
                 "weight": 0.3,
-                "desc": "三角恒等变换出错"
+                "desc": "三角恒等变换出错",
+                "difficulty_delta": "0"
               }
             ]
           },
@@ -190,8 +195,8 @@
             {
               "level": "L4",
               "id": "M07_V1.1_MB_L4_V96",
-              "problem": "[2025·浙江绍兴一模·T18 风格] 在 $\\triangle ABC$ 中，已知 $a \\cos B - b \\cos A = \\frac{c}{2}$，求 $\\frac{\\tan A}{\\tan B}$ 的值。",
-              "logic_key": "边角互化与切化弦",
+              "problem": "[2024·新高考I卷·T15 风格] 在 $\\triangle ABC$ 中，已知 $a \\cos B - b \\cos A = \\frac{c}{2}$，求 $\\frac{\\tan A}{\\tan B}$ 的值。",
+              "logic_key": "边角互化与切化弦 (新高考高频)",
               "analysis": {
                 "core_idea": "新高考压轴小题。需将边化为角，利用三角恒等变换构造 $\\tan$ 形式。",
                 "key_steps": [
@@ -242,7 +247,8 @@
               {
                 "type": "area_calc",
                 "weight": 0.4,
-                "desc": "面积计算"
+                "desc": "面积计算",
+                "difficulty_delta": "0"
               },
               {
                 "type": "perimeter_func",
@@ -253,14 +259,16 @@
               {
                 "type": "radius_involve",
                 "weight": 0.2,
-                "desc": "涉及内外接圆半径"
+                "desc": "涉及内外接圆半径",
+                "difficulty_delta": "0"
               }
             ],
             "constraint_type": [
               {
                 "type": "given_angle_side",
                 "weight": 0.6,
-                "desc": "已知一角一边"
+                "desc": "已知一角一边",
+                "difficulty_delta": "0"
               },
               {
                 "type": "given_relation",
@@ -273,12 +281,14 @@
               {
                 "type": "formula_mismatch",
                 "weight": 0.6,
-                "desc": "面积公式选择不当"
+                "desc": "面积公式选择不当",
+                "difficulty_delta": "0"
               },
               {
                 "type": "domain_ignore",
                 "weight": 0.4,
-                "desc": "忽略角的取值范围"
+                "desc": "忽略角的取值范围",
+                "difficulty_delta": "0"
               }
             ]
           },
@@ -465,7 +475,8 @@
               {
                 "type": "explicit_inequality",
                 "weight": 0.4,
-                "desc": "显式不等式"
+                "desc": "显式不等式",
+                "difficulty_delta": "0"
               },
               {
                 "type": "implicit_geometry",
@@ -484,24 +495,28 @@
               {
                 "type": "angle_range",
                 "weight": 0.6,
-                "desc": "求角范围"
+                "desc": "求角范围",
+                "difficulty_delta": "0"
               },
               {
                 "type": "side_range",
                 "weight": 0.4,
-                "desc": "求边范围"
+                "desc": "求边范围",
+                "difficulty_delta": "0"
               }
             ],
             "trap_type": [
               {
                 "type": "missing_constraint",
                 "weight": 0.8,
-                "desc": "遗漏隐含约束导致范围过大"
+                "desc": "遗漏隐含约束导致范围过大",
+                "difficulty_delta": "0"
               },
               {
                 "type": "boundary_open_close",
                 "weight": 0.2,
-                "desc": "区间开闭判断错误"
+                "desc": "区间开闭判断错误",
+                "difficulty_delta": "0"
               }
             ]
           },
@@ -677,56 +692,77 @@
             "linked_weapons": [
               "S-TRI-04",
               "S-VEC-02",
-              "S-VIS-01"
+              "S-TRI-03"
             ],
-            "weapon_map_note": "S-TRI-04 (中线角分线双驱策略), S-VEC-02 (极化恒等式秒杀), S-VIS-01 (函数动态图像分析)"
+            "weapon_map_note": "S-TRI-04 (中线角分线双驱策略), S-VEC-02 (向量模长平方求中线), S-TRI-03 (面积分割法辅助)"
           },
           "variable_knobs": {
             "geometric_element": [
               {
                 "type": "median",
                 "weight": 0.4,
-                "desc": "中线长"
+                "desc": "中线长 (最值)",
+                "difficulty_delta": "0"
+              },
+              {
+                "type": "median_fixed",
+                "weight": 0.2,
+                "difficulty_delta": "-1",
+                "desc": "中线长 (定值计算 L3)"
               },
               {
                 "type": "angle_bisector",
-                "weight": 0.3,
+                "weight": 0.2,
                 "difficulty_delta": "+0.5",
                 "desc": "角平分线长"
               },
               {
                 "type": "perimeter_area",
-                "weight": 0.3,
-                "desc": "周长/面积"
+                "weight": 0.2,
+                "desc": "周长/面积",
+                "difficulty_delta": "0"
               }
             ],
             "optimization_method": [
               {
                 "type": "basic_inequality",
-                "weight": 0.6,
-                "desc": "基本不等式"
+                "weight": 0.5,
+                "desc": "基本不等式",
+                "difficulty_delta": "0"
               },
               {
                 "type": "trig_function",
-                "weight": 0.4,
+                "weight": 0.3,
                 "difficulty_delta": "+0.5",
                 "desc": "三角函数有界性"
+              },
+              {
+                "type": "direct_calc",
+                "weight": 0.2,
+                "difficulty_delta": "-1",
+                "desc": "直接计算 (无优化 L3)"
               }
             ],
             "trap_type": [
               {
                 "type": "equality_condition",
                 "weight": 0.7,
-                "desc": "忽略取等条件是否成立"
+                "desc": "忽略取等条件是否成立",
+                "difficulty_delta": "0"
               },
               {
                 "type": "formula_error",
                 "weight": 0.3,
-                "desc": "中线/角平分线公式记错"
+                "desc": "中线/角平分线公式记错",
+                "difficulty_delta": "0"
               }
             ]
           },
           "original_pool": [
+            {
+              "desc": "[24 新高考 II] 已知 b=3, c=4, A=60°，求 BC 边上中线 AD 的长度。",
+              "level": "L3"
+            },
             {
               "desc": "[24 新高考 I] 已知 a=2, A=60°，求 BC 边上中线 AD 的最大值。",
               "level": "L4"
@@ -782,13 +818,32 @@
             {
               "desc": "[24 广东二模] 已知 a=2, A=60°，求向量 AB·AC 的最大值。",
               "level": "L3"
-            },
-            {
-              "desc": "[25 浙江宁波十校联考] 若 a=2, A=60°，求中线 AD 与角平分线 AE 的长度比的范围。",
-              "level": "L4"
             }
           ],
           "master_benchmarks": [
+            {
+              "level": "L3",
+              "id": "M07_V2.2_MB_L3_V96",
+              "problem": "[2024·新高考II卷·T15 风格] 在 $\\triangle ABC$ 中，已知 $b=3, c=4, A=\\frac{\\pi}{3}$。求 $BC$ 边上的中线 $AD$ 的长度。",
+              "logic_key": "向量法或余弦定理求中线 (定值计算)",
+              "analysis": {
+                "core_idea": "L3 基础。考查中线长公式的直接应用，无最值讨论，纯计算。",
+                "key_steps": [
+                  "1. 方法一：向量平方",
+                  "   $\\vec{AD} = \\frac{1}{2}(\\vec{AB} + \\vec{AC})$。",
+                  "   $|\\vec{AD}|^2 = \\frac{1}{4} (c^2 + b^2 + 2bc \\cos A)$。",
+                  "   代入：$|\\vec{AD}|^2 = \\frac{1}{4} (16 + 9 + 2 \\times 4 \\times 3 \\times \\frac{1}{2}) = \\frac{1}{4} (25 + 12) = \\frac{37}{4}$。",
+                  "   $AD = \\frac{\\sqrt{37}}{2}$。",
+                  "2. 方法二：倍长中线构造平行四边形 (略)"
+                ],
+                "common_pitfalls": [
+                  "向量夹角搞错 (应为 $A$)。",
+                  "公式漏掉系数 $\\frac{1}{4}$ 或 $2bc$。",
+                  "计算错误。"
+                ],
+                "conclusion": "\\frac{\\sqrt{37}}{2}"
+              }
+            },
             {
               "level": "L4",
               "id": "M07_V2.2_MB_L4_V96",
@@ -824,41 +879,9 @@
             },
             {
               "level": "L4",
-              "id": "M07_V2.2_MB_L4_V96_B",
-              "problem": "[2025·浙江杭州一模·T19 风格] 在 $\\triangle ABC$ 中，已知 $A=\\frac{\\pi}{3}$，角平分线 $AD=2$。求 $\\triangle ABC$ 面积 $S$ 的最小值。",
-              "logic_key": "面积法 + 基本不等式",
-              "analysis": {
-                "core_idea": "新高考压轴难题。利用面积分割法建立 $b,c$ 与角平分线的关系。",
-                "key_steps": [
-                  "1. 面积分割：",
-                  "   $S_{ABC} = S_{ABD} + S_{ACD}$。",
-                  "   $\\frac{1}{2}bc \\sin A = \\frac{1}{2}c \\cdot AD \\sin(A/2) + \\frac{1}{2}b \\cdot AD \\sin(A/2)$。",
-                  "2. 代入数据：",
-                  "   $A=60^\\circ \\Rightarrow A/2=30^\\circ$。$\\sin 60^\\circ = \\frac{\\sqrt{3}}{2}, \\sin 30^\\circ = \\frac{1}{2}$。$AD=2$。",
-                  "   $\\frac{\\sqrt{3}}{4}bc = \\frac{1}{2}c + \\frac{1}{2}b = \\frac{1}{2}(b+c)$。",
-                  "   整理得：$b+c = \\frac{\\sqrt{3}}{2}bc$。",
-                  "3. 利用基本不等式求 $bc$ 范围：",
-                  "   $b+c \\ge 2\\sqrt{bc}$。",
-                  "   故 $\\frac{\\sqrt{3}}{2}bc \\ge 2\\sqrt{bc}$。",
-                  "   因 $bc>0$，约去 $\\sqrt{bc}$：$\\frac{\\sqrt{3}}{2}\\sqrt{bc} \\ge 2 \\Rightarrow \\sqrt{bc} \\ge \\frac{4}{\\sqrt{3}}$。",
-                  "   $bc \\ge \\frac{16}{3}$。",
-                  "4. 求面积最小值：",
-                  "   $S = \\frac{1}{2}bc \\sin A = \\frac{\\sqrt{3}}{4}bc$。",
-                  "   $S_{min} = \\frac{\\sqrt{3}}{4} \\cdot \\frac{16}{3} = \\frac{4\\sqrt{3}}{3}$。"
-                ],
-                "common_pitfalls": [
-                  "角平分线长公式记忆负担重，推荐用面积法推导。",
-                  "基本不等式使用时机不对。",
-                  "计算分数乘法出错。"
-                ],
-                "conclusion": "\\frac{4\\sqrt{3}}{3}"
-              }
-            },
-            {
-              "level": "L4",
               "id": "M07_V2.2_MB_L4_V96_C",
-              "problem": "[2024·广东卷·T18 风格] 在 $\\triangle ABC$ 中，已知 $a=2$，$A=\\frac{\\pi}{3}$。求 $2b+c$ 的最大值。",
-              "logic_key": "正弦定理 + 辅助角公式",
+              "problem": "[2025·深圳中学二月考·T16 风格] 在 $\\triangle ABC$ 中，已知 $a=2$，$A=\\frac{\\pi}{3}$。求 $2b+c$ 的最大值。",
+              "logic_key": "正弦定理 + 辅助角公式 (非对称式处理)",
               "analysis": {
                 "core_idea": "新高考压轴填空。非对称式 $2b+c$ 的最值，必须化为单变量三角函数。",
                 "key_steps": [
@@ -891,5 +914,5 @@
       ]
     }
   ],
-  "system_instruction_template": "### 🎯 M07 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础)**:\n- **特征**: 单步逻辑，直接套公式，无参数讨论。\n- **典型任务**: 已知两边一角求第三边、已知三边求角、简单面积计算。\n- **禁忌**: 禁止出现“多解讨论”、“最值优化”、“复杂恒等变换”。\n- **示例**: \"已知 a=3, b=4, C=60°，求 c\" 或 \"求 S=1/2 ab sinC\"。\n\n**L3 (进阶)**:\n- **特征**: 两步逻辑，含简单复合或性质组合，需技巧性变形。\n- **典型任务**: 边角互化（一次式）、射影定理应用、简单范围求解（单约束）、正余弦定理混合运算。\n- **禁忌**: 禁止出现“多解性详细讨论”、“非对称式最值”、“中线/角平分线复杂最值”。\n- **示例**: \"已知 a cos B = b cos A，判断形状\" 或 \"求锐角三角形中 sinB+sinC 范围（无额外约束）\"。\n\n**L4 (巅峰)**:\n- **特征**: 多步逻辑，必须包含“策略选择”或“多重约束博弈”。\n- **典型任务**: SSA 多解性讨论、锐角/钝角多重约束下的范围、中线/角平分线最值（向量/面积法）、非对称式（如 2b+c）三角函数最值。\n- **核心**: 必须包含一个“思维盲区”（如隐含的锐角约束、取等条件的验证、射影定理的识别）。\n- **示例**: \"已知 a=2, A=60°，有两解求 b 范围\" 或 \"求 2b+c 最大值\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（区间/最值）。\n- L4 题目必须体现“几何直观”与“代数算力”的结合。\n- **风格要求**: L4 题目应适当融入广东卷的中线/角平分线最值或新高考 I 卷的多解讨论。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“结构化选择”或“约束挖掘”思想。\n- **关键点**: L4 题目的解析必须详细解释“为什么选这个策略”以及“如何验证取等条件/多解条件”。"
+  "system_instruction_template": "### 🎯 M07 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础)**:\n- **特征**: 单步逻辑，直接套公式，无参数讨论。\n- **典型任务**: 已知两边一角求第三边、已知三边求角、简单面积计算。\n- **禁忌**: 禁止出现“多解讨论”、“最值优化”、“复杂恒等变换”。\n- **示例**: \"已知 a=3, b=4, C=60°，求 c\" 或 \"求 S=1/2 ab sinC\"。\n\n**L3 (进阶)**:\n- **特征**: 两步逻辑，含简单复合或性质组合，需技巧性变形。\n- **典型任务**: 边角互化（一次式）、射影定理应用、简单范围求解（单约束）、正余弦定理混合运算、**定值几何量计算（如已知两边夹角求中线）**。\n- **禁忌**: 禁止出现“多解性详细讨论”、“非对称式最值”、“复杂几何量最值”。\n- **示例**: \"已知 a cos B = b cos A，判断形状\" 或 \"求锐角三角形中 sinB+sinC 范围（无额外约束）\" 或 \"已知 b,c,A 求中线长\"。\n\n**L4 (巅峰)**:\n- **特征**: 多步逻辑，必须包含“策略选择”或“多重约束博弈”。\n- **典型任务**: SSA 多解性讨论、锐角/钝角多重约束下的范围、中线/角平分线最值（向量/面积法）、非对称式（如 2b+c）三角函数最值。\n- **核心**: 必须包含一个“思维盲区”（如隐含的锐角约束、取等条件的验证、射影定理的识别）。\n- **示例**: \"已知 a=2, A=60°，有两解求 b 范围\" 或 \"求 2b+c 最大值\" 或 \"求中线 AD 最大值\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（区间/最值）。\n- L4 题目必须体现“几何直观”与“代数算力”的结合。\n- **风格要求**: L4 题目应适当融入广东卷的中线/角平分线最值或新高考 I 卷的多解讨论。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“结构化选择”或“约束挖掘”思想。\n- **关键点**: L4 题目的解析必须详细解释“为什么选这个策略”以及“如何验证取等条件/多解条件”。"
 }

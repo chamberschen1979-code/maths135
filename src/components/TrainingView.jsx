@@ -6,6 +6,7 @@ import 'katex/dist/katex.min.css'
 import { Target, AlertTriangle, Package, Loader2, ChevronRight, Send, CheckCircle, XCircle, ChevronDown } from 'lucide-react'
 import { ThemeContext } from '../App'
 import tacticalMapsData from '../data/tacticalMaps.json'
+import eloEngine from '../utils/eloEngine'
 
 const API_KEY = import.meta.env.VITE_QWEN_API_KEY
 const BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
@@ -91,6 +92,7 @@ function TrainingView({ tacticalData, currentGrade, onBattleComplete, onNavigate
   const [trainingPaper, setTrainingPaper] = useState(null)
   const [currentTargetName, setCurrentTargetName] = useState(null)
   const [currentTargets, setCurrentTargets] = useState([])
+  const [currentPracticedSubs, setCurrentPracticedSubs] = useState([])
   const [userAnswer, setUserAnswer] = useState('')
   const [isEvaluating, setIsEvaluating] = useState(false)
   const [diagnosisResult, setDiagnosisResult] = useState(null)
@@ -122,10 +124,18 @@ function TrainingView({ tacticalData, currentGrade, onBattleComplete, onNavigate
     setDiagnosisResult(null)
     setLastGrade(null)
 
+    const allPracticedSubs = []
     const tacticalPrompts = targets.map(t => {
       if (t.sub_targets && t.sub_targets.length > 0) {
         const unmasteredSubs = t.sub_targets.filter(sub => !sub.is_mastered)
         if (unmasteredSubs.length > 0) {
+          unmasteredSubs.forEach(sub => {
+            allPracticedSubs.push({
+              targetId: t.target_id,
+              subId: sub.sub_id,
+              levelReq: sub.level_req
+            })
+          })
           const subPrompts = unmasteredSubs.map(sub => 
             `【致命弱点：${sub.sub_name}】 -> 出题指令：${sub.ai_prompt}`
           ).join('\n')
@@ -136,6 +146,8 @@ function TrainingView({ tacticalData, currentGrade, onBattleComplete, onNavigate
       }
       return `【目标：${t.target_name}】 -> 出题指令：${t.ai_tactical_prompt || '出综合题'}`
     }).join('\n\n')
+    
+    setCurrentPracticedSubs(allPracticedSubs)
 
     const systemPrompt = isAcademicMode
       ? `你现在是资深数学教师，专门为学生定制专项训练卷。
@@ -283,8 +295,11 @@ ${tacticalPrompts}
       
       let eloChange = ELO_CHANGES[grade] || 0
       const newHealthStatus = (grade === 'S' || grade === 'A') ? 'healthy' : 'bleeding'
+      const isCorrect = grade === 'S' || grade === 'A'
 
       if (onBattleComplete && currentTargets.length > 0) {
+        const masteredSubIds = []
+        
         currentTargets.forEach((target) => {
           let finalEloChange = eloChange
           
@@ -310,6 +325,15 @@ ${tacticalPrompts}
               finalEloChange = 0
               setAntiGrindWarning(true)
             }
+            
+            if (isCorrect && unmasteredSubs.length > 0) {
+              const result = eloEngine.processPracticeResult(
+                target,
+                unmasteredSubs.map(s => s.sub_id),
+                true
+              )
+              result.newlyMastered.forEach(subId => masteredSubIds.push(subId))
+            }
           }
           
           onBattleComplete({
@@ -317,6 +341,7 @@ ${tacticalPrompts}
             eloChange: finalEloChange,
             newHealthStatus,
             grade,
+            masteredSubIds,
           })
         })
       }

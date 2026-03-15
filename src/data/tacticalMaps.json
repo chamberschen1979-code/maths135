@@ -18,7 +18,8 @@
             { "sub_id": "M01_L2_1", "sub_name": "集合运算", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M01_L2_2", "sub_name": "逻辑用语", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M01_L2_3", "sub_name": "复数运算", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M01_L3_1", "sub_name": "集合综合", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M01_L3_1", "sub_name": "集合综合", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M01_L4_1", "sub_name": "集合逻辑压轴", "level_req": "L4", "is_mastered": false }
           ]
         },
         {
@@ -31,7 +32,8 @@
           "sub_targets": [
             { "sub_id": "M02_L2_1", "sub_name": "不等式基本性质", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M02_L2_2", "sub_name": "一元二次不等式", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M02_L3_1", "sub_name": "不等式综合应用", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M02_L3_1", "sub_name": "不等式综合应用", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M02_L4_1", "sub_name": "不等式压轴", "level_req": "L4", "is_mastered": false }
           ]
         },
         {
@@ -45,7 +47,8 @@
             { "sub_id": "M03_L2_1", "sub_name": "函数定义域值域", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M03_L2_2", "sub_name": "函数单调性", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M03_L2_3", "sub_name": "函数奇偶性", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M03_L3_1", "sub_name": "函数性质综合", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M03_L3_1", "sub_name": "函数性质综合", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M03_L4_1", "sub_name": "函数压轴", "level_req": "L4", "is_mastered": false }
           ]
         },
         {
@@ -59,7 +62,8 @@
             { "sub_id": "M04_L2_1", "sub_name": "指数运算", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M04_L2_2", "sub_name": "对数运算", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M04_L2_3", "sub_name": "指对数函数图像", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M04_L3_1", "sub_name": "指对数综合", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M04_L3_1", "sub_name": "指对数综合", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M04_L4_1", "sub_name": "指对数压轴", "level_req": "L4", "is_mastered": false }
           ]
         },
         {
@@ -72,7 +76,8 @@
           "sub_targets": [
             { "sub_id": "M05_L2_1", "sub_name": "向量线性运算", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M05_L2_2", "sub_name": "向量数量积", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M05_L3_1", "sub_name": "向量综合应用", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M05_L3_1", "sub_name": "向量综合应用", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M05_L4_1", "sub_name": "向量压轴", "level_req": "L4", "is_mastered": false }
           ]
         },
         {
@@ -85,7 +90,8 @@
           "sub_targets": [
             { "sub_id": "M06_L2_1", "sub_name": "三角恒等变换", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M06_L2_2", "sub_name": "三角函数图像", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M06_L3_1", "sub_name": "三角函数综合", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M06_L3_1", "sub_name": "三角函数综合", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M06_L4_1", "sub_name": "三角函数压轴", "level_req": "L4", "is_mastered": false }
           ]
         }
       ]
@@ -106,7 +112,8 @@
           "sub_targets": [
             { "sub_id": "M07_L2_1", "sub_name": "正弦定理", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M07_L2_2", "sub_name": "余弦定理", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M07_L3_1", "sub_name": "解三角形综合", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M07_L3_1", "sub_name": "解三角形综合", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M07_L4_1", "sub_name": "解三角形压轴", "level_req": "L4", "is_mastered": false }
           ]
         },
         {
@@ -120,7 +127,8 @@
             { "sub_id": "M08_L2_1", "sub_name": "等差数列", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M08_L2_2", "sub_name": "等比数列", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M08_L2_3", "sub_name": "数列求和", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M08_L3_1", "sub_name": "数列综合", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M08_L3_1", "sub_name": "数列综合", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M08_L4_1", "sub_name": "数列压轴", "level_req": "L4", "is_mastered": false }
           ]
         },
         {
@@ -133,7 +141,8 @@
           "sub_targets": [
             { "sub_id": "M09_L2_1", "sub_name": "空间几何体", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M09_L2_2", "sub_name": "点线面位置关系", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M09_L3_1", "sub_name": "立体几何证明", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M09_L3_1", "sub_name": "立体几何证明", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M09_L4_1", "sub_name": "立体几何压轴", "level_req": "L4", "is_mastered": false }
           ]
         },
         {
@@ -146,7 +155,8 @@
           "sub_targets": [
             { "sub_id": "M10_L2_1", "sub_name": "直线方程", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M10_L2_2", "sub_name": "圆的方程", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M10_L3_1", "sub_name": "直线与圆综合", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M10_L3_1", "sub_name": "直线与圆综合", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M10_L4_1", "sub_name": "解析几何压轴", "level_req": "L4", "is_mastered": false }
           ]
         },
         {
@@ -174,7 +184,8 @@
           "sub_targets": [
             { "sub_id": "M12_L2_1", "sub_name": "古典概型", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M12_L2_2", "sub_name": "统计基础", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M12_L3_1", "sub_name": "概率统计综合", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M12_L3_1", "sub_name": "概率统计综合", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M12_L4_1", "sub_name": "概率统计压轴", "level_req": "L4", "is_mastered": false }
           ]
         }
       ]
@@ -193,6 +204,7 @@
           "gear_level": "L1",
           "health_status": "unknown",
           "sub_targets": [
+            { "sub_id": "M13_L2_1", "sub_name": "圆锥曲线基础", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M13_L3_1", "sub_name": "圆锥曲线性质", "level_req": "L3", "is_mastered": false },
             { "sub_id": "M13_L4_1", "sub_name": "解析几何大题", "level_req": "L4", "is_mastered": false }
           ]
@@ -205,6 +217,7 @@
           "gear_level": "L1",
           "health_status": "unknown",
           "sub_targets": [
+            { "sub_id": "M14_L2_1", "sub_name": "导数基础回顾", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M14_L3_1", "sub_name": "导数证明技巧", "level_req": "L3", "is_mastered": false },
             { "sub_id": "M14_L4_1", "sub_name": "导数压轴大题", "level_req": "L4", "is_mastered": false }
           ]
@@ -217,6 +230,7 @@
           "gear_level": "L1",
           "health_status": "unknown",
           "sub_targets": [
+            { "sub_id": "M15_L2_1", "sub_name": "数列基础回顾", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M15_L3_1", "sub_name": "数列通项与求和进阶", "level_req": "L3", "is_mastered": false },
             { "sub_id": "M15_L4_1", "sub_name": "数列压轴大题", "level_req": "L4", "is_mastered": false }
           ]
@@ -231,7 +245,8 @@
           "sub_targets": [
             { "sub_id": "M16_L2_1", "sub_name": "排列组合", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M16_L2_2", "sub_name": "二项式定理", "level_req": "L2", "is_mastered": false },
-            { "sub_id": "M16_L3_1", "sub_name": "计数综合", "level_req": "L3", "is_mastered": false }
+            { "sub_id": "M16_L3_1", "sub_name": "计数综合", "level_req": "L3", "is_mastered": false },
+            { "sub_id": "M16_L4_1", "sub_name": "计数压轴", "level_req": "L4", "is_mastered": false }
           ]
         },
         {
@@ -242,6 +257,7 @@
           "gear_level": "L1",
           "health_status": "unknown",
           "sub_targets": [
+            { "sub_id": "M17_L2_1", "sub_name": "创新题基础", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M17_L3_1", "sub_name": "新定义题", "level_req": "L3", "is_mastered": false },
             { "sub_id": "M17_L4_1", "sub_name": "创新情境题", "level_req": "L4", "is_mastered": false }
           ]

@@ -50,6 +50,127 @@ const DECAY_CONFIG = {
   WARNING_THRESHOLD_DAYS: 14,
 }
 
+const VARIATION_LEVEL_CONFIG = {
+  M01: {
+    '1.1': ['L2', 'L3'],
+    '1.2': ['L3', 'L4'],
+    '2.1': ['L2', 'L3'],
+    '2.2': ['L2', 'L3', 'L4'],
+    '3.1': ['L2', 'L3'],
+    '3.2': ['L2', 'L3'],
+  },
+  M02: {
+    '1.1': ['L2', 'L3'],
+    '1.2': ['L2', 'L3', 'L4'],
+    '2.1': ['L2', 'L3', 'L4'],
+    '2.2': ['L2', 'L3', 'L4'],
+  },
+  M03: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L3', 'L4'],
+    '2.1': ['L2', 'L3', 'L4'],
+    '2.2': ['L2', 'L3', 'L4'],
+  },
+  M04: {
+    '1.1': ['L2', 'L3'],
+    '1.2': ['L2', 'L3', 'L4'],
+    '2.1': ['L2', 'L3', 'L4'],
+    '2.2': ['L2', 'L3', 'L4'],
+  },
+  M05: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L2', 'L3', 'L4'],
+    '2.1': ['L2', 'L3', 'L4'],
+    '2.2': ['L2', 'L3', 'L4'],
+  },
+  M06: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L2', 'L3', 'L4'],
+    '2.1': ['L2', 'L3', 'L4'],
+    '2.2': ['L2', 'L3', 'L4'],
+  },
+  M07: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L3', 'L4'],
+    '2.1': ['L3', 'L4'],
+    '2.2': ['L3', 'L4'],
+  },
+  M08: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L3', 'L4'],
+    '2.1': ['L3', 'L4'],
+    '2.2': ['L3', 'L4'],
+  },
+  M09: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L3', 'L4'],
+    '2.1': ['L3', 'L4'],
+    '2.2': ['L3', 'L4'],
+  },
+  M10: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L3', 'L4'],
+    '2.1': ['L2', 'L3', 'L4'],
+    '2.2': ['L3', 'L4'],
+    '3.1': ['L2', 'L3', 'L4'],
+    '3.2': ['L2', 'L3', 'L4'],
+  },
+  M11: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L2', 'L3', 'L4'],
+    '2.1': ['L2', 'L3', 'L4'],
+    '2.2': ['L2', 'L3', 'L4'],
+  },
+  M12: {
+    '1.1': ['L3', 'L4'],
+    '1.2': ['L3', 'L4'],
+    '2.1': ['L3', 'L4'],
+    '2.2': ['L2', 'L3'],
+    '3.1': ['L2', 'L3', 'L4'],
+    '3.2': ['L3', 'L4'],
+  },
+  M13: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L3', 'L4'],
+    '2.1': ['L3', 'L4'],
+    '2.2': ['L3', 'L4'],
+  },
+  M14: {
+    '1.1': ['L3', 'L4'],
+    '1.2': ['L3', 'L4'],
+    '2.1': ['L3', 'L4'],
+    '2.2': ['L3', 'L4'],
+    '3.1': ['L3', 'L4'],
+    '3.2': ['L3', 'L4'],
+  },
+  M15: {
+    '1.1': ['L3', 'L4'],
+    '1.2': ['L2', 'L3', 'L4'],
+    '2.1': ['L3', 'L4'],
+    '2.2': ['L3', 'L4'],
+  },
+  M16: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L2', 'L3', 'L4'],
+    '2.1': ['L3', 'L4'],
+    '2.2': ['L3', 'L4'],
+  },
+  M17: {
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L2', 'L3', 'L4'],
+    '2.1': ['L2', 'L3', 'L4'],
+    '2.2': ['L2', 'L3', 'L4'],
+  },
+}
+
+const getVariationLevels = (motifId, varId) => {
+  const motifConfig = VARIATION_LEVEL_CONFIG[motifId]
+  if (motifConfig && motifConfig[varId]) {
+    return motifConfig[varId]
+  }
+  return ['L2', 'L3', 'L4']
+}
+
 const getDaysSincePractice = (lastPracticeTime) => {
   if (!lastPracticeTime) return Infinity
   const now = Date.now()
@@ -392,7 +513,7 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
     ? ['外圈：高一基础核心模块', '中圈：高二核心重难点模块', '内圈：高三综合压轴大题']
     : ['外圈：高一基础核心模块', '中圈：高二核心重难点模块', '内圈：高三综合压轴大题']
 
-  const ringColors = ['#34d399', '#fbbf24', '#ef4444']
+  const ringColors = ['#34d399', '#60a5fa', '#ef4444']
 
   const renderDetailPanel = () => {
     if (!selectedTarget) return null
@@ -401,26 +522,60 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
     const hasSpecialties = detailData.specialties && detailData.specialties.length > 0
     const currentElo = detailData.elo_score || 500
 
-    const getLightStyle = (lvl) => {
-      const thresholds = { L2: { green: 1001, amber: 800 }, L3: { green: 1801, amber: 1500 }, L4: { green: 2501, amber: 2200 } }
-      const t = thresholds[lvl] || { green: 9999, amber: 9999 }
-      if (currentElo >= t.green) return 'bg-emerald-500 text-white border-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
-      if (currentElo >= t.amber) return 'bg-amber-500 text-white border-amber-600 shadow-[0_0_8px_rgba(245,158,11,0.3)]'
+    const getLightStyleForVariation = (lvl, variation) => {
+      const motifId = detailData.motif_id
+      const varId = variation?.var_id
+      const allowedLevels = getVariationLevels(motifId, varId)
+      
+      if (!allowedLevels.includes(lvl)) {
+        return null
+      }
+      
+      const subTargets = (previewSubTargets || selectedTarget?.sub_targets) || []
+      const subForLevel = subTargets.filter(sub => sub.level_req === lvl)
+      
+      if (subForLevel.length === 0) {
+        return 'bg-slate-100 text-slate-400 border-slate-200 dark:bg-zinc-800/50 dark:text-zinc-600 dark:border-zinc-700'
+      }
+      
+      const allGreen = subForLevel.every(sub => sub.is_mastered === true)
+      const hasRed = subForLevel.some(sub => sub.is_mastered === false || sub.is_mastered === 'warning')
+      
+      if (allGreen) {
+        return 'bg-emerald-500 text-white border-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
+      }
+      if (hasRed) {
+        return 'bg-red-500 text-white border-red-600 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+      }
       return 'bg-slate-100 text-slate-400 border-slate-200 dark:bg-zinc-800/50 dark:text-zinc-600 dark:border-zinc-700'
     }
 
     const calculatePromotionProgress = () => {
       if (!hasSpecialties) return null
       
-      let l2Variations = []
-      let l3Variations = []
-      let l4Variations = []
+      let totalVariations = 0
+      let masteredVariations = 0
+      
+      const subTargets = (previewSubTargets || selectedTarget?.sub_targets) || []
+      const motifId = detailData.motif_id
       
       detailData.specialties.forEach(spec => {
-        spec.variations?.forEach(v => {
-          if ((v.master_benchmarks || []).some(b => b.level === 'L2')) l2Variations.push(v)
-          if ((v.master_benchmarks || []).some(b => b.level === 'L3')) l3Variations.push(v)
-          if ((v.master_benchmarks || []).some(b => b.level === 'L4')) l4Variations.push(v)
+        spec.variations?.forEach(variation => {
+          totalVariations++
+          
+          const varId = variation?.var_id
+          const levels = getVariationLevels(motifId, varId)
+          
+          if (levels.length === 0) return
+          
+          const allLevelsMastered = levels.every(lvl => {
+            const subForLevel = subTargets.filter(sub => sub.level_req === lvl)
+            return subForLevel.length > 0 && subForLevel.every(sub => sub.is_mastered === true)
+          })
+          
+          if (allLevelsMastered) {
+            masteredVariations++
+          }
         })
       })
 
@@ -428,36 +583,20 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
       
       let nextLevel = null
       let eloGap = 0
-      let variationsGap = 0
-      let totalVariations = 0
-      let masteredVariations = 0
       
       if (currentLevel === 'L1' || currentLevel === 'L2') {
         nextLevel = currentElo >= 1001 ? 'L3' : 'L2'
         const targetElo = nextLevel === 'L2' ? 1001 : 1801
         eloGap = Math.max(0, targetElo - currentElo)
-        
-        const targetVariations = nextLevel === 'L2' ? l2Variations : [...l2Variations, ...l3Variations]
-        totalVariations = targetVariations.length
-        masteredVariations = targetVariations.filter(v => 
-          (v.master_benchmarks || []).every(b => currentElo >= (b.level === 'L2' ? 1001 : b.level === 'L3' ? 1801 : 2501))
-        ).length
-        variationsGap = totalVariations - masteredVariations
       } else if (currentLevel === 'L3') {
         nextLevel = 'L4'
         eloGap = Math.max(0, 2501 - currentElo)
-        totalVariations = l4Variations.length
-        masteredVariations = l4Variations.filter(v => 
-          (v.master_benchmarks || []).every(b => currentElo >= 2501)
-        ).length
-        variationsGap = totalVariations - masteredVariations
       }
 
       return {
         currentLevel,
         nextLevel,
         eloGap,
-        variationsGap,
         totalVariations,
         masteredVariations,
         progress: totalVariations > 0 ? (masteredVariations / totalVariations) * 100 : 0
@@ -500,11 +639,15 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
                     <div key={vIdx} className={`flex justify-between items-center p-3 rounded-lg border transition-colors ${isAcademicMode ? 'bg-white border-slate-200' : 'bg-zinc-900 border-zinc-800'}`}>
                       <span className="text-sm font-medium text-slate-700 dark:text-zinc-300">{v.name}</span>
                       <div className="flex gap-1.5">
-                        {['L2', 'L3', 'L4'].map(lvl => (v.master_benchmarks || []).some(b => b.level === lvl) && (
-                          <div key={lvl} className={`px-2 py-0.5 rounded-full text-[10px] font-black border flex items-center gap-1 ${getLightStyle(lvl)}`}>
-                            <div className={`w-1 h-1 rounded-full ${getLightStyle(lvl).includes('white') ? 'bg-white animate-pulse' : 'bg-current opacity-30'}`} /> {lvl}
-                          </div>
-                        ))}
+                        {['L2', 'L3', 'L4'].map(lvl => {
+                          const lightStyle = getLightStyleForVariation(lvl, v)
+                          if (!lightStyle) return null
+                          return (
+                            <div key={lvl} className={`px-2 py-0.5 rounded-full text-[10px] font-black border flex items-center gap-1 ${lightStyle}`}>
+                              <div className={`w-1 h-1 rounded-full ${lightStyle.includes('white') ? 'bg-white animate-pulse' : 'bg-current opacity-30'}`} /> {lvl}
+                            </div>
+                          )
+                        })}
                       </div>
                     </div>
                   ))}
@@ -612,6 +755,27 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
               <span className="text-sm font-medium" style={{ color: ringColors[2] }}>{ringLabels[2]}</span>
             </div>
           )}
+          <div className={`pt-3 mt-3 border-t ${isAcademicMode ? 'border-slate-200' : 'border-zinc-700'}`}>
+            <div className="text-xs font-bold mb-2" style={{ color: textMuted }}>等级图例</div>
+            <div className="space-y-1.5 text-xs">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-zinc-600" />
+                <span style={{ color: textMuted }}>L1: 100-1000分</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_4px_rgba(59,130,246,0.5)]" />
+                <span style={{ color: textColor }}>L2: 1001-1800</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-[0_0_4px_rgba(168,85,247,0.5)]" />
+                <span style={{ color: textColor }}>L3: 1801-2500</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_4px_rgba(245,158,11,0.5)]" />
+                <span style={{ color: textColor }}>L4: 2501+</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -646,7 +810,7 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
         <circle cx="500" cy="500" r="380" fill="none" stroke="rgba(52, 211, 153, 0.35)" strokeWidth="2" strokeDasharray="12,6" />
         
         {showMiddleRing && (
-          <circle cx="500" cy="500" r="240" fill="none" stroke="rgba(251, 191, 36, 0.35)" strokeWidth="2" strokeDasharray="10,5" />
+          <circle cx="500" cy="500" r="240" fill="none" stroke="rgba(96, 165, 250, 0.35)" strokeWidth="2" strokeDasharray="10,5" />
         )}
         
         {showInnerRing && (

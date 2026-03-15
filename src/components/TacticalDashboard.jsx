@@ -294,7 +294,7 @@ function TacticalDashboard({ tacticalData, onDeployToZone, currentGrade, onGloba
     if (grade === 'grade10') {
       fill = '#34d399'
     } else if (grade === 'grade11') {
-      fill = '#fbbf24'
+      fill = '#60a5fa'
     } else if (grade === 'grade12') {
       fill = '#ef4444'
     }
@@ -467,24 +467,18 @@ function TacticalDashboard({ tacticalData, onDeployToZone, currentGrade, onGloba
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    {l2Subs.length > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <span className={`text-xs font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>L2 熟练</span>
-                        <span className={`w-3 h-3 rounded-full ${getStatusDotColor(l2Status)}`}></span>
-                      </div>
-                    )}
-                    {l3Subs.length > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <span className={`text-xs font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>L3 迁移</span>
-                        <span className={`w-3 h-3 rounded-full ${getStatusDotColor(l3Status)}`}></span>
-                      </div>
-                    )}
-                    {l4Subs.length > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <span className={`text-xs font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>L4 融会</span>
-                        <span className={`w-3 h-3 rounded-full ${getStatusDotColor(l4Status)}`}></span>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-xs font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>L2 熟练</span>
+                      <span className={`w-3 h-3 rounded-full ${getStatusDotColor(l2Status)}`}></span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-xs font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>L3 迁移</span>
+                      <span className={`w-3 h-3 rounded-full ${getStatusDotColor(l3Status)}`}></span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-xs font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>L4 融会</span>
+                      <span className={`w-3 h-3 rounded-full ${getStatusDotColor(l4Status)}`}></span>
+                    </div>
                     
                     <button
                       onClick={(e) => handleGoToTraining(encounter.target_id, e)}
@@ -631,6 +625,28 @@ function TacticalDashboard({ tacticalData, onDeployToZone, currentGrade, onGloba
 
             {viewMode === 'map' ? (
           <div className="space-y-4">
+            <div className={`p-3 rounded-lg border ${isAcademicMode ? 'bg-blue-50/50 border-blue-200' : 'bg-blue-900/20 border-blue-700/30'}`}>
+              <div className="text-xs font-bold mb-2 text-slate-600 dark:text-zinc-400">等级图例</div>
+              <div className="flex flex-wrap gap-4 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-slate-300 dark:bg-zinc-600" />
+                  <span className="text-slate-500 dark:text-zinc-500">L1: 100-1000分</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]" />
+                  <span className="text-slate-600 dark:text-zinc-400">L2: 1001-1800分</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-purple-500 shadow-[0_0_6px_rgba(168,85,247,0.5)]" />
+                  <span className="text-slate-600 dark:text-zinc-400">L3: 1801-2500分</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]" />
+                  <span className="text-slate-600 dark:text-zinc-400">L4: 2501+分</span>
+                </div>
+              </div>
+            </div>
+
             <div className={`w-full aspect-square md:aspect-video rounded-lg border overflow-hidden relative ${isAcademicMode ? 'bg-white border-slate-200' : 'bg-zinc-950 border-zinc-800'}`}>
               <HoloMap 
                 tacticalData={tacticalData} 

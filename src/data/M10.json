@@ -194,8 +194,8 @@
             {
               "level": "L4",
               "id": "M10_V1.1_MB_L4_V96",
-              "problem": "[2025·湖北武汉一模·T12 风格] 已知 $F_1, F_2$ 分别是双曲线 $C: \\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1 (a>0, b>0)$ 的左、右焦点，$P$ 为 $C$ 右支上一点。若 $|PF_1| = 3|PF_2|$ 且 $PF_1 \\perp PF_2$，求双曲线 $C$ 的离心率。",
-              "logic_key": "定义与勾股定理的联立",
+              "problem": "[2024·新高考I卷·T12 风格] 已知 $F_1, F_2$ 分别是双曲线 $C: \\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1 (a>0, b>0)$ 的左、右焦点，$P$ 为 $C$ 右支上一点。若 $|PF_1| = 3|PF_2|$ 且 $PF_1 \\perp PF_2$，求双曲线 $C$ 的离心率。",
+              "logic_key": "定义与勾股定理的联立 (新高考高频)",
               "analysis": {
                 "core_idea": "新高考压轴小题。结合第一定义（距离差）和几何条件（垂直）构建方程组。",
                 "key_steps": [
@@ -710,14 +710,16 @@
             ],
             "trap_type": [
               {
-                "type": "boundary_open_close",
-                "weight": 0.7,
+                "type": "interval_boundary",
+                "weight": 0.4,
+                "difficulty_delta": 0,
                 "desc": "开区间/闭区间判断错误"
               },
               {
-                "type": "hidden_condition",
-                "weight": 0.3,
-                "desc": "忽略隐含条件 (如 e>1)"
+                "type": "hidden_constraint",
+                "weight": 0.6,
+                "difficulty_delta": 1.0,
+                "desc": "忽略隐含几何约束 (如三角形存在性)"
               }
             ]
           },
@@ -848,7 +850,7 @@
               "level": "L4",
               "id": "M10_V2.2_MB_L4_V96_B",
               "problem": "[2025·浙江绍兴一模·T12 风格] 已知双曲线 $C: \\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$，$F$ 为右焦点。若存在点 $P$ 在双曲线右支上，使得 $|PF| = a$，求 $e$ 的取值范围。",
-              "logic_key": "焦半径公式与定义域约束",
+              "logic_key": "焦半径公式与定义域约束 (存在性问题)",
               "analysis": {
                 "core_idea": "新高考压轴小题。利用焦半径公式 $|PF|=ex-a$ 结合定义域 $x \\ge a$ 构建不等式。",
                 "key_steps": [
@@ -1050,8 +1052,8 @@
             {
               "level": "L4",
               "id": "M10_V3.1_MB_L4_V96",
-              "problem": "[2025·湖北武汉一模·T12 风格] 若圆 $x^2 + y^2 = r^2 (r>0)$ 上恰有 3 个点到直线 $x - y + 2 = 0$ 的距离为 1，求 $r$ 的值。",
-              "logic_key": "圆上点到直线距离的个数分析",
+              "problem": "[2023·新高考I卷·T11 风格] 若圆 $x^2 + y^2 = r^2 (r>0)$ 上恰有 3 个点到直线 $x - y + 2 = 0$ 的距离为 1，求 $r$ 的值。",
+              "logic_key": "圆上点到直线距离的个数分析 (数形结合)",
               "analysis": {
                 "core_idea": "新高考压轴小题。数形结合，分析圆心到直线距离 $d$ 与半径 $r$ 及给定距离 $h=1$ 的关系。",
                 "key_steps": [

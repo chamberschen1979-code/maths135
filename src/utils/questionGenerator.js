@@ -1,5 +1,4 @@
 import scoringEngine from '../data/scoringEngine.json'
-import knowledgeAggregationIndex from '../data/knowledge-aggregation-index.json'
 import strategyLib from '../data/strategy_lib.json'
 
 const LEVEL_SCORES = scoringEngine.level_scores
@@ -225,24 +224,28 @@ const getScaffoldingsForLevels = async (motifData, levels, variationInfo) => {
     })
   }
   
-  const mapping = knowledgeAggregationIndex.mapping?.[motifData?.motif_id]
-  if (mapping?.knowledge_items) {
-    levels.forEach(level => {
-      const itemsForLevel = mapping.knowledge_items.filter(item => 
-        item.level_scaffolding && item.level_scaffolding.includes(level)
-      )
-      
-      itemsForLevel.forEach(item => {
-        scaffoldings.push({
-          type: 'knowledge_item',
-          source: 'aggregation_index',
-          knowledgeId: item.id,
-          name: item.name,
-          level,
-          scaffolding: item.level_scaffolding
-        })
-      })
-    })
+  if (motifData?.specialties) {
+    for (const specialty of motifData.specialties) {
+      if (specialty.variations) {
+        for (const variation of specialty.variations) {
+          if (variation.master_benchmarks) {
+            for (const benchmark of variation.master_benchmarks) {
+              if (levels.includes(benchmark.level)) {
+                scaffoldings.push({
+                  type: 'benchmark',
+                  source: 'master_benchmarks',
+                  level: benchmark.level,
+                  problem: benchmark.problem,
+                  logicKey: benchmark.logic_key,
+                  specialtyId: specialty.spec_id,
+                  variationId: variation.var_id
+                })
+              }
+            }
+          }
+        }
+      }
+    }
   }
   
   return scaffoldings

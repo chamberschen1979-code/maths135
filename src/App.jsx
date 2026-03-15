@@ -534,7 +534,7 @@ function App() {
     };
   }
 
-  const addErrorToNotebook = (targetId, diagnosis) => {
+  const addErrorToNotebook = (targetId, diagnosis, level) => {
     setErrorNotebook(prev => {
       const exists = prev.find(e => e.targetId === targetId && !e.resolved)
       if (exists) return prev
@@ -543,6 +543,7 @@ function App() {
         id: `err_${Date.now()}`,
         targetId,
         diagnosis,
+        level: level || 'L2',
         addedAt: new Date().toISOString(),
         resolved: false
       }]
@@ -680,7 +681,7 @@ function App() {
     return { cleanText, settled: true }
   }
 
-  const updateTargetData = (targetId, grade, expChange, masteredSubId = null, isDiminished = false) => {
+  const updateTargetData = (targetId, grade, expChange, masteredSubIds = [], isDiminished = false) => {
     const isWin = grade === 'S' || grade === 'A'
     
     if (isWin) {
@@ -704,10 +705,10 @@ function App() {
           const encounter = { ...map.encounters[encounterIndex] }
           const oldLevel = encounter.gear_level
           
-          if (masteredSubId && encounter.sub_targets) {
+          if (masteredSubIds.length > 0 && encounter.sub_targets) {
             encounter.sub_targets = encounter.sub_targets.map(sub => 
-              sub.sub_id === masteredSubId 
-                ? { ...sub, is_mastered: true, last_practice: new Date().toISOString() } 
+              masteredSubIds.includes(sub.sub_id)
+                ? { ...sub, is_mastered: true, last_practice: new Date().toISOString() }
                 : sub
             )
           }
@@ -771,7 +772,7 @@ function App() {
     })
   }
 
-  const handleBattleComplete = ({ targetId, eloChange, newHealthStatus, grade, masteredSubId, practicedSubId }) => {
+  const handleBattleComplete = ({ targetId, eloChange, newHealthStatus, grade, masteredSubIds = [] }) => {
     let isDiminished = false
     
     if (grade === 'S' || grade === 'A') {
@@ -780,14 +781,7 @@ function App() {
         if (encounter && encounter.sub_targets) {
           const hasNonGreenSub = encounter.sub_targets.some(sub => sub.is_mastered !== true)
           
-          if (practicedSubId) {
-            const practicedSub = encounter.sub_targets.find(sub => sub.sub_id === practicedSubId)
-            if (practicedSub && practicedSub.is_mastered === true) {
-              isDiminished = true
-            }
-          }
-          
-          if (hasNonGreenSub && !isDiminished) {
+          if (hasNonGreenSub && masteredSubIds.length === 0) {
             isDiminished = true
           }
           break
@@ -795,7 +789,7 @@ function App() {
       }
     }
     
-    updateTargetData(targetId, grade, eloChange, masteredSubId, isDiminished)
+    updateTargetData(targetId, grade, eloChange, masteredSubIds, isDiminished)
   }
 
   const handleCalibrate = (targetId, level) => {
@@ -1738,23 +1732,33 @@ function App() {
                     for (const m of newData.tactical_maps) {
                       for (const e of m.encounters) {
                         if (e.target_id === encounter.target_id) {
+                          let newStatus = null;
                           // 三色切换逻辑：灰→红→绿→灰
                           if (level === 'L2') {
-                            if (l2Gray) e.elo_score = 1001;
-                            else if (!l2Green) e.elo_score = 1800;
-                            else e.elo_score = 800;
+                            if (l2Gray) { e.elo_score = 1001; newStatus = false; }
+                            else if (!l2Green) { e.elo_score = 1800; newStatus = true; }
+                            else { e.elo_score = 800; newStatus = null; }
                           }
                           if (level === 'L3') {
-                            if (l3Gray) e.elo_score = 1801;
-                            else if (!l3Green) e.elo_score = 2500;
-                            else e.elo_score = 1800;
+                            if (l3Gray) { e.elo_score = 1801; newStatus = false; }
+                            else if (!l3Green) { e.elo_score = 2500; newStatus = true; }
+                            else { e.elo_score = 1800; newStatus = null; }
                           }
                           if (level === 'L4') {
-                            if (l4Gray) e.elo_score = 2501;
-                            else if (!l4Green) e.elo_score = 3000;
-                            else e.elo_score = 2500;
+                            if (l4Gray) { e.elo_score = 2501; newStatus = false; }
+                            else if (!l4Green) { e.elo_score = 3000; newStatus = true; }
+                            else { e.elo_score = 2500; newStatus = null; }
                           }
                           e.gear_level = e.elo_score >= 2501 ? 'L4' : e.elo_score >= 1801 ? 'L3' : e.elo_score >= 1001 ? 'L2' : 'L1';
+                          
+                          // 同步修改 sub_targets 的 is_mastered 状态
+                          if (e.sub_targets && newStatus !== null) {
+                            e.sub_targets.forEach(sub => {
+                              if (sub.level_req === level) {
+                                sub.is_mastered = newStatus;
+                              }
+                            });
+                          }
                         }
                       }
                     }

@@ -1,6 +1,5 @@
 import scoringEngine from '../data/scoringEngine.json'
 import strategyLib from '../data/strategy_lib.json'
-import knowledgeAggregationIndex from '../data/knowledge-aggregation-index.json'
 
 const LEVEL_SCORES = scoringEngine.level_scores
 const LEVEL_INDICATORS = scoringEngine.level_indicators
@@ -110,12 +109,17 @@ const getL4TrapForMotif = async (motifId) => {
           return trapMatch[1]
         }
       }
+      if (variation.common_pitfalls) {
+        for (const pitfall of variation.common_pitfalls) {
+          if (typeof pitfall === 'string') {
+            return pitfall
+          }
+          if (pitfall.description) {
+            return pitfall.description
+          }
+        }
+      }
     }
-  }
-  
-  const mapping = knowledgeAggregationIndex.mapping?.[motifId]
-  if (mapping?.l4_trap_reference) {
-    return mapping.l4_trap_reference
   }
   
   return '核心知识点'
@@ -168,13 +172,29 @@ export const generateJoeFeedback = async (params) => {
   return feedback
 }
 
-export const getKnowledgeItemForLevel = (motifId, level) => {
-  const mapping = knowledgeAggregationIndex.mapping?.[motifId]
-  if (!mapping || !mapping.knowledge_items) return null
+export const getKnowledgeItemForLevel = async (motifId, level) => {
+  const motifData = await loadMotifData(motifId)
+  if (!motifData || !motifData.specialties) return null
   
-  return mapping.knowledge_items.find(item => 
-    item.level_scaffolding && item.level_scaffolding.includes(level)
-  )
+  for (const specialty of motifData.specialties) {
+    for (const variation of specialty.variations || []) {
+      if (variation.master_benchmarks) {
+        const benchmark = variation.master_benchmarks.find(b => b.level === level)
+        if (benchmark) {
+          return {
+            name: variation.name,
+            level: benchmark.level,
+            problem: benchmark.problem,
+            logicKey: benchmark.logic_key,
+            specialtyId: specialty.spec_id,
+            variationId: variation.var_id
+          }
+        }
+      }
+    }
+  }
+  
+  return null
 }
 
 export const findWeaponForMotifAndLevel = async (motifId, level, variationId = null) => {

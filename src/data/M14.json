@@ -31,7 +31,8 @@
               {
                 "type": "poly_exp",
                 "weight": 0.5,
-                "desc": "多项式乘指数 (经典)"
+                "desc": "多项式乘指数 (经典)",
+                "difficulty_delta": "0"
               },
               {
                 "type": "log_poly",
@@ -42,42 +43,45 @@
             ],
             "proof_target": [
               {
-                "type": "sum_shift",
+                "type": "sum_offset",
                 "weight": 0.6,
-                "desc": "证明 x1+x2 > 2x0"
+                "difficulty_delta": 1.0,
+                "desc": "证明 x1+x2 > 2x0 (和式偏移)"
               },
               {
-                "type": "prod_shift",
+                "type": "product_offset",
                 "weight": 0.4,
-                "difficulty_delta": "+1",
-                "desc": "证明 x1 x2 > x0^2"
+                "difficulty_delta": 1.2,
+                "desc": "证明 x1*x2 > x0² (积式偏移，更难)"
               }
             ],
             "trap_type": [
               {
                 "type": "domain_bound",
                 "weight": 0.5,
-                "desc": "定义域边界限制"
+                "desc": "定义域边界限制",
+                "difficulty_delta": "0"
               },
               {
                 "type": "second_deriv",
                 "weight": 0.5,
-                "desc": "需二次求导判号"
+                "desc": "需二次求导判号",
+                "difficulty_delta": "0"
               }
             ]
           },
           "original_pool": [
             {
-              "desc": "[24 新高考 I] 已知 f(x)=e^x - ax 有两个零点 x1, x2，证明 x1+x2 > 2ln a。",
-              "level": "L4"
+              "desc": "[24新高考I] 求函数单调区间与极值。",
+              "level": "L3"
             },
             {
-              "desc": "[25 山东济南一模] 设 f(x)=x ln x - ax^2 有两个极值点，证明 x1+x2 > 2/e。",
-              "level": "L4"
+              "desc": "[23新高考II] 讨论参数范围使函数有两零点。",
+              "level": "L3"
             },
             {
-              "desc": "[25 浙江杭州二模] 已知 f(x)=ln x/x - a 有两根，证明 x1 x2 > e^2。",
-              "level": "L4"
+              "desc": "[24广东一模] 含参函数零点个数讨论。",
+              "level": "L3"
             },
             {
               "desc": "[24 华附一模] 函数 f(x)=e^x - ex 的两零点为 x1, x2，证明 x1+x2 > 2。",
@@ -177,47 +181,24 @@
               }
             },
             {
-              "level": "L4",
-              "id": "M14_V1.1_MB_L4_V97_B",
-              "problem": "[2025·浙江杭州二模·T22 风格] 已知 $f(x) = \\frac{\\ln x}{x} - a$ 有两个零点 $x_1, x_2$ ($0<x_1<e<x_2$)，证明：$x_1 x_2 > e^2$。",
-              "logic_key": "对数平均不等式或双变量化单",
+              "level": "L3",
+              "id": "M14_V1.1_MB_L3_V97",
+              "problem": "[2024·新高考I卷·T21(1)风格] 已知函数 $f(x) = x e^{-x}$。求 $f(x)$ 的单调区间和极值。",
+              "logic_key": "基础求导与单调性分析",
               "analysis": {
-                "core_idea": "【核心思路】极值点 $x_0=e$。目标证 $x_1 x_2 > e^2 \\iff \\ln x_1 + \\ln x_2 > 2$。利用 $\\frac{\\ln x_1}{x_1} = \\frac{\\ln x_2}{x_2} = a$，采用比值代换 $t = x_2/x_1$。",
+                "core_idea": "L3 基础。仅考查求导、列表、判断单调性，为 L4 的偏移做铺垫。",
                 "key_steps": [
-                  "1. 极值点分析：",
-                  "   $f'(x) = \\frac{1-\\ln x}{x^2}$。令 $f'(x)=0 \\Rightarrow x_0=e$。",
-                  "   $x \\in (0, e)$ 增，$x \\in (e, +\\infty)$ 减。",
-                  "2. 转化目标：",
-                  "   需证 $x_1 x_2 > e^2$，两边取对数即证 $\\ln x_1 + \\ln x_2 > 2$。",
-                  "3. 比值代换消元：",
-                  "   令 $t = \\frac{x_2}{x_1}$，因 $x_1 < e < x_2$，故 $t > 1$。",
-                  "   由 $f(x_1)=f(x_2)=a$ 得 $\\frac{\\ln x_1}{x_1} = \\frac{\\ln x_2}{x_2}$。",
-                  "   代入 $x_2 = t x_1$：$\\frac{\\ln x_1}{x_1} = \\frac{\\ln (t x_1)}{t x_1} = \\frac{\\ln t + \\ln x_1}{t x_1}$。",
-                  "   化简得：$t \\ln x_1 = \\ln t + \\ln x_1 \\Rightarrow (t-1)\\ln x_1 = \\ln t$。",
-                  "   解得：$\\ln x_1 = \\frac{\\ln t}{t-1}$。",
-                  "4. 表示 $\\ln x_2$：",
-                  "   $\\ln x_2 = \\ln (t x_1) = \\ln t + \\ln x_1 = \\ln t + \\frac{\\ln t}{t-1} = \\frac{t \\ln t}{t-1}$。",
-                  "5. 构建单变量函数：",
-                  "   目标和 $S = \\ln x_1 + \\ln x_2 = \\frac{(t+1)\\ln t}{t-1}$。",
-                  "   需证 $S > 2$，即证 $\\frac{(t+1)\\ln t}{t-1} > 2$。",
-                  "   因 $t>1$，$t-1>0$，等价于 $(t+1)\\ln t - 2(t-1) > 0$。",
-                  "6. 构造函数求导：",
-                  "   令 $g(t) = (t+1)\\ln t - 2(t-1)$ ($t>1$)。",
-                  "   $g'(t) = \\ln t + (t+1)\\frac{1}{t} - 2 = \\ln t + \\frac{1}{t} - 1$。",
-                  "   再求二阶导：$g''(t) = \\frac{1}{t} - \\frac{1}{t^2} = \\frac{t-1}{t^2}$。",
-                  "7. 判断符号：",
-                  "   当 $t>1$ 时，$g''(t) > 0$，故 $g'(t)$ 单调递增。",
-                  "   $g'(t) > g'(1) = 0 + 1 - 1 = 0$。",
-                  "   故 $g(t)$ 单调递增，$g(t) > g(1) = 0$。",
-                  "8. 结论：",
-                  "   原不等式成立，即 $x_1 x_2 > e^2$。"
+                  "1. 定义域：$x \\in \\mathbb{R}$。",
+                  "2. 求导：$f'(x) = e^{-x} + x(-e^{-x}) = e^{-x}(1-x)$。",
+                  "3. 判号：令 $f'(x)=0 \\Rightarrow x=1$。",
+                  "   $x<1$ 时 $f'(x)>0$，递增；$x>1$ 时 $f'(x)<0$，递减。",
+                  "4. 极值：极大值 $f(1) = 1/e$。"
                 ],
                 "common_pitfalls": [
-                  "比值代换后计算繁琐出错。",
-                  "构造函数 $g(t)$ 后忘记求二阶导判断 $g'(t)$ 符号。",
-                  "忽略 $t>1$ 的定义域条件。"
+                  "求导公式错误",
+                  "单调区间写反"
                 ],
-                "conclusion": "x_1 x_2 > e^2"
+                "conclusion": "增区间 $(-\\infty, 1)$，减区间 $(1, +\\infty)$，极大值 $1/e$"
               }
             }
           ]
@@ -243,7 +224,8 @@
               {
                 "type": "sum_prod",
                 "weight": 0.5,
-                "desc": "和积混合不等式"
+                "desc": "和积混合不等式",
+                "difficulty_delta": "0"
               },
               {
                 "type": "deriv_sum",
@@ -256,7 +238,8 @@
               {
                 "type": "ratio_sub",
                 "weight": 0.7,
-                "desc": "比值代换 t=x1/x2"
+                "desc": "比值代换 t=x1/x2",
+                "difficulty_delta": "0"
               },
               {
                 "type": "diff_sub",
@@ -269,27 +252,29 @@
               {
                 "type": "range_limit",
                 "weight": 0.6,
-                "desc": "新变量 t 的范围界定"
+                "desc": "新变量 t 的范围界定",
+                "difficulty_delta": "0"
               },
               {
                 "type": "limit_calc",
                 "weight": 0.4,
-                "desc": "洛必达法则求极限"
+                "desc": "洛必达法则求极限",
+                "difficulty_delta": "0"
               }
             ]
           },
           "original_pool": [
             {
-              "desc": "[25 山东青岛一模] 设 f(x)=ln x - ax 两零点 x1, x2，证明 x1+x2 > 2/a。",
-              "level": "L4"
+              "desc": "[24山东一模] 用 $x_1, x_2$ 表示参数 $a$。",
+              "level": "L3"
             },
             {
-              "desc": "[25 华附一模] 已知 f(x)=e^x - ax^2 三根，证明任意两根之积小于某值。",
-              "level": "L4"
+              "desc": "[23新高考II] 证明基础的对数平均不等式。",
+              "level": "L3"
             },
             {
-              "desc": "[24 省实期中] 设 f(x)=x ln x - a(x-1) 两零点，证明 x1 x2 < 1。",
-              "level": "L4"
+              "desc": "[24江苏一模] 含参函数零点个数讨论。",
+              "level": "L3"
             },
             {
               "desc": "[25 深圳二模] 已知 f(x)=e^x/x - a 两零点，证明 f'(x1)+f'(x2) > 0。",
@@ -382,56 +367,23 @@
               }
             },
             {
-              "level": "L4",
-              "id": "M14_V1.2_MB_L4_V97_B",
-              "problem": "[2025·广州二模·T22 风格] 已知 $f(x) = \\frac{e^x}{x} - a$ 有两个零点 $x_1, x_2$ ($0 < x_1 < 1 < x_2$)。证明：$x_1 + x_2 > 2$。",
-              "logic_key": "对称构造法在商型函数中的应用",
+              "level": "L3",
+              "id": "M14_V1.2_MB_L3_V97",
+              "problem": "[2024·山东济南一模·T22(1)风格] 已知函数 $f(x) = \\ln x - ax$ ($a>0$)。讨论 $f(x)$ 的单调性；若 $f(x)$ 有两个零点，求 $a$ 的取值范围。",
+              "logic_key": "含参单调性讨论与零点存在性",
               "analysis": {
-                "core_idea": "【核心思路】极值点 $x_0=1$。构造 $F(x) = f(x) - f(2-x)$，利用单调性证明偏移。",
+                "core_idea": "L3 基础。考查分类讨论思想和零点存在定理，是双变量问题的前置技能。",
                 "key_steps": [
-                  "1. 求导找极值：",
-                  "   $f'(x) = \\frac{e^x(x-1)}{x^2}$。",
-                  "   令 $f'(x)=0 \\Rightarrow x_0=1$。",
-                  "   $x \\in (0, 1)$ 减，$x \\in (1, +\\infty)$ 增。",
-                  "2. 构造差函数：",
-                  "   令 $F(x) = f(x) - f(2-x)$，定义域 $x \\in (0, 1)$。",
-                  "   $F(x) = \\frac{e^x}{x} - \\frac{e^{2-x}}{2-x}$。",
-                  "3. 求导分析：",
-                  "   $F'(x) = f'(x) + f'(2-x) = \\frac{e^x(x-1)}{x^2} + \\frac{e^{2-x}(2-x-1)}{(2-x)^2}$",
-                  "   $= \\frac{e^x(x-1)}{x^2} + \\frac{e^{2-x}(1-x)}{(2-x)^2}$",
-                  "   $= (x-1) \\left[ \\frac{e^x}{x^2} - \\frac{e^{2-x}}{(2-x)^2} \\right]$。",
-                  "4. 判断括号内符号：",
-                  "   令 $g(u) = \\frac{e^u}{u^2}$ ($u \\in (0, 1)$)。",
-                  "   需比较 $g(x)$ 与 $g(2-x)$。",
-                  "   实际上，直接分析较难，可取对数比较：",
-                  "   比较 $\\frac{e^x}{x^2}$ 与 $\\frac{e^{2-x}}{(2-x)^2}$。",
-                  "   等价于比较 $x - 2\\ln x$ 与 $(2-x) - 2\\ln(2-x)$。",
-                  "   令 $\\phi(t) = t - 2\\ln t$。$\\phi'(t) = 1 - 2/t$。",
-                  "   在 $(0, 1)$ 上 $\\phi'(t) < 0$，递减。",
-                  "   因 $x < 1 < 2-x$，故 $\\phi(x) > \\phi(2-x)$。",
-                  "   即 $\\frac{e^x}{x^2} > \\frac{e^{2-x}}{(2-x)^2}$。",
-                  "   所以括号内 $>0$。",
-                  "5. 综合符号：",
-                  "   因 $x \\in (0, 1)$，$x-1 < 0$。",
-                  "   故 $F'(x) < 0$，$F(x)$ 在 $(0, 1)$ 递减。",
-                  "6. 比较函数值：",
-                  "   $F(x) > F(1) = 0$。",
-                  "   即 $f(x) > f(2-x)$。",
-                  "7. 代入零点：",
-                  "   取 $x=x_1$，得 $f(x_1) > f(2-x_1)$。",
-                  "   因 $f(x_1)=f(x_2)$，故 $f(x_2) > f(2-x_1)$。",
-                  "8. 利用单调性：",
-                  "   $x_2 > 1$，$2-x_1 > 1$。",
-                  "   $f(x)$ 在 $(1, +\\infty)$ 递增。",
-                  "   故 $x_2 > 2-x_1 \\Rightarrow x_1+x_2 > 2$。",
-                  "9. 结论：得证。"
+                  "1. 求导：$f'(x) = \\frac{1}{x} - a = \\frac{1-ax}{x}$。",
+                  "2. 讨论：$a \\le 0$ 时单调递增（无两零点）；$a>0$ 时，$(0, 1/a)$ 增，$(1/a, +\\infty)$ 减。",
+                  "3. 极值：$f(1/a) = -\\ln a - 1$。",
+                  "4. 零点条件：需 $f(1/a) > 0 \\Rightarrow -\\ln a - 1 > 0 \\Rightarrow \\ln a < -1 \\Rightarrow 0 < a < 1/e$。"
                 ],
                 "common_pitfalls": [
-                  "未能正确判断 $F'(x)$ 中括号内的符号。",
-                  "忽略 $f(x)$ 在右侧是递增的。",
-                  "构造函数求导计算复杂导致放弃。"
+                  "忘记讨论 $a \\le 0$",
+                  "解不等式方向错误"
                 ],
-                "conclusion": "x_1 + x_2 > 2"
+                "conclusion": "$0 < a < 1/e$"
               }
             }
           ]
@@ -463,7 +415,8 @@
               {
                 "type": "exp_poly",
                 "weight": 0.6,
-                "desc": "指数 + 多项式零点"
+                "desc": "指数 + 多项式零点",
+                "difficulty_delta": "0"
               },
               {
                 "type": "log_poly",
@@ -474,22 +427,24 @@
             ],
             "target_task": [
               {
-                "type": "max_min_value",
+                "type": "max_value_substitution",
                 "weight": 0.7,
-                "desc": "求含隐零点的函数最值"
+                "difficulty_delta": 1.0,
+                "desc": "求含隐零点的函数最值 (整体代换)"
               },
               {
                 "type": "inequality_proof",
                 "weight": 0.3,
-                "difficulty_delta": "+1",
-                "desc": "证明含隐零点的不等式"
+                "difficulty_delta": 1.2,
+                "desc": "证明含隐零点的不等式 (高阶放缩)"
               }
             ],
             "estimation_precise": [
               {
                 "type": "integer_bound",
                 "weight": 0.5,
-                "desc": "整数夹逼 (如 0<x0<1)"
+                "desc": "整数夹逼 (如 0<x0<1)",
+                "difficulty_delta": "0"
               },
               {
                 "type": "fraction_bound",
@@ -501,16 +456,16 @@
           },
           "original_pool": [
             {
-              "desc": "[24 新高考 I] 设 f(x)=e^x - x - 2，零点为 x0，求 f(x0) 的值域。",
-              "level": "L4"
+              "desc": "[23新高考II] 确定隐零点所在的整数区间。",
+              "level": "L3"
             },
             {
-              "desc": "[25 华附一模] 已知 f(x)=ln x + x - 3 零点 x0，证明 f(x0) < 0。",
-              "level": "L4"
+              "desc": "[24新高考I] 简单的隐零点代换求表达式。",
+              "level": "L3"
             },
             {
-              "desc": "[25 山东烟台一模] 设 f(x)=e^x - ax - 1 极值点 x0，证明 f(x0) >= 0。",
-              "level": "L4"
+              "desc": "[24浙江一模] 零点存在性定理应用。",
+              "level": "L3"
             },
             {
               "desc": "[24 省实二模] 已知 f(x)=x e^x - a 极值点 x0，求 a 的范围使 f(x0) < 1。",
@@ -598,40 +553,190 @@
               }
             },
             {
-              "level": "L4",
-              "id": "M14_V2.1_MB_L4_V97_B",
-              "problem": "[2025·广州二模·T22 风格] 已知 $f(x) = e^x - \\ln x - 2$。证明：$f(x)$ 的极小值 $f(x_0) > 0$。",
-              "logic_key": "隐零点范围估算 + 对勾函数性质",
+              "level": "L3",
+              "id": "M14_V2.1_MB_L3_V97",
+              "problem": "[2024·浙江杭州一模·T22(1)风格] 已知函数 $f(x) = e^x - x - 1$。证明：$f(x) \\ge 0$。",
+              "logic_key": "隐零点直接代换证明",
               "analysis": {
-                "core_idea": "【核心思路】$f'(x_0) = e^{x_0} - \\frac{1}{x_0} = 0 \\Rightarrow e^{x_0} = \\frac{1}{x_0}$。代入得 $f(x_0) = \\frac{1}{x_0} - \\ln x_0 - 2$。利用 $-\\ln x_0 = x_0$ 进一步化简。",
+                "core_idea": "L3 基础。通过求导找到最小值点，直接代入证明不等式。",
                 "key_steps": [
-                  "1. 求导与零点存在性：",
-                  "   $f'(x) = e^x - \\frac{1}{x}$。",
-                  "   $f'(x)$ 在 $(0, +\\infty)$ 单调递增。",
-                  "   $f'(0.5) = \\sqrt{e} - 2 \\approx 1.648 - 2 < 0$。",
-                  "   $f'(1) = e - 1 > 0$。",
-                  "   故存在唯一 $x_0 \\in (0.5, 1)$ 使 $f'(x_0)=0$。",
-                  "2. 关键代换关系：",
-                  "   由 $e^{x_0} = \\frac{1}{x_0}$ 两边取对数：",
-                  "   $x_0 = \\ln(1/x_0) = -\\ln x_0 \\Rightarrow \\ln x_0 = -x_0$。",
-                  "3. 代入目标式化简：",
-                  "   $f(x_0) = e^{x_0} - \\ln x_0 - 2$",
-                  "   $= \\frac{1}{x_0} - (-x_0) - 2$",
-                  "   $= x_0 + \\frac{1}{x_0} - 2$。",
-                  "4. 利用对勾函数性质：",
-                  "   令 $h(t) = t + \\frac{1}{t} - 2$。",
-                  "   由基本不等式 $t + \\frac{1}{t} \\ge 2$，当且仅当 $t=1$ 取等。",
-                  "   因 $x_0 \\in (0.5, 1)$，故 $x_0 \\neq 1$。",
-                  "   所以 $x_0 + \\frac{1}{x_0} > 2$。",
-                  "5. 结论：",
-                  "   $f(x_0) > 0$。得证。"
+                  "1. 求导：$f'(x) = e^x - 1$。",
+                  "2. 极值点：令 $f'(x)=0 \\Rightarrow x=0$。",
+                  "3. 单调性：$x<0$ 时 $f'(x)<0$，递减；$x>0$ 时 $f'(x)>0$，递增。",
+                  "4. 最小值：$f(0) = e^0 - 0 - 1 = 0$。",
+                  "5. 结论：$f(x) \\ge f(0) = 0$。"
                 ],
                 "common_pitfalls": [
-                  "未能发现 $\\ln x_0 = -x_0$ 的关系。",
-                  "忘记验证 $x_0 \\neq 1$。",
-                  "对勾函数单调性判断错误。"
+                  "极值点判断错误",
+                  "最小值计算错误"
                 ],
-                "conclusion": "f(x_0) > 0"
+                "conclusion": "得证"
+              }
+            }
+          ]
+        },
+        {
+          "var_id": "2.2",
+          "name": "隐零点区间夹逼与整数估算",
+          "logic_core": "【新高考高频考点】针对'设而不求'无法完全消元，或题目明确要求'证明 $x_0$ 在某区间'、'求 $[f(x_0)]$ 整数值'的考题。核心策略：利用零点存在性定理确定 $x_0$ 所在区间，结合函数单调性进行精确夹逼，最终估算 $f(x_0)$ 的范围或整数值。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 求导分析 f'(x) 单调性",
+              "2. 寻找相邻整数/特殊值 a,b 使 f'(a)·f'(b)<0",
+              "3. 确定唯一零点 x0 ∈ (a,b)",
+              "4. 利用 f(x) 单调性将 x0 范围转化为 f(x0) 范围"
+            ],
+            "linked_weapons": [
+              "S-DERIV-06-B"
+            ],
+            "weapon_map_note": "S-DERIV-06-B (隐零点区间夹逼与数值估算)"
+          },
+          "variable_knobs": {
+            "estimation_target": [
+              {
+                "type": "integer_interval",
+                "weight": 0.6,
+                "difficulty_delta": 0.5,
+                "desc": "证明 x0 ∈ (n, n+1) (整数区间锁定)"
+              },
+              {
+                "type": "function_range",
+                "weight": 0.4,
+                "difficulty_delta": 1.0,
+                "desc": "估算 f(x0) 的取值范围或整数值"
+              }
+            ],
+            "precision_level": [
+              {
+                "type": "integer_bound",
+                "weight": 0.7,
+                "difficulty_delta": 0,
+                "desc": "利用整数点试值 (f'(n)·f'(n+1)<0)"
+              },
+              {
+                "type": "fraction_bound",
+                "weight": 0.3,
+                "difficulty_delta": 1.0,
+                "desc": "利用特殊分数/无理数点试值 (如 1/2, √2)"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "monotonicity_ignore",
+                "weight": 0.6,
+                "difficulty_delta": 0,
+                "desc": "忽略 f(x) 在区间内的单调性导致范围扩大"
+              },
+              {
+                "type": "calculation_error",
+                "weight": 0.4,
+                "difficulty_delta": 0.5,
+                "desc": "端点值估算错误 (如 e^0.5 估算偏差)"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[23 新高考 II] 已知 f(x)=ae^x - ln x - 1，证明当 a≥1/e 时 f(x)≥0；若 f(x) 有极值点 x0，证明 x0 ∈ (0, 1)。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 九省联考] 设 f(x)=e^x - ax - 1，若 f(x) 有两个零点，证明极小值点 x0 满足 0 < x0 < ln a。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 广东一模] 已知 f(x)=x - ln x - a，讨论零点个数；若存在极值点 x0，估算 f(x0) 的整数部分。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 山东潍坊一模] 设 f(x)=e^x - x^2 - ax，若 f'(x) 有零点 x0，证明 x0 ∈ (ln 2, 1)。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 浙江 Z20 联盟] 已知 f(x)=ln x - ax + 1，若 f(x) 有两零点，证明极值点 x0 > 1/a 且 f(x0) < 0。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 江苏南京盐城一模] 设 f(x)=e^x - ln(x+1) - 1，证明 f(x) 的极小值点 x0 满足 0 < x0 < 1/2。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 湖南长沙雅礼中学月考] 已知 f(x)=x e^x - a(x+1)，若 f(x) 有极小值，求 a 范围并证明极小值小于 -1。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 湖北武汉二月调考] 设 f(x)=ln x - x + a，若 f(x) 有两零点 x1, x2，证明极值点 x0 ∈ (1, 2)。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 华南师大附中三模] 已知 f(x)=e^x - ax^2，若 f(x) 有三个零点，证明中间那个零点对应的导数零点 x0 满足 ln 2 < x0 < 1。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 深圳高级中学模拟] 设 f(x)=x - sin x - ax^3，讨论极值点；若 a=1/6，证明极值点 x0 ∈ (0, 1)。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 山东省实验中学诊断] 已知 f(x)=e^x - kx，若 f(x) 最小值为 m，证明当 k>e 时，m ∈ (-∞, 0) 且对应 x0 > 1。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 广州二中期末] 设 f(x)=ln x - 1/2 ax^2 + (a-1)x，若 f(x) 有极大值点 x0，证明 x0 > 1 且 f(x0) > 0。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 河北衡水中学联考] 已知 f(x)=e^x - x - 2，证明 f(x) 有唯一零点 x0，并估算 x0 的整数部分 (参考数据 ln 2≈0.69)。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江宁波十校联考] 设 f(x)=x^2 - 2a ln x，若 f(x) 有极小值点 x0，证明当 a ∈ (1, e) 时，f(x0) ∈ (-2, 0)。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 江苏苏州中学质检] 已知 f(x)=e^x - ax - b，若 f(x)≥0 恒成立且取等号，求 a,b 关系；若 b=0，证明极值点 x0 ∈ (0, 1)。",
+              "level": "L3"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L4",
+              "id": "M14_V2.2_MB_L4_V97",
+              "problem": "[2024·广东一模·T22 风格] 已知函数 $f(x) = e^x - ax - 1$ ($a > e$)。设 $f(x)$ 的极小值点为 $x_0$。\n(1) 证明：$x_0 > 1$；\n(2) 估算 $f(x_0)$ 的符号。",
+              "logic_key": "隐零点区间锁定与函数值估算",
+              "analysis": {
+                "core_idea": "【核心思路】先求导得 $x_0=\\ln a$。若 $a>e$，则 $x_0>1$。目标是利用 $x_0$ 范围估算 $f(x_0)$。",
+                "key_steps": [
+                  "1. 求导找关系：$f'(x) = e^x - a$。令 $f'(x_0)=0 \\Rightarrow e^{x_0}=a \\Rightarrow x_0=\\ln a$。",
+                  "2. 确定区间：因 $a > e$，故 $x_0 = \\ln a > 1$。",
+                  "3. 整体代换：$f(x_0) = e^{x_0} - a x_0 - 1 = a - a \\ln a - 1$。",
+                  "4. 构造估值函数：令 $g(a) = a - a \\ln a - 1$ ($a>e$)。",
+                  "5. 分析 $g(a)$：$g'(a) = 1 - (\\ln a + 1) = -\\ln a$。当 $a>e$ 时，$g'(a) < -1 < 0$，故 $g(a)$ 递减。",
+                  "6. 估算范围：$g(a) < g(e) = e - e \\ln e - 1 = -1$。",
+                  "7. 结论：$f(x_0) < -1$。"
+                ],
+                "common_pitfalls": [
+                  "忘记验证 $a$ 的范围对 $x_0$ 的影响",
+                  "代换后未构造新函数分析单调性"
+                ],
+                "conclusion": "f(x_0) < -1"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M14_V2.2_MB_L3_V97",
+              "problem": "[2023·新高考 II 卷·T21(1) 风格] 已知函数 $f(x) = e^x - x - 1$。证明：$f(x)$ 在 $(0, +\\infty)$ 上单调递增，并说明 $f(x)=0$ 无正根。",
+              "logic_key": "基础单调性与零点存在性判断",
+              "analysis": {
+                "core_idea": "L3 基础。直接求导判号，无需复杂估算。",
+                "key_steps": [
+                  "1. $f'(x)=e^x-1$。",
+                  "2. $x>0 \\Rightarrow e^x>1 \\Rightarrow f'(x)>0$。",
+                  "3. $f(0)=0$，故 $x>0$ 时 $f(x)>0$。"
+                ],
+                "common_pitfalls": [
+                  "计算错误"
+                ],
+                "conclusion": "得证"
               }
             }
           ]
@@ -663,7 +768,8 @@
               {
                 "type": "product_form",
                 "weight": 0.5,
-                "desc": "积型同构 ($xe^x$ vs $x\\ln x$)"
+                "desc": "积型同构 ($xe^x$ vs $x\\ln x$)",
+                "difficulty_delta": "0"
               },
               {
                 "type": "quotient_form",
@@ -674,47 +780,51 @@
               {
                 "type": "shift_form",
                 "weight": 0.2,
-                "desc": "平移同构 ($e^{x+a}$ vs $\\ln(x+a)$)"
+                "desc": "平移同构 ($e^{x+a}$ vs $\\ln(x+a)$)",
+                "difficulty_delta": "0"
               }
             ],
             "complexity_level": [
               {
-                "type": "direct_isomorphism",
+                "type": "explicit_isomorphism",
                 "weight": 0.4,
-                "desc": "直接同构 (一眼看出)"
+                "difficulty_delta": 0.8,
+                "desc": "直接同构 (结构明显)"
               },
               {
-                "type": "hidden_isomorphism",
+                "type": "implicit_isomorphism",
                 "weight": 0.6,
-                "difficulty_delta": "+1",
-                "desc": "隐式同构 (需变形/换元)"
+                "difficulty_delta": 1.2,
+                "desc": "隐式同构 (需复杂变形/换元才能发现)"
               }
             ],
             "trap_type": [
               {
                 "type": "monotonicity_domain",
                 "weight": 0.7,
-                "desc": "忽略构造函数的定义域/单调区间"
+                "desc": "忽略构造函数的定义域/单调区间",
+                "difficulty_delta": "0"
               },
               {
                 "type": "transform_error",
                 "weight": 0.3,
-                "desc": "同构变形方向错误"
+                "desc": "同构变形方向错误",
+                "difficulty_delta": "0"
               }
             ]
           },
           "original_pool": [
             {
-              "desc": "[24 新高考 I] 已知 $e^x \\ge ax + 1$ 恒成立，求 $a$。",
+              "desc": "[24新高考I] 证明 $e^x \\ge x+1$ 与 $\\ln x \\le x-1$。",
               "level": "L3"
             },
             {
-              "desc": "[25 八省联考] 证明 $e^x > \\ln x + 2$ 对 $x>0$ 恒成立。",
-              "level": "L4"
+              "desc": "[25八省联考] 识别简单的同构形式 $xe^x$。",
+              "level": "L3"
             },
             {
-              "desc": "[24 华附一模] 设 $f(x) = xe^x - \\ln x - x - 1$，求最小值。",
-              "level": "L4"
+              "desc": "[24山东一模] 切线放缩证明不等式。",
+              "level": "L3"
             },
             {
               "desc": "[25 山东济南一模] 已知 $x e^x = y \\ln y$，比较 $x$ 与 $\\ln y$ 大小。",
@@ -805,41 +915,195 @@
               }
             },
             {
-              "level": "L4",
-              "id": "M14_V3.1_MB_L4_V97_B",
-              "problem": "[2024·新高考 I 变式] 已知函数 $f(x) = x e^x - \\ln x - x$ ($x>0$)。求 $f(x)$ 的最小值。",
-              "logic_key": "积型同构构造与换元",
+              "level": "L3",
+              "id": "M14_V3.1_MB_L3_V97",
+              "problem": "[2024·新高考I卷·T21(1)风格] 已知函数 $f(x) = e^x - x - 1$。证明：当 $x \\in \\mathbb{R}$ 时，$f(x) \\ge 0$。",
+              "logic_key": "经典切线不等式证明",
               "analysis": {
-                "core_idea": "【核心思路】观察 $x e^x$ 与 $\\ln x + x$ 的关系。利用 $x e^x = e^{\\ln x} \\cdot e^x = e^{x+\\ln x}$，构造同构变量 $t = x + \\ln x$。",
+                "core_idea": "L3 基础。利用导数研究函数单调性，证明最著名的指数切线不等式 $e^x \\ge x+1$。",
                 "key_steps": [
-                  "1. 变形目标函数：",
-                  "   $f(x) = x e^x - (\\ln x + x)$。",
-                  "   注意到 $x e^x = e^{\\ln x} \\cdot e^x = e^{x+\\ln x}$。",
-                  "   故 $f(x) = e^{x+\\ln x} - (x+\\ln x)$。",
-                  "2. 换元构造：",
-                  "   令 $t = x + \\ln x$。",
-                  "   因 $x>0$，函数 $u(x) = x+\\ln x$ 单调递增，值域为 $(-\\infty, +\\infty)$。",
-                  "   故 $t$ 可取任意实数。",
-                  "   原函数转化为 $g(t) = e^t - t$。",
-                  "3. 研究 $g(t)$ 的最值：",
-                  "   $g'(t) = e^t - 1$。",
-                  "   令 $g'(t)=0 \\Rightarrow t=0$。",
-                  "   当 $t<0$ 时 $g'(t)<0$ (减)；当 $t>0$ 时 $g'(t)>0$ (增)。",
-                  "   故 $g(t)$ 在 $t=0$ 处取得最小值。",
-                  "4. 计算最小值：",
-                  "   $g(0) = e^0 - 0 = 1$。",
-                  "5. 验证存在性：",
-                  "   需确认是否存在 $x$ 使 $t=0$。",
-                  "   $x+\\ln x = 0$。因 $u(1)=1>0, u(1/e)=-1+1/e<0$，由零点存在定理知存在唯一 $x_0$。",
-                  "6. 结论：",
-                  "   $f(x)$ 的最小值为 1。"
+                  "1. 求导：$f'(x) = e^x - 1$。",
+                  "2. 找零点：令 $f'(x)=0 \\Rightarrow x=0$。",
+                  "3. 单调性分析：",
+                  "   当 $x < 0$ 时，$f'(x) < 0$，$f(x)$ 单调递减；",
+                  "   当 $x > 0$ 时，$f'(x) > 0$，$f(x)$ 单调递增。",
+                  "4. 求最值：",
+                  "   $f(x)_{min} = f(0) = e^0 - 0 - 1 = 0$。",
+                  "5. 结论：",
+                  "   对任意 $x \\in \\mathbb{R}$，$f(x) \\ge 0$ 恒成立。"
                 ],
                 "common_pitfalls": [
-                  "看不出 $x e^x = e^{x+\\ln x}$ 的指数变形。",
-                  "忘记验证 $t=x+\\ln x$ 能否取到 0。",
-                  "直接求导 $f'(x)$ 导致计算极其复杂而无法求解。"
+                  "求导公式错误",
+                  "单调区间判断反了",
+                  "忘记说明最小值即为 0"
                 ],
-                "conclusion": "1"
+                "conclusion": "得证"
+              }
+            }
+          ]
+        },
+        {
+          "var_id": "3.2",
+          "name": "切线放缩与经典不等式链",
+          "logic_core": "【浙江卷/强基高频考点】针对无法直接构造同构函数，或利用经典切线不等式 $e^x \\ge x+1$ 和 $\\ln x \\le x-1$ 及其变形进行拆分放缩的题目。核心策略：识别超越函数结构，联想经典切线不等式，通过加减项或拆分构造可放缩形式，验证等号成立条件的一致性。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 观察超越函数结构",
+              "2. 联想经典切线不等式 (e^x≥x+1, lnx≤x-1)",
+              "3. 通过加减项或拆分构造可放缩形式",
+              "4. 验证等号成立条件的一致性"
+            ],
+            "linked_weapons": [
+              "S-DERIV-08-B"
+            ],
+            "weapon_map_note": "S-DERIV-08-B (切线放缩与不等式链)"
+          },
+          "variable_knobs": {
+            "inequality_chain": [
+              {
+                "type": "single_tangent",
+                "weight": 0.5,
+                "difficulty_delta": 0.5,
+                "desc": "单次切线放缩 (如 e^x ≥ x+1)"
+              },
+              {
+                "type": "double_tangent",
+                "weight": 0.5,
+                "difficulty_delta": 1.0,
+                "desc": "双向切线夹逼 (同时放缩 e^x 和 lnx)"
+              }
+            ],
+            "transform_trick": [
+              {
+                "type": "add_sub_term",
+                "weight": 0.6,
+                "difficulty_delta": 0.8,
+                "desc": "加减项构造 (如 e^x - x - 1)"
+              },
+              {
+                "type": "split_function",
+                "weight": 0.4,
+                "difficulty_delta": 1.0,
+                "desc": "拆分函数分别放缩后求和"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "equality_condition",
+                "weight": 0.7,
+                "difficulty_delta": 0.5,
+                "desc": "忽略等号成立条件是否一致"
+              },
+              {
+                "type": "direction_error",
+                "weight": 0.3,
+                "difficulty_delta": 0.5,
+                "desc": "放缩方向错误导致无法证明"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "desc": "[24 新高考 I] 证明：对任意 x∈R，e^x ≥ x+1；对任意 x>0，ln x ≤ x-1。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 八省联考] 利用上述结论，证明：e^x - ln x > 2 对任意 x>0 成立。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 浙江卷] 已知 f(x)=e^x - ax - ln x，若 f(x)≥0 恒成立，求 a 的最大值。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 江苏南通一模] 证明：x e^x ≥ ln x + x + 1 (x>0)。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 山东青岛一模] 设 f(x)=e^x - x^2，证明：当 x>0 时，f(x) > 1 + x^3/6。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 广东六校联考] 已知 f(x)=ln x - x + 1，证明 f(x)≤0；并利用此结论证明 sum(1/k) > ln(n+1)。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 华中师大一附中模拟] 证明：e^(x-1) ≥ ln x + 1，并指出等号成立条件。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 浙江温州一模] 设 f(x)=e^x - ln x - 2，证明 f(x) > 0 (提示：利用 e^x ≥ ex)。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 深圳中学月考] 已知 a>0，证明：e^x + a ln x ≥ a(1 + ln a) + x。",
+              "level": "L4"
+            },
+            {
+              "desc": "[25 湖北黄冈模拟] 证明：对任意 x>0，x^2 e^x > ln x + 2。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 南京师大附中质检] 设 f(x)=e^x - kx，若 f(x)≥0 恒成立，求 k；并证明 e^x > x^2 (x>0)。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 广州执信中学模拟] 证明：ln(x+1) ≤ x ≤ e^x - 1，并探究等号成立条件。",
+              "level": "L3"
+            },
+            {
+              "desc": "[24 河北衡水二调] 已知 f(x)=e^x - ax - 1，若 a=1，证明 f(x)≥0；若 a>1，讨论零点。",
+              "level": "L3"
+            },
+            {
+              "desc": "[25 湖南长郡中学月考] 证明：e^x + ln x > 2√x (x>1)。",
+              "level": "L4"
+            },
+            {
+              "desc": "[24 浙江金丽衢十二校] 设 f(x)=x - ln x，证明 f(x)≥1；进而证明 e^x ≥ ex。",
+              "level": "L3"
+            }
+          ],
+          "master_benchmarks": [
+            {
+              "level": "L4",
+              "id": "M14_V3.2_MB_L4_V97",
+              "problem": "[2025·八省联考·T22 风格] 已知函数 $f(x) = e^x - \\ln x - 2$。\n(1) 求 $f(x)$ 的最小值点 $x_0$ 的大致范围；\n(2) 证明：对任意 $x > 0$，都有 $f(x) > 0$。",
+              "logic_key": "双切线放缩法",
+              "analysis": {
+                "core_idea": "【核心思路】直接求导难解。利用经典不等式 $e^x \\ge x+1$ 和 $\\ln x \\le x-1$ 进行拆分放缩。注意等号成立条件不同，故严格大于。",
+                "key_steps": [
+                  "1. 拆分函数：$f(x) = (e^x - x - 1) + (x - 1 - \\ln x)$。",
+                  "2. 应用不等式 1：令 $g(x) = e^x - x - 1$。由 $g'(x)=e^x-1$ 知 $g(x)_{min}=g(0)=0$。故 $e^x \\ge x+1$ (当 $x=0$ 取等)。",
+                  "3. 应用不等式 2：令 $h(x) = x - 1 - \\ln x$。由 $h'(x)=1-1/x$ 知 $h(x)_{min}=h(1)=0$。故 $x-1 \\ge \\ln x$ (当 $x=1$ 取等)。",
+                  "4. 综合放缩：$f(x) = g(x) + h(x) \\ge 0 + 0 = 0$。",
+                  "5. 验证等号：$g(x)=0 \\Rightarrow x=0$；$h(x)=0 \\Rightarrow x=1$。两者不能同时取等。",
+                  "6. 结论：对任意 $x>0$，$f(x) > 0$。"
+                ],
+                "common_pitfalls": [
+                  "未拆分直接放缩",
+                  "忽略等号成立条件不同误判为≥0"
+                ],
+                "conclusion": "f(x) > 0"
+              }
+            },
+            {
+              "level": "L3",
+              "id": "M14_V3.2_MB_L3_V97",
+              "problem": "[2024·新高考 I 卷·T21(1) 风格] 证明：当 $x \\in \\mathbb{R}$ 时，$e^x \\ge x+1$。",
+              "logic_key": "单一切线不等式证明",
+              "analysis": {
+                "core_idea": "L3 基础。构造函数求最值。",
+                "key_steps": [
+                  "1. 令 $g(x)=e^x-x-1$。",
+                  "2. $g'(x)=e^x-1$。",
+                  "3. $x<0$ 减，$x>0$ 增。",
+                  "4. $g(x)_{min}=g(0)=0$。"
+                ],
+                "common_pitfalls": [
+                  "求导错误"
+                ],
+                "conclusion": "得证"
               }
             }
           ]
