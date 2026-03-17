@@ -178,89 +178,42 @@ const getDaysSincePractice = (lastPracticeTime) => {
   return Math.floor(diff / (1000 * 60 * 60 * 24))
 }
 
-const checkSubTargetDecay = (sub) => {
-  if (sub.is_mastered !== true) return sub
+const checkBenchmarkDecay = (benchmark) => {
+  if (benchmark.is_mastered !== true) return benchmark
   
-  const daysSincePractice = getDaysSincePractice(sub.last_practice)
+  const daysSincePractice = getDaysSincePractice(benchmark.last_practice)
   
   if (daysSincePractice >= DECAY_CONFIG.YELLOW_THRESHOLD_DAYS) {
-    return { ...sub, is_mastered: 'warning', decayed_from: true }
+    return { ...benchmark, is_mastered: false, consecutive_correct: 0, decayed_from: true }
   }
   
-  return sub
+  return benchmark
 }
 
-const getDecayStatus = (subTargets) => {
-  if (!subTargets || subTargets.length === 0) return { hasDecay: false, decayCount: 0, criticalCount: 0 }
+const getDecayStatus = (specialties) => {
+  if (!specialties || specialties.length === 0) return { hasDecay: false, decayCount: 0, criticalCount: 0 }
   
-  const checkedSubs = subTargets.map(checkSubTargetDecay)
-  const decayedSubs = checkedSubs.filter(sub => sub.is_mastered === 'warning' && sub.decayed_from)
-  const criticalSubs = decayedSubs.filter(sub => getDaysSincePractice(sub.last_practice) >= DECAY_CONFIG.WARNING_THRESHOLD_DAYS)
-  
-  return {
-    hasDecay: decayedSubs.length > 0,
-    decayCount: decayedSubs.length,
-    criticalCount: criticalSubs.length,
-    checkedSubTargets: checkedSubs
-  }
-}
-
-const isNotGreen = (sub) => sub.is_mastered !== true
-const hasRedSubTarget = (subTargets) => subTargets.some(sub => sub.is_mastered === false)
-
-const getEloCeiling = (subTargets) => {
-  if (!subTargets || subTargets.length === 0) return 1000
-  
-  const l2Subs = subTargets.filter(sub => sub.level_req === 'L2')
-  if (l2Subs.length > 0 && l2Subs.some(isNotGreen)) return 1000
-  
-  const l3Subs = subTargets.filter(sub => sub.level_req === 'L3')
-  if (l3Subs.length > 0 && l3Subs.some(isNotGreen)) return 1800
-  
-  const l4Subs = subTargets.filter(sub => sub.level_req === 'L4')
-  if (l4Subs.length > 0 && l4Subs.some(isNotGreen)) return 2500
-  
-  return 3000
-}
-
-const calculateElo = (subTargets) => {
-  if (!subTargets || subTargets.length === 0) return 500
-  
-  const l2Subs = subTargets.filter(sub => sub.level_req === 'L2')
-  const l3Subs = subTargets.filter(sub => sub.level_req === 'L3')
-  const l4Subs = subTargets.filter(sub => sub.level_req === 'L4')
-  
-  const l2AllGreen = l2Subs.length > 0 && l2Subs.every(sub => sub.is_mastered === true)
-  const l3AllGreen = l3Subs.length > 0 && l3Subs.every(sub => sub.is_mastered === true)
-  const l4AllGreen = l4Subs.length > 0 && l4Subs.every(sub => sub.is_mastered === true)
-  
-  const l2HasWarning = l2Subs.some(sub => sub.is_mastered === 'warning')
-  const l3HasWarning = l3Subs.some(sub => sub.is_mastered === 'warning')
-  const l4HasWarning = l4Subs.some(sub => sub.is_mastered === 'warning')
-  
-  const hasAnyProgress = l2AllGreen || l3AllGreen || l4AllGreen || l2HasWarning || l3HasWarning || l4HasWarning
-  
-  if (!hasAnyProgress) {
-    return 500
-  }
-  
-  let baseElo = 500
-  if (l4AllGreen) baseElo = 2501
-  else if (l3AllGreen) baseElo = 1801
-  else if (l2AllGreen) baseElo = 1001
-  else if (l3HasWarning && l2AllGreen) baseElo = 1001
-  else if (l2HasWarning) baseElo = 500
-  
-  let bonus = 0
-  subTargets.forEach(sub => {
-    if (sub.is_mastered === 'warning') {
-      const levelScore = sub.level_req === 'L4' ? 100 : sub.level_req === 'L3' ? 60 : 40
-      bonus += levelScore * 0.6
-    }
+  let allBenchmarks = []
+  specialties.forEach(spec => {
+    spec.variations?.forEach(v => {
+      v.master_benchmarks?.forEach(b => {
+        allBenchmarks.push(b)
+      })
+    })
   })
   
-  const ceiling = getEloCeiling(subTargets)
-  return Math.min(Math.round(baseElo + bonus), ceiling)
+  if (allBenchmarks.length === 0) return { hasDecay: false, decayCount: 0, criticalCount: 0 }
+  
+  const checkedBenchmarks = allBenchmarks.map(checkBenchmarkDecay)
+  const decayedBenchmarks = checkedBenchmarks.filter(b => b.decayed_from)
+  const criticalBenchmarks = decayedBenchmarks.filter(b => getDaysSincePractice(b.last_practice) >= DECAY_CONFIG.WARNING_THRESHOLD_DAYS)
+  
+  return {
+    hasDecay: decayedBenchmarks.length > 0,
+    decayCount: decayedBenchmarks.length,
+    criticalCount: criticalBenchmarks.length,
+    checkedBenchmarks
+  }
 }
 
 const getWeaponFromStrategyLib = (weaponId) => {
@@ -306,7 +259,7 @@ const getWeaponsForMotif = (motifData) => {
 function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculateElo, calibrateTargetId, onCalibrationComplete }) {
   const { isAcademicMode } = useContext(ThemeContext)
   const [selectedTarget, setSelectedTarget] = useState(null)
-  const [previewSubTargets, setPreviewSubTargets] = useState(null)
+  const [previewSpecialties, setPreviewSpecialties] = useState(null)
   const [hasChanges, setHasChanges] = useState(false)
   const [syncAnimation, setSyncAnimation] = useState(false)
   const [loadedMotifData, setLoadedMotifData] = useState(null)
@@ -410,7 +363,7 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
       const target = targets.find(t => t.target_id === calibrateTargetId)
       if (target && target.unlockStatus === 'unlocked') {
         setSelectedTarget(target)
-        setPreviewSubTargets(target.sub_targets ? [...target.sub_targets] : null)
+        setPreviewSpecialties(target.specialties ? JSON.parse(JSON.stringify(target.specialties)) : null)
         setHasChanges(false)
         
         if (motifData && motifData[calibrateTargetId]) {
@@ -425,7 +378,7 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
   const handleTargetClick = (target) => {
     if (target.unlockStatus === 'unlocked') {
       setSelectedTarget(target)
-      setPreviewSubTargets(target.sub_targets ? [...target.sub_targets] : null)
+      setPreviewSpecialties(target.specialties ? JSON.parse(JSON.stringify(target.specialties)) : null)
       setHasChanges(false)
       
       if (motifData && motifData[target.target_id]) {
@@ -436,47 +389,68 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
     }
   }
 
-  const handleToggleSubTarget = (subId, newStatus) => {
+  const handleToggleBenchmark = (specId, varId, level, newStatus) => {
     if (!selectedTarget) return
     
-    const updatedSubTargets = (previewSubTargets || selectedTarget.sub_targets).map(sub => 
-      sub.sub_id === subId ? { ...sub, is_mastered: newStatus } : sub
-    )
+    const updatedSpecialties = (previewSpecialties || selectedTarget.specialties).map(spec => {
+      if (spec.spec_id === specId) {
+        return {
+          ...spec,
+          variations: (spec.variations || []).map(v => {
+            if (v.var_id === varId) {
+              return {
+                ...v,
+                master_benchmarks: (v.master_benchmarks || []).map(b => {
+                  if (b.level === level) {
+                    return { ...b, is_mastered: newStatus, consecutive_correct: newStatus ? 3 : 0 }
+                  }
+                  return b
+                })
+              }
+            }
+            return v
+          })
+        }
+      }
+      return spec
+    })
     
-    setPreviewSubTargets(updatedSubTargets)
+    setPreviewSpecialties(updatedSpecialties)
     setHasChanges(true)
   }
 
-  const cycleSubTargetStatus = (subId, currentStatus) => {
-    const statusCycle = [false, 'warning', true]
+  const cycleBenchmarkStatus = (currentStatus) => {
+    const statusCycle = [false, true]
     const currentIndex = statusCycle.indexOf(currentStatus)
     const nextIndex = (currentIndex + 1) % statusCycle.length
     return statusCycle[nextIndex]
   }
 
-  const handleCycleSubTarget = (subId) => {
-    const currentSubTargets = previewSubTargets || selectedTarget?.sub_targets
-    const sub = currentSubTargets?.find(s => s.sub_id === subId)
-    if (!sub) return
-    const newStatus = cycleSubTargetStatus(subId, sub.is_mastered)
-    handleToggleSubTarget(subId, newStatus)
+  const handleCycleBenchmark = (specId, varId, level) => {
+    const currentSpecialties = previewSpecialties || selectedTarget?.specialties
+    const spec = currentSpecialties?.find(s => s.spec_id === specId)
+    const variation = spec?.variations?.find(v => v.var_id === varId)
+    const benchmark = variation?.master_benchmarks?.find(b => b.level === level)
+    if (!benchmark) return
+    const newStatus = cycleBenchmarkStatus(benchmark.is_mastered)
+    handleToggleBenchmark(specId, varId, level, newStatus)
   }
 
   const handleConfirmChanges = () => {
-    if (!selectedTarget || !previewSubTargets || !onRecalculateElo) return
+    if (!selectedTarget || !previewSpecialties || !onRecalculateElo) return
     
     const newData = { ...tacticalData }
     for (const map of newData.tactical_maps) {
       const encounter = map.encounters.find(e => e.target_id === selectedTarget.target_id)
       if (encounter) {
-        encounter.sub_targets = previewSubTargets
+        encounter.specialties = previewSpecialties
         break
       }
     }
     
     setSelectedTarget({
       ...selectedTarget,
-      sub_targets: previewSubTargets,
+      specialties: previewSpecialties,
     })
     
     setSyncAnimation(true)
@@ -486,7 +460,7 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
       setHasChanges(false)
       setSyncAnimation(false)
       setSelectedTarget(null)
-      setPreviewSubTargets(null)
+      setPreviewSpecialties(null)
       if (onCalibrationComplete) {
         onCalibrationComplete()
       }
@@ -495,7 +469,7 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
 
   const handleCloseModal = () => {
     setSelectedTarget(null)
-    setPreviewSubTargets(null)
+    setPreviewSpecialties(null)
     setHasChanges(false)
     setLoadedMotifData(null)
   }
@@ -531,15 +505,27 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
         return null
       }
       
-      const subTargets = (previewSubTargets || selectedTarget?.sub_targets) || []
-      const subForLevel = subTargets.filter(sub => sub.level_req === lvl)
+      const specialties = previewSpecialties || selectedTarget?.specialties || []
+      let benchmarksForLevel = []
       
-      if (subForLevel.length === 0) {
+      specialties.forEach(spec => {
+        spec.variations?.forEach(v => {
+          if (v.var_id === varId) {
+            v.master_benchmarks?.forEach(b => {
+              if (b.level === lvl) {
+                benchmarksForLevel.push(b)
+              }
+            })
+          }
+        })
+      })
+      
+      if (benchmarksForLevel.length === 0) {
         return 'bg-slate-100 text-slate-400 border-slate-200 dark:bg-zinc-800/50 dark:text-zinc-600 dark:border-zinc-700'
       }
       
-      const allGreen = subForLevel.every(sub => sub.is_mastered === true)
-      const hasRed = subForLevel.some(sub => sub.is_mastered === false || sub.is_mastered === 'warning')
+      const allGreen = benchmarksForLevel.every(b => b.is_mastered === true)
+      const hasRed = benchmarksForLevel.some(b => b.is_mastered === false)
       
       if (allGreen) {
         return 'bg-emerald-500 text-white border-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
@@ -556,21 +542,21 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
       let totalVariations = 0
       let masteredVariations = 0
       
-      const subTargets = (previewSubTargets || selectedTarget?.sub_targets) || []
+      const specialties = previewSpecialties || selectedTarget?.specialties || []
       const motifId = detailData.motif_id
       
-      detailData.specialties.forEach(spec => {
+      specialties.forEach(spec => {
         spec.variations?.forEach(variation => {
           totalVariations++
           
-          const varId = variation?.var_id
+          const varId = variation.var_id
           const levels = getVariationLevels(motifId, varId)
           
           if (levels.length === 0) return
           
           const allLevelsMastered = levels.every(lvl => {
-            const subForLevel = subTargets.filter(sub => sub.level_req === lvl)
-            return subForLevel.length > 0 && subForLevel.every(sub => sub.is_mastered === true)
+            const benchmarks = (variation.master_benchmarks || []).filter(b => b.level === lvl)
+            return benchmarks.length > 0 && benchmarks.every(b => b.is_mastered === true)
           })
           
           if (allLevelsMastered) {
@@ -653,13 +639,15 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
                   ))}
                 </div>
               </div>
-            )) : (detailData.sub_targets || []).length > 0 ? (
-              detailData.sub_targets.map((sub, idx) => (
-                <div key={idx} className="flex justify-between p-3 border rounded-xl">
-                  <span className="text-sm">{sub.sub_name}</span>
-                  <span className="text-xs opacity-50">{sub.level_req}</span>
-                </div>
-              ))
+            )) : (detailData.specialties || []).length > 0 ? (
+              detailData.specialties.flatMap((spec, sIdx) => 
+                (spec.variations || []).map((v, vIdx) => (
+                  <div key={`${sIdx}-${vIdx}`} className="flex justify-between p-3 border rounded-xl">
+                    <span className="text-sm">{v.name}</span>
+                    <span className="text-xs opacity-50">{spec.spec_name}</span>
+                  </div>
+                ))
+              )
             ) : <p className="text-center text-slate-400 py-4">教研数据接入中...</p>}
           </div>
         </div>
@@ -827,7 +815,7 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
 
         {targets.map((target, index) => {
           const isLocked = target.unlockStatus === 'locked'
-          const decayStatus = getDecayStatus(target.sub_targets)
+          const decayStatus = getDecayStatus(target.specialties)
           const hasDecay = decayStatus.hasDecay
           const color = gearLevelColors[target.gear_level] || gearLevelColors.L0
           const radius = isLocked ? 8 : 14

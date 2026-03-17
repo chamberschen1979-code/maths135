@@ -227,6 +227,7 @@ const fixJsonEscaping = (jsonString) => {
  * 从原始文本中提取 JSON 字符串
  */
 const extractJsonString = (rawText) => {
+  // 1. 先尝试匹配 ```json 代码块
   const jsonBlockMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)```/)
   if (jsonBlockMatch) {
     const content = jsonBlockMatch[1].trim()
@@ -234,12 +235,54 @@ const extractJsonString = (rawText) => {
       return content
     }
   }
+  
+  // 2. 尝试找到第一个完整的 JSON 对象
   const firstBrace = rawText.indexOf('{')
-  const lastBrace = rawText.lastIndexOf('}')
-  if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
+  if (firstBrace === -1) {
     throw new Error("未在响应中找到有效的 JSON 花括号结构")
   }
-  return rawText.substring(firstBrace, lastBrace + 1)
+  
+  // 使用括号匹配找到完整的 JSON
+  let depth = 0
+  let inString = false
+  let escape = false
+  let endPos = -1
+  
+  for (let i = firstBrace; i < rawText.length; i++) {
+    const char = rawText[i]
+    
+    if (escape) {
+      escape = false
+      continue
+    }
+    
+    if (char === '\\') {
+      escape = true
+      continue
+    }
+    
+    if (char === '"') {
+      inString = !inString
+      continue
+    }
+    
+    if (!inString) {
+      if (char === '{') depth++
+      else if (char === '}') {
+        depth--
+        if (depth === 0) {
+          endPos = i
+          break
+        }
+      }
+    }
+  }
+  
+  if (endPos === -1) {
+    throw new Error("未找到完整的 JSON 结构")
+  }
+  
+  return rawText.substring(firstBrace, endPos + 1)
 }
 
 /**

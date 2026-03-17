@@ -181,17 +181,17 @@ const StrategyHub = ({ isAcademicMode = true, tacticalData, highlightWeaponId, o
             返回知识图谱
           </button>
           <h1 className={`text-2xl font-bold ${isAcademicMode ? 'text-slate-800' : 'text-zinc-100'}`}>
-            ⚔️ 杀手锏武器库
+            📚 核心方法和定理库
           </h1>
           <p className={`mt-1 text-sm ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
-            高中数学核心解题策略的系统化整理 — 共 {allWeapons.length} 个武器
+            高中数学核心解题策略的系统化整理 — 共 {allWeapons.length} 招杀手锏
           </p>
         </header>
 
         <div className="mb-6">
           <input
             type="text"
-            placeholder="搜索武器名称、描述或触发关键词..."
+            placeholder="搜索杀手锏名称、描述或触发关键词..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={`w-full max-w-md px-4 py-2 rounded-lg border text-sm ${

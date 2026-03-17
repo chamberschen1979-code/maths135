@@ -60,7 +60,7 @@ const LatexRenderer = ({ content }) => {
           rehypePlugins={[[rehypeKatex, { 
             strict: false, 
             trust: true,
-            output: 'htmlAndMathml' // 兼容性更好
+            output: 'html' // 只使用 HTML 输出，避免 MathML 标签警告
           }]]}
           components={{
             // 移除默认段落间距，使行内公式更紧凑

@@ -1,5 +1,6 @@
 {
-  "DATA_VERSION": "11.0-SURGICAL",
+  "DATA_VERSION": "12.0-UNIFIED",
+  "schemaVersion": 1,
   "tactical_maps": [
     {
       "map_id": "zone_outer",
@@ -247,6 +248,54 @@
             { "sub_id": "M16_L2_2", "sub_name": "二项式定理", "level_req": "L2", "is_mastered": false },
             { "sub_id": "M16_L3_1", "sub_name": "计数综合", "level_req": "L3", "is_mastered": false },
             { "sub_id": "M16_L4_1", "sub_name": "计数压轴", "level_req": "L4", "is_mastered": false }
+          ],
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "排列组合的精准枚举",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "经典模型与受限排列",
+                  "master_benchmarks": [
+                    { "level": "L2", "id": "M16_V1.1_L2", "is_mastered": false, "consecutive_correct": 0 },
+                    { "level": "L3", "id": "M16_V1.1_L3", "is_mastered": false, "consecutive_correct": 0 },
+                    { "level": "L4", "id": "M16_V1.1_L4", "is_mastered": false, "consecutive_correct": 0 }
+                  ]
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "复杂情境与正难则反",
+                  "master_benchmarks": [
+                    { "level": "L2", "id": "M16_V1.2_L2", "is_mastered": false, "consecutive_correct": 0 },
+                    { "level": "L3", "id": "M16_V1.2_L3", "is_mastered": false, "consecutive_correct": 0 },
+                    { "level": "L4", "id": "M16_V1.2_L4", "is_mastered": false, "consecutive_correct": 0 }
+                  ]
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "二项式定理的代数结构",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "系数和与特定项",
+                  "master_benchmarks": [
+                    { "level": "L3", "id": "M16_V2.1_L3", "is_mastered": false, "consecutive_correct": 0 },
+                    { "level": "L4", "id": "M16_V2.1_L4", "is_mastered": false, "consecutive_correct": 0 }
+                  ]
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "高阶构造与整除证明",
+                  "master_benchmarks": [
+                    { "level": "L3", "id": "M16_V2.2_L3", "is_mastered": false, "consecutive_correct": 0 },
+                    { "level": "L4", "id": "M16_V2.2_L4", "is_mastered": false, "consecutive_correct": 0 }
+                  ]
+                }
+              ]
+            }
           ]
         },
         {

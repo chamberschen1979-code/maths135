@@ -1,27 +1,31 @@
 {
-  "version": "1.0",
-  "description": "动态评分心脏与反馈引擎配置",
+  "version": "2.0",
+  "description": "动态评分心脏与反馈引擎配置 - 简化版",
   "level_scores": {
     "L1": {
-      "score": 20,
-      "description": "基础概念题",
+      "score_correct": 20,
+      "score_wrong": -10,
+      "description": "入门概念题",
       "time_limit": 60,
       "difficulty_weight": 0.5
     },
     "L2": {
-      "score": 40,
-      "description": "常规应用题",
+      "score_correct": 40,
+      "score_wrong": -20,
+      "description": "基础筑基题",
       "time_limit": 120,
       "difficulty_weight": 1.0
     },
     "L3": {
-      "score": 60,
-      "description": "融合迁移题",
+      "score_correct": 60,
+      "score_wrong": -30,
+      "description": "深度复合题",
       "time_limit": 180,
       "difficulty_weight": 1.5
     },
     "L4": {
-      "score": 100,
+      "score_correct": 100,
+      "score_wrong": -50,
       "description": "巅峰压轴题",
       "time_limit": 300,
       "difficulty_weight": 2.0
@@ -50,25 +54,29 @@
     }
   },
   "elo_question_distribution": {
-    "low": {
-      "range": [0, 1200],
-      "recommended_levels": ["L2", "L2+L3"],
-      "description": "低分段：推送基础+进阶组合"
+    "L1": {
+      "range": [0, 999],
+      "recommended_levels": ["L1"],
+      "multi_question": false,
+      "description": "L1用户：只出L1单问题目"
     },
-    "medium": {
-      "range": [1201, 2000],
-      "recommended_levels": ["L2+L3", "L3", "L3+L4"],
-      "description": "中分段：推送进阶+挑战组合"
+    "L2": {
+      "range": [1000, 1799],
+      "recommended_levels": ["L2"],
+      "multi_question": false,
+      "description": "L2用户：只出L2单问题目"
     },
-    "high": {
-      "range": [2001, 2500],
-      "recommended_levels": ["L3+L4", "L4"],
-      "description": "高分段：推送挑战+巅峰组合"
+    "L3": {
+      "range": [1800, 2499],
+      "recommended_levels": ["L2+L3"],
+      "multi_question": true,
+      "description": "L3用户：可出L2+L3两问题目"
     },
-    "top": {
-      "range": [2501, 3000],
-      "recommended_levels": ["L4", "L4+L4"],
-      "description": "冲刺段：推送纯巅峰题"
+    "L4": {
+      "range": [2500, 3000],
+      "recommended_levels": ["L2+L4", "L3+L4"],
+      "multi_question": true,
+      "description": "L4用户：可出L2/3+L4两问题目"
     }
   },
   "feedback_templates": {
@@ -89,7 +97,7 @@
       ]
     },
     "failed": {
-      "prefix": "❌ 偏离目标",
+      "prefix": "❌ 壏离目标",
       "templates": [
         "${motif_name} 的 ${level} 节点未攻克，核心问题：${l4_trap}",
         "建议先掌握 ${prerequisite}，再挑战 ${motif_name}",
@@ -106,15 +114,20 @@
     }
   },
   "question_combinations": {
+    "L1": {
+      "total_score": 20,
+      "description": "纯入门题",
+      "recommended_for": "L1 用户"
+    },
     "L2": {
       "total_score": 40,
       "description": "纯基础题",
-      "recommended_for": "L1-L2 用户"
+      "recommended_for": "L2 用户"
     },
     "L2+L3": {
       "total_score": 100,
       "description": "基础+进阶组合",
-      "recommended_for": "L2 用户"
+      "recommended_for": "L3 用户"
     },
     "L3": {
       "total_score": 60,
@@ -124,7 +137,7 @@
     "L2+L4": {
       "total_score": 140,
       "description": "基础+巅峰组合",
-      "recommended_for": "L3 用户冲刺"
+      "recommended_for": "L4 用户"
     },
     "L3+L4": {
       "total_score": 160,

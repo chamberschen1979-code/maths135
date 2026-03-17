@@ -100,9 +100,26 @@ const getTargetData = (targetId) => {
   for (const map of tacticalMapsData.tactical_maps) {
     const encounter = map.encounters.find(e => e.target_id === targetId)
     if (encounter) {
+      const benchmarks = []
+      if (encounter.specialties) {
+        encounter.specialties.forEach(spec => {
+          spec.variations?.forEach(v => {
+            v.master_benchmarks?.forEach(b => {
+              benchmarks.push({
+                ...b,
+                sub_id: b.id || b.legacy_id,
+                sub_name: v.name,
+                level_req: b.level,
+                spec_name: spec.spec_name
+              })
+            })
+          })
+        })
+      }
       return {
         targetName: encounter.target_name,
-        subTargets: encounter.sub_targets || [],
+        benchmarks,
+        specialties: encounter.specialties,
         mapName: map.map_name
       }
     }
@@ -144,31 +161,31 @@ const calculateDiagnosisResult = (targetId, greenSubIds, savedData, detectedKnow
   const targetData = getTargetData(targetId)
   if (!targetData) return null
   
-  const subTargets = targetData.subTargets
+  const benchmarks = targetData.benchmarks
   
-  const greenSubs = subTargets.filter(sub => greenSubIds.includes(sub.sub_id))
-  const M = greenSubs.length
+  const greenBenchmarks = benchmarks.filter(b => greenSubIds.includes(b.sub_id))
+  const M = greenBenchmarks.length
   
   let eloGain = 0
   const pointBreakdown = []
   
-  greenSubs.forEach(sub => {
-    const pointValue = LEVEL_POINT_VALUE[sub.level_req] || 40
+  greenBenchmarks.forEach(b => {
+    const pointValue = LEVEL_POINT_VALUE[b.level_req] || 40
     eloGain += pointValue
     pointBreakdown.push({
-      level: sub.level_req,
+      level: b.level_req,
       value: pointValue,
-      name: sub.sub_name
+      name: b.sub_name
     })
   })
   
   let l4Bonus = 0
   
-  const l4Breakthroughs = greenSubs.filter(sub => {
+  const l4Breakthroughs = greenBenchmarks.filter(b => {
     const wasRed = savedData ? 
-      savedData.subTargets?.find(s => s.sub_id === sub.sub_id)?.is_mastered === false : 
+      savedData.benchmarks?.find(s => s.sub_id === b.sub_id)?.is_mastered === false : 
       true
-    return sub.level_req === 'L4' && wasRed
+    return b.level_req === 'L4' && wasRed
   })
   
   if (l4Breakthroughs.length > 0) {
@@ -181,8 +198,8 @@ const calculateDiagnosisResult = (targetId, greenSubIds, savedData, detectedKnow
   const maxGain = getMaxEloGain(currentLevel)
   const cappedEloGain = Math.min(eloGain, maxGain)
   
-  const hasRedRemaining = subTargets.some(sub => 
-    !greenSubIds.includes(sub.sub_id) && sub.level_req !== 'L1'
+  const hasRedRemaining = benchmarks.some(b => 
+    !greenSubIds.includes(b.sub_id) && b.level_req !== 'L1'
   )
   
   let motifCoordinate = null
@@ -197,7 +214,7 @@ const calculateDiagnosisResult = (targetId, greenSubIds, savedData, detectedKnow
     targetName: targetData.targetName,
     mapName: targetData.mapName,
     motifWeight: motifCoordinate?.tacticalRank || 'N/A',
-    totalPoints: subTargets.length,
+    totalPoints: benchmarks.length,
     conqueredPoints: M,
     pointBreakdown,
     levelPointValue: LEVEL_POINT_VALUE,
@@ -208,7 +225,7 @@ const calculateDiagnosisResult = (targetId, greenSubIds, savedData, detectedKnow
     isCapped: eloGain > maxGain,
     hasRedRemaining,
     greenSubIds,
-    subTargets,
+    benchmarks,
     motifCoordinate
   }
 }

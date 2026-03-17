@@ -49,14 +49,32 @@ const getLevelByElo = (elo) => {
   return 'L1'
 }
 
-const getEloCap = (subTargets) => {
-  if (!subTargets || subTargets.length === 0) return 1000
+const getAllBenchmarks = (specialties) => {
+  if (!specialties || specialties.length === 0) return []
+  const benchmarks = []
+  specialties.forEach(spec => {
+    spec.variations?.forEach(v => {
+      v.master_benchmarks?.forEach(b => {
+        benchmarks.push({
+          ...b,
+          spec_id: spec.spec_id,
+          spec_name: spec.spec_name,
+          var_id: v.var_id,
+          var_name: v.name
+        })
+      })
+    })
+  })
+  return benchmarks
+}
+
+const getEloCapFromSpecialties = (specialties) => {
+  const benchmarks = getAllBenchmarks(specialties)
+  if (benchmarks.length === 0) return 1000
   
-  const isNotGreen = (sub) => sub.is_mastered !== true
-  
-  const hasNonGreenL2 = subTargets.some(sub => sub.level_req === 'L2' && isNotGreen(sub))
-  const hasNonGreenL3 = subTargets.some(sub => sub.level_req === 'L3' && isNotGreen(sub))
-  const hasNonGreenL4 = subTargets.some(sub => sub.level_req === 'L4' && isNotGreen(sub))
+  const hasNonGreenL2 = benchmarks.some(b => b.level === 'L2' && b.is_mastered !== true)
+  const hasNonGreenL3 = benchmarks.some(b => b.level === 'L3' && b.is_mastered !== true)
+  const hasNonGreenL4 = benchmarks.some(b => b.level === 'L4' && b.is_mastered !== true)
   
   if (hasNonGreenL2) return ELO_CAPS.L2
   if (hasNonGreenL3) return ELO_CAPS.L3
@@ -65,26 +83,26 @@ const getEloCap = (subTargets) => {
   return 3000
 }
 
-const getUnmasteredTrapName = (subTargets) => {
-  if (!subTargets || subTargets.length === 0) return null
+const getUnmasteredBenchmarkName = (specialties) => {
+  const benchmarks = getAllBenchmarks(specialties)
+  if (benchmarks.length === 0) return null
   
-  const isNotGreen = (sub) => sub.is_mastered !== true
+  const unmasteredL4 = benchmarks.find(b => b.level === 'L4' && b.is_mastered !== true)
+  if (unmasteredL4) return unmasteredL4.var_name
   
-  const unmasteredL4 = subTargets.find(sub => sub.level_req === 'L4' && isNotGreen(sub))
-  if (unmasteredL4) return unmasteredL4.sub_name
+  const unmasteredL3 = benchmarks.find(b => b.level === 'L3' && b.is_mastered !== true)
+  if (unmasteredL3) return unmasteredL3.var_name
   
-  const unmasteredL3 = subTargets.find(sub => sub.level_req === 'L3' && isNotGreen(sub))
-  if (unmasteredL3) return unmasteredL3.sub_name
-  
-  const unmasteredL2 = subTargets.find(sub => sub.level_req === 'L2' && isNotGreen(sub))
-  if (unmasteredL2) return unmasteredL2.sub_name
+  const unmasteredL2 = benchmarks.find(b => b.level === 'L2' && b.is_mastered !== true)
+  if (unmasteredL2) return unmasteredL2.var_name
   
   return null
 }
 
-const hasUnmasteredSubTargets = (subTargets) => {
-  if (!subTargets || subTargets.length === 0) return false
-  return subTargets.some(sub => sub.is_mastered !== true)
+const hasUnmasteredBenchmarks = (specialties) => {
+  const benchmarks = getAllBenchmarks(specialties)
+  if (benchmarks.length === 0) return false
+  return benchmarks.some(b => b.is_mastered !== true)
 }
 
 function TrainingView({ tacticalData, currentGrade, onBattleComplete, onNavigate }) {
@@ -126,22 +144,23 @@ function TrainingView({ tacticalData, currentGrade, onBattleComplete, onNavigate
 
     const allPracticedSubs = []
     const tacticalPrompts = targets.map(t => {
-      if (t.sub_targets && t.sub_targets.length > 0) {
-        const unmasteredSubs = t.sub_targets.filter(sub => !sub.is_mastered)
-        if (unmasteredSubs.length > 0) {
-          unmasteredSubs.forEach(sub => {
+      const benchmarks = getAllBenchmarks(t.specialties)
+      if (benchmarks.length > 0) {
+        const unmasteredBenchmarks = benchmarks.filter(b => !b.is_mastered)
+        if (unmasteredBenchmarks.length > 0) {
+          unmasteredBenchmarks.forEach(b => {
             allPracticedSubs.push({
               targetId: t.target_id,
-              subId: sub.sub_id,
-              levelReq: sub.level_req
+              subId: b.id || b.legacy_id,
+              levelReq: b.level
             })
           })
-          const subPrompts = unmasteredSubs.map(sub => 
-            `【致命弱点：${sub.sub_name}】 -> 出题指令：${sub.ai_prompt}`
+          const subPrompts = unmasteredBenchmarks.map(b => 
+            `【致命弱点：${b.var_name}】 -> 出题指令：${b.ai_prompt || '基础训练'}`
           ).join('\n')
           return `【母题：${t.target_name}】常规技能已掌握，但以下二级指标待突破：\n${subPrompts}`
         }
-        const masteredNames = t.sub_targets.filter(sub => sub.is_mastered).map(sub => sub.sub_name).join('、')
+        const masteredNames = benchmarks.filter(b => b.is_mastered).map(b => b.var_name).join('、')
         return `【母题：${t.target_name}】所有二级指标已掌握（${masteredNames}），出综合提升题。`
       }
       return `【目标：${t.target_name}】 -> 出题指令：${t.ai_tactical_prompt || '出综合题'}`
@@ -303,13 +322,14 @@ ${tacticalPrompts}
         currentTargets.forEach((target) => {
           let finalEloChange = eloChange
           
-          if (target.sub_targets && target.sub_targets.length > 0) {
-            const unmasteredSubs = target.sub_targets.filter(sub => !sub.is_mastered)
-            const masteredSubs = target.sub_targets.filter(sub => sub.is_mastered)
+          const benchmarks = getAllBenchmarks(target.specialties)
+          if (benchmarks.length > 0) {
+            const unmasteredBenchmarks = benchmarks.filter(b => !b.is_mastered)
+            const masteredBenchmarks = benchmarks.filter(b => b.is_mastered)
             
-            if (eloChange > 0 && unmasteredSubs.length > 0) {
-              const eloCap = getEloCap(target.sub_targets)
-              const trapName = getUnmasteredTrapName(target.sub_targets)
+            if (eloChange > 0 && unmasteredBenchmarks.length > 0) {
+              const eloCap = getEloCapFromSpecialties(target.specialties)
+              const trapName = getUnmasteredBenchmarkName(target.specialties)
               
               if (target.elo_score >= eloCap) {
                 finalEloChange = 0
@@ -321,18 +341,15 @@ ${tacticalPrompts}
               }
             }
             
-            if (eloChange > 0 && masteredSubs.length > 0 && unmasteredSubs.length > 0) {
+            if (eloChange > 0 && masteredBenchmarks.length > 0 && unmasteredBenchmarks.length > 0) {
               finalEloChange = 0
               setAntiGrindWarning(true)
             }
             
-            if (isCorrect && unmasteredSubs.length > 0) {
-              const result = eloEngine.processPracticeResult(
-                target,
-                unmasteredSubs.map(s => s.sub_id),
-                true
-              )
-              result.newlyMastered.forEach(subId => masteredSubIds.push(subId))
+            if (isCorrect && unmasteredBenchmarks.length > 0) {
+              unmasteredBenchmarks.forEach(b => {
+                masteredSubIds.push(b.id || b.legacy_id)
+              })
             }
           }
           
@@ -413,9 +430,10 @@ ${tacticalPrompts}
           {weakTargets.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {weakTargets.map((target, index) => {
-                const eloCap = getEloCap(target.sub_targets)
-                const isLocked = target.elo_score >= eloCap && hasUnmasteredSubTargets(target.sub_targets)
-                const trapName = getUnmasteredTrapName(target.sub_targets)
+                const eloCap = getEloCapFromSpecialties(target.specialties)
+                const isLocked = target.elo_score >= eloCap && hasUnmasteredBenchmarks(target.specialties)
+                const trapName = getUnmasteredBenchmarkName(target.specialties)
+                const benchmarks = getAllBenchmarks(target.specialties)
                 
                 return (
                   <button
@@ -452,20 +470,18 @@ ${tacticalPrompts}
                         {isLocked && <span className="text-red-500 ml-1">(锁定)</span>}
                       </span>
                     </div>
-                    {target.sub_targets && target.sub_targets.length > 0 && (
+                    {benchmarks.length > 0 && (
                       <div className="flex items-center gap-1">
-                        {target.sub_targets.map((sub) => {
-                          const displayTitle = sub.level_req === 'L2' ? `[基准] ${sub.sub_name}` : sub.sub_name
+                        {benchmarks.map((b) => {
+                          const displayTitle = b.level === 'L2' ? `[基准] ${b.var_name}` : b.var_name
                           return (
                             <span
-                              key={sub.sub_id}
+                              key={b.id || b.legacy_id}
                               title={displayTitle}
                               className={`w-2 h-2 rounded-full cursor-pointer ${
-                                sub.is_mastered === true
+                                b.is_mastered === true
                                   ? 'bg-emerald-500'
-                                  : sub.is_mastered === 'warning'
-                                    ? 'bg-amber-500'
-                                    : 'bg-red-500 animate-pulse'
+                                  : 'bg-red-500 animate-pulse'
                               }`}
                             />
                           )

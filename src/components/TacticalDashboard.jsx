@@ -1,6 +1,6 @@
 import { useState, useContext, useMemo } from 'react'
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts'
-import { Lock, AlertTriangle, Crosshair, Shield, Skull, Heart, Zap, Map, LayoutGrid, RotateCcw, Sword, Sparkles, X } from 'lucide-react'
+import { Lock, AlertTriangle, Crosshair, Shield, Skull, Heart, Zap, Map, RotateCcw, Sword, Sparkles, X } from 'lucide-react'
 import { ThemeContext, GradeContext } from '../App'
 import HoloMap from './HoloMap'
 import LevelIndicator, { LevelIndicatorDetailed } from './LevelIndicator'
@@ -215,8 +215,6 @@ const SubTargetBadge = ({ sub, isAcademicMode, isLocked }) => {
 }
 
 function TacticalDashboard({ tacticalData, onDeployToZone, currentGrade, onGlobalReset, onRecalculateElo, onCalibrate, onNavigate }) {
-  const [viewMode, setViewMode] = useState('map')
-  const [dashboardView, setDashboardView] = useState('tactical')
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [calibrateTargetId, setCalibrateTargetId] = useState(null)
   const { isAcademicMode } = useContext(ThemeContext)
@@ -402,174 +400,7 @@ function TacticalDashboard({ tacticalData, onDeployToZone, currentGrade, onGloba
     }
   }
 
-  const renderListView = () => (
-    <>
-      <section className="mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <Shield className={`w-4 h-4 ${isAcademicMode ? 'text-blue-600' : 'text-emerald-500'}`} />
-          <h2 className={`text-sm font-semibold uppercase tracking-wider ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
-            能力分析
-          </h2>
-        </div>
-        <div className={`rounded-lg border p-4 ${isAcademicMode ? 'bg-white border-slate-200' : 'bg-zinc-900 border-zinc-800'}`}>
-          {radarData.length > 0 ? (
-            renderRadarChart()
-          ) : (
-            <div className={`h-[350px] flex items-center justify-center text-sm ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
-              暂无数据
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="mb-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Zap className={`w-4 h-4 ${isAcademicMode ? 'text-amber-600' : 'text-orange-500'}`} />
-          <h2 className={`text-sm font-semibold uppercase tracking-wider ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
-            {currentGrade}母题列表
-          </h2>
-          <span className={`text-xs px-2 py-0.5 rounded ${isAcademicMode ? 'bg-blue-100 text-blue-600' : 'bg-emerald-500/20 text-emerald-400'}`}>
-            {currentGradeEncounters.length}个
-          </span>
-        </div>
-        <div className="space-y-2">
-          {currentGradeEncounters.map((encounter) => {
-            const l2Subs = encounter.sub_targets?.filter(s => s.level_req === 'L2') || []
-            const l3Subs = encounter.sub_targets?.filter(s => s.level_req === 'L3') || []
-            const l4Subs = encounter.sub_targets?.filter(s => s.level_req === 'L4') || []
-            
-            const l2Status = getLevelStatus(l2Subs)
-            const l3Status = getLevelStatus(l3Subs)
-            const l4Status = getLevelStatus(l4Subs)
-            
-            const relatedWeapons = getRelatedWeapons(encounter.target_id)
-            
-            return (
-              <div
-                key={encounter.target_id}
-                className={`rounded-lg border p-3 transition-all hover:shadow-md ${
-                  isAcademicMode
-                    ? 'bg-white border-slate-200 hover:border-blue-300'
-                    : 'bg-zinc-800 border-zinc-700 hover:border-emerald-500/50'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className={`text-xs font-mono ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
-                      {encounter.target_id}
-                    </span>
-                    <span className={`text-sm font-semibold ${isAcademicMode ? 'text-slate-800' : 'text-zinc-100'}`}>
-                      {encounter.target_name}
-                    </span>
-                    <span className={`text-xs font-mono font-bold ${isAcademicMode ? 'text-blue-600' : 'text-emerald-400'}`}>
-                      ELO {encounter.elo_score}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1.5">
-                      <span className={`text-xs font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>L2 熟练</span>
-                      <span className={`w-3 h-3 rounded-full ${getStatusDotColor(l2Status)}`}></span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className={`text-xs font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>L3 迁移</span>
-                      <span className={`w-3 h-3 rounded-full ${getStatusDotColor(l3Status)}`}></span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className={`text-xs font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>L4 融会</span>
-                      <span className={`w-3 h-3 rounded-full ${getStatusDotColor(l4Status)}`}></span>
-                    </div>
-                    
-                    <button
-                      onClick={(e) => handleGoToTraining(encounter.target_id, e)}
-                      className={`px-3 py-1 rounded text-xs font-medium ${
-                        isAcademicMode
-                          ? 'bg-blue-100 text-blue-600 hover:bg-blue-200'
-                          : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
-                      }`}
-                    >
-                      前往训练 →
-                    </button>
-                  </div>
-                </div>
-                
-                {relatedWeapons.length > 0 && (
-                  <div className="mt-2 flex items-center gap-2 flex-wrap">
-                    <span className={`text-xs ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
-                      ⚔️ 核心武器：
-                    </span>
-                    {relatedWeapons.slice(0, 4).map((weapon, idx) => (
-                      <button
-                        key={idx}
-                        onClick={(e) => handleGoToFormula(weapon.id, e)}
-                        className={`px-2 py-0.5 rounded text-xs cursor-pointer transition-all ${
-                          isAcademicMode
-                            ? 'bg-purple-50 text-purple-600 border border-purple-200 hover:bg-purple-100'
-                            : 'bg-purple-900/20 text-purple-400 border border-purple-500/30 hover:bg-purple-900/30'
-                        }`}
-                      >
-                        {weapon.name}
-                      </button>
-                    ))}
-                    {relatedWeapons.length > 4 && (
-                      <span className={`text-xs ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
-                        +{relatedWeapons.length - 4}个
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </section>
-
-      {futureGradeEncounters.length > 0 && (
-        <section>
-          <div className="flex items-center gap-2 mb-3">
-            <Lock className={`w-4 h-4 ${isAcademicMode ? 'text-slate-400' : 'text-zinc-600'}`} />
-            <h2 className={`text-sm font-semibold uppercase tracking-wider ${isAcademicMode ? 'text-slate-400' : 'text-zinc-600'}`}>
-              待学习模块
-            </h2>
-            <span className={`text-xs px-2 py-0.5 rounded ${isAcademicMode ? 'bg-slate-100 text-slate-500' : 'bg-zinc-800 text-zinc-500'}`}>
-              {futureGradeEncounters.length}个
-            </span>
-          </div>
-          <div className="space-y-2">
-            {futureGradeEncounters.map((encounter) => {
-              const gradeLabel = encounter.minGrade === '高二' ? '高二解锁' : 
-                                 encounter.minGrade === '高三' ? '高三解锁' : '后续学习'
-              return (
-                <div
-                  key={encounter.target_id}
-                  className={`rounded-lg border p-3 opacity-60 ${isAcademicMode ? 'bg-slate-50 border-slate-200' : 'bg-zinc-900 border-zinc-800'}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Lock className={`w-4 h-4 ${isAcademicMode ? 'text-slate-400' : 'text-zinc-600'}`} />
-                      <span className={`text-xs font-mono ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
-                        {encounter.target_id}
-                      </span>
-                      <span className={`text-sm font-semibold ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
-                        {encounter.target_name}
-                      </span>
-                    </div>
-                    <span className={`text-xs px-2 py-0.5 rounded ${
-                      encounter.minGrade === '高二' 
-                        ? 'bg-amber-100 text-amber-600' 
-                        : 'bg-red-100 text-red-500'
-                    }`}>
-                      {gradeLabel}
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </section>
-      )}
-    </>
-  )
+  const renderListView = () => null
 
   return (
     <div className="h-full bg-slate-50 dark:bg-zinc-950 text-slate-600 dark:text-zinc-300 overflow-y-auto">
@@ -582,7 +413,7 @@ function TacticalDashboard({ tacticalData, onDeployToZone, currentGrade, onGloba
             </h1>
             <span className={`ml-2 px-2 py-0.5 rounded text-xs font-bold ${
               currentGrade === '高三' ? 'bg-red-100 dark:bg-red-900/30 text-red-500' :
-              currentGrade === '高二' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600' :
+              currentGrade === '高二' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' :
               'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'
             }`}>
               {currentGrade}
@@ -590,95 +421,36 @@ function TacticalDashboard({ tacticalData, onDeployToZone, currentGrade, onGloba
           </div>
         </header>
 
-        <div className={`flex items-center gap-1 rounded-lg p-1 border mb-4 ${isAcademicMode ? 'bg-slate-100 border-slate-200' : 'bg-zinc-900 border-zinc-800'}`}>
-              <button
-                onClick={() => setViewMode('map')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                  viewMode === 'map'
-                    ? isAcademicMode
-                      ? 'bg-blue-100 text-blue-600 border border-blue-200'
-                      : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                    : isAcademicMode
-                      ? 'text-slate-500 hover:text-slate-700'
-                      : 'text-zinc-500 hover:text-zinc-300'
-                }`}
-              >
-                <Map className="w-4 h-4" />
-                {isAcademicMode ? '图谱' : '沙盘'}
-              </button>
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                  viewMode === 'grid'
-                    ? isAcademicMode
-                      ? 'bg-blue-100 text-blue-600 border border-blue-200'
-                      : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                    : isAcademicMode
-                      ? 'text-slate-500 hover:text-slate-700'
-                      : 'text-zinc-500 hover:text-zinc-300'
-                }`}
-              >
-                <LayoutGrid className="w-4 h-4" />
-                列表
-              </button>
-            </div>
-
-            {viewMode === 'map' ? (
-          <div className="space-y-4">
-            <div className={`p-3 rounded-lg border ${isAcademicMode ? 'bg-blue-50/50 border-blue-200' : 'bg-blue-900/20 border-blue-700/30'}`}>
-              <div className="text-xs font-bold mb-2 text-slate-600 dark:text-zinc-400">等级图例</div>
-              <div className="flex flex-wrap gap-4 text-xs">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-slate-300 dark:bg-zinc-600" />
-                  <span className="text-slate-500 dark:text-zinc-500">L1: 100-1000分</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]" />
-                  <span className="text-slate-600 dark:text-zinc-400">L2: 1001-1800分</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-purple-500 shadow-[0_0_6px_rgba(168,85,247,0.5)]" />
-                  <span className="text-slate-600 dark:text-zinc-400">L3: 1801-2500分</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]" />
-                  <span className="text-slate-600 dark:text-zinc-400">L4: 2501+分</span>
-                </div>
-              </div>
-            </div>
-
-            <div className={`w-full aspect-square md:aspect-video rounded-lg border overflow-hidden relative ${isAcademicMode ? 'bg-white border-slate-200' : 'bg-zinc-950 border-zinc-800'}`}>
-              <HoloMap 
-                tacticalData={tacticalData} 
-                onDeploy={onDeployToZone} 
-                currentGrade={currentGrade}
-                onRecalculateElo={onRecalculateElo}
-                calibrateTargetId={calibrateTargetId}
-                onCalibrationComplete={handleCalibrationComplete}
-              />
-            </div>
-
-            <section className="mb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Shield className={`w-4 h-4 ${isAcademicMode ? 'text-blue-600' : 'text-emerald-500'}`} />
-                <h2 className={`text-sm font-semibold uppercase tracking-wider ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
-                  {isAcademicMode ? '能力分析' : '能力雷达'}
-                </h2>
-              </div>
-              <div className={`rounded-lg border p-4 ${isAcademicMode ? 'bg-white border-slate-200' : 'bg-zinc-900 border-zinc-800'}`}>
-                {radarData.length > 0 ? (
-                  renderRadarChart()
-                ) : (
-                  <div className={`h-[350px] flex items-center justify-center text-sm ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
-                    暂无数据
-                  </div>
-                )}
-              </div>
-            </section>
+        <div className="space-y-4">
+          <div className={`w-full aspect-square md:aspect-video rounded-lg border overflow-hidden relative ${isAcademicMode ? 'bg-white border-slate-200' : 'bg-zinc-950 border-zinc-800'}`}>
+            <HoloMap 
+              tacticalData={tacticalData} 
+              onDeploy={onDeployToZone} 
+              currentGrade={currentGrade}
+              onRecalculateElo={onRecalculateElo}
+              calibrateTargetId={calibrateTargetId}
+              onCalibrationComplete={handleCalibrationComplete}
+            />
           </div>
-        ) : (
-          renderListView()
-        )}
+
+          <section className="mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Shield className={`w-4 h-4 ${isAcademicMode ? 'text-blue-600' : 'text-emerald-500'}`} />
+              <h2 className={`text-sm font-semibold uppercase tracking-wider ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
+                {isAcademicMode ? '能力分析' : '能力雷达'}
+              </h2>
+            </div>
+            <div className={`rounded-lg border p-4 ${isAcademicMode ? 'bg-white border-slate-200' : 'bg-zinc-900 border-zinc-800'}`}>
+              {radarData.length > 0 ? (
+                renderRadarChart()
+              ) : (
+                <div className={`h-[350px] flex items-center justify-center text-sm ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
+                  暂无数据
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
       </div>
 
       {showResetConfirm && (
