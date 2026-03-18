@@ -12,11 +12,193 @@ import {
   buildCrossFileIndex
 } from '../utils/problemLogic';
 import { loadMotifData } from '../utils/dataLoader';
+import { judgeAnswerWithFallback } from '../utils/aiGrader';
 
 const API_KEY = import.meta.env.VITE_QWEN_API_KEY || 'YOUR_API_KEY';
 const BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
 const MODEL_NAME = 'qwen-turbo';
 const PROBLEMS_PER_MOTIF = 3;
+
+const normalizeLatex = (str) => {
+  if (!str || typeof str !== 'string') return '';
+  let result = str;
+  
+  result = result.replace(/\$\s*/g, '').replace(/\s*\$/g, '');
+  result = result.replace(/\\\(/g, '').replace(/\\\)/g, '');
+  result = result.replace(/\\\[/g, '').replace(/\\\]/g, '');
+  
+  result = result.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, '($1)/($2)');
+  result = result.replace(/\\dfrac\{([^{}]+)\}\{([^{}]+)\}/g, '($1)/($2)');
+  result = result.replace(/\\tfrac\{([^{}]+)\}\{([^{}]+)\}/g, '($1)/($2)');
+  result = result.replace(/\\cfrac\{([^{}]+)\}\{([^{}]+)\}/g, '($1)/($2)');
+  
+  result = result.replace(/\\sqrt\{([^{}]+)\}/g, 'sqrt($1)');
+  result = result.replace(/\\sqrt\[(\d+)\]\{([^{}]+)\}/g, 'root($1,$2)');
+  result = result.replace(/\\sqrt\s+(\S+)/g, 'sqrt($1)');
+  
+  result = result.replace(/\\sqrt\{\\frac\{([^{}]+)\}\{([^{}]+)\}\}/g, 'sqrt(($1)/($2))');
+  
+  result = result.replace(/\\log\s*_?\s*(\d+)?\s*\(?([^)\s]+)\)?/gi, (match, base, arg) => {
+    return base ? `log${base}(${arg})` : `log(${arg})`;
+  });
+  result = result.replace(/\\ln\s*\(?([^)\s]+)\)?/gi, 'ln($1)');
+  result = result.replace(/\\lg\s*\(?([^)\s]+)\)?/gi, 'lg($1)');
+  
+  result = result.replace(/\\sin\s*\(?([^)\s]+)\)?/gi, 'sin($1)');
+  result = result.replace(/\\cos\s*\(?([^)\s]+)\)?/gi, 'cos($1)');
+  result = result.replace(/\\tan\s*\(?([^)\s]+)\)?/gi, 'tan($1)');
+  result = result.replace(/\\cot\s*\(?([^)\s]+)\)?/gi, 'cot($1)');
+  result = result.replace(/\\sec\s*\(?([^)\s]+)\)?/gi, 'sec($1)');
+  result = result.replace(/\\csc\s*\(?([^)\s]+)\)?/gi, 'csc($1)');
+  
+  result = result.replace(/\\arcsin\s*\(?([^)\s]+)\)?/gi, 'arcsin($1)');
+  result = result.replace(/\\arccos\s*\(?([^)\s]+)\)?/gi, 'arccos($1)');
+  result = result.replace(/\\arctan\s*\(?([^)\s]+)\)?/gi, 'arctan($1)');
+  
+  result = result.replace(/\\sinh\s*\(?([^)\s]+)\)?/gi, 'sinh($1)');
+  result = result.replace(/\\cosh\s*\(?([^)\s]+)\)?/gi, 'cosh($1)');
+  result = result.replace(/\\tanh\s*\(?([^)\s]+)\)?/gi, 'tanh($1)');
+  
+  result = result.replace(/\\exp\s*\(?([^)\s]+)\)?/gi, 'exp($1)');
+  
+  result = result.replace(/\\lim_\{([^{}]+)\}/gi, 'lim($1)');
+  result = result.replace(/\\sum_\{([^{}]+)\}\^\{([^{}]+)\}/gi, 'sum($1,$2)');
+  result = result.replace(/\\prod_\{([^{}]+)\}\^\{([^{}]+)\}/gi, 'prod($1,$2)');
+  result = result.replace(/\\int_\{([^{}]+)\}\^\{([^{}]+)\}/gi, 'int($1,$2)');
+  
+  result = result.replace(/\\pi/gi, 'pi');
+  result = result.replace(/\\e(?![a-z])/gi, 'e');
+  result = result.replace(/\\infty/gi, 'inf');
+  result = result.replace(/\\emptyset/gi, 'empty');
+  result = result.replace(/\\varnothing/gi, 'empty');
+  
+  result = result.replace(/\\alpha/gi, 'alpha');
+  result = result.replace(/\\beta/gi, 'beta');
+  result = result.replace(/\\gamma/gi, 'gamma');
+  result = result.replace(/\\delta/gi, 'delta');
+  result = result.replace(/\\theta/gi, 'theta');
+  result = result.replace(/\\lambda/gi, 'lambda');
+  result = result.replace(/\\mu/gi, 'mu');
+  result = result.replace(/\\sigma/gi, 'sigma');
+  result = result.replace(/\\phi/gi, 'phi');
+  result = result.replace(/\\omega/gi, 'omega');
+  result = result.replace(/\\epsilon/gi, 'epsilon');
+  result = result.replace(/\\rho/gi, 'rho');
+  result = result.replace(/\\eta/gi, 'eta');
+  result = result.replace(/\\xi/gi, 'xi');
+  result = result.replace(/\\zeta/gi, 'zeta');
+  
+  result = result.replace(/\\cdot/g, '*');
+  result = result.replace(/\\times/g, '*');
+  result = result.replace(/\\div/g, '/');
+  result = result.replace(/\\pm/g, '+-');
+  result = result.replace(/\\mp/g, '-+');
+  
+  result = result.replace(/\\leq?/g, '<=');
+  result = result.replace(/\\geq?/g, '>=');
+  result = result.replace(/\\lt/g, '<');
+  result = result.replace(/\\gt/g, '>');
+  result = result.replace(/\\neq?/g, '!=');
+  result = result.replace(/\\approx/g, '~');
+  result = result.replace(/\\equiv/g, '==');
+  result = result.replace(/\\sim/g, '~');
+  result = result.replace(/\\propto/g, 'prop');
+  
+  result = result.replace(/\\subset/g, 'subset');
+  result = result.replace(/\\supset/g, 'supset');
+  result = result.replace(/\\subseteq/g, 'subseteq');
+  result = result.replace(/\\supseteq/g, 'supseteq');
+  result = result.replace(/\\cup/g, 'union');
+  result = result.replace(/\\cap/g, 'intersect');
+  result = result.replace(/\\in/g, 'in');
+  result = result.replace(/\\notin/g, 'notin');
+  result = result.replace(/\\forall/g, 'forall');
+  result = result.replace(/\\exists/g, 'exists');
+  
+  result = result.replace(/\\rightarrow/g, '->');
+  result = result.replace(/\\leftarrow/g, '<-');
+  result = result.replace(/\\Rightarrow/g, '=>');
+  result = result.replace(/\\Leftarrow/g, '<=');
+  result = result.replace(/\\leftrightarrow/g, '<->');
+  result = result.replace(/\\Leftrightarrow/g, '<=>');
+  
+  result = result.replace(/\\left\s*/g, '');
+  result = result.replace(/\\right\s*/g, '');
+  result = result.replace(/\\big/g, '');
+  result = result.replace(/\\Big/g, '');
+  result = result.replace(/\\bigg/g, '');
+  result = result.replace(/\\Bigg/g, '');
+  
+  result = result.replace(/\\{([^{}]+)\}/g, '($1)');
+  
+  result = result.replace(/\\text\s*\{([^{}]+)\}/gi, '$1');
+  result = result.replace(/\\mathrm\s*\{([^{}]+)\}/gi, '$1');
+  result = result.replace(/\\mathbf\s*\{([^{}]+)\}/gi, '$1');
+  result = result.replace(/\\mathit\s*\{([^{}]+)\}/gi, '$1');
+  result = result.replace(/\\mathbb\s*\{([^{}]+)\}/gi, '$1');
+  
+  result = result.replace(/\\quad/g, ' ');
+  result = result.replace(/\\qquad/g, ' ');
+  result = result.replace(/\\,/g, ' ');
+  result = result.replace(/\\;/g, ' ');
+  result = result.replace(/\\!/g, '');
+  result = result.replace(/\\ /g, ' ');
+  
+  result = result.replace(/\\\\/g, '');
+  result = result.replace(/\\/g, '');
+  
+  return result;
+};
+
+const normalizeMathSymbols = (str) => {
+  if (!str || typeof str !== 'string') return '';
+  let result = str;
+  
+  result = normalizeLatex(result);
+  
+  result = result
+    .replace(/[（(]/g, '(')
+    .replace(/[）)]/g, ')')
+    .replace(/[［\[]/g, '[')
+    .replace(/[］\]]/g, ']')
+    .replace(/[｛{]/g, '{')
+    .replace(/[｝}]/g, '}')
+    .replace(/−|－|—|–/g, '-')
+    .replace(/×|✕|✖/g, '*')
+    .replace(/÷|∕/g, '/')
+    .replace(/＝/g, '=')
+    .replace(/≠/g, '!=')
+    .replace(/≤|≦/g, '<=')
+    .replace(/≥|≧/g, '>=')
+    .replace(/＜/g, '<')
+    .replace(/＞/g, '>')
+    .replace(/±/g, '+-')
+    .replace(/·|⋅|∙/g, '*')
+    .replace(/π/g, 'pi')
+    .replace(/∞/g, 'inf')
+    .replace(/√/g, 'sqrt')
+    .replace(/根号/g, 'sqrt')
+    .replace(/∑/g, 'sum')
+    .replace(/∏/g, 'prod')
+    .replace(/∫/g, 'int')
+    .replace(/∂/g, 'd')
+    .replace(/∆/g, 'delta')
+    .replace(/α/g, 'alpha')
+    .replace(/β/g, 'beta')
+    .replace(/γ/g, 'gamma')
+    .replace(/θ/g, 'theta')
+    .replace(/λ/g, 'lambda')
+    .replace(/μ/g, 'mu')
+    .replace(/σ/g, 'sigma')
+    .replace(/φ/g, 'phi')
+    .replace(/ω/g, 'omega')
+    .replace(/\s+/g, '')
+    .replace(/[，。；：！？、]/g, '')
+    .replace(/[,.:;!?]/g, '')
+    .toLowerCase();
+    
+  return result;
+};
 
 const WeeklyMission = ({
   tacticalData,
@@ -26,7 +208,8 @@ const WeeklyMission = ({
   onNavigateToErrorLibrary,
   currentGrade,
   weeklyTasks,
-  setWeeklyTasks
+  setWeeklyTasks,
+  onUpdateMotifElo
 }) => {
   const [selectedMotifs, setSelectedMotifs] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -227,7 +410,12 @@ const WeeklyMission = ({
       isAIGenerated: true,
       aiLabel: `[${difficultyConfig.tier}: ${eloScore}战力]`,
       problemIndex,
-      source: source
+      source: source,
+      questionMeta: {
+        questions: difficultyConfig.multiQuestion 
+          ? [{ level: 'L2' }, { level: difficultyConfig.level }]
+          : [{ level: difficultyConfig.level }]
+      }
     };
   }, [CROSS_FILE_INDEX, findMotifData, getDifficultyByElo, selectBenchmark, selectVariableKnobs, getVariationInfo, buildSystemPrompt, buildUserPrompt, parseAIResponse, loadMotifData, API_KEY, BASE_URL, MODEL_NAME]);
 
@@ -350,62 +538,78 @@ const WeeklyMission = ({
     if (!rawInput) return { status: 'EMPTY', answers: [] };
     
     let answers = [];
-    const normalized = rawInput.replace(/[（(]/g, '(').replace(/[）)]/g, ')');
+    let normalized = rawInput
+      .replace(/[（(]/g, '(')
+      .replace(/[）)]/g, ')');
     
-    const bracketPattern = /\((\d+)\)/g;
-    const bracketMatches = normalized.split(bracketPattern).filter(s => s.trim());
-    
-    if (bracketMatches.length >= expectedCount * 2) {
-      for (let i = 1; i < bracketMatches.length; i += 2) {
-        answers.push(bracketMatches[i + 1]?.trim() || '');
+    for (let i = 1; i <= expectedCount; i++) {
+      const pattern1 = new RegExp(`\\(${i}\\)\\s*([\\s\\S]*?)(?=\\(${i + 1}\\)|$)`, 'i');
+      let match = normalized.match(pattern1);
+      
+      if (!match || !match[1]) {
+        const pattern2 = new RegExp(`^\\s*${i}\\)\\s*([\\s\\S]*?)(?=${i + 1}\\)|$)`, 'im');
+        match = normalized.match(pattern2);
       }
-      if (answers.length >= expectedCount) {
-        return { status: 'OK', answers: answers.slice(0, expectedCount) };
+      
+      if (!match || !match[1]) {
+        const pattern3 = new RegExp(`[\\n^]\\s*${i}\\)\\s*([\\s\\S]*?)(?=${i + 1}\\)|$)`, 'im');
+        match = normalized.match(pattern3);
       }
-    }
-    
-    const chineseNumPattern = /[①②③④⑤⑥⑦⑧⑨⑩]/g;
-    const chineseMatches = normalized.split(chineseNumPattern).filter(s => s.trim());
-    if (chineseMatches.length >= expectedCount) {
-      return { status: 'OK', answers: chineseMatches.slice(0, expectedCount).map(s => s.trim()) };
-    }
-    
-    if (normalized.includes('\n')) {
-      answers = normalized.split('\n').map(s => s.trim()).filter(Boolean);
-      if (answers.length >= expectedCount) {
-        return { status: 'OK', answers: answers.slice(0, expectedCount) };
+      
+      if (match && match[1]) {
+        answers.push(match[1].trim());
+      } else {
+        answers.push('');
       }
     }
     
-    answers = normalized.split(/[;；,，]/).map(s => s.trim()).filter(Boolean);
-    if (answers.length >= expectedCount) {
-      return { status: 'OK', answers: answers.slice(0, expectedCount) };
+    if (answers.every(a => a === '')) {
+      answers = [];
+      const chineseNumPattern = /[①②③④⑤⑥⑦⑧⑨⑩]/g;
+      const chineseMatches = normalized.split(chineseNumPattern).filter(s => s.trim());
+      if (chineseMatches.length >= expectedCount) {
+        answers = chineseMatches.slice(0, expectedCount).map(s => s.trim());
+      }
     }
     
-    if (expectedCount === 1) {
-      return { status: 'OK', answers: [normalized.trim()] };
+    if (answers.length === 0 || answers.every(a => a === '')) {
+      if (normalized.includes('\n')) {
+        const lines = normalized.split('\n').map(s => s.trim()).filter(Boolean);
+        if (lines.length >= expectedCount) {
+          answers = lines.slice(0, expectedCount);
+        }
+      }
     }
     
-    return {
-      status: 'FORMAT_ERROR',
-      message: `检测到答案格式不完整（期望${expectedCount}问，实际${answers.length}问），请明确区分各问答案。`,
-      answers: []
-    };
+    if (answers.length === 0 || answers.every(a => a === '')) {
+      const semicolonParts = normalized.split(/[;；]/).map(s => s.trim()).filter(Boolean);
+      if (semicolonParts.length >= expectedCount) {
+        answers = semicolonParts.slice(0, expectedCount);
+      }
+    }
+    
+    if (answers.length === 0 || answers.every(a => a === '')) {
+      if (expectedCount === 1) {
+        answers = [normalized.trim()];
+      }
+    }
+    
+    if (answers.length < expectedCount) {
+      while (answers.length < expectedCount) {
+        answers.push('');
+      }
+    }
+    
+    console.log('[parseMultiQuestionAnswer] 解析结果:', { expectedCount, answers, rawInput: rawInput.substring(0, 100) });
+    
+    return { status: 'OK', answers: answers.slice(0, expectedCount) };
   }, []);
 
   const strictCompare = useCallback((userAnswer, correctAnswer) => {
-    const normalizeStr = (str) => {
-      if (!str || typeof str !== 'string') return '';
-      return str
-        .replace(/\s+/g, '')
-        .replace(/[，。；：！？、]/g, '')
-        .replace(/[,.:;!?]/g, '')
-        .replace(/\$/g, '')
-        .toLowerCase();
-    };
+    const userNorm = normalizeMathSymbols(userAnswer);
+    const correctNorm = normalizeMathSymbols(correctAnswer);
 
-    const userNorm = normalizeStr(userAnswer);
-    const correctNorm = normalizeStr(correctAnswer);
+    console.log('[strictCompare] 比较:', { userNorm, correctNorm, userAnswer, correctAnswer });
 
     if (!userNorm) return false;
     if (!correctNorm) return false;
@@ -414,27 +618,104 @@ const WeeklyMission = ({
 
     const extractNumbers = (str) => {
       if (!str || typeof str !== 'string') return [];
-      const matches = str.match(/-?\d+\.?\d*/g) || [];
+      const normalized = normalizeMathSymbols(str);
+      const matches = normalized.match(/-?\d+\.?\d*/g) || [];
       return matches.map(n => parseFloat(n));
     };
 
     const userNums = extractNumbers(userAnswer);
     const correctNums = extractNumbers(correctAnswer);
 
+    console.log('[strictCompare] 数字提取:', { userNums, correctNums });
+
     if (correctNums.length > 0 && userNums.length > 0) {
-      const matchedNums = correctNums.filter(n =>
-        userNums.some(un => Math.abs(un - n) < 0.001)
-      );
-      if (matchedNums.length === correctNums.length && userNums.length === correctNums.length) {
+      if (correctNums.length !== userNums.length) {
+        console.log('[strictCompare] 数字数量不匹配');
+        return false;
+      }
+      
+      for (let i = 0; i < correctNums.length; i++) {
+        if (Math.abs(userNums[i] - correctNums[i]) >= 0.001) {
+          console.log('[strictCompare] 数字值不匹配:', userNums[i], correctNums[i]);
+          return false;
+        }
+      }
+      console.log('[strictCompare] 数字匹配成功');
+      return true;
+    }
+
+    const extractInequalities = (str) => {
+      if (!str || typeof str !== 'string') return [];
+      const normalized = normalizeMathSymbols(str);
+      const matches = normalized.match(/[<>]=?|!=?[^<>!=]*/g) || [];
+      return matches.map(m => m.trim());
+    };
+
+    const userIneqs = extractInequalities(userAnswer);
+    const correctIneqs = extractInequalities(correctAnswer);
+
+    if (correctIneqs.length > 0 && userIneqs.length > 0) {
+      const userIneqNorm = userIneqs.map(i => normalizeMathSymbols(i)).sort().join(',');
+      const correctIneqNorm = correctIneqs.map(i => normalizeMathSymbols(i)).sort().join(',');
+      
+      if (userIneqNorm === correctIneqNorm) {
+        console.log('[strictCompare] 不等式匹配成功');
         return true;
       }
     }
 
+    const normalizeChineseText = (str) => {
+      if (!str || typeof str !== 'string') return '';
+      return str
+        .replace(/[点个只条项步件本张位次颗根段节章部]/g, '')
+        .replace(/[的在了着过吗呢吧呀啊哦嗯]/g, '')
+        .replace(/直线/g, '线')
+        .replace(/曲线/g, '线')
+        .replace(/函数/g, 'f')
+        .replace(/\s+/g, '')
+        .toLowerCase();
+    };
+
+    const userChineseNorm = normalizeChineseText(userNorm);
+    const correctChineseNorm = normalizeChineseText(correctNorm);
+
+    if (userChineseNorm === correctChineseNorm) {
+      console.log('[strictCompare] 中文模糊匹配成功');
+      return true;
+    }
+
+    if (userChineseNorm.includes(correctChineseNorm) || correctChineseNorm.includes(userChineseNorm)) {
+      const shorter = Math.min(userChineseNorm.length, correctChineseNorm.length);
+      const longer = Math.max(userChineseNorm.length, correctChineseNorm.length);
+      if (shorter / longer >= 0.8) {
+        console.log('[strictCompare] 包含关系匹配成功');
+        return true;
+      }
+    }
+
+    const extractMathExpr = (str) => {
+      if (!str || typeof str !== 'string') return '';
+      return str
+        .replace(/[a-z]+\([^)]*\)/gi, m => m)
+        .replace(/[a-z]+/gi, '')
+        .replace(/[<>]=?|=/g, m => m);
+    };
+
+    const userMathExpr = extractMathExpr(userNorm);
+    const correctMathExpr = extractMathExpr(correctNorm);
+
+    if (userMathExpr && correctMathExpr && userMathExpr === correctMathExpr) {
+      console.log('[strictCompare] 数学表达式匹配成功');
+      return true;
+    }
+
+    console.log('[strictCompare] 匹配失败');
     return false;
   }, []);
 
   const evaluateAnswers = useCallback((userAnswer, correctAnswer, questionMeta) => {
     const expectedCount = questionMeta?.questions?.length || 1;
+    
     const parseResult = parseMultiQuestionAnswer(userAnswer, expectedCount);
 
     if (parseResult.status === 'FORMAT_ERROR') {
@@ -460,32 +741,53 @@ const WeeklyMission = ({
     }
 
     const userAnswers = parseResult.answers;
-    const correctQuestions = {};
-    if (typeof correctAnswer === 'object') {
-      if (correctAnswer.l1) correctQuestions['1'] = correctAnswer.l1;
-      if (correctAnswer.l2) correctQuestions['2'] = correctAnswer.l2;
-      if (correctAnswer.l3) correctQuestions['3'] = correctAnswer.l3;
-      if (correctAnswer.l4) correctQuestions['4'] = correctAnswer.l4;
-      if (Object.keys(correctQuestions).length === 0 && correctAnswer.content) {
-        correctQuestions['1'] = correctAnswer.content;
+
+    let correctAnswersArray = [];
+    
+    if (typeof correctAnswer === 'object' && correctAnswer !== null) {
+      for (let i = 0; i < expectedCount; i++) {
+        const keyByL = `l${i + 1}`;
+        const keyByNum = String(i + 1);
+        if (correctAnswer[keyByL]) {
+          correctAnswersArray.push(correctAnswer[keyByL]);
+        } else if (correctAnswer[keyByNum]) {
+          correctAnswersArray.push(correctAnswer[keyByNum]);
+        } else {
+          correctAnswersArray.push('');
+        }
       }
     } else if (typeof correctAnswer === 'string') {
-      const normalized = correctAnswer.replace(/[（(]/g, '(').replace(/[）)]/g, ')');
-      const patterns = [
-        /\(1\)\s*([^()]+?)(?=\(2\)|$)/,
-        /\(2\)\s*([^()]+?)(?=\(3\)|$)/,
-        /\(3\)\s*([^()]+?)(?=\(4\)|$)/,
-        /\(4\)\s*([^()]+?)$/
-      ];
-      patterns.forEach((pattern, idx) => {
-        const match = normalized.match(pattern);
+      const normalized = correctAnswer
+        .replace(/[（(]/g, '(')
+        .replace(/[）)]/g, ')');
+      
+      const parts = [];
+      for (let i = 1; i <= expectedCount; i++) {
+        const regex = new RegExp(`\\(${i}\\)\\s*([\\s\\S]*?)(?=\\(${i + 1}\\)|$)`, 'i');
+        const match = normalized.match(regex);
         if (match && match[1]) {
-          correctQuestions[String(idx + 1)] = match[1].trim();
+          parts.push(match[1].trim());
+        } else {
+          parts.push('');
         }
-      });
-      if (Object.keys(correctQuestions).length === 0) {
-        correctQuestions['1'] = correctAnswer;
       }
+      
+      if (parts.every(p => p === '') && normalized.includes('\n')) {
+        const lines = normalized.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length >= expectedCount) {
+          correctAnswersArray = lines.slice(0, expectedCount);
+        } else {
+          correctAnswersArray = parts;
+        }
+      } else {
+        correctAnswersArray = parts;
+      }
+      
+      if (expectedCount === 1 && correctAnswersArray[0] === '') {
+        correctAnswersArray = [normalized.trim()];
+      }
+    } else {
+      correctAnswersArray = [String(correctAnswer || '')];
     }
 
     const ELO_SCORES = {
@@ -498,14 +800,18 @@ const WeeklyMission = ({
     const details = [];
     let totalDelta = 0;
 
+    console.log(`[开始评价] 共 ${expectedCount} 问`, { userAnswers, correctAnswersArray });
+
     for (let i = 0; i < expectedCount; i++) {
       const userQ = userAnswers[i] || '';
-      const correctQ = correctQuestions[String(i + 1)] || '';
+      const correctQ = correctAnswersArray[i] || '';
       const level = questionMeta?.questions?.[i]?.level || 'L2';
 
       const isCorrect = strictCompare(userQ, correctQ);
       const scores = ELO_SCORES[level] || ELO_SCORES.L2;
       const delta = isCorrect ? scores.correct : scores.wrong;
+
+      console.log(`  - 第${i + 1}问 [${level}]: ${isCorrect ? '✅' : '❌'} (${delta >= 0 ? '+' : ''}${delta})`, { userQ, correctQ });
 
       details.push({
         index: i,
@@ -527,23 +833,114 @@ const WeeklyMission = ({
     };
   }, [parseMultiQuestionAnswer, strictCompare]);
 
-  const handleSubmitAnswer = useCallback((taskIndex, answer) => {
-    setWeeklyTasks(prev => prev.map((task, idx) => {
-      if (idx !== taskIndex) return task;
-      
+  const handleSubmitAnswer = useCallback(async (taskIndex, answer) => {
+    setWeeklyTasks(prev => prev.map((task, idx) => 
+      idx === taskIndex ? { ...task, isSubmitting: true } : task
+    ));
+
+    try {
+      const task = weeklyTasks[taskIndex];
+      if (!task || task.isSubmitted) {
+        console.log('[handleSubmitAnswer] 任务不存在或已提交');
+        setWeeklyTasks(prev => prev.map((t, idx) => 
+          idx === taskIndex ? { ...t, isSubmitting: false } : t
+        ));
+        return;
+      }
+
+      const question = task.variant?.question || task.question || '';
       const correctAnswer = task.variant?.answer || task.answer || '';
-      const questionMeta = task.questionMeta || { questions: [{ level: task.level || 'L2' }] };
-      
-      const result = evaluateAnswers(answer, correctAnswer, questionMeta);
-      
-      return { 
-        ...task, 
-        userAnswer: answer, 
-        score: result.totalDelta,
-        evaluationResult: result
+      const level = task.targetLevel || 'L2';
+
+      console.log('[handleSubmitAnswer] 开始 AI 判题...', { 
+        motifId: task.motifId,
+        question: question.substring(0, 50) + '...',
+        level
+      });
+
+      const questionMeta = task.questionMeta || { questions: [{ level }] };
+
+      const aiResult = await judgeAnswerWithFallback(
+        question,
+        correctAnswer,
+        answer,
+        level,
+        (userAns, correctAns) => {
+          const result = evaluateAnswers(userAns, correctAns, questionMeta);
+          return result.isAllCorrect;
+        },
+        questionMeta
+      );
+
+      console.log('[handleSubmitAnswer] AI 判题结果:', aiResult);
+
+      const evaluationResult = {
+        status: 'OK',
+        isAllCorrect: aiResult.isCorrect,
+        totalDelta: aiResult.delta,
+        aiReason: aiResult.reason,
+        isFallback: aiResult.isFallback || false,
+        details: aiResult.details || [{
+          index: 0,
+          level,
+          isCorrect: aiResult.isCorrect,
+          delta: aiResult.delta,
+          userAnswer: answer,
+          correctAnswer: correctAnswer
+        }]
       };
-    }));
-  }, [setWeeklyTasks, evaluateAnswers]);
+
+      setWeeklyTasks(prev => prev.map((t, idx) => {
+        if (idx !== taskIndex) return t;
+        
+        return {
+          ...t,
+          userAnswer: answer,
+          score: aiResult.delta,
+          evaluationResult,
+          isSubmitted: true,
+          isSubmitting: false
+        };
+      }));
+
+      if (onUpdateMotifElo) {
+        onUpdateMotifElo(task.motifId, aiResult.delta);
+      }
+
+      if (setErrorNotebook && !aiResult.isCorrect) {
+        const errorEntry = {
+          id: `error-${task.id}-${Date.now()}`,
+          targetId: task.motifId,
+          motifName: task.motifName,
+          specName: task.specName,
+          question: question,
+          userAnswer: answer,
+          correctAnswer: correctAnswer,
+          aiReason: aiResult.reason,
+          score: aiResult.delta,
+          createdAt: new Date().toISOString(),
+          resolved: false
+        };
+        
+        setErrorNotebook(prev => {
+          const newNotebook = [...prev, errorEntry];
+          console.log('[错题本] 添加错题:', errorEntry);
+          return newNotebook;
+        });
+      }
+
+    } catch (error) {
+      console.error('[handleSubmitAnswer] 判题出错:', error);
+      
+      setWeeklyTasks(prev => prev.map((t, idx) => 
+        idx === taskIndex ? { 
+          ...t, 
+          isSubmitting: false,
+          submitError: '判题服务暂时繁忙，请稍后重试'
+        } : t
+      ));
+    }
+  }, [weeklyTasks, evaluateAnswers, onUpdateMotifElo, setErrorNotebook]);
 
   return (
     <div className="h-full overflow-y-auto pb-4">

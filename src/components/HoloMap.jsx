@@ -1,11 +1,14 @@
 import { useMemo, useContext, useState, useEffect } from 'react'
-import { Target, BookOpen, Sparkles, AlertTriangle } from 'lucide-react'
+import { Target, BookOpen, Sparkles, AlertTriangle, Loader2 } from 'lucide-react'
 import { ThemeContext } from '../App'
 import ReactMarkdown from 'react-markdown'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 import strategyLib from '../data/strategy_lib.json'
+import { addLegacyIdsToMotifData } from '../utils/migrateDataStructure'
+
+const motifModules = import.meta.glob('/src/data/M*.json', { eager: false })
 
 const gearLevelColorsDark = {
   L4: '#f59e0b',
@@ -263,6 +266,8 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
   const [hasChanges, setHasChanges] = useState(false)
   const [syncAnimation, setSyncAnimation] = useState(false)
   const [loadedMotifData, setLoadedMotifData] = useState(null)
+  const [loadingMotif, setLoadingMotif] = useState(false)
+  const [loadError, setLoadError] = useState(null)
 
   const gearLevelColors = isAcademicMode ? gearLevelColorsLight : gearLevelColorsDark
 
@@ -346,46 +351,106 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
     return result
   }, [tacticalData, currentGrade, showMiddleRing, showInnerRing])
 
-  const loadMotifDataAsync = async (motifId) => {
-    try {
-      const response = await fetch(`/src/data/${motifId}.json`)
-      if (response.ok) {
-        const data = await response.json()
-        setLoadedMotifData(data)
-      }
-    } catch (error) {
-      console.warn(`Failed to load ${motifId}.json:`, error)
-    }
-  }
-
   useEffect(() => {
-    if (calibrateTargetId && targets.length > 0) {
-      const target = targets.find(t => t.target_id === calibrateTargetId)
-      if (target && target.unlockStatus === 'unlocked') {
-        setSelectedTarget(target)
-        setPreviewSpecialties(target.specialties ? JSON.parse(JSON.stringify(target.specialties)) : null)
-        setHasChanges(false)
-        
-        if (motifData && motifData[calibrateTargetId]) {
-          setLoadedMotifData(motifData[calibrateTargetId])
-        } else {
-          loadMotifDataAsync(calibrateTargetId)
+    if (!selectedTarget || !targets || targets.length === 0) return
+
+    const baseTarget = targets.find(t => t.target_id === selectedTarget.target_id)
+
+    if (!baseTarget) {
+      setSelectedTarget(null)
+      setPreviewSpecialties(null)
+      return
+    }
+
+    setSelectedTarget(prev => {
+      const hasLoadedDetails = prev.specialties && prev.specialties.length > 0
+
+      return {
+        ...baseTarget,
+        ...(hasLoadedDetails
+          ? {
+              specialties: prev.specialties,
+              meta: prev.meta
+            }
+          : {})
+      }
+    })
+  }, [targets, selectedTarget?.target_id])
+
+  const handleTargetClick = async (target) => {
+    if (target.unlockStatus !== 'unlocked') return
+
+    setLoadingMotif(true)
+    setLoadError(null)
+    setHasChanges(false)
+
+    try {
+      const motifId = target.target_id
+      const moduleKey = `/src/data/${motifId}.json`
+
+      if (!motifModules[moduleKey]) {
+        throw new Error(`Module not found: ${moduleKey}`)
+      }
+
+      const module = await motifModules[moduleKey]()
+      const rawMotifData = module.default
+      const motifData = addLegacyIdsToMotifData(rawMotifData)
+
+      const savedSpecialties = target.specialties || []
+      const savedBenchmarkMap = new Map()
+      savedSpecialties.forEach(spec => {
+        spec.variations?.forEach(v => {
+          v.master_benchmarks?.forEach(b => {
+            savedBenchmarkMap.set(b.id || `${spec.spec_id}_${v.var_id}_${b.level}`, {
+              is_mastered: b.is_mastered,
+              consecutive_correct: b.consecutive_correct
+            })
+          })
+        })
+      })
+
+      const mergedSpecialties = (motifData.specialties || []).map(spec => ({
+        ...spec,
+        variations: (spec.variations || []).map(v => ({
+          ...v,
+          master_benchmarks: (v.master_benchmarks || []).map(b => {
+            const key = b.id || `${spec.spec_id}_${v.var_id}_${b.level}`
+            const saved = savedBenchmarkMap.get(key)
+            if (saved && (saved.is_mastered === true || saved.is_mastered === false || saved.is_mastered === null)) {
+              return {
+                ...b,
+                is_mastered: saved.is_mastered,
+                consecutive_correct: saved.consecutive_correct
+              }
+            }
+            return b
+          })
+        }))
+      }))
+
+      const enrichedTarget = {
+        ...target,
+        specialties: mergedSpecialties,
+        meta: {
+          description: motifData.description,
+          version: motifData.logic_schema_version
         }
       }
-    }
-  }, [calibrateTargetId, targets, motifData])
 
-  const handleTargetClick = (target) => {
-    if (target.unlockStatus === 'unlocked') {
+      setSelectedTarget(enrichedTarget)
+      setPreviewSpecialties(
+        mergedSpecialties
+          ? JSON.parse(JSON.stringify(mergedSpecialties))
+          : null
+      )
+      setLoadedMotifData({ ...motifData, specialties: mergedSpecialties })
+    } catch (error) {
+      console.error('Failed to load motif data:', error)
+      setLoadError(`无法加载专项数据: ${error.message}`)
       setSelectedTarget(target)
-      setPreviewSpecialties(target.specialties ? JSON.parse(JSON.stringify(target.specialties)) : null)
-      setHasChanges(false)
-      
-      if (motifData && motifData[target.target_id]) {
-        setLoadedMotifData(motifData[target.target_id])
-      } else {
-        loadMotifDataAsync(target.target_id)
-      }
+      setPreviewSpecialties(null)
+    } finally {
+      setLoadingMotif(false)
     }
   }
 
@@ -491,6 +556,28 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
 
   const renderDetailPanel = () => {
     if (!selectedTarget) return null
+
+    if (loadingMotif) {
+      return (
+        <div className="flex flex-col items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-500 mb-4" />
+          <p className={`text-sm ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
+            正在加载专项数据...
+          </p>
+        </div>
+      )
+    }
+
+    if (loadError) {
+      return (
+        <div className="flex flex-col items-center justify-center py-12">
+          <AlertTriangle className="w-8 h-8 text-red-500 mb-4" />
+          <p className={`text-sm ${isAcademicMode ? 'text-red-500' : 'text-red-400'}`}>
+            {loadError}
+          </p>
+        </div>
+      )
+    }
     
     const detailData = loadedMotifData ? { ...selectedTarget, ...loadedMotifData } : selectedTarget
     const hasSpecialties = detailData.specialties && detailData.specialties.length > 0
@@ -526,12 +613,16 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
       
       const allGreen = benchmarksForLevel.every(b => b.is_mastered === true)
       const hasRed = benchmarksForLevel.some(b => b.is_mastered === false)
+      const hasGray = benchmarksForLevel.some(b => b.is_mastered === null || b.is_mastered === undefined)
       
       if (allGreen) {
         return 'bg-emerald-500 text-white border-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
       }
       if (hasRed) {
         return 'bg-red-500 text-white border-red-600 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
+      }
+      if (hasGray) {
+        return 'bg-slate-100 text-slate-400 border-slate-200 dark:bg-zinc-800/50 dark:text-zinc-600 dark:border-zinc-700'
       }
       return 'bg-slate-100 text-slate-400 border-slate-200 dark:bg-zinc-800/50 dark:text-zinc-600 dark:border-zinc-700'
     }
@@ -542,21 +633,23 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
       let totalVariations = 0
       let masteredVariations = 0
       
-      const specialties = previewSpecialties || selectedTarget?.specialties || []
-      const motifId = detailData.motif_id
+      const specialties = detailData.specialties || []
       
       specialties.forEach(spec => {
         spec.variations?.forEach(variation => {
-          totalVariations++
+          const benchmarks = variation.master_benchmarks || []
           
-          const varId = variation.var_id
-          const levels = getVariationLevels(motifId, varId)
+          if (benchmarks.length === 0) return
+          
+          const levels = [...new Set(benchmarks.map(b => b.level))]
           
           if (levels.length === 0) return
           
+          totalVariations++
+          
           const allLevelsMastered = levels.every(lvl => {
-            const benchmarks = (variation.master_benchmarks || []).filter(b => b.level === lvl)
-            return benchmarks.length > 0 && benchmarks.every(b => b.is_mastered === true)
+            const levelBenchmarks = benchmarks.filter(b => b.level === lvl)
+            return levelBenchmarks.length > 0 && levelBenchmarks.every(b => b.is_mastered === true)
           })
           
           if (allLevelsMastered) {
@@ -748,19 +841,19 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
             <div className="space-y-1.5 text-xs">
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-zinc-600" />
-                <span style={{ color: textMuted }}>L1: 100-1000分</span>
+                <span style={{ color: textMuted }}>L1  基础认知:  ≤1000</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_4px_rgba(59,130,246,0.5)]" />
-                <span style={{ color: textColor }}>L2: 1001-1800</span>
+                <span style={{ color: textColor }}>L2  熟练掌握:  1001-1800</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-[0_0_4px_rgba(168,85,247,0.5)]" />
-                <span style={{ color: textColor }}>L3: 1801-2500</span>
+                <span style={{ color: textColor }}>L3  迁移应用:  1801-2500</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_4px_rgba(245,158,11,0.5)]" />
-                <span style={{ color: textColor }}>L4: 2501+</span>
+                <span style={{ color: textColor }}>L4  融会贯通:  2501+</span>
               </div>
             </div>
           </div>
@@ -817,7 +910,9 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
           const isLocked = target.unlockStatus === 'locked'
           const decayStatus = getDecayStatus(target.specialties)
           const hasDecay = decayStatus.hasDecay
-          const color = gearLevelColors[target.gear_level] || gearLevelColors.L0
+          const elo = target.elo_score || 800
+          const gearLevelFromElo = elo > 2500 ? 'L4' : elo > 1800 ? 'L3' : elo > 1000 ? 'L2' : 'L1'
+          const color = gearLevelColors[gearLevelFromElo] || gearLevelColors.L0
           const radius = isLocked ? 8 : 14
           const textOffset = 22
 

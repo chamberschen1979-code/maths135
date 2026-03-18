@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 
 const RecommendedNextPanel = ({ recommendations, isAcademicMode, onTrain }) => {
@@ -5,14 +6,16 @@ const RecommendedNextPanel = ({ recommendations, isAcademicMode, onTrain }) => {
 
   const getLevelLightColor = (levelStatus) => {
     if (!levelStatus.exists) return 'bg-slate-300 dark:bg-zinc-600';
-    if (levelStatus.isMastered) return 'bg-green-500';
-    return 'bg-red-500';
+    if (levelStatus.isMastered === true) return 'bg-green-500';
+    if (levelStatus.isMastered === false) return 'bg-red-500';
+    return 'bg-slate-300 dark:bg-zinc-600';
   };
 
   const getLevelLightBorder = (levelStatus) => {
     if (!levelStatus.exists) return 'border-slate-300 dark:border-zinc-600';
-    if (levelStatus.isMastered) return 'border-green-500';
-    return 'border-red-500';
+    if (levelStatus.isMastered === true) return 'border-green-500';
+    if (levelStatus.isMastered === false) return 'border-red-500';
+    return 'border-slate-300 dark:border-zinc-600';
   };
 
   return (
@@ -48,7 +51,7 @@ const RecommendedNextPanel = ({ recommendations, isAcademicMode, onTrain }) => {
               <div className="flex items-center gap-3 flex-wrap">
                 {['L2', 'L3', 'L4'].map(lvl => {
                   const levelStatuses = item.levelStatuses || {};
-                  const ls = levelStatuses[lvl] || { exists: lvl === item.level, isMastered: false, streak: 0 };
+                  const ls = levelStatuses[lvl] || { exists: false, isMastered: null, streak: 0 };
                   if (!ls.exists && lvl !== item.level) return null;
                   
                   return (
@@ -63,7 +66,7 @@ const RecommendedNextPanel = ({ recommendations, isAcademicMode, onTrain }) => {
                         {[1, 2, 3].map(i => (
                           <div 
                             key={i}
-                            className={`w-1.5 h-3 rounded-sm ${
+                            className={`w-1.5 h-3 rounded-sm transition-all ${
                               i <= (ls.streak || 0)
                                 ? 'bg-blue-500'
                                 : (isAcademicMode ? 'bg-slate-200' : 'bg-zinc-600')
@@ -71,7 +74,7 @@ const RecommendedNextPanel = ({ recommendations, isAcademicMode, onTrain }) => {
                           />
                         ))}
                       </div>
-                      <span className={`text-xs font-bold ${(ls.streak || 0) > 0 ? 'text-blue-500' : (isAcademicMode ? 'text-slate-400' : 'text-zinc-500')}`}>
+                      <span className={`text-xs font-bold ${ls.streak > 0 ? 'text-blue-500' : (isAcademicMode ? 'text-slate-400' : 'text-zinc-500')}`}>
                         {ls.streak || 0}/3
                       </span>
                     </div>

@@ -2,7 +2,7 @@ export const DIFFICULTY_TIERS = [
   {
     id: 'beginner',
     name: '入门基础',
-    eloRange: [0, 999],
+    eloRange: [0, 1000],
     config: {
       tier: '入门基础',
       level: 'L1',
@@ -20,7 +20,7 @@ export const DIFFICULTY_TIERS = [
   {
     id: 'foundation',
     name: '基础筑基',
-    eloRange: [1000, 1799],
+    eloRange: [1001, 1800],
     config: {
       tier: '基础筑基',
       level: 'L2',
@@ -38,7 +38,7 @@ export const DIFFICULTY_TIERS = [
   {
     id: 'intermediate',
     name: '深度复合',
-    eloRange: [1800, 2499],
+    eloRange: [1801, 2500],
     config: {
       tier: '深度复合',
       level: 'L3',
@@ -56,7 +56,7 @@ export const DIFFICULTY_TIERS = [
   {
     id: 'advanced',
     name: '战术压轴',
-    eloRange: [2500, Infinity],
+    eloRange: [2501, Infinity],
     config: {
       tier: '战术压轴',
       level: 'L4',
@@ -74,9 +74,9 @@ export const DIFFICULTY_TIERS = [
 ]
 
 export const ELO_THRESHOLDS = {
-  L1_MAX: 999,
-  L2_MAX: 1799,
-    L3_MAX: 2499
+  L1_MAX: 1000,
+  L2_MAX: 1800,
+  L3_MAX: 2500
 }
 
 export const getDifficultyConfig = (elo) => {

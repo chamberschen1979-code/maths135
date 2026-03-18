@@ -112,7 +112,8 @@ const TaskDisplay = ({
           const analysis = normalizeContent(getAnalysis(task));
           const answer = normalizeContent(getAnswer(task));
           const badge = getSourceBadge(task.source);
-          const hasBenchmark = task.benchmark && (task.benchmark.problem || task.benchmark.question);
+          const hasBenchmark = task.benchmark && (task.benchmark.problem || task.benchmark.question || task.benchmark.desc || task.benchmark.analysis);
+          const benchmarkContent = task.benchmark?.problem || task.benchmark?.question || task.benchmark?.desc || '';
           
           return (
             <div
@@ -251,10 +252,64 @@ const TaskDisplay = ({
               )}
 
               {task.score !== undefined && (
-                <div className={`mt-2 text-xs ${
-                  task.score >= 80 ? 'text-green-500' : task.score >= 60 ? 'text-yellow-500' : 'text-red-500'
+                <div className={`mt-3 p-3 rounded-lg ${
+                  task.evaluationResult?.isAllCorrect 
+                    ? (isAcademicMode ? 'bg-green-50 border border-green-200' : 'bg-green-900/20 border border-green-700')
+                    : (isAcademicMode ? 'bg-red-50 border border-red-200' : 'bg-red-900/20 border border-red-700')
                 }`}>
-                  得分: {task.score} 分
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-lg">{task.evaluationResult?.isAllCorrect ? '✅' : '❌'}</span>
+                    <span className={`font-bold text-sm ${
+                      task.evaluationResult?.isAllCorrect 
+                        ? (isAcademicMode ? 'text-green-700' : 'text-green-400')
+                        : (isAcademicMode ? 'text-red-700' : 'text-red-400')
+                    }`}>
+                      {task.evaluationResult?.isAllCorrect ? '全部正确' : '存在错误'}
+                    </span>
+                  </div>
+                  
+                  {task.evaluationResult?.aiReason && (
+                    <div className={`mb-2 p-2 rounded text-xs ${
+                      isAcademicMode ? 'bg-blue-50 text-blue-700' : 'bg-blue-900/30 text-blue-300'
+                    }`}>
+                      <div className="flex items-center gap-1 mb-1">
+                        <span>🤖</span>
+                        <span className="font-bold">AI 老师点评：</span>
+                        {task.evaluationResult?.isFallback && (
+                          <span className={`text-xs px-1 rounded ${
+                            isAcademicMode ? 'bg-yellow-100 text-yellow-700' : 'bg-yellow-900/30 text-yellow-400'
+                          }`}>
+                            (离线模式)
+                          </span>
+                        )}
+                      </div>
+                      <div className="leading-relaxed">
+                        {task.evaluationResult.aiReason}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {task.evaluationResult?.details?.map((d, idx) => (
+                    <div key={idx} className={`flex items-center gap-2 text-xs mb-1 ${
+                      d.isCorrect 
+                        ? (isAcademicMode ? 'text-green-600' : 'text-green-400')
+                        : (isAcademicMode ? 'text-red-600' : 'text-red-400')
+                    }`}>
+                      <span>{d.isCorrect ? '✓' : '✗'}</span>
+                      <span>第{idx + 1}问 ({d.level}):</span>
+                      <span className={d.isCorrect ? 'text-green-500' : 'text-red-500'}>
+                        {d.isCorrect ? `+${d.delta}分` : `${d.delta}分`}
+                      </span>
+                    </div>
+                  ))}
+                  
+                  <div className={`mt-2 pt-2 border-t text-sm font-bold ${
+                    task.score >= 0 
+                      ? (isAcademicMode ? 'text-green-700 border-green-200' : 'text-green-400 border-green-700')
+                      : (isAcademicMode ? 'text-red-700 border-red-200' : 'text-red-400 border-red-700')
+                  }`}>
+                    总得分: {task.score >= 0 ? '+' : ''}{task.score} 分
+                  </div>
                 </div>
               )}
 
@@ -285,7 +340,7 @@ const TaskDisplay = ({
                         </span>
                       </div>
                       <div className={`${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>
-                        <LatexRenderer content={normalizeContent(task.benchmark.problem || task.benchmark.question)} />
+                        <LatexRenderer content={normalizeContent(benchmarkContent || task.benchmark?.problem || task.benchmark?.question)} />
                       </div>
                     </div>
                     

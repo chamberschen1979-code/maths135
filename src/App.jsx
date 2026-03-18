@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, createContext, useContext } from 'react'
+import { useState, useRef, useEffect, createContext, useContext, useCallback } from 'react'
 import 'katex/dist/katex.min.css'
 import { X, Target, Trophy, AlertCircle, Moon, Sun, ChevronDown, Settings } from 'lucide-react'
 import * as pdfjsLib from 'pdfjs-dist'
@@ -119,6 +119,55 @@ function App() {
   useEffect(() => {
     localStorage.setItem('tactical_data', JSON.stringify(tacticalData))
   }, [tacticalData])
+
+  const eloUpdateRef = useRef({ lastTargetId: null, lastDelta: 0, lastTime: 0 });
+
+  const handleUpdateMotifElo = useCallback((targetId, delta) => {
+    const now = Date.now();
+    const lastUpdate = eloUpdateRef.current;
+    
+    if (lastUpdate.lastTargetId === targetId && 
+        lastUpdate.lastDelta === delta && 
+        now - lastUpdate.lastTime < 1000) {
+      console.log(`[Elo 更新] 检测到重复请求，跳过: ${targetId} (${delta})`);
+      return;
+    }
+    
+    eloUpdateRef.current = { lastTargetId: targetId, lastDelta: delta, lastTime: now };
+
+    console.log(`[Elo 更新] 母题 ${targetId} 分数变动: ${delta}`);
+
+    setTacticalData(prevData => {
+      if (!prevData) return prevData;
+
+      const newData = JSON.parse(JSON.stringify(prevData));
+      let found = false;
+
+      for (const map of newData.tactical_maps) {
+        const encounter = map.encounters.find(e => e.target_id === targetId);
+        if (encounter) {
+          const oldElo = encounter.elo_score || 800;
+          const newElo = Math.max(0, oldElo + delta);
+          encounter.elo_score = newElo;
+
+          if (newElo >= 2501) encounter.gear_level = 'L4';
+          else if (newElo >= 1801) encounter.gear_level = 'L3';
+          else if (newElo >= 1001) encounter.gear_level = 'L2';
+          else encounter.gear_level = 'L1';
+
+          found = true;
+          console.log(`[Elo 更新成功] ${targetId}: ${oldElo} -> ${newElo} (${delta})`);
+          break;
+        }
+      }
+
+      if (found) {
+        return newData;
+      }
+      
+      return prevData;
+    });
+  }, []);
 
   const [activeTab, setActiveTab] = useState('dashboard')
   const [highlightFormulaId, setHighlightFormulaId] = useState(null)
@@ -1021,6 +1070,7 @@ function App() {
               currentGrade={currentGrade}
               weeklyTasks={weeklyTasks}
               setWeeklyTasks={setWeeklyTasks}
+              onUpdateMotifElo={handleUpdateMotifElo}
               onNavigateToErrorLibrary={() => {
                 setActiveTab('diagnosis')
                 setShowErrorLibrary(true)

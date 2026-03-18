@@ -3,26 +3,58 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 
 const ProgressTree = ({ progressTree, isAcademicMode, onVariantClick }) => {
   const [expandedMotifs, setExpandedMotifs] = useState(new Set());
+  const [expandedSpecialties, setExpandedSpecialties] = useState(new Set());
 
-  const toggleMotif = (motifId) => {
+  const toggleMotif = (motifId, motif) => {
     setExpandedMotifs(prev => {
       const next = new Set(prev);
-      if (next.has(motifId)) next.delete(motifId);
-      else next.add(motifId);
+      const isCurrentlyExpanded = next.has(motifId);
+      
+      if (isCurrentlyExpanded) {
+        next.delete(motifId);
+        motif?.specialties?.forEach(spec => {
+          setExpandedSpecialties(prev2 => {
+            const next2 = new Set(prev2);
+            next2.delete(`${motifId}_${spec.specId}`);
+            return next2;
+          });
+        });
+      } else {
+        next.add(motifId);
+        motif?.specialties?.forEach(spec => {
+          setExpandedSpecialties(prev2 => {
+            const next2 = new Set(prev2);
+            next2.add(`${motifId}_${spec.specId}`);
+            return next2;
+          });
+        });
+      }
+      
+      return next;
+    });
+  };
+
+  const toggleSpecialty = (specId) => {
+    setExpandedSpecialties(prev => {
+      const next = new Set(prev);
+      if (next.has(specId)) next.delete(specId);
+      else next.add(specId);
       return next;
     });
   };
 
   const getLevelLightColor = (levelStatus) => {
     if (!levelStatus.exists) return 'bg-slate-300 dark:bg-zinc-600';
-    if (levelStatus.isMastered) return 'bg-green-500';
-    return 'bg-red-500';
+    if (levelStatus.isMastered === true) return 'bg-green-500';
+    if (levelStatus.isMastered === false) return 'bg-red-500';
+    return 'bg-slate-300 dark:bg-zinc-600';
   };
 
   const getLevelLightBorder = (levelStatus) => {
     if (!levelStatus.exists) return 'border-slate-300 dark:border-zinc-600';
-    if (levelStatus.isMastered) return 'border-green-500';
-    return 'border-red-500';
+    if (levelStatus.isMastered === true) return 'border-green-500';
+    if (levelStatus.isMastered === false) return 'border-red-500';
+    return 'border-slate-300 dark:border-zinc-600';
   };
 
   const getMotifLevelColor = (level) => {
@@ -43,7 +75,7 @@ const ProgressTree = ({ progressTree, isAcademicMode, onVariantClick }) => {
             
             <div 
               className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors"
-              onClick={() => toggleMotif(motif.motifId)}
+              onClick={() => toggleMotif(motif.motifId, motif)}
             >
               <div className="flex items-center gap-3 flex-1">
                 {isExpanded ? <ChevronDown className="w-5 h-5 text-slate-400" /> : <ChevronRight className="w-5 h-5 text-slate-400" />}
@@ -75,72 +107,64 @@ const ProgressTree = ({ progressTree, isAcademicMode, onVariantClick }) => {
 
             {isExpanded && (
               <div className={`border-t ${isAcademicMode ? 'border-slate-100 bg-slate-50/50' : 'border-zinc-800 bg-zinc-900/50'} p-5`}>
-                <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-3">
                   {motif.specialties && motif.specialties.length > 0 ? (
-                    motif.specialties.map((spec, idx) => (
-                      <div key={idx}>
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className={`w-1 h-4 rounded-full ${isAcademicMode ? 'bg-blue-500' : 'bg-blue-400'}`}></div>
-                          <h3 className={`text-sm font-bold uppercase tracking-wider ${isAcademicMode ? 'text-slate-600' : 'text-zinc-400'}`}>
-                            {spec.specName}
-                          </h3>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-3">
-                          {spec.variants.map(variant => (
-                            <div 
-                              key={variant.varId}
-                              className={`p-4 rounded-lg border transition-all ${
-                                isAcademicMode 
-                                  ? 'bg-white border-slate-200 hover:border-blue-300' 
-                                  : 'bg-zinc-800 border-zinc-700 hover:border-blue-600'
-                              } hover:shadow-sm`}
-                            >
-                              <div className="flex items-center justify-between gap-4">
-                                <span className={`text-sm font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>
-                                  {variant.varName}
-                                </span>
-                                
-                                <div className="flex items-center gap-3 flex-wrap">
-                                  {['L2', 'L3', 'L4'].map(lvl => {
-                                    const ls = variant.levelStatuses[lvl];
-                                    if (!ls.exists) return null;
+                    motif.specialties.map((spec, idx) => {
+                      const specExpanded = expandedSpecialties.has(`${motif.motifId}_${spec.specId}`)
+                      return (
+                        <div key={idx} className={`rounded-lg border ${isAcademicMode ? 'border-slate-200' : 'border-zinc-700'}`}>
+                          <div 
+                            className="flex items-center justify-between p-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors"
+                            onClick={() => toggleSpecialty(`${motif.motifId}_${spec.specId}`)}
+                          >
+                            <div className="flex items-center gap-2">
+                              {specExpanded ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
+                              <div className={`w-1 h-4 rounded-full ${isAcademicMode ? 'bg-blue-500' : 'bg-blue-400'}`}></div>
+                              <h3 className={`text-sm font-bold ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>
+                                {spec.specName}
+                              </h3>
+                              <span className={`text-xs ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
+                                ({spec.variants?.length || 0})
+                              </span>
+                            </div>
+                          </div>
+                          
+                          {specExpanded && spec.variants && spec.variants.length > 0 && (
+                            <div className={`border-t ${isAcademicMode ? 'border-slate-200' : 'border-zinc-700'} p-2 pl-10`}>
+                              <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                                {spec.variants.map(variant => (
+                                  <div 
+                                    key={variant.varId}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <span className={`text-sm font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>
+                                      {variant.varName}
+                                    </span>
                                     
-                                    return (
-                                      <div key={lvl} className="flex items-center gap-1.5">
-                                        <div className={`w-5 h-5 rounded-full border-2 ${getLevelLightColor(ls)} ${getLevelLightBorder(ls)} flex items-center justify-center`}>
-                                          <span className="text-[10px] font-bold text-white">
-                                            {lvl}
-                                          </span>
-                                        </div>
+                                    <div className="flex items-center gap-1">
+                                      {['L2', 'L3', 'L4'].map(lvl => {
+                                        const ls = variant.levelStatuses[lvl];
+                                        if (!ls.exists) return null;
                                         
-                                        <div className="flex items-center gap-0.5">
-                                          {[1, 2, 3].map(i => (
-                                            <div 
-                                              key={i}
-                                              className={`w-1.5 h-3 rounded-sm transition-all ${
-                                                i <= ls.streak 
-                                                  ? 'bg-blue-500' 
-                                                  : (isAcademicMode ? 'bg-slate-200' : 'bg-zinc-600')
-                                              }`}
-                                            />
-                                          ))}
-                                        </div>
-                                        <span className={`text-xs font-bold ${ls.streak > 0 ? 'text-blue-500' : (isAcademicMode ? 'text-slate-400' : 'text-zinc-500')}`}>
-                                          {ls.streak}/3
-                                        </span>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
+                                        return (
+                                          <div key={lvl} className={`w-4 h-4 rounded-full border-2 ${getLevelLightColor(ls)} ${getLevelLightBorder(ls)} flex items-center justify-center`}>
+                                            <span className="text-[8px] font-bold text-white">
+                                              {lvl}
+                                            </span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
                             </div>
-                          ))}
+                          )}
                         </div>
-                      </div>
-                    ))
+                      )
+                    })
                   ) : (
-                    <p className={`text-center py-4 ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
+                    <p className={`col-span-2 text-center py-4 ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
                       暂无专项数据
                     </p>
                   )}

@@ -9,6 +9,7 @@ const CustomSection = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [expandedMotifs, setExpandedMotifs] = useState(new Set());
+  const [expandedSpecialties, setExpandedSpecialties] = useState(new Set());
 
   const allEncounters = tacticalData?.tactical_maps?.flatMap(m => m.encounters) || [];
 
@@ -17,9 +18,8 @@ const CustomSection = ({
   }, [allEncounters]);
 
   const availableMotifs = useMemo(() => {
-    const errorMotifIds = new Set(errorMotifs);
-    return activeMotifs.filter(m => !errorMotifIds.has(m.target_id));
-  }, [activeMotifs, errorMotifs]);
+    return activeMotifs;
+  }, [activeMotifs]);
 
   const toggleExpand = (motifId) => {
     setExpandedMotifs(prev => {
@@ -33,38 +33,69 @@ const CustomSection = ({
     });
   };
 
-  const isItemSelected = (motifId, specId = null) => {
-    return selectedMotifs?.some(s => s.motifId === motifId && s.specId === specId);
+  const toggleExpandSpecialty = (specKey) => {
+    setExpandedSpecialties(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(specKey)) {
+        newSet.delete(specKey);
+      } else {
+        newSet.add(specKey);
+      }
+      return newSet;
+    });
   };
 
-  const handleToggleItem = (motifId, motifName, specId = null, specName = null) => {
+  const isItemSelected = (motifId, specId = null, varId = null) => {
+    return selectedMotifs?.some(s => 
+      s.motifId === motifId && 
+      (specId === null || s.specId === specId) &&
+      (varId === null || s.varId === varId)
+    );
+  };
+
+  const handleToggleItem = (motifId, motifName, specId = null, specName = null, varId = null, varName = null) => {
     const currentSelection = selectedMotifs || [];
-    const exists = currentSelection.some(s => s.motifId === motifId && s.specId === specId);
+    const exists = currentSelection.some(s => 
+      s.motifId === motifId && 
+      (specId === null || s.specId === specId) &&
+      (varId === null || s.varId === varId)
+    );
     
     if (exists) {
-      onSelectionChange(currentSelection.filter(s => !(s.motifId === motifId && s.specId === specId)));
+      onSelectionChange(currentSelection.filter(s => 
+        !(s.motifId === motifId && 
+          (specId === null || s.specId === specId) &&
+          (varId === null || s.varId === varId))
+      ));
     } else {
       onSelectionChange([...currentSelection, { 
         motifId, 
         motifName,
         specId, 
-        specName 
+        specName,
+        varId,
+        varName
       }]);
     }
   };
 
-  const handleRemoveItem = (motifId, specId = null) => {
-    onSelectionChange(selectedMotifs?.filter(s => !(s.motifId === motifId && s.specId === specId)) || []);
+  const handleRemoveItem = (motifId, specId = null, varId = null) => {
+    onSelectionChange(selectedMotifs?.filter(s => 
+      !(s.motifId === motifId && 
+        (specId === null || s.specId === specId) &&
+        (varId === null || s.varId === varId))
+    ) || []);
   };
 
   const getDisplayLabel = (item) => {
     const motif = activeMotifs.find(m => m.target_id === item.motifId);
-    const elo = motif?.elo_score || 1000;
-    const level = elo < 1100 ? 'L2' : elo < 1300 ? 'L3' : 'L4';
-    if (item.specId && item.specName) {
-      return `${motif?.target_name || item.motifId} · ${item.specName} · ${level}`;
-    }
-    return `${motif?.target_name || item.motifId} · ${level}`;
+    const elo = motif?.elo_score || 800;
+    const level = elo > 2500 ? 'L4' : elo > 1800 ? 'L3' : elo > 1000 ? 'L2' : 'L1';
+    let label = `${motif?.target_name || item.motifId}`;
+    if (item.specName) label += ` · ${item.specName}`;
+    if (item.varName) label += ` · ${item.varName}`;
+    label += ` · ${level}`;
+    return label;
   };
 
   return (
@@ -111,7 +142,7 @@ const CustomSection = ({
                 >
                   <span className="font-medium">{getDisplayLabel(sel)}</span>
                   <button
-                    onClick={() => handleRemoveItem(sel.motifId, sel.specId)}
+                    onClick={() => handleRemoveItem(sel.motifId, sel.specId, sel.varId)}
                     className={`w-4 h-4 rounded-full flex items-center justify-center text-xs ${
                       isAcademicMode ? 'hover:bg-slate-100 text-slate-400' : 'hover:bg-zinc-700 text-zinc-500'
                     }`}
@@ -202,37 +233,75 @@ const CustomSection = ({
                         
                         {isExpanded && hasSpecialties && (
                           <div className={`border-t ${isAcademicMode ? 'border-slate-100' : 'border-zinc-700'}`}>
-                            {m.specialties.flatMap(spec => 
-                              (spec.variations || []).map(v => {
-                                const benchmarkId = `${m.target_id}_${spec.spec_id}_${v.var_id}`;
-                                const subSelected = isItemSelected(m.target_id, benchmarkId);
-                                return (
+                            {m.specialties.map(spec => {
+                              const specKey = `${m.target_id}_${spec.spec_id}`;
+                              const specExpanded = expandedSpecialties.has(specKey);
+                              const specSelected = isItemSelected(m.target_id, specKey, null);
+                              
+                              return (
+                                <div key={specKey} className={`border-b last:border-b-0 ${isAcademicMode ? 'border-slate-100' : 'border-zinc-700'}`}>
                                   <div 
-                                    key={benchmarkId}
                                     className={`flex items-center gap-2 px-3 py-2 pl-8 ${
-                                      subSelected 
+                                      specSelected 
                                         ? (isAcademicMode ? 'bg-blue-50/50' : 'bg-blue-900/10')
                                         : (isAcademicMode ? 'hover:bg-slate-50' : 'hover:bg-zinc-700/50')
                                     }`}
                                   >
                                     <input
                                       type="checkbox"
-                                      checked={subSelected}
-                                      onChange={() => handleToggleItem(m.target_id, m.target_name, benchmarkId, v.name)}
+                                      checked={specSelected}
+                                      onChange={() => handleToggleItem(m.target_id, m.target_name, specKey, spec.spec_name, null, null)}
                                       className="w-3.5 h-3.5 rounded"
                                     />
-                                    <div className="flex-1">
-                                      <span className="text-sm">{v.name}</span>
-                                      <span className={`ml-2 text-xs px-1.5 py-0.5 rounded ${
-                                        isAcademicMode ? 'bg-slate-100 text-slate-500' : 'bg-zinc-700 text-zinc-400'
-                                      }`}>
-                                        {spec.spec_name}
-                                      </span>
+                                    <div 
+                                      className="flex-1 flex items-center justify-between cursor-pointer"
+                                      onClick={() => spec.variations?.length > 0 && toggleExpandSpecialty(specKey)}
+                                    >
+                                      <span className="text-sm font-medium">{spec.spec_name}</span>
+                                      <div className="flex items-center gap-2">
+                                        <span className={`text-xs ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
+                                          {spec.variations?.length || 0} 变例
+                                        </span>
+                                        {spec.variations?.length > 0 && (
+                                          <span className={`text-xs transition-transform ${specExpanded ? 'rotate-180' : ''} ${
+                                            isAcademicMode ? 'text-slate-400' : 'text-zinc-500'
+                                          }`}>
+                                            ▼
+                                          </span>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
-                                );
-                              })
-                            )}
+                                  
+                                  {specExpanded && spec.variations?.length > 0 && (
+                                    <div className={`${isAcademicMode ? 'bg-slate-50/50' : 'bg-zinc-800/50'}`}>
+                                      {spec.variations.map(v => {
+                                        const varKey = `${m.target_id}_${specKey}_${v.var_id}`;
+                                        const varSelected = isItemSelected(m.target_id, specKey, varKey);
+                                        return (
+                                          <div 
+                                            key={varKey}
+                                            className={`flex items-center gap-2 px-3 py-2 pl-12 ${
+                                              varSelected 
+                                                ? (isAcademicMode ? 'bg-blue-50/50' : 'bg-blue-900/10')
+                                                : (isAcademicMode ? 'hover:bg-slate-100' : 'hover:bg-zinc-700/50')
+                                            }`}
+                                          >
+                                            <input
+                                              type="checkbox"
+                                              checked={varSelected}
+                                              onChange={() => handleToggleItem(m.target_id, m.target_name, specKey, spec.spec_name, varKey, v.name)}
+                                              className="w-3 h-3.5 rounded"
+                                            />
+                                            <span className="text-sm">{v.name}</span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
                           </div>
                         )}
                       </div>

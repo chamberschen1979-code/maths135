@@ -1,6 +1,23 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { calculateGearLevelFromSpecialties } from '../utils/benchmarkUtils'
+import { addLegacyIdsToMotifData } from '../utils/migrateDataStructure'
+
+const motifModules = import.meta.glob('/src/data/M*.json', { eager: true })
+
+const getGearLevelFromElo = (elo) => {
+  if (elo > 2500) return 'L4'
+  if (elo > 1800) return 'L3'
+  if (elo > 1000) return 'L2'
+  return 'L1'
+}
+
+const getMotifData = (motifId) => {
+  const key = `/src/data/${motifId}.json`
+  const rawData = motifModules[key]?.default
+  if (!rawData) return null
+  return addLegacyIdsToMotifData(rawData)
+}
 
 const InitModal = ({
   isOpen,
@@ -37,31 +54,69 @@ const InitModal = ({
     for (const m of newData.tactical_maps) {
       for (const e of m.encounters) {
         if (e.target_id === encounter.target_id) {
-          let newStatus = null
           if (level === 'L2') {
-            if (l2Gray) { e.elo_score = 1001; newStatus = false }
-            else if (!l2Green) { e.elo_score = 1800; newStatus = true }
-            else { e.elo_score = 800; newStatus = null }
+            if (l2Gray) { e.elo_score = 1001 }
+            else if (!l2Green) { e.elo_score = 1800 }
+            else { e.elo_score = 800 }
           }
           if (level === 'L3') {
-            if (l3Gray) { e.elo_score = 1801; newStatus = false }
-            else if (!l3Green) { e.elo_score = 2500; newStatus = true }
-            else { e.elo_score = 1800; newStatus = null }
+            if (l3Gray) { e.elo_score = 1801 }
+            else if (!l3Green) { e.elo_score = 2500 }
+            else { e.elo_score = 1800 }
           }
           if (level === 'L4') {
-            if (l4Gray) { e.elo_score = 2501; newStatus = false }
-            else if (!l4Green) { e.elo_score = 3000; newStatus = true }
-            else { e.elo_score = 2500; newStatus = null }
+            if (l4Gray) { e.elo_score = 2501 }
+            else if (!l4Green) { e.elo_score = 3000 }
+            else { e.elo_score = 2500 }
           }
-          e.gear_level = calculateGearLevelFromSpecialties(e.specialties)
+          e.gear_level = getGearLevelFromElo(e.elo_score)
           
-          if (e.specialties && newStatus !== null) {
+          const newElo = e.elo_score
+          const l2Status = newElo < 1001 ? 'gray' : (newElo >= 1800 ? 'green' : 'red')
+          const l3Status = newElo < 1801 ? 'gray' : (newElo >= 2500 ? 'green' : 'red')
+          const l4Status = newElo < 2501 ? 'gray' : (newElo >= 3000 ? 'green' : 'red')
+          
+          const motifData = getMotifData(e.target_id)
+          if (motifData?.specialties) {
+            e.specialties = JSON.parse(JSON.stringify(motifData.specialties))
             e.specialties.forEach(spec => {
               spec.variations?.forEach(v => {
                 v.master_benchmarks?.forEach(b => {
-                  if (b.level === level) {
-                    b.is_mastered = newStatus
-                    b.consecutive_correct = newStatus ? 3 : 0
+                  if (b.level === 'L2') {
+                    if (l2Status === 'green') {
+                      b.is_mastered = true
+                      b.consecutive_correct = 3
+                    } else if (l2Status === 'red') {
+                      b.is_mastered = false
+                      b.consecutive_correct = 0
+                    } else {
+                      b.is_mastered = null
+                      b.consecutive_correct = null
+                    }
+                  }
+                  if (b.level === 'L3') {
+                    if (l3Status === 'green') {
+                      b.is_mastered = true
+                      b.consecutive_correct = 3
+                    } else if (l3Status === 'red') {
+                      b.is_mastered = false
+                      b.consecutive_correct = 0
+                    } else {
+                      b.is_mastered = null
+                      b.consecutive_correct = null
+                    }
+                  }
+                  if (b.level === 'L4') {
+                    if (l4Status === 'green') {
+                      b.is_mastered = true
+                      b.consecutive_correct = 3
+                    } else if (l4Status === 'red') {
+                      b.is_mastered = false
+                      b.consecutive_correct = 0
+                    } else {
+                      b.is_mastered = null
+                      b.consecutive_correct = null
+                    }
                   }
                 })
               })
@@ -133,9 +188,11 @@ const InitModal = ({
         
         <div className="space-y-2 max-h-[60vh] overflow-y-auto">
           {filteredEncounters.map(encounter => {
+            const motifData = getMotifData(encounter.target_id)
             let hasL2 = false, hasL3 = false, hasL4 = false
-            if (encounter.specialties) {
-              encounter.specialties.forEach(spec => spec.variations?.forEach(v => {
+            
+            if (motifData?.specialties) {
+              motifData.specialties.forEach(spec => spec.variations?.forEach(v => {
                 v.master_benchmarks?.forEach(b => {
                   if (b.level === 'L2') hasL2 = true
                   if (b.level === 'L3') hasL3 = true

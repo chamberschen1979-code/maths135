@@ -47,7 +47,7 @@ const ReinforceSection = ({
         {reinforcementMotifs.length > 0 ? (
           <div className="flex flex-wrap gap-1">
             {reinforcementMotifs.map(m => {
-              const level = m.elo_score < 1100 ? 'L2' : m.elo_score < 1300 ? 'L3' : 'L4';
+              const level = m.elo_score > 2500 ? 'L4' : m.elo_score > 1800 ? 'L3' : m.elo_score > 1000 ? 'L2' : 'L1';
               return (
                 <div
                   key={m.target_id}

@@ -1,43 +1,15 @@
 import { useMemo } from 'react';
 import { getLevelByElo, LEVEL_THRESHOLDS, LEVEL_INITIAL_ELO } from '../utils/eloEngine';
+import { addLegacyIdsToMotifData } from '../utils/migrateDataStructure';
 
-import M01Data from '../data/M01.json';
-import M02Data from '../data/M02.json';
-import M03Data from '../data/M03.json';
-import M04Data from '../data/M04.json';
-import M05Data from '../data/M05.json';
-import M06Data from '../data/M06.json';
-import M07Data from '../data/M07.json';
-import M08Data from '../data/M08.json';
-import M09Data from '../data/M09.json';
-import M10Data from '../data/M10.json';
-import M11Data from '../data/M11.json';
-import M12Data from '../data/M12.json';
-import M13Data from '../data/M13.json';
-import M14Data from '../data/M14.json';
-import M15Data from '../data/M15.json';
-import M16Data from '../data/M16.json';
-import M17Data from '../data/M17.json';
+const motifModules = import.meta.glob('/src/data/M*.json', { eager: true });
 
-const MOTIF_DATA_MAP = {
-  'M01': M01Data,
-  'M02': M02Data,
-  'M03': M03Data,
-  'M04': M04Data,
-  'M05': M05Data,
-  'M06': M06Data,
-  'M07': M07Data,
-  'M08': M08Data,
-  'M09': M09Data,
-  'M10': M10Data,
-  'M11': M11Data,
-  'M12': M12Data,
-  'M13': M13Data,
-  'M14': M14Data,
-  'M15': M15Data,
-  'M16': M16Data,
-  'M17': M17Data,
-};
+const getMotifData = (motifId) => {
+  const key = `/src/data/${motifId}.json`
+  const rawData = motifModules[key]?.default
+  if (!rawData) return null
+  return addLegacyIdsToMotifData(rawData)
+}
 
 const MOTIF_TO_TOPIC = {
   'M01': { topicId: 'T01', topicName: '集合与逻辑' },
@@ -101,21 +73,34 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
       }
       const topic = topicsMap.get(topicInfo.topicId);
 
-      const detailedMotif = MOTIF_DATA_MAP[motifId];
+      const detailedMotif = getMotifData(motifId);
       
       if (!detailedMotif?.specialties) {
         console.warn(`[ProgressTree] 母题 ${motifId} 暂无新结构数据 (specialties)，已跳过`);
-        return;
+        return
       }
 
       const motifName = detailedMotif.motif_name || encounter.target_name || motifId;
+      
+      const savedSpecialties = encounter.specialties || []
+      const savedBenchmarkMap = new Map()
+      savedSpecialties.forEach(spec => {
+        spec.variations?.forEach(v => {
+          v.master_benchmarks?.forEach(b => {
+            savedBenchmarkMap.set(b.id || `${spec.spec_id}_${v.var_id}_${b.level}`, {
+              is_mastered: b.is_mastered,
+              consecutive_correct: b.consecutive_correct
+            })
+          })
+        })
+      })
       
       let motifTotalBenchmarks = 0;
       let motifMasteredBenchmarks = 0;
       const renderedSpecialties = [];
 
       detailedMotif.specialties.forEach(spec => {
-        if (!spec.variations) return;
+        if (!spec.variations) return
 
         const renderedVariants = [];
 
@@ -135,22 +120,26 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
           ['L2', 'L3', 'L4'].forEach(lvl => {
             const b = levelBenchmarks[lvl];
             if (b) {
+              const saved = savedBenchmarkMap.get(b.id)
+              
+              const isMastered = saved?.is_mastered !== undefined && saved?.is_mastered !== null ? saved.is_mastered : (b.is_mastered ?? null)
+              const streak = saved?.consecutive_correct !== undefined && saved?.consecutive_correct !== null ? saved.consecutive_correct : (b.consecutive_correct ?? 0)
+              
               variantTotal++;
               motifTotalBenchmarks++;
               totalCount++;
               
-              if (b.is_mastered === true) {
+              if (isMastered === true) {
                 variantMastered++;
                 motifMasteredBenchmarks++;
                 masteredCount++;
               }
               
               const isLocked = b.is_locked || b.l2_status === 'RED';
-              const streak = b.consecutive_correct || 0;
               
               levelStatuses[lvl] = {
                 exists: true,
-                isMastered: b.is_mastered === true,
+                isMastered,
                 streak,
                 isLocked
               };
@@ -186,7 +175,7 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
                   level: lvl,
                   streak,
                   remaining: 3 - streak,
-                  levelStatuses
+                  levelStatuses: { ...levelStatuses }
                 });
               }
             } else {
@@ -257,11 +246,24 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
         
         if (elo < 1001) return;
         
-        const detailedMotif = MOTIF_DATA_MAP[motifId];
+        const detailedMotif = getMotifData(motifId);
         if (!detailedMotif?.specialties) return;
         
         const motifName = detailedMotif.motif_name || encounter.target_name || motifId;
         const topicInfo = MOTIF_TO_TOPIC[motifId] || { topicId: 'T00', topicName: '其他' };
+        
+        const savedSpecialties = encounter.specialties || []
+        const savedBenchmarkMap = new Map()
+        savedSpecialties.forEach(spec => {
+          spec.variations?.forEach(v => {
+            v.master_benchmarks?.forEach(b => {
+              savedBenchmarkMap.set(b.id || `${spec.spec_id}_${v.var_id}_${b.level}`, {
+                is_mastered: b.is_mastered,
+                consecutive_correct: b.consecutive_correct
+              })
+            })
+          })
+        })
         
         detailedMotif.specialties.forEach(spec => {
           spec.variations?.forEach(variation => {
@@ -271,10 +273,14 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
             ['L2', 'L3', 'L4'].forEach(lvl => {
               const b = benchmarks.find(bb => bb.level === lvl);
               if (b) {
+                const saved = savedBenchmarkMap.get(b.id)
+                const isMastered = saved?.is_mastered !== undefined && saved?.is_mastered !== null ? saved.is_mastered : (b.is_mastered ?? null)
+                const streak = saved?.consecutive_correct !== undefined && saved?.consecutive_correct !== null ? saved.consecutive_correct : (b.consecutive_correct ?? 0)
+                
                 levelStatuses[lvl] = {
                   exists: true,
-                  isMastered: b.is_mastered === true,
-                  streak: b.consecutive_correct || 0,
+                  isMastered,
+                  streak,
                   isLocked: b.is_locked || b.l2_status === 'RED'
                 };
               }
@@ -282,7 +288,8 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
             
             ['L2', 'L3', 'L4'].forEach(lvl => {
               const b = benchmarks.find(bb => bb.level === lvl);
-              if (b && !b.is_mastered) {
+              const ls = levelStatuses[lvl];
+              if (b && ls && ls.isMastered !== true) {
                 activatedVariants.push({
                   type: 'fallback',
                   topicId: topicInfo.topicId,
@@ -293,9 +300,9 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
                   varName: variation.name,
                   specName: spec.spec_name,
                   level: lvl,
-                  streak: b.consecutive_correct || 0,
-                  remaining: 3 - (b.consecutive_correct || 0),
-                  levelStatuses
+                  streak: ls.streak || 0,
+                  remaining: 3 - (ls.streak || 0),
+                  levelStatuses: { ...levelStatuses }
                 });
               }
             });

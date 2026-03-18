@@ -170,8 +170,8 @@ export function addLegacyIdsToMotifData(motifData) {
         return {
           ...b,
           legacy_id: legacyId,
-          is_mastered: b.is_mastered ?? false,
-          consecutive_correct: b.consecutive_correct ?? 0,
+          is_mastered: b.is_mastered,
+          consecutive_correct: b.consecutive_correct,
           last_practice: b.last_practice || null
         };
       });
