@@ -19,12 +19,12 @@ import {
   API_KEY, 
   BASE_URL, 
   MODEL_NAME, 
-  VISION_MODEL_NAME, 
-  VISION_DIAGNOSIS_PROMPT,
   CATEGORY_TO_MOTIF,
   DATA_VERSION,
   getSystemPrompt
 } from './constants/config'
+
+import { diagnoseError } from './services/aiVisionService'
 
 import {
   getAllBenchmarks,
@@ -171,6 +171,7 @@ function App() {
 
   const [activeTab, setActiveTab] = useState('dashboard')
   const [highlightFormulaId, setHighlightFormulaId] = useState(null)
+  const [highlightMotifId, setHighlightMotifId] = useState(null)
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [messages, setMessages] = useState([])
@@ -304,20 +305,68 @@ function App() {
     };
   }
 
-  const addErrorToNotebook = (targetId, diagnosis, level) => {
+  const addErrorToNotebook = (targetId, diagnosis, level, additionalData = {}) => {
     setErrorNotebook(prev => {
       const exists = prev.find(e => e.targetId === targetId && !e.resolved)
       if (exists) return prev
       
-      return [...prev, {
-        id: `err_${Date.now()}`,
+      const newError = {
+        id: `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         targetId,
-        diagnosis,
+        diagnosis: typeof diagnosis === 'string' ? diagnosis : diagnosis?.message || '需要加强练习',
         level: level || 'L2',
         addedAt: new Date().toISOString(),
-        resolved: false
-      }]
+        resolved: false,
+        
+        questionText: additionalData.questionText || '',
+        classification: additionalData.classification || {
+          motifId: targetId,
+          motifName: additionalData.motifName || '',
+          specialtyId: additionalData.specialtyId || 'V1',
+          specialtyName: additionalData.specialtyName || '',
+          difficulty: level || 'L2'
+        },
+        diagnosisDetails: additionalData.diagnosisDetails || {
+          keyPoints: [],
+          trapType: null,
+          suggestedWeapons: additionalData.suggestedWeapons || []
+        },
+        confidence: additionalData.confidence || 0.5,
+        status: additionalData.status || 'PENDING_REVIEW',
+        source: additionalData.source || 'photo',
+        imageData: additionalData.imageData || null
+      }
+      
+      console.log('[错题本] 添加新错题:', newError)
+      return [...prev, newError]
     })
+  }
+
+  const addErrorFromDiagnosis = (diagnosisResult, imageData = null) => {
+    const { 
+      targetId, 
+      classification, 
+      diagnosis, 
+      questionText, 
+      confidence,
+      message 
+    } = diagnosisResult
+    
+    return addErrorToNotebook(
+      targetId || classification?.motifId || 'M01',
+      message || diagnosis?.message || '需要加强练习',
+      classification?.difficulty || 'L2',
+      {
+        questionText,
+        classification,
+        diagnosisDetails: diagnosis,
+        confidence,
+        suggestedWeapons: diagnosis?.suggestedWeapons || [],
+        source: 'photo',
+        imageData,
+        status: confidence < 0.6 ? 'PENDING_REVIEW' : 'REVIEWED'
+      }
+    )
   }
 
   const resolveError = (errorId) => {
@@ -662,103 +711,76 @@ function App() {
   }
 
   const handleRealDiagnosis = async (base64Data) => {
-    if (!API_KEY) {
-      throw new Error('API Key 未配置，请检查 .env 文件中的 VITE_QWEN_API_KEY')
-    }
-    
-    console.log('开始视觉诊断请求...')
-    console.log('Base64 数据长度:', base64Data?.length)
-    console.log('Base64 数据前缀:', base64Data?.substring(0, 50))
+    console.log('[App] 开始视觉诊断请求...')
     
     try {
-      const requestBody = {
-        model: VISION_MODEL_NAME,
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'image_url',
-                image_url: { url: base64Data }
-              },
-              {
-                type: 'text',
-                text: VISION_DIAGNOSIS_PROMPT
-              }
-            ]
-          }
-        ]
-      }
-      
-      console.log('请求体模型:', requestBody.model)
-      
-      const response = await fetch(BASE_URL, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      })
-      
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('API 错误响应:', errorText)
-        console.error('状态码:', response.status)
-        throw new Error(`API 请求失败: ${response.status} - ${errorText}`)
-      }
-      
-      const data = await response.json()
-      console.log('API 响应成功:', data.choices?.[0]?.message?.content?.substring(0, 100))
-      
-      const resultText = data.choices[0].message.content
-      
-      const cleanJson = resultText.replace(/```json/g, '').replace(/```/g, '').trim()
-      return JSON.parse(cleanJson)
+      const result = await diagnoseError(base64Data)
+      console.log('[App] 诊断结果:', result)
+      return result
     } catch (error) {
-      console.error('视觉诊断 API 调用失败:', error)
+      console.error('[App] 视觉诊断失败:', error)
       throw error
     }
+  }
+
+  const handleWeaponCertified = (weaponId) => {
+    console.log(`[认证完成] 武器 ${weaponId} 已通过认证！`)
+    
+    setTacticalData((prevData) => {
+      const newData = JSON.parse(JSON.stringify(prevData))
+      
+      if (!newData.user_profile) newData.user_profile = {}
+      if (!newData.user_profile.certifiedWeapons) newData.user_profile.certifiedWeapons = []
+      
+      if (!newData.user_profile.certifiedWeapons.includes(weaponId)) {
+        newData.user_profile.certifiedWeapons.push(weaponId)
+        console.log(`[状态更新] 已添加 ${weaponId} 到认证列表`)
+      }
+      
+      return newData
+    })
   }
 
   const handleDiagnosisComplete = (result) => {
     if (!result) return
     
+    const { 
+      targetId, 
+      classification, 
+      diagnosis, 
+      questionText, 
+      confidence,
+      message 
+    } = result
+    
+    const motifId = classification?.motifId || targetId || 'M01'
+    const motifName = classification?.motifName || ''
+    const specialtyId = classification?.specialtyId || 'V1'
+    const specialtyName = classification?.specialtyName || ''
+    const difficulty = classification?.difficulty || 'L2'
+    
+    addErrorFromDiagnosis(result, null)
+    
     const now = new Date().toISOString()
     setTacticalData((prevData) => {
       const newData = { ...prevData }
+      
       for (const map of newData.tactical_maps) {
-        const encounter = map.encounters.find(e => e.target_id === result.targetId)
-        if (encounter && encounter.specialties) {
-          encounter.specialties = encounter.specialties.map(spec => ({
-            ...spec,
-            variations: (spec.variations || []).map(v => ({
-              ...v,
-              master_benchmarks: (v.master_benchmarks || []).map(b => {
-                const benchmarkId = b.id || b.legacy_id
-                if (result.greenSubIds && result.greenSubIds.includes(benchmarkId)) {
-                  return { 
-                    ...b, 
-                    is_mastered: true, 
-                    consecutive_correct: 3,
-                    last_practice: now 
-                  }
-                }
-                return b
-              })
-            }))
-          }))
-          
-          const currentLevel = encounter.gear_level || 'L1'
-          const maxGain = getMaxEloGain(currentLevel)
-          const eloGain = Math.min(result.eloGain || 0, maxGain)
-          encounter.elo_score = Math.min(3000, (encounter.elo_score || 800) + eloGain)
-          
-          encounter.gear_level = calculateGearLevelFromSpecialties(encounter.specialties)
+        const encounter = map.encounters.find(e => e.target_id === motifId)
+        if (encounter) {
+          encounter.elo_score = Math.min(3000, (encounter.elo_score || 800) + 50)
           encounter.health_status = encounter.elo_score >= 2501 ? 'healthy' : 'bleeding'
+          
+          if (encounter.specialties) {
+            const specialty = encounter.specialties.find(s => s.id === specialtyId)
+            if (specialty) {
+              specialty.elo = Math.min(2000, (specialty.elo || 500) + 30)
+            }
+          }
           break
         }
       }
+      
       return newData
     })
     
@@ -1056,9 +1078,17 @@ function App() {
             <StrategyHub 
               isAcademicMode={isAcademicMode} 
               tacticalData={tacticalData}
-              highlightFormulaId={highlightFormulaId}
+              highlightWeaponId={highlightFormulaId}
+              highlightMotifId={highlightMotifId}
               onClearHighlight={() => setHighlightFormulaId(null)}
-              onNavigate={(tab) => setActiveTab(tab)}
+              onClearMotifHighlight={() => setHighlightMotifId(null)}
+              onNavigate={(tab, motifId) => {
+                setActiveTab(tab)
+                if (motifId) {
+                  setHighlightMotifId(motifId)
+                }
+              }}
+              onWeaponCertified={handleWeaponCertified}
             />
           )}
           {activeTab === 'weekly' && (

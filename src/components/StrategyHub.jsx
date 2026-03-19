@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Lock, CheckCircle, PenTool, Target } from 'lucide-react'
+import { getLinkedMotifsForWeapon, getWeaponStatus } from '../utils/motifWeaponMapper'
 import strategyLib from '../data/strategy_lib.json'
+import CertificationExam from './strategy/CertificationExam'
 
 const RANK_LABELS = {
   killer: '杀手锏',
@@ -14,9 +16,19 @@ const RANK_COLORS = {
   basic: 'bg-blue-100 text-blue-700 border-blue-200'
 }
 
-const StrategyHub = ({ isAcademicMode = true, tacticalData, highlightWeaponId, onClearHighlight, onNavigate }) => {
+const StrategyHub = ({ 
+  isAcademicMode = true, 
+  tacticalData, 
+  highlightWeaponId, 
+  highlightMotifId,
+  onClearHighlight, 
+  onClearMotifHighlight,
+  onNavigate,
+  onWeaponCertified
+}) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState(null)
+  const [examWeapon, setExamWeapon] = useState(null)
   const highlightRef = useRef(null)
 
   useEffect(() => {
@@ -45,13 +57,18 @@ const StrategyHub = ({ isAcademicMode = true, tacticalData, highlightWeaponId, o
   const groupedWeapons = useMemo(() => {
     const groups = {}
     
+    console.log('[StrategyHub] 加载数据', strategyLib)
+    
     strategyLib.categories?.forEach(category => {
       groups[category.name] = category.weapons?.map(weapon => ({
         ...weapon,
         categoryId: category.id,
-        categoryName: category.name
+        categoryName: category.name,
+        _userState: weapon._userState || { status: 'LOCKED', progress: 0 }
       })) || []
     })
+    
+    console.log('[StrategyHub] groupedWeapons:', groups)
     
     return groups
   }, [])
@@ -110,59 +127,111 @@ const StrategyHub = ({ isAcademicMode = true, tacticalData, highlightWeaponId, o
   const renderWeaponCard = (weapon) => {
     const isHighlighted = highlightWeaponId === weapon.id
     
+    // 基于母题激活状态动态计算杀手锏状态
+    const status = getWeaponStatus(weapon, tacticalData)
+    const isLocked = status === 'LOCKED'
+    const isCertified = status === 'CERTIFIED'
+    const isTraining = status === 'UNLOCKED'
+    
+    // 获取关联母题
+    const linkedMotifs = weapon.linked_motifs || []
+    
     return (
       <div
         key={weapon.id}
         ref={isHighlighted ? highlightRef : null}
-        className={`rounded-lg border p-4 transition-all ${
+        className={`rounded-lg border p-4 transition-all flex flex-col h-44 ${
           isHighlighted 
             ? 'ring-2 ring-blue-500 ring-offset-2 ' + (isAcademicMode ? 'bg-blue-50 border-blue-300' : 'bg-blue-900/30 border-blue-500')
             : isAcademicMode 
               ? 'bg-white border-slate-200 hover:border-slate-300'
               : 'bg-zinc-800 border-zinc-700 hover:border-zinc-600'
-        }`}
+        } ${isLocked ? 'opacity-60' : ''}`}
       >
-        <div className="flex items-start justify-between mb-3">
-          <div>
+        {/* 顶部：ID 与状态徽章 */}
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex items-center gap-2">
             <span className={`text-xs font-mono ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
               {weapon.id}
             </span>
-            <h3 className={`font-bold ${isAcademicMode ? 'text-slate-800' : 'text-zinc-100'}`}>
-              {weapon.name}
-            </h3>
+            {isCertified && (
+              <span className="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                <CheckCircle size={18} className="text-green-500" />
+                已认证
+              </span>
+            )}
+            {isLocked && (
+              <span className="flex items-center gap-1 text-xs text-slate-400">
+                <Lock size={12} />
+                未解锁
+              </span>
+            )}
           </div>
           <span className={`px-2 py-0.5 rounded text-xs font-medium border ${RANK_COLORS[weapon.rank] || RANK_COLORS.basic}`}>
             {RANK_LABELS[weapon.rank] || '基础'}
           </span>
         </div>
 
-        <div className={`mb-3 p-3 rounded-lg text-sm ${
-          isAcademicMode ? 'bg-slate-100 text-slate-700' : 'bg-zinc-700 text-zinc-300'
-        }`}>
-          <p className="font-medium mb-1">逻辑流程：</p>
-          <p className="text-xs leading-relaxed">{weapon.logic_flow}</p>
+        {/* 中部：核心内容 */}
+        <div className="flex-grow">
+          <h3 className={`font-bold mb-1.5 leading-tight ${isAcademicMode ? 'text-slate-800' : 'text-zinc-100'}`}>
+            {weapon.name}
+          </h3>
+          <p className={`text-xs line-clamp-2 ${isAcademicMode ? 'text-slate-600' : 'text-zinc-400'}`}>
+            {weapon.description}
+          </p>
         </div>
 
-        <p className={`mb-3 text-sm ${isAcademicMode ? 'text-slate-600' : 'text-zinc-400'}`}>
-          {weapon.description}
-        </p>
-
-        {weapon.trigger_keywords && weapon.trigger_keywords.length > 0 && (
+        {/* 底部：母题场景 + 认证按钮（同一行） */}
+        <div className="flex justify-between items-end pt-2 border-t border-slate-100 mt-auto">
+          {/* 左侧：适用母题场景 */}
           <div className="flex flex-wrap gap-1.5">
-            {weapon.trigger_keywords.map((keyword, idx) => (
-              <span
-                key={idx}
-                className={`px-2 py-0.5 rounded text-xs ${
-                  isAcademicMode 
-                    ? 'bg-slate-200 text-slate-600'
-                    : 'bg-zinc-700 text-zinc-300'
-                }`}
-              >
-                {keyword}
-              </span>
-            ))}
+            {linkedMotifs.length > 0 ? (
+              linkedMotifs.slice(0, 2).map(motif => (
+                <button
+                  key={`${weapon.id}-${motif.id}`}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onNavigate && onNavigate('dashboard', motif.id)
+                  }}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-all border ${
+                    isLocked
+                      ? 'bg-slate-100 border-slate-200 text-slate-400'
+                      : isAcademicMode
+                        ? 'bg-indigo-50 border-indigo-100 text-indigo-700 hover:bg-indigo-100 hover:border-indigo-200'
+                        : 'bg-indigo-900/30 border-indigo-700 text-indigo-300 hover:bg-indigo-900/50'
+                  } cursor-pointer`}
+                >
+                  <Target size={12} />
+                  <span className="font-mono font-bold">{motif.id}</span>
+                  <span className="truncate max-w-[60px]">{motif.title}</span>
+                </button>
+              ))
+            ) : (
+              <span className="text-xs text-slate-400">暂无关联母题</span>
+            )}
           </div>
-        )}
+
+          {/* 右侧：去认证按钮或已认证印章 */}
+          {!isLocked && (
+            isCertified ? (
+              <div className="flex items-center gap-1 text-green-600">
+                <CheckCircle size={20} className="text-green-500" />
+              </div>
+            ) : isTraining && (
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setExamWeapon(weapon)
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-0.5 active:scale-95"
+              >
+                <PenTool size={14} />
+                去认证
+              </button>
+            )
+          )}
+        </div>
       </div>
     )
   }
@@ -261,6 +330,30 @@ const StrategyHub = ({ isAcademicMode = true, tacticalData, highlightWeaponId, o
           </div>
         )}
       </div>
+
+      {examWeapon && (
+        <div className="fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-4xl h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col relative">
+            <button 
+              onClick={() => setExamWeapon(null)}
+              className="absolute top-4 right-4 z-10 p-2 bg-white/80 hover:bg-white rounded-full text-slate-600 hover:text-red-600 transition-colors"
+            >
+              ✕
+            </button>
+            <CertificationExam 
+              weapon={examWeapon} 
+              onComplete={(result) => {
+                console.log('认证完成:', result)
+                if (onWeaponCertified && examWeapon) {
+                  onWeaponCertified(examWeapon.id)
+                }
+                setExamWeapon(null)
+              }}
+              onExit={() => setExamWeapon(null)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

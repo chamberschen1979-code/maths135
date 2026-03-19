@@ -76,15 +76,19 @@ export const getDifficultyByElo = (elo) => {
 
 /**
  * 收集所有可用的标杆题（跨变例）
+ * 支持 weaponId 过滤：优先选择关联了指定杀手锏的变例
  */
 const collectAllBenchmarks = (motifData, targetLevel, constraints = {}) => {
-  const { specId, varId, specName: constraintSpecName, varName: constraintVarName } = constraints
+  const { specId, varId, specName: constraintSpecName, varName: constraintVarName, weaponId } = constraints
   const specialties = motifData.specialties || []
   
   const matchedLevelBenchmarks = []
   const otherLevelBenchmarks = []
   const matchedLevelPool = []
   const otherLevelPool = []
+  
+  const weaponMatchedBenchmarks = []
+  const weaponMatchedPool = []
 
   for (const spec of specialties) {
     if (specId && spec.spec_id !== specId) continue
@@ -99,13 +103,23 @@ const collectAllBenchmarks = (motifData, targetLevel, constraints = {}) => {
       const pool = v.original_pool || []
       const linkedWeapons = v.toolkit?.linked_weapons || []
       
+      const hasWeaponMatch = weaponId && linkedWeapons.some(w => 
+        w.id === weaponId || w === weaponId || w.weapon_id === weaponId
+      )
+      
       for (const b of benchmarks) {
         const benchmarkWithMeta = {
           ...b,
           specName: spec.spec_name,
           varName: v.name,
-          linkedWeapons
+          linkedWeapons,
+          hasWeaponMatch
         }
+        
+        if (hasWeaponMatch) {
+          weaponMatchedBenchmarks.push(benchmarkWithMeta)
+        }
+        
         if (b.level === targetLevel) {
           matchedLevelBenchmarks.push(benchmarkWithMeta)
         } else {
@@ -122,8 +136,14 @@ const collectAllBenchmarks = (motifData, targetLevel, constraints = {}) => {
           specName: spec.spec_name,
           varName: v.name,
           linkedWeapons,
-          isFromPool: true
+          isFromPool: true,
+          hasWeaponMatch
         }
+        
+        if (hasWeaponMatch) {
+          weaponMatchedPool.push(poolWithMeta)
+        }
+        
         if (p.level === targetLevel) {
           matchedLevelPool.push(poolWithMeta)
         } else {
@@ -134,7 +154,7 @@ const collectAllBenchmarks = (motifData, targetLevel, constraints = {}) => {
   }
 
   const mb = motifData.master_benchmarks || []
-  if (!specId && !constraintSpecName && !varId && !constraintVarName) {
+  if (!specId && !constraintSpecName && !varId && !constraintVarName && !weaponId) {
     for (const b of mb) {
       if (b.level === targetLevel) {
         matchedLevelBenchmarks.push(b)
@@ -144,22 +164,55 @@ const collectAllBenchmarks = (motifData, targetLevel, constraints = {}) => {
     }
   }
 
-  return { matchedLevelBenchmarks, otherLevelBenchmarks, matchedLevelPool, otherLevelPool }
+  return { 
+    matchedLevelBenchmarks, 
+    otherLevelBenchmarks, 
+    matchedLevelPool, 
+    otherLevelPool,
+    weaponMatchedBenchmarks,
+    weaponMatchedPool
+  }
 }
 
 /**
  * 选择标杆题（支持跨变例选择，确保题目多样性）
+ * 支持 weaponId 过滤：优先选择关联了指定杀手锏的变例
  * @param {Object} motifData - 母题数据
  * @param {string} targetLevel - 目标难度等级 (L2/L3/L4)
  * @param {number} problemIndex - 题目序号 (用于选择不同的题)
- * @param {Object} constraints - 约束条件 { specId, varId, specName, varName }
+ * @param {Object} constraints - 约束条件 { specId, varId, specName, varName, weaponId }
  * @returns {Object} benchmark 数据，包含 specName, varName, linkedWeapons
  */
 export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constraints = {}) => {
   if (!motifData) return null
 
-  const { matchedLevelBenchmarks, otherLevelBenchmarks, matchedLevelPool, otherLevelPool } = 
-    collectAllBenchmarks(motifData, targetLevel, constraints)
+  const { weaponId } = constraints
+  const { 
+    matchedLevelBenchmarks, 
+    otherLevelBenchmarks, 
+    matchedLevelPool, 
+    otherLevelPool,
+    weaponMatchedBenchmarks,
+    weaponMatchedPool
+  } = collectAllBenchmarks(motifData, targetLevel, constraints)
+
+  // 最高优先级：匹配杀手锏的标杆题
+  if (weaponId && weaponMatchedBenchmarks.length > 0) {
+    const matchedLevel = weaponMatchedBenchmarks.filter(b => b.level === targetLevel)
+    if (matchedLevel.length > 0) {
+      return matchedLevel[problemIndex % matchedLevel.length]
+    }
+    return weaponMatchedBenchmarks[problemIndex % weaponMatchedBenchmarks.length]
+  }
+
+  // 次高优先级：匹配杀手锏的题库
+  if (weaponId && weaponMatchedPool.length > 0) {
+    const matchedLevel = weaponMatchedPool.filter(p => p.level === targetLevel)
+    if (matchedLevel.length > 0) {
+      return matchedLevel[problemIndex % matchedLevel.length]
+    }
+    return weaponMatchedPool[problemIndex % weaponMatchedPool.length]
+  }
 
   // 优先选择匹配难度等级的 master_benchmarks
   if (matchedLevelBenchmarks.length > 0) {

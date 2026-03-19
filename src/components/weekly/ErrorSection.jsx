@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { getWeaponNameById } from '../../utils/weaponUtils';
 
 const ErrorSection = ({
   errorNotebook,
@@ -29,12 +30,21 @@ const ErrorSection = ({
             motifId: err.targetId,
             motifName: enc?.target_name || err.targetId,
             errorCount: 0,
-            sources: new Set()
+            sources: new Set(),
+            suggestedWeapons: []
           });
         }
         const motif = motifMap.get(err.targetId);
         motif.errorCount++;
         if (err.source) motif.sources.add(err.source);
+        
+        const weapons = err.diagnosisDetails?.suggestedWeapons || 
+                        err.diagnosis?.suggestedWeapons || [];
+        weapons.forEach(w => {
+          if (!motif.suggestedWeapons.includes(w)) {
+            motif.suggestedWeapons.push(w);
+          }
+        });
       }
     });
     
@@ -134,28 +144,56 @@ const ErrorSection = ({
                 return (
                   <div
                     key={motif.motifId}
-                    className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs ${
+                    className={`inline-flex flex-col gap-1 px-2 py-1.5 rounded text-xs ${
                       isAcademicMode 
                         ? 'bg-white border border-red-200' 
                         : 'bg-zinc-800 border border-red-800/50'
                     }`}
                     title={`${motif.motifName} - ${motif.errorCount} 道错题`}
                   >
-                    <span className="font-medium">{motif.motifName}</span>
-                    <span className={`px-1 rounded text-xs font-bold ${
-                      level === 'L4' 
-                        ? (isAcademicMode ? 'bg-amber-100 text-amber-600' : 'bg-amber-900/30 text-amber-400')
-                        : level === 'L3'
-                          ? (isAcademicMode ? 'bg-purple-100 text-purple-600' : 'bg-purple-900/30 text-purple-400')
-                          : (isAcademicMode ? 'bg-blue-100 text-blue-600' : 'bg-blue-900/30 text-blue-400')
-                    }`}>
-                      {level}
-                    </span>
-                    <span className={`px-1 rounded text-xs ${
-                      isAcademicMode ? 'bg-red-100 text-red-500' : 'bg-red-900/30 text-red-400'
-                    }`}>
-                      {motif.errorCount}
-                    </span>
+                    <div className="flex items-center gap-1">
+                      <span className="font-medium">{motif.motifName}</span>
+                      <span className={`px-1 rounded text-xs font-bold ${
+                        level === 'L4' 
+                          ? (isAcademicMode ? 'bg-amber-100 text-amber-600' : 'bg-amber-900/30 text-amber-400')
+                          : level === 'L3'
+                            ? (isAcademicMode ? 'bg-purple-100 text-purple-600' : 'bg-purple-900/30 text-purple-400')
+                            : (isAcademicMode ? 'bg-blue-100 text-blue-600' : 'bg-blue-900/30 text-blue-400')
+                      }`}>
+                        {level}
+                      </span>
+                      <span className={`px-1 rounded text-xs ${
+                        isAcademicMode ? 'bg-red-100 text-red-500' : 'bg-red-900/30 text-red-400'
+                      }`}>
+                        {motif.errorCount}
+                      </span>
+                    </div>
+                    {motif.suggestedWeapons.length > 0 && (
+                      <div className="flex flex-wrap gap-0.5 mt-0.5">
+                        {motif.suggestedWeapons.slice(0, 2).map(weaponId => {
+                          const weaponName = getWeaponNameById(weaponId);
+                          return weaponName ? (
+                            <span 
+                              key={weaponId}
+                              className={`px-1 py-0.5 rounded text-xs ${
+                                isAcademicMode 
+                                  ? 'bg-indigo-100 text-indigo-600' 
+                                  : 'bg-indigo-900/30 text-indigo-400'
+                              }`}
+                            >
+                              🎯 {weaponName}
+                            </span>
+                          ) : null;
+                        })}
+                        {motif.suggestedWeapons.length > 2 && (
+                          <span className={`text-xs ${
+                            isAcademicMode ? 'text-slate-400' : 'text-zinc-500'
+                          }`}>
+                            +{motif.suggestedWeapons.length - 2}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })}

@@ -3,16 +3,17 @@ import { TopicScopeCard, TaskGenerator, TaskDisplay, PrintPreview } from './week
 import { buildSystemPrompt, buildUserPrompt } from '../utils/promptBuilder';
 import { parseAIResponse } from '../utils/responseParser';
 import { 
-  findMotifData, 
-  getDifficultyByElo, 
+  findMotifData,
+  getDifficultyByElo,
   selectBenchmark, 
-  selectVariableKnobs,
+  selectVariableKnobs, 
   getVariationInfo,
   getAvailableVariations,
   buildCrossFileIndex
 } from '../utils/problemLogic';
 import { loadMotifData } from '../utils/dataLoader';
 import { judgeAnswerWithFallback } from '../utils/aiGrader';
+import { getWeaponNameById, getWeaponLogicFlow } from '../utils/weaponUtils';
 
 const API_KEY = import.meta.env.VITE_QWEN_API_KEY || 'YOUR_API_KEY';
 const BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
@@ -320,6 +321,20 @@ const WeeklyMission = ({
     const varName = variationInfo.varName;
     const linkedWeapons = variationInfo.linkedWeapons;
 
+    // 构建杀手锏约束信息
+    const weaponConstraints = {}
+    if (constraints.weaponId) {
+      const weaponName = getWeaponNameById(constraints.weaponId);
+      const weaponLogicFlow = getWeaponLogicFlow(constraints.weaponId);
+      
+      if (weaponName) {
+        weaponConstraints.weaponId = constraints.weaponId;
+        weaponConstraints.weaponName = weaponName;
+        weaponConstraints.weaponLogicFlow = weaponLogicFlow;
+        console.log(`[周任务] 注入杀手锏约束: ${weaponName} (${constraints.weaponId})`);
+      }
+    }
+
     const systemPrompt = buildSystemPrompt();
     const userPrompt = buildUserPrompt({
       motifName: motifData.motif_name || motifData.name,
@@ -328,7 +343,8 @@ const WeeklyMission = ({
       difficultyConfig,
       variableKnobs: selectedStrategy,
       benchmarkQuestion: benchmark,
-      dualLevelContext
+      dualLevelContext,
+      constraints: weaponConstraints
     });
 
     const response = await fetch(BASE_URL, {
@@ -417,7 +433,7 @@ const WeeklyMission = ({
           : [{ level: difficultyConfig.level }]
       }
     };
-  }, [CROSS_FILE_INDEX, findMotifData, getDifficultyByElo, selectBenchmark, selectVariableKnobs, getVariationInfo, buildSystemPrompt, buildUserPrompt, parseAIResponse, loadMotifData, API_KEY, BASE_URL, MODEL_NAME]);
+  }, [CROSS_FILE_INDEX, loadMotifData, API_KEY, BASE_URL, MODEL_NAME]);
 
   const handleImportError = useCallback((errorData) => {
     setErrorNotebook?.(prev => [...(prev || []), errorData]);
@@ -450,6 +466,13 @@ const WeeklyMission = ({
             if (errorInfo?.varId) constraints.varId = errorInfo.varId;
             if (errorInfo?.specName) constraints.specName = errorInfo.specName;
             if (errorInfo?.varName) constraints.varName = errorInfo.varName;
+            
+            // 从错题诊断结果中提取武器 ID
+            const suggestedWeapons = errorInfo?.diagnosisDetails?.suggestedWeapons || 
+                                     errorInfo?.diagnosis?.suggestedWeapons || [];
+            if (suggestedWeapons.length > 0) {
+              constraints.weaponId = suggestedWeapons[0];
+            }
           } else if (customMotifIdSet.has(motifId)) {
             source = 'custom';
             const customSelection = selectedMotifs?.find(s => s.motifId === motifId);
@@ -833,7 +856,7 @@ const WeeklyMission = ({
     };
   }, [parseMultiQuestionAnswer, strictCompare]);
 
-  const handleSubmitAnswer = useCallback(async (taskIndex, answer) => {
+  const handleSubmitAnswer = useCallback(async (taskIndex, answer, answerType = 'text') => {
     setWeeklyTasks(prev => prev.map((task, idx) => 
       idx === taskIndex ? { ...task, isSubmitting: true } : task
     ));
@@ -855,7 +878,8 @@ const WeeklyMission = ({
       console.log('[handleSubmitAnswer] 开始 AI 判题...', { 
         motifId: task.motifId,
         question: question.substring(0, 50) + '...',
-        level
+        level,
+        answerType
       });
 
       const questionMeta = task.questionMeta || { questions: [{ level }] };
@@ -869,7 +893,8 @@ const WeeklyMission = ({
           const result = evaluateAnswers(userAns, correctAns, questionMeta);
           return result.isAllCorrect;
         },
-        questionMeta
+        questionMeta,
+        answerType
       );
 
       console.log('[handleSubmitAnswer] AI 判题结果:', aiResult);
@@ -885,7 +910,7 @@ const WeeklyMission = ({
           level,
           isCorrect: aiResult.isCorrect,
           delta: aiResult.delta,
-          userAnswer: answer,
+          userAnswer: answerType === 'text' ? answer : '[图片答案]',
           correctAnswer: correctAnswer
         }]
       };
@@ -895,7 +920,8 @@ const WeeklyMission = ({
         
         return {
           ...t,
-          userAnswer: answer,
+          userAnswer: answerType === 'text' ? answer : '[图片答案]',
+          userAnswerType: answerType,
           score: aiResult.delta,
           evaluationResult,
           isSubmitted: true,
@@ -914,7 +940,7 @@ const WeeklyMission = ({
           motifName: task.motifName,
           specName: task.specName,
           question: question,
-          userAnswer: answer,
+          userAnswer: answerType === 'text' ? answer : '[图片答案]',
           correctAnswer: correctAnswer,
           aiReason: aiResult.reason,
           score: aiResult.delta,
@@ -986,6 +1012,7 @@ const WeeklyMission = ({
           onSubmitAnswer={handleSubmitAnswer}
           isAcademicMode={isAcademicMode}
           CROSS_FILE_INDEX={CROSS_FILE_INDEX}
+          errorNotebook={errorNotebook}
         />
       )}
 

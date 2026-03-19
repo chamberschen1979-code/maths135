@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AnswerInput from './AnswerInput';
 import LatexRenderer from '../LatexRenderer';
 import { formatWeaponList } from '../../utils/weaponHelper';
+import { getWeaponNameById } from '../../utils/weaponUtils';
 
 const normalizeContent = (content) => {
   if (!content) return ''
@@ -64,7 +65,8 @@ const TaskDisplay = ({
   tasks,
   onSubmitAnswer,
   isAcademicMode,
-  CROSS_FILE_INDEX
+  CROSS_FILE_INDEX,
+  errorNotebook
 }) => {
   const [expandedTask, setExpandedTask] = useState(null);
   const [showAnswerInput, setShowAnswerInput] = useState(null);
@@ -90,6 +92,23 @@ const TaskDisplay = ({
 
   const getAnswer = (task) => {
     return task.variant?.answer || task.answer || '';
+  };
+
+  const getWeaponInfo = (task) => {
+    const weaponId = task.constraints?.weaponId || task.weaponId;
+    if (weaponId) {
+      const weaponName = getWeaponNameById(weaponId);
+      return { weaponId, weaponName };
+    }
+    return null;
+  };
+
+  const getErrorSource = (task) => {
+    if (task.source !== 'error') return null;
+    const errorInfo = errorNotebook?.find(e => 
+      e.targetId === task.motifId && !e.resolved
+    );
+    return errorInfo;
   };
 
   return (
@@ -179,6 +198,46 @@ const TaskDisplay = ({
                 </div>
               </div>
 
+              {/* 杀手锏训练提示 */}
+              {(() => {
+                const weaponInfo = getWeaponInfo(task);
+                const errorSource = getErrorSource(task);
+                
+                return (
+                  <>
+                    {weaponInfo && weaponInfo.weaponName && (
+                      <div className={`p-2 rounded-lg mb-2 flex items-center gap-2 ${
+                        isAcademicMode 
+                          ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200' 
+                          : 'bg-gradient-to-r from-indigo-900/20 to-purple-900/20 border border-indigo-700'
+                      }`}>
+                        <span className="text-base">🔥</span>
+                        <span className={`text-xs font-bold ${
+                          isAcademicMode ? 'text-indigo-700' : 'text-indigo-300'
+                        }`}>
+                          专项突破：本题重点训练「{weaponInfo.weaponName}」
+                        </span>
+                      </div>
+                    )}
+                    
+                    {errorSource && (
+                      <div className={`p-2 rounded-lg mb-2 flex items-center gap-2 ${
+                        isAcademicMode 
+                          ? 'bg-red-50 border border-red-200' 
+                          : 'bg-red-900/20 border border-red-700'
+                      }`}>
+                        <span className="text-base">📌</span>
+                        <span className={`text-xs ${
+                          isAcademicMode ? 'text-red-600' : 'text-red-300'
+                        }`}>
+                          基于你的错题「{errorSource.questionText?.substring(0, 30) || errorSource.diagnosis?.substring(0, 30) || '该知识点'}...」生成
+                        </span>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+
               <div className={`text-xs mb-2 ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
                 📌 本周目标：攻克 {task.targetLevel || task.level} 级别变例，连续 3 次训练正确即可通关
               </div>
@@ -243,8 +302,8 @@ const TaskDisplay = ({
               {showAnswerInput === index && (
                 <AnswerInput
                   task={task}
-                  onSubmit={(answer) => {
-                    onSubmitAnswer?.(index, answer);
+                  onSubmit={(answer, answerType) => {
+                    onSubmitAnswer?.(index, answer, answerType);
                     setShowAnswerInput(null);
                   }}
                   isAcademicMode={isAcademicMode}

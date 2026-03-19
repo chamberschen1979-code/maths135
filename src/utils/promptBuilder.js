@@ -98,7 +98,8 @@ export const buildUserPrompt = (context = {}) => {
     varName = '常规变式',
     difficultyConfig = { level: 'L2', tier: '基础筑基', complexity: 1, steps: 2, traps: 0, paramConstraint: 'integer' },
     variableKnobs = null,
-    benchmarkQuestion = null
+    benchmarkQuestion = null,
+    constraints = {}
   } = context
 
   const strategyInstructions = buildStrategyInstructions(variableKnobs)
@@ -115,6 +116,29 @@ ${strategyInstructions.map(s => `- ${s}`).join('\n')}
 **重要**：具体的数值（如数列的项、角度大小、方程系数）请由你根据上述策略自行构造，确保数据整洁且可解。`
   }
 
+  let weaponSection = ''
+  const { weaponId, weaponName, weaponLogicFlow } = constraints
+  
+  if (weaponId && weaponName) {
+    weaponSection = `
+## 🔥 杀手锏训练要求（最高优先级）
+本题必须体现「**${weaponName}**」的应用！
+
+**杀手锏核心逻辑**：
+${weaponLogicFlow || '请参考杀手锏名称设计题目'}
+
+**强制要求**：
+1. 题目设计必须诱导学生需要使用该杀手锏才能正确解题
+2. 解析中必须详细演示该杀手锏的应用步骤
+3. 在 analysis.steps 中显式标注「[杀手锏]」标记
+4. 若学生未使用该杀手锏，极易掉入陷阱
+
+**示例格式**：
+- 步骤中需包含："应用「${weaponName}」：..."
+- 或："关键步骤：使用「${weaponName}」思维，..."
+`
+  }
+
   return `## 上下文
 - **母题主题**: ${motifName}
 - **专项知识点**: ${specName}
@@ -129,11 +153,11 @@ ${strategyInstructions.map(s => `- ${s}`).join('\n')}
 ## 参考标杆
 参考标杆题逻辑（不要照抄，仅参考逻辑结构）:
 ${benchmarkText}
-${strategySection}
+${strategySection}${weaponSection}
 ## 生成指令
 1. **参数选择**：在 'reasoning' 中明确说明你选择了哪些参数，以及为什么它们符合目标难度和策略约束。
 2. **自我验证**：确保所选参数能构成有效的数学情境（如判别式 >= 0，定义域 > 0）。
 3. **题目生成**：基于这些参数创建一道两问的题目（第一问：基础，第二问：进阶/讨论）。
-4. **解析编写**：提供分步解答，使用清晰的 LaTeX 格式。
-5. **输出**：立即生成 JSON 对象。`
+4. **解析编写**：提供分步解答，使用清晰的 LaTeX 格式。${weaponId ? '\n5. **杀手锏体现**：确保解析中显式体现「' + weaponName + '」的应用步骤。' : ''}
+6. **输出**：立即生成 JSON 对象。`
 }
