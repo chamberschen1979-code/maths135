@@ -1,10 +1,11 @@
 import { Moon, Sun, Settings, ChevronDown, LayoutDashboard, Target, Crosshair, BookOpen, Calendar } from 'lucide-react'
+import UserSwitcher from './UserSwitcher'
 
 const tabs = [
   { id: 'dashboard', label: '知识图谱', icon: LayoutDashboard },
   { id: 'training', label: '学习进度', icon: Target },
   { id: 'diagnosis', label: '错题诊断', icon: Crosshair },
-  { id: 'formula', label: '方法与定理库', icon: BookOpen },
+  { id: 'formula', label: '方法工具', icon: BookOpen },
   { id: 'weekly', label: '每周任务', icon: Calendar },
 ]
 
@@ -44,6 +45,7 @@ const Navigation = ({
           })}
         </div>
         <div className="pb-2 flex flex-col items-center space-y-2">
+          <UserSwitcher />
           <div className="relative">
             <button
               onClick={() => setGradeDropdownOpen(!gradeDropdownOpen)}
@@ -116,51 +118,7 @@ const Navigation = ({
             </button>
           )
         })}
-        <div className="relative">
-          <button
-            onClick={() => setGradeDropdownOpen(!gradeDropdownOpen)}
-            className={`flex flex-col items-center gap-0.5 p-2 text-xs font-bold ${
-              currentGrade === '高三' ? 'text-red-500' : currentGrade === '高二' ? 'text-blue-500' : 'text-green-500'
-            }`}
-          >
-            <span>{currentGrade}</span>
-          </button>
-          {gradeDropdownOpen && (
-            <div className="absolute bottom-full mb-2 right-0 bg-white dark:bg-zinc-800 rounded-lg shadow-lg border border-slate-200 dark:border-zinc-700 overflow-hidden z-50">
-              {['高一', '高二', '高三'].map((grade) => (
-                <button
-                  key={grade}
-                  onClick={() => {
-                    setCurrentGrade(grade)
-                    setGradeDropdownOpen(false)
-                  }}
-                  className={`block w-full px-6 py-2 text-xs font-medium transition-colors ${
-                    currentGrade === grade
-                      ? grade === '高三' ? 'bg-red-100 dark:bg-red-900/30 text-red-500' :
-                        grade === '高二' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' :
-                        'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600'
-                      : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-700'
-                  }`}
-                >
-                  {grade}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-        <button
-          onClick={onInitClick}
-          className="flex flex-col items-center gap-0.5 p-2 text-xs font-bold text-slate-500 dark:text-zinc-400"
-        >
-          <Settings className="w-4 h-4" />
-          <span>初始化</span>
-        </button>
-        <button
-          onClick={() => setIsAcademicMode(!isAcademicMode)}
-          className="flex flex-col items-center gap-1 p-2 text-slate-400 dark:text-zinc-500"
-        >
-          {isAcademicMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-        </button>
+        <UserSwitcher />
       </nav>
     </>
   )

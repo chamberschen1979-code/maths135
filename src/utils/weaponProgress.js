@@ -1,8 +1,16 @@
-const STORAGE_KEY = 'weapon_progress'
+import { getStorageKey, isLoggedIn } from './userManager'
+
+const BASE_KEY = 'weapon_progress'
+
+const getStorageKeyForProgress = () => {
+  return getStorageKey(BASE_KEY)
+}
 
 const getProgressData = () => {
+  if (!isLoggedIn()) return {}
   try {
-    const data = localStorage.getItem(STORAGE_KEY)
+    const key = getStorageKeyForProgress()
+    const data = localStorage.getItem(key)
     return data ? JSON.parse(data) : {}
   } catch (e) {
     console.warn('[weaponProgress] 读取进度失败:', e)
@@ -11,15 +19,17 @@ const getProgressData = () => {
 }
 
 const saveProgressData = (data) => {
+  if (!isLoggedIn()) return
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    const key = getStorageKeyForProgress()
+    localStorage.setItem(key, JSON.stringify(data))
   } catch (e) {
     console.warn('[weaponProgress] 保存进度失败:', e)
   }
 }
 
 export const markAsLearned = (weaponId) => {
-  if (!weaponId) return
+  if (!weaponId || !isLoggedIn()) return
   
   const data = getProgressData()
   
@@ -41,7 +51,7 @@ export const markAsLearned = (weaponId) => {
 }
 
 export const markAsCertified = (weaponId) => {
-  if (!weaponId) return
+  if (!weaponId || !isLoggedIn()) return
   
   const data = getProgressData()
   
@@ -63,7 +73,7 @@ export const markAsCertified = (weaponId) => {
 }
 
 export const incrementPracticeCount = (weaponId) => {
-  if (!weaponId) return
+  if (!weaponId || !isLoggedIn()) return
   
   const data = getProgressData()
   
@@ -83,7 +93,15 @@ export const incrementPracticeCount = (weaponId) => {
 }
 
 export const getProgress = (weaponId) => {
-  if (!weaponId) return null
+  if (!weaponId || !isLoggedIn()) {
+    return {
+      learned: false,
+      learnedAt: null,
+      certified: false,
+      certifiedAt: null,
+      practiceCount: 0
+    }
+  }
   
   const data = getProgressData()
   return data[weaponId] || {
@@ -122,7 +140,9 @@ export const getCertifiedWeapons = () => {
 }
 
 export const clearProgress = () => {
-  localStorage.removeItem(STORAGE_KEY)
+  if (!isLoggedIn()) return
+  const key = getStorageKeyForProgress()
+  localStorage.removeItem(key)
 }
 
 export const getStats = () => {

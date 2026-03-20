@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, createContext, useContext, useCallback } from 'react'
 import 'katex/dist/katex.min.css'
-import { X, Target, Trophy, AlertCircle, Moon, Sun, ChevronDown, Settings } from 'lucide-react'
+import { X, Target, Trophy, AlertCircle, Moon, Sun, ChevronDown, Settings, UserPlus } from 'lucide-react'
 import * as pdfjsLib from 'pdfjs-dist'
 import initialTacticalData from './data/tacticalMaps.json'
 import TacticalDashboard from './components/TacticalDashboard'
@@ -14,6 +14,7 @@ import BattleResultModal from './components/BattleResultModal'
 import LaoQiaoWarning from './components/LaoQiaoWarning'
 import Navigation from './components/Navigation'
 import { migrateTacticalData, SCHEMA_VERSION } from './utils/migrateDataStructure'
+import * as userManager from './utils/userManager'
 
 import { 
   API_KEY, 
@@ -77,6 +78,23 @@ function App() {
   const [initGradeFilter, setInitGradeFilter] = useState('高三')
   const [initStates, setInitStates] = useState({})
   
+  const [currentUser, setCurrentUser] = useState(() => userManager.init())
+  const [showUserInit, setShowUserInit] = useState(false)
+  const [newUserName, setNewUserName] = useState('')
+  
+  useEffect(() => {
+    if (!currentUser) {
+      setShowUserInit(true)
+    }
+  }, [currentUser])
+  
+  const handleCreateUser = () => {
+    const user = userManager.createUser(newUserName || '默认用户')
+    setCurrentUser(user)
+    setShowUserInit(false)
+    setNewUserName('')
+  }
+  
   useEffect(() => {
     if (isAcademicMode) {
       document.documentElement.classList.remove('dark')
@@ -86,38 +104,46 @@ function App() {
   }, [isAcademicMode])
 
   const [tacticalData, setTacticalData] = useState(() => {
-    const savedVersion = localStorage.getItem('tactical_data_version')
-    if (savedVersion !== DATA_VERSION) {
-      localStorage.removeItem('tactical_data')
-      localStorage.setItem('tactical_data_version', DATA_VERSION)
-      const migrated = migrateTacticalData(initialTacticalData, {})
-      console.log('[迁移] 初始化数据完成, schemaVersion:', migrated.data.schemaVersion)
-      if (migrated.warnings.length > 0) {
-        console.warn('[迁移] 警告:', migrated.warnings)
-      }
-      return migrated.data
-    }
-    const saved = localStorage.getItem('tactical_data')
-    if (saved) {
-      const parsed = JSON.parse(saved)
-      if (!parsed.schemaVersion || parsed.schemaVersion < SCHEMA_VERSION) {
-        console.log('[迁移] 检测到旧版本数据，执行迁移...')
-        const migrated = migrateTacticalData(parsed, {})
-        if (migrated.migrated) {
-          console.log('[迁移] 迁移完成, schemaVersion:', migrated.data.schemaVersion)
-          if (migrated.warnings.length > 0) {
-            console.warn('[迁移] 警告:', migrated.warnings)
-          }
-          return migrated.data
+    if (!userManager.isLoggedIn()) return initialTacticalData
+    try {
+      const key = userManager.getStorageKey('tactical_data')
+      const savedVersion = localStorage.getItem(userManager.getStorageKey('tactical_data_version'))
+      if (savedVersion !== DATA_VERSION) {
+        localStorage.removeItem(key)
+        localStorage.setItem(userManager.getStorageKey('tactical_data_version'), DATA_VERSION)
+        const migrated = migrateTacticalData(initialTacticalData, {})
+        console.log('[迁移] 初始化数据完成, schemaVersion:', migrated.data.schemaVersion)
+        if (migrated.warnings.length > 0) {
+          console.warn('[迁移] 警告:', migrated.warnings)
         }
+        return migrated.data
       }
-      return parsed
+      const saved = localStorage.getItem(key)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (!parsed.schemaVersion || parsed.schemaVersion < SCHEMA_VERSION) {
+          console.log('[迁移] 检测到旧版本数据，执行迁移...')
+          const migrated = migrateTacticalData(parsed, {})
+          if (migrated.migrated) {
+            console.log('[迁移] 迁移完成, schemaVersion:', migrated.data.schemaVersion)
+            if (migrated.warnings.length > 0) {
+              console.warn('[迁移] 警告:', migrated.warnings)
+            }
+            return migrated.data
+          }
+        }
+        return parsed
+      }
+    } catch (e) {
+      console.warn('[App] 读取 tacticalData 失败:', e)
     }
     return initialTacticalData
   })
   
   useEffect(() => {
-    localStorage.setItem('tactical_data', JSON.stringify(tacticalData))
+    if (!userManager.isLoggedIn()) return
+    const key = userManager.getStorageKey('tactical_data')
+    localStorage.setItem(key, JSON.stringify(tacticalData))
   }, [tacticalData])
 
   const eloUpdateRef = useRef({ lastTargetId: null, lastDelta: 0, lastTime: 0 });
@@ -184,35 +210,71 @@ function App() {
   const fileInputRef = useRef(null)
 
   const [errorNotebook, setErrorNotebook] = useState(() => {
-    const saved = localStorage.getItem('error_notebook')
-    return saved ? JSON.parse(saved) : []
+    if (!userManager.isLoggedIn()) return []
+    try {
+      const key = userManager.getStorageKey('error_notebook')
+      const saved = localStorage.getItem(key)
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
 
   const [weeklyPlan, setWeeklyPlan] = useState(() => {
-    const saved = localStorage.getItem('weekly_plan')
-    return saved ? JSON.parse(saved) : {
-      activeMotifs: [],
-      pendingErrors: [],
-      weekStart: null,
-      weekEnd: null
+    if (!userManager.isLoggedIn()) {
+      return {
+        activeMotifs: [],
+        pendingErrors: [],
+        weekStart: null,
+        weekEnd: null
+      }
+    }
+    try {
+      const key = userManager.getStorageKey('weekly_plan')
+      const saved = localStorage.getItem(key)
+      return saved ? JSON.parse(saved) : {
+        activeMotifs: [],
+        pendingErrors: [],
+        weekStart: null,
+        weekEnd: null
+      }
+    } catch {
+      return {
+        activeMotifs: [],
+        pendingErrors: [],
+        weekStart: null,
+        weekEnd: null
+      }
     }
   })
 
   const [weeklyTasks, setWeeklyTasks] = useState(() => {
-    const saved = localStorage.getItem('weekly_tasks')
-    return saved ? JSON.parse(saved) : []
+    if (!userManager.isLoggedIn()) return []
+    try {
+      const key = userManager.getStorageKey('weekly_tasks')
+      const saved = localStorage.getItem(key)
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
 
   useEffect(() => {
-    localStorage.setItem('error_notebook', JSON.stringify(errorNotebook))
+    if (!userManager.isLoggedIn()) return
+    const key = userManager.getStorageKey('error_notebook')
+    localStorage.setItem(key, JSON.stringify(errorNotebook))
   }, [errorNotebook])
 
   useEffect(() => {
-    localStorage.setItem('weekly_plan', JSON.stringify(weeklyPlan))
+    if (!userManager.isLoggedIn()) return
+    const key = userManager.getStorageKey('weekly_plan')
+    localStorage.setItem(key, JSON.stringify(weeklyPlan))
   }, [weeklyPlan])
 
   useEffect(() => {
-    localStorage.setItem('weekly_tasks', JSON.stringify(weeklyTasks))
+    if (!userManager.isLoggedIn()) return
+    const key = userManager.getStorageKey('weekly_tasks')
+    localStorage.setItem(key, JSON.stringify(weeklyTasks))
   }, [weeklyTasks])
 
   const generateWeeklyBundle = () => {
@@ -1112,6 +1174,32 @@ function App() {
           initGradeFilter={initGradeFilter}
           setInitGradeFilter={setInitGradeFilter}
         />
+      )}
+      
+      {showUserInit && (
+        <div className="fixed inset-0 z-[100] bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <UserPlus className="w-8 h-8 text-blue-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-slate-800 mb-2">欢迎使用数学无忧</h2>
+            <p className="text-slate-500 mb-6">请创建您的学习账户，开始您的数学之旅</p>
+            <input
+              type="text"
+              value={newUserName}
+              onChange={(e) => setNewUserName(e.target.value)}
+              placeholder="输入您的名字（可选）"
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              onKeyDown={(e) => e.key === 'Enter' && handleCreateUser()}
+            />
+            <button
+              onClick={handleCreateUser}
+              className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            >
+              开始学习
+            </button>
+          </div>
+        </div>
       )}
       </GradeContext.Provider>
     </ThemeContext.Provider>
