@@ -67,17 +67,17 @@ const UserSwitcher = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 transition-colors text-sm"
+        className="flex flex-col items-center gap-1 p-2 rounded-lg text-slate-400 dark:text-zinc-500 hover:text-slate-600 dark:hover:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800/50 transition-all w-full"
       >
-        <User className="w-4 h-4 text-slate-600 dark:text-zinc-300" />
-        <span className="text-slate-700 dark:text-zinc-200 font-medium max-w-[80px] truncate">
+        <User className="w-5 h-5" />
+        <span className="text-xs max-w-[60px] truncate text-center">
           {currentUser?.name || '未登录'}
         </span>
-        <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-3 h-3 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-zinc-800 rounded-xl shadow-xl border border-slate-200 dark:border-zinc-700 overflow-hidden z-50">
+        <div className="absolute left-full ml-2 bottom-0 w-48 bg-white dark:bg-zinc-800 rounded-xl shadow-xl border border-slate-200 dark:border-zinc-700 overflow-hidden z-50">
           <div className="p-2 border-b border-slate-100 dark:border-zinc-700">
             <span className="text-xs text-slate-400 dark:text-zinc-500 px-2">切换用户</span>
           </div>
