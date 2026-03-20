@@ -1,10 +1,9 @@
-import { Moon, Sun, Settings, ChevronDown, LayoutDashboard, Target, Crosshair, Zap, BookOpen, Calendar } from 'lucide-react'
+import { Moon, Sun, Settings, ChevronDown, LayoutDashboard, Target, Crosshair, BookOpen, Calendar } from 'lucide-react'
 
 const tabs = [
   { id: 'dashboard', label: '知识图谱', icon: LayoutDashboard },
   { id: 'training', label: '学习进度', icon: Target },
   { id: 'diagnosis', label: '错题诊断', icon: Crosshair },
-  { id: 'daily', label: '每日训练', icon: Zap },
   { id: 'formula', label: '方法与定理库', icon: BookOpen },
   { id: 'weekly', label: '每周任务', icon: Calendar },
 ]

@@ -1066,14 +1066,6 @@ function App() {
               fileInputRef={fileInputRef}
             />
           )}
-          {activeTab === 'daily' && (
-            <TrainingView 
-              tacticalData={tacticalData}
-              currentGrade={currentGrade}
-              onBattleComplete={handleBattleComplete}
-              onNavigate={(tab) => setActiveTab(tab)}
-            />
-          )}
           {activeTab === 'formula' && (
             <StrategyHub 
               isAcademicMode={isAcademicMode} 

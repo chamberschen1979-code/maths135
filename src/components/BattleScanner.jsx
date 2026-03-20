@@ -725,9 +725,24 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
                                 <span className={`font-medium ${academicMode ? 'text-purple-700' : 'text-purple-300'}`}>
                                   {w.weaponName}
                                 </span>
-                                <span className={`text-xs ${academicMode ? 'text-purple-500' : 'text-purple-400/70'}`}>
-                                  {w.matchedKeywords.slice(0, 2).join(', ')}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className={`text-xs ${academicMode ? 'text-purple-500' : 'text-purple-400/70'}`}>
+                                    {w.matchedKeywords.slice(0, 2).join(', ')}
+                                  </span>
+                                  <button
+                                    onClick={() => {
+                                      handleCloseScanner()
+                                      window.location.href = `/strategy?highlight=${w.weaponId}&autoOpen=learn`
+                                    }}
+                                    className={`text-xs px-2 py-0.5 rounded font-medium ${
+                                      academicMode 
+                                        ? 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200' 
+                                        : 'bg-indigo-900/30 text-indigo-400 hover:bg-indigo-900/50'
+                                    }`}
+                                  >
+                                    去学习
+                                  </button>
+                                </div>
                               </div>
                             ))}
                           </div>

@@ -1,56 +1,89 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search, Filter, Award, Lock } from 'lucide-react';
 import KillerMoveCard from '../components/strategy/KillerMoveCard';
-import CertificationExam from '../components/strategy/CertificationExam'; // 稍后创建
+import CertificationExam from '../components/strategy/CertificationExam';
+import InsightModal from '../components/strategy/InsightModal';
 import strategyData from '../data/strategy_lib.json';
+import { getStats } from '../utils/weaponProgress';
 
 const StrategyHub = ({ onNavigate }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeCategory, setActiveCategory] = useState('全部');
   const [searchQuery, setSearchQuery] = useState('');
-  const [examWeapon, setExamWeapon] = useState(null); // 控制考试模态框
+  const [examWeapon, setExamWeapon] = useState(null);
+  const [insightWeapon, setInsightWeapon] = useState(null);
 
-  // 提取所有分类
-  const categories = useMemo(() => {
-    const cats = new Set(strategyData.map(w => w.category));
-    return ['全部', ...Array.from(cats)];
+  const allWeapons = useMemo(() => {
+    return strategyData.categories?.flatMap(c => c.weapons || []) || [];
   }, []);
 
-  // 过滤数据
+  const categories = useMemo(() => {
+    const cats = new Set(allWeapons.map(w => w.category));
+    return ['全部', ...Array.from(cats)];
+  }, [allWeapons]);
+
+  useEffect(() => {
+    const highlight = searchParams.get('highlight')
+    const autoOpen = searchParams.get('autoOpen')
+    
+    if (highlight) {
+      const weapon = allWeapons.find(w => w.id === highlight)
+      if (weapon) {
+        if (autoOpen === 'learn') {
+          setInsightWeapon(weapon)
+        } else if (autoOpen === 'certify') {
+          setExamWeapon(weapon)
+        }
+      }
+      searchParams.delete('highlight')
+      searchParams.delete('autoOpen')
+      setSearchParams(searchParams, { replace: true })
+    }
+  }, [searchParams, allWeapons])
+
   const filteredWeapons = useMemo(() => {
-    return strategyData.filter(weapon => {
+    return allWeapons.filter(weapon => {
       const matchCat = activeCategory === '全部' || weapon.category === activeCategory;
-      const matchSearch = weapon.name.includes(searchQuery) || weapon.tags.some(t => t.includes(searchQuery));
+      const matchSearch = weapon.name.includes(searchQuery) || 
+        (weapon.trigger_keywords && weapon.trigger_keywords.some(t => t.includes(searchQuery)));
       return matchCat && matchSearch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [allWeapons, activeCategory, searchQuery]);
 
-  // 统计状态
   const stats = useMemo(() => {
-    const total = strategyData.length;
-    const certified = strategyData.filter(w => w._userState?.status === 'CERTIFIED').length;
-    const locked = strategyData.filter(w => w._userState?.status === 'LOCKED').length;
-    return { total, certified, locked, progress: Math.round((certified / total) * 100) };
-  }, []);
+    const total = allWeapons.length;
+    const certified = allWeapons.filter(w => w._userState?.status === 'CERTIFIED').length;
+    const locked = allWeapons.filter(w => w._userState?.status === 'LOCKED').length;
+    const progressStats = getStats();
+    return { 
+      total, 
+      certified, 
+      locked, 
+      progress: total > 0 ? Math.round((certified / total) * 100) : 0,
+      learned: progressStats.learned,
+      totalPractices: progressStats.totalPractices
+    };
+  }, [allWeapons]);
 
-  // 处理开始认证
   const handleStartCertification = (weapon) => {
     setExamWeapon(weapon);
   };
 
-  // 处理认证完成
+  const handleOpenInsight = (weapon) => {
+    setInsightWeapon(weapon);
+  };
+
   const handleCertificationComplete = (weaponId) => {
-    // 在实际应用中，这里会更新后端/本地存储的状态
-    // 暂时简单刷新页面或更新本地状态
     alert("🎉 恭喜！认证通过，徽章已颁发！");
     setExamWeapon(null);
-    // 强制刷新以显示新状态 (实际应使用 setState 更新策略数据)
     window.location.reload(); 
   };
 
   return (
     <div className="min-h-screen bg-slate-50 p-6 pb-20">
       
-      {/* --- 头部统计区 --- */}
+      {/* 头部统计区 */}
       <div className="max-w-7xl mx-auto mb-8">
         <div className="flex flex-col md:flex-row justify-between items-end md:items-center mb-6 gap-4">
           <div>
@@ -78,7 +111,54 @@ const StrategyHub = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* --- 控制栏：搜索与分类 --- */}
+        {/* 学习统计看板 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-5 rounded-xl border border-blue-200 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">📚</span>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-blue-700">{stats.learned}</p>
+                <p className="text-sm text-blue-600">已学习</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-xl border border-green-200 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">🏆</span>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-green-700">{stats.certified}</p>
+                <p className="text-sm text-green-600">已掌握</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-5 rounded-xl border border-purple-200 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <span className="text-2xl">⚔️</span>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-purple-700">{stats.totalPractices}</p>
+                <p className="text-sm text-purple-600">总练习</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {stats.learned === 0 && stats.certified === 0 && (
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-xl border border-indigo-200 mb-6 text-center">
+            <p className="text-indigo-700 font-medium">
+              🚀 开始你的第一个杀手锏学习吧！点击下方卡片的「要点」按钮开始。
+            </p>
+          </div>
+        )}
+
+        {/* 控制栏：搜索与分类 */}
         <div className="flex flex-col md:flex-row gap-4 mb-8 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
           {/* 搜索框 */}
           <div className="relative flex-grow">
@@ -111,7 +191,7 @@ const StrategyHub = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* --- 卡片网格 --- */}
+        {/* 卡片网格 */}
         {filteredWeapons.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredWeapons.map(weapon => (
@@ -120,6 +200,7 @@ const StrategyHub = ({ onNavigate }) => {
                 weapon={weapon} 
                 onNavigate={onNavigate}
                 onStartCertification={handleStartCertification}
+                onOpenInsight={handleOpenInsight}
               />
             ))}
           </div>
@@ -137,7 +218,14 @@ const StrategyHub = ({ onNavigate }) => {
         )}
       </div>
 
-      {/* --- 认证考试模态框 --- */}
+      {/* 要点解析弹窗 */}
+      <InsightModal 
+        weapon={insightWeapon}
+        isOpen={!!insightWeapon}
+        onClose={() => setInsightWeapon(null)}
+      />
+
+      {/* 认证考试弹窗 */}
       {examWeapon && (
         <div className="fixed inset-0 z-50 bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-4xl h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col relative">

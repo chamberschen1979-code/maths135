@@ -203,7 +203,20 @@ const cleanJsonResponse = (text) => {
     const jsonStart = cleaned.indexOf('{')
     const jsonEnd = cleaned.lastIndexOf('}')
     if (jsonStart !== -1 && jsonEnd !== -1) {
-      return JSON.parse(cleaned.substring(jsonStart, jsonEnd + 1))
+      let jsonStr = cleaned.substring(jsonStart, jsonEnd + 1)
+      
+      try {
+        return JSON.parse(jsonStr)
+      } catch (parseError) {
+        // JSON 解析失败，尝试修复 LaTeX 转义问题
+        // 将字符串值中的单反斜杠（非 JSON 转义字符）转为双反斜杠
+        const fixedJson = jsonStr.replace(/"([^"]*)"(?=\s*[:,\]}])/g, (match, content) => {
+          // 转义非 JSON 标准转义字符的反斜杠
+          const escaped = content.replace(/\\(?!["\\\/bfnrtu])/g, '\\\\')
+          return `"${escaped}"`
+        })
+        return JSON.parse(fixedJson)
+      }
     }
     return JSON.parse(cleaned)
   } catch (e) {

@@ -10,6 +10,7 @@ import {
   generateCertificationQuestion, 
   generateRemedialQuestion 
 } from '../../services/aiVisionService'
+import { markAsCertified } from '../../utils/weaponProgress'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
 
@@ -477,6 +478,7 @@ const CertificationExam = ({ weapon, onComplete, onExit }) => {
   }
 
   const handleConfirmPass = () => {
+    markAsCertified(weapon.id)
     onComplete(weapon.id)
   }
 

@@ -1,8 +1,10 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { ChevronDown, Lock, CheckCircle, PenTool, Target } from 'lucide-react'
+import { ChevronDown, Lock, CheckCircle, PenTool, Target, BookOpen, Eye } from 'lucide-react'
 import { getLinkedMotifsForWeapon, getWeaponStatus } from '../utils/motifWeaponMapper'
+import { isLearned } from '../utils/weaponProgress'
 import strategyLib from '../data/strategy_lib.json'
 import CertificationExam from './strategy/CertificationExam'
+import InsightModal from './strategy/InsightModal'
 
 const RANK_LABELS = {
   killer: '杀手锏',
@@ -29,6 +31,7 @@ const StrategyHub = ({
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [examWeapon, setExamWeapon] = useState(null)
+  const [insightWeapon, setInsightWeapon] = useState(null)
   const highlightRef = useRef(null)
 
   useEffect(() => {
@@ -182,55 +185,64 @@ const StrategyHub = ({
           </p>
         </div>
 
-        {/* 底部：母题场景 + 认证按钮（同一行） */}
-        <div className="flex justify-between items-end pt-2 border-t border-slate-100 mt-auto">
+        {/* 底部：母题场景 + 双按钮（同一行） */}
+        <div className="flex justify-between items-center pt-2 border-t border-slate-100 mt-auto gap-2">
           {/* 左侧：适用母题场景 */}
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex items-center gap-1 flex-1 min-w-0">
             {linkedMotifs.length > 0 ? (
               linkedMotifs.slice(0, 2).map(motif => (
-                <button
+                <span
                   key={`${weapon.id}-${motif.id}`}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onNavigate && onNavigate('dashboard', motif.id)
-                  }}
-                  className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-all border ${
-                    isLocked
-                      ? 'bg-slate-100 border-slate-200 text-slate-400'
-                      : isAcademicMode
-                        ? 'bg-indigo-50 border-indigo-100 text-indigo-700 hover:bg-indigo-100 hover:border-indigo-200'
-                        : 'bg-indigo-900/30 border-indigo-700 text-indigo-300 hover:bg-indigo-900/50'
-                  } cursor-pointer`}
+                  className="inline-flex items-center gap-1 text-[10px] font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md border border-indigo-100 whitespace-nowrap flex-shrink-0"
                 >
-                  <Target size={12} />
+                  <Target size={10} className="flex-shrink-0" />
                   <span className="font-mono font-bold">{motif.id}</span>
-                  <span className="truncate max-w-[60px]">{motif.title}</span>
-                </button>
+                  <span className="text-indigo-500 hidden sm:inline truncate max-w-[60px]">{motif.title?.replace(/^[M\d]+\s*/, '')}</span>
+                </span>
               ))
             ) : (
-              <span className="text-xs text-slate-400">暂无关联母题</span>
+              <span className="text-[10px] text-slate-300">暂无关联母题</span>
             )}
           </div>
 
-          {/* 右侧：去认证按钮或已认证印章 */}
-          {!isLocked && (
-            isCertified ? (
-              <div className="flex items-center gap-1 text-green-600">
-                <CheckCircle size={20} className="text-green-500" />
-              </div>
-            ) : isTraining && (
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setExamWeapon(weapon)
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-indigo-600 text-white text-xs font-bold rounded-lg shadow-md hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-0.5 active:scale-95"
-              >
-                <PenTool size={14} />
-                去认证
-              </button>
-            )
-          )}
+          {/* 右侧：双按钮组 */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* 按钮 1: 要点解析 */}
+            <button 
+              onClick={(e) => {
+                e.stopPropagation()
+                setInsightWeapon(weapon)
+              }}
+              className={`flex items-center justify-center gap-1 px-2 py-1.5 text-[11px] font-bold rounded-md border transition-all whitespace-nowrap shadow-sm 
+                ${isLearned(weapon.id) 
+                  ? 'bg-green-50 border-green-200 text-green-700' 
+                  : 'bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100'} 
+              `}
+              style={{ minWidth: '60px' }}
+            >
+              {isLearned(weapon.id) ? '👁 已读' : '📖 要点'}
+            </button>
+
+            {/* 按钮 2: 去认证 */}
+            {!isLocked && (
+              isCertified ? (
+                <div className="flex items-center justify-center gap-1 px-2 py-1.5 bg-green-100 text-green-700 text-[11px] font-bold rounded-md border border-green-200 whitespace-nowrap">
+                  ✓ 已掌握
+                </div>
+              ) : isTraining && (
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setExamWeapon(weapon)
+                  }}
+                  className="flex items-center justify-center gap-1 px-2 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-md shadow-md hover:bg-slate-800 transition-all whitespace-nowrap"
+                  style={{ minWidth: '60px' }}
+                >
+                  ⚔️ 认证
+                </button>
+              )
+            )}
+          </div>
         </div>
       </div>
     )
@@ -250,7 +262,7 @@ const StrategyHub = ({
             返回知识图谱
           </button>
           <h1 className={`text-2xl font-bold ${isAcademicMode ? 'text-slate-800' : 'text-zinc-100'}`}>
-            📚 核心方法和定理库
+            📚 方法工具
           </h1>
           <p className={`mt-1 text-sm ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
             高中数学核心解题策略的系统化整理 — 共 {allWeapons.length} 招杀手锏
@@ -354,6 +366,13 @@ const StrategyHub = ({
           </div>
         </div>
       )}
+
+      {/* 要点解析弹窗 */}
+      <InsightModal 
+        weapon={insightWeapon}
+        isOpen={!!insightWeapon}
+        onClose={() => setInsightWeapon(null)}
+      />
     </div>
   )
 }
