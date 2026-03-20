@@ -36,8 +36,6 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
     if (!tacticalData?.tactical_maps) {
       return {
         stats: { totalElo: 0, level: 'L1', meltdownCount: 0, nearCompleteCount: 0, masteredCount: 0, totalCount: 0 },
-        criticalAlerts: [],
-        recommendedNext: [],
         progressTree: [],
         hasMeltdown: false
       };
@@ -45,20 +43,16 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
 
     const allEncounters = tacticalData.tactical_maps.flatMap(map => map.encounters || []);
     
-    let totalElo = 0;
     let meltdownCount = 0;
     let nearCompleteCount = 0;
     let masteredCount = 0;
     let totalCount = 0;
-    const criticalAlerts = [];
-    const recommendedNext = [];
     const topicsMap = new Map();
 
     allEncounters.forEach(encounter => {
       const motifId = encounter.target_id;
       const elo = encounter.elo_score || LEVEL_INITIAL_ELO.L1;
       const level = getLevelByElo(elo);
-      totalElo += elo;
 
       const topicInfo = MOTIF_TO_TOPIC[motifId] || { topicId: 'T00', topicName: '其他' };
       
@@ -146,37 +140,10 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
               
               if (isLocked) {
                 meltdownCount++;
-                criticalAlerts.push({
-                  type: 'meltdown',
-                  topicId: topicInfo.topicId,
-                  topicName: topicInfo.topicName,
-                  motifId,
-                  motifName,
-                  varId: `${spec.spec_id}_${variation.var_id}`,
-                  varName: variation.name,
-                  specName: spec.spec_name,
-                  level: lvl,
-                  isLocked: true,
-                  l2Status: 'RED'
-                });
               }
               
               if (streak >= 1 && streak < 3 && !isLocked) {
                 nearCompleteCount++;
-                recommendedNext.push({
-                  type: 'nearComplete',
-                  topicId: topicInfo.topicId,
-                  topicName: topicInfo.topicName,
-                  motifId,
-                  motifName,
-                  varId: `${spec.spec_id}_${variation.var_id}`,
-                  varName: variation.name,
-                  specName: spec.spec_name,
-                  level: lvl,
-                  streak,
-                  remaining: 3 - streak,
-                  levelStatuses: { ...levelStatuses }
-                });
               }
             } else {
               levelStatuses[lvl] = { exists: false };
@@ -235,96 +202,11 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
       return topic?.motifs.find(m => m.motifId === motifId);
     }).filter(Boolean);
 
-    recommendedNext.sort((a, b) => b.streak - a.streak);
-
-    if (recommendedNext.length === 0) {
-      const activatedVariants = [];
-      
-      allEncounters.forEach(encounter => {
-        const motifId = encounter.target_id;
-        const elo = encounter.elo_score || LEVEL_INITIAL_ELO.L1;
-        
-        if (elo < 1001) return;
-        
-        const detailedMotif = getMotifData(motifId);
-        if (!detailedMotif?.specialties) return;
-        
-        const motifName = detailedMotif.motif_name || encounter.target_name || motifId;
-        const topicInfo = MOTIF_TO_TOPIC[motifId] || { topicId: 'T00', topicName: '其他' };
-        
-        const savedSpecialties = encounter.specialties || []
-        const savedBenchmarkMap = new Map()
-        savedSpecialties.forEach(spec => {
-          spec.variations?.forEach(v => {
-            v.master_benchmarks?.forEach(b => {
-              savedBenchmarkMap.set(b.id || `${spec.spec_id}_${v.var_id}_${b.level}`, {
-                is_mastered: b.is_mastered,
-                consecutive_correct: b.consecutive_correct
-              })
-            })
-          })
-        })
-        
-        detailedMotif.specialties.forEach(spec => {
-          spec.variations?.forEach(variation => {
-            const benchmarks = variation.master_benchmarks || [];
-            const levelStatuses = {};
-            
-            ['L2', 'L3', 'L4'].forEach(lvl => {
-              const b = benchmarks.find(bb => bb.level === lvl);
-              if (b) {
-                const saved = savedBenchmarkMap.get(b.id)
-                const isMastered = saved?.is_mastered !== undefined && saved?.is_mastered !== null ? saved.is_mastered : (b.is_mastered ?? null)
-                const streak = saved?.consecutive_correct !== undefined && saved?.consecutive_correct !== null ? saved.consecutive_correct : (b.consecutive_correct ?? 0)
-                
-                levelStatuses[lvl] = {
-                  exists: true,
-                  isMastered,
-                  streak,
-                  isLocked: b.is_locked || b.l2_status === 'RED'
-                };
-              }
-            });
-            
-            ['L2', 'L3', 'L4'].forEach(lvl => {
-              const b = benchmarks.find(bb => bb.level === lvl);
-              const ls = levelStatuses[lvl];
-              if (b && ls && ls.isMastered !== true) {
-                activatedVariants.push({
-                  type: 'fallback',
-                  topicId: topicInfo.topicId,
-                  topicName: topicInfo.topicName,
-                  motifId,
-                  motifName,
-                  varId: `${spec.spec_id}_${variation.var_id}`,
-                  varName: variation.name,
-                  specName: spec.spec_name,
-                  level: lvl,
-                  streak: ls.streak || 0,
-                  remaining: 3 - (ls.streak || 0),
-                  levelStatuses: { ...levelStatuses }
-                });
-              }
-            });
-          });
-        });
-      });
-      
-      activatedVariants.sort((a, b) => {
-        const levelOrder = { L2: 1, L3: 2, L4: 3 };
-        return (levelOrder[a.level] || 99) - (levelOrder[b.level] || 99);
-      });
-      
-      recommendedNext.push(...activatedVariants.slice(0, 2));
-    }
-
     const activatedEncounters = allEncounters.filter(e => (e.elo_score || LEVEL_INITIAL_ELO.L1) >= 1001);
     const avgElo = activatedEncounters.length > 0 
       ? Math.round(activatedEncounters.reduce((sum, e) => sum + (e.elo_score || LEVEL_INITIAL_ELO.L1), 0) / activatedEncounters.length)
       : LEVEL_INITIAL_ELO.L1;
     const userLevel = getLevelByElo(avgElo);
-
-    console.log('[ProgressTree] ✅ 今日推荐:', recommendedNext.length, '项');
 
     return {
       stats: {
@@ -335,8 +217,6 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
         masteredCount,
         totalCount
       },
-      criticalAlerts,
-      recommendedNext: recommendedNext.slice(0, 5),
       progressTree,
       hasMeltdown: meltdownCount > 0
     };
