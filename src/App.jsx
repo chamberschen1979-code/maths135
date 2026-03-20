@@ -1069,13 +1069,15 @@ function App() {
         />
 
         <main className="flex-1 flex flex-col h-full overflow-y-auto pb-16 md:pb-0 relative">
-          <button
-            onClick={() => setInitModalOpen(true)}
-            className="flex absolute top-4 right-4 z-40 items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700 transition-all shadow-sm"
-          >
-            <Settings className="w-5 h-5" />
-            <span>初始化</span>
-          </button>
+          {activeTab === 'dashboard' && (
+            <button
+              onClick={() => setInitModalOpen(true)}
+              className="flex absolute top-4 right-4 z-40 items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700 transition-all shadow-sm"
+            >
+              <Settings className="w-5 h-5" />
+              <span>初始化</span>
+            </button>
+          )}
           {activeTab === 'dashboard' && (
             <TacticalDashboard 
               tacticalData={tacticalData} 
