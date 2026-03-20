@@ -99,7 +99,9 @@ export const buildUserPrompt = (context = {}) => {
     difficultyConfig = { level: 'L2', tier: '基础筑基', complexity: 1, steps: 2, traps: 0, paramConstraint: 'integer' },
     variableKnobs = null,
     benchmarkQuestion = null,
-    constraints = {}
+    constraints = {},
+    hardConstraints = null,
+    systemInstructionTemplate = null
   } = context
 
   const strategyInstructions = buildStrategyInstructions(variableKnobs)
@@ -114,6 +116,52 @@ export const buildUserPrompt = (context = {}) => {
 ${strategyInstructions.map(s => `- ${s}`).join('\n')}
 
 **重要**：具体的数值（如数列的项、角度大小、方程系数）请由你根据上述策略自行构造，确保数据整洁且可解。`
+  }
+
+  let hardConstraintsSection = ''
+  if (hardConstraints) {
+    const constraintItems = []
+    
+    if (hardConstraints.phi_range_required) {
+      constraintItems.push(`⚠️ **相位唯一性约束**：本题涉及求解 φ，必须在题干中明确给定范围（默认：${hardConstraints.phi_default_range || '|φ| < π/2'}）。`)
+    }
+    
+    if (hardConstraints.omega_must_positive) {
+      constraintItems.push(`⚠️ **频率正定性**：ω 必须为正数，题目中应注明 ω > 0。`)
+    }
+    
+    if (hardConstraints.check_symmetry_consistency) {
+      constraintItems.push(`⚠️ **对称性自洽校验**：生成题目后，请代入对称点验证函数值是否为 0（或最值），确保逻辑自洽。`)
+    }
+    
+    if (hardConstraints.check_boundary_equality) {
+      constraintItems.push(`⚠️ **端点等号校验**：涉及"恰有 N 个"的问题，必须在解析中明确说明端点等号的取舍理由。`)
+    }
+    
+    if (hardConstraints.explicit_endpoint_reasoning) {
+      constraintItems.push(`⚠️ **端点推理显式化**：解析中必须详细解释"为什么取等号"或"为什么不取等号"。`)
+    }
+    
+    if (hardConstraints.check_phase_consistency) {
+      constraintItems.push(`⚠️ **相位一致性校验**：确保所有条件（如过定点、对称轴）对应的相位值一致。`)
+    }
+    
+    if (constraintItems.length > 0) {
+      hardConstraintsSection = `
+## 🛡️ 强制约束（最高优先级）
+以下约束必须严格遵守，违反则题目无效：
+${constraintItems.map(c => `- ${c}`).join('\n')}
+
+**执行流程**：生成题目 → 自我校验上述约束 → 通过则输出，不通过则重写。`
+    }
+  }
+
+  let systemSection = ''
+  if (systemInstructionTemplate) {
+    systemSection = `
+## 母题专属指令
+${systemInstructionTemplate}
+`
   }
 
   let weaponSection = ''
@@ -149,11 +197,11 @@ ${weaponLogicFlow || '请参考杀手锏名称设计题目'}
   - 陷阱数: ${difficultyConfig.traps}
   - 参数约束: ${difficultyConfig.paramConstraint}
   - 参数数量范围: ${difficultyConfig.minParams || 1} ~ ${difficultyConfig.maxParams || 3}
-
+${systemSection}
 ## 参考标杆
 参考标杆题逻辑（不要照抄，仅参考逻辑结构）:
 ${benchmarkText}
-${strategySection}${weaponSection}
+${strategySection}${hardConstraintsSection}${weaponSection}
 ## 生成指令
 1. **参数选择**：在 'reasoning' 中明确说明你选择了哪些参数，以及为什么它们符合目标难度和策略约束。
 2. **自我验证**：确保所选参数能构成有效的数学情境（如判别式 >= 0，定义域 > 0）。
