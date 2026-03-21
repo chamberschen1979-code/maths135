@@ -101,7 +101,8 @@ export const buildUserPrompt = (context = {}) => {
     benchmarkQuestion = null,
     constraints = {},
     hardConstraints = null,
-    systemInstructionTemplate = null
+    systemInstructionTemplate = null,
+    moduleConstraints = null
   } = context
 
   const strategyInstructions = buildStrategyInstructions(variableKnobs)
@@ -326,6 +327,18 @@ ${constraintItems.map(c => `- ${c}`).join('\n')}
     }
   }
 
+  // 构建模块专属约束段落
+  let moduleConstraintsSection = ''
+  if (moduleConstraints && Array.isArray(moduleConstraints) && moduleConstraints.length > 0) {
+    moduleConstraintsSection = `
+## ⚠️ ${motifName} 专属铁律 (最高优先级)
+以下是针对 **${motifName}** 模块的绝对数学禁忌，违反任意一条即视为命题失败：
+${moduleConstraints.map((rule, index) => `${index + 1}. ${rule}`).join('\n')}
+
+**自检要求**：生成题目后，必须逐条核对上述规则，确保完全合规。
+`
+  }
+
   let systemSection = ''
   if (systemInstructionTemplate) {
     systemSection = `
@@ -371,10 +384,10 @@ ${systemSection}
 ## 参考标杆
 参考标杆题逻辑（不要照抄，仅参考逻辑结构）:
 ${benchmarkText}
-${strategyComparisonSection}${strategySection}${levelConstraintsSection}${hardConstraintsSection}${weaponSection}
+${strategyComparisonSection}${strategySection}${levelConstraintsSection}${hardConstraintsSection}${moduleConstraintsSection}${weaponSection}
 ## 生成指令
 1. **参数选择**：在 'reasoning' 中明确说明你选择了哪些参数，以及为什么它们符合目标难度和策略约束。
-2. **自我验证**：确保所选参数能构成有效的数学情境（如判别式 >= 0，定义域 > 0）。
+2. **自我验证**：确保所选参数能构成有效的数学情境（如判别式 >= 0，定义域 > 0）${moduleConstraints ? '，**并再次核对 "' + motifName + ' 专属铁律"**' : ''}。
 3. **题目生成**：基于这些参数创建一道两问的题目（第一问：基础，第二问：进阶/讨论）。
 4. **解析编写**：提供分步解答，使用清晰的 LaTeX 格式。${weaponId ? '\n5. **杀手锏体现**：确保解析中显式体现「' + weaponName + '」的应用步骤。' : ''}
 6. **输出**：立即生成 JSON 对象。`

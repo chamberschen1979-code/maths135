@@ -341,6 +341,9 @@ const WeeklyMission = ({
     const hardConstraints = selectedStrategy?.hard_constraints || null;
     const systemInstructionTemplate = motifData.system_instruction_template || null;
     
+    // 提取 module_constraints (模块专属约束)
+    const moduleConstraints = motifData.module_constraints || null;
+    
     const userPrompt = buildUserPrompt({
       motifName: motifData.motif_name || motifData.name,
       specName: specName || '通用数学',
@@ -351,7 +354,8 @@ const WeeklyMission = ({
       dualLevelContext,
       constraints: weaponConstraints,
       hardConstraints,
-      systemInstructionTemplate
+      systemInstructionTemplate,
+      moduleConstraints
     });
 
     const response = await fetch(BASE_URL, {
