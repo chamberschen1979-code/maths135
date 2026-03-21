@@ -9,7 +9,8 @@ import {
   selectVariableKnobs, 
   getVariationInfo,
   getAvailableVariations,
-  buildCrossFileIndex
+  buildCrossFileIndex,
+  selectSeedQuestion
 } from '../utils/problemLogic';
 import { loadMotifData } from '../utils/dataLoader';
 import { judgeAnswerWithFallback } from '../utils/aiGrader';
@@ -313,8 +314,17 @@ const WeeklyMission = ({
       return null;
     }
 
-    const benchmark = selectBenchmark(motifData, difficultyConfig.level, problemIndex, constraints);
-    const selectedStrategy = selectVariableKnobs(motifData, difficultyConfig.level, problemIndex, constraints, benchmark);
+    const benchmark = selectBenchmark(motifData, difficultyConfig.level, problemIndex, { 
+      ...constraints, 
+      grade: currentGrade || '高三' 
+    });
+    const selectedStrategy = selectVariableKnobs(motifData, difficultyConfig.level, problemIndex, { 
+      ...constraints, 
+      grade: currentGrade || '高三' 
+    }, benchmark);
+    
+    const seedQuestion = selectSeedQuestion(motifData, difficultyConfig.level, benchmark, problemIndex);
+    
     const variationInfo = getVariationInfo(benchmark);
     
     const specName = variationInfo.specName;
@@ -354,12 +364,15 @@ const WeeklyMission = ({
       difficultyConfig,
       variableKnobs: selectedStrategy,
       benchmarkQuestion: benchmark,
+      seedQuestion: seedQuestion,
       dualLevelContext,
       constraints: weaponConstraints,
       hardConstraints,
       systemInstructionTemplate,
       moduleConstraints,
-      mathInvariants
+      mathInvariants,
+      userGrade: currentGrade || '高三',
+      motifId: motifData.id || motifData.motif_id || ''
     });
 
     const response = await fetch(BASE_URL, {
