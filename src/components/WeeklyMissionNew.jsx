@@ -335,7 +335,7 @@ const WeeklyMission = ({
       }
     }
 
-    const systemPrompt = buildSystemPrompt();
+    const systemPrompt = buildSystemPrompt(currentGrade || '高一');
     
     // 提取 hard_constraints 和 system_instruction_template
     const hardConstraints = selectedStrategy?.hard_constraints || null;
