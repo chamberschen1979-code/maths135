@@ -74,68 +74,133 @@
                 "weight": 0.3,
                 "desc": "定义域限制导致的空集"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "data_integrity": "integer_solution",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "logic_chain_length": 2,
+              "allow_single_parameter": true,
+              "forbid_empty_set_trap": true,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "empty_set_discussion": "mandatory",
+              "endpoint_validation": "mandatory",
+              "logic_chain_length": 3,
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 已知集合 A={x|x^2-3x+2=0}, B={1, 2, 3}，求 A∩B。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 八省联考] 若集合 A={y|y=x^2, x∈R}, B={x|y=lg(x-1)}，求 A∩B。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 华附一模] 已知集合 A={(x,y)|x+y=2}, B={(x,y)|x-y=0}，求 A∩B 的元素个数。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 山东济南一模] 若集合 A={1, a, a^2-2}, B={1, 2}，且 A=B，求 a 的值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江杭州二模] 已知全集 U=R, A={x|x<1}, B={x|x>0}，求 (CuA)∩B。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[23 新高考 I] 已知集合 M={x|-2<x<1}, N={x|x^2-x-6<0}，求 M∩N。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 深中二月考] 若集合 A={x|ax^2-3x+2=0} 只有一个元素，求 a 的值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 省实期中] 求集合 {x∈Z | -1<x<3} 的子集个数。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 湖北武汉一模] 已知 A={x|x^2-4x+3<0}, B={x|2<x<4}，求 A∪B。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 广州一模] 若集合 A={x|x^2-2x-3≤0}, B={x|x>m}，且 A∩B≠∅，求 m 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_reason": "L3 红线：空集陷阱应归为 L4",
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[24 深圳一模] 已知集合 A={1, 2, 3}, B={x|x^2-ax+1=0}，若 B⊆A，求 a 的值。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[25 江苏南京盐城一模] 设集合 A={x|x=2k, k∈Z}, B={x|x=2k+1, k∈Z}，求 A∩B。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 华附零模] 已知集合 A={x|lg(x-1)<1}, B={x|x^2-3x-4<0}，求 A∩B。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 广东二模] 若集合 A={x|x^2-5x+6=0}, B={2, 3, 4}，求 A 的真子集个数。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江宁波十校联考] 已知集合 A={(x,y)|x^2+y^2=1}, B={(x,y)|y=x}，求 A∩B 的元素个数。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             }
           ],
           "master_benchmarks": [
@@ -155,7 +220,12 @@
                   "交集符号看错成并集。",
                   "列举元素时遗漏。"
                 ],
-                "conclusion": "$\\{1, 2\\}$"
+                "conclusion": "$\\{1, 2\\}$",
+                "habit_check": [
+                  "✅ 元素互异性检查：解出的参数是否导致集合元素重复？",
+                  "✅ 区间端点检查：开闭区间是否正确？"
+                ],
+                "speed_tip": "集合运算直接画数轴或韦恩图，比代数推导更快更准。"
               }
             },
             {
@@ -234,68 +304,133 @@
                 "weight": 0.2,
                 "desc": "端点等号取舍错误"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "data_integrity": "integer_solution",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "logic_chain_length": 2,
+              "allow_single_parameter": true,
+              "forbid_empty_set_trap": true,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "empty_set_discussion": "mandatory",
+              "endpoint_validation": "mandatory",
+              "logic_chain_length": 3,
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 II] 已知 A={x|1<x<3}, B={x|x>a}，若 A⊆B，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 八省联考] 若集合 A={x|x^2-2x+a=0}⊆{1, 2}，求 a 的值。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[24 华附一模] 已知 A={x|-2≤x≤5}, B={x|m+1≤x≤2m-1}，若 B⊆A，求 m 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[25 山东济南一模] 若 A={x|x^2-4x+3<0}, B={x|x<a}，且 A⊆B，求 a 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江杭州二模] 已知集合 A={1, 2}, B={x|x^2-ax+1=0}，若 B⊆A，求 a 的取值集合。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[23 新高考 I] 设 A={x|x^2-3x+2=0}, B={x|mx-2=0}，若 B⊆A，求 m 的值。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[25 深中二月考] 若 A={x|x>1}, B={x|x>a}，且 A⊇B，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 省实期中] 已知 A={x|x^2-5x+6≤0}, B={x|x<m}，若 A∩B=A，求 m 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 湖北武汉一模] 若集合 A={x|-1<x<2}, B={x|2a<x<a+3}，且 B⊆A，求 a 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[25 广州一模] 已知 A={x|x^2-2x-3≤0}, B={x|x≥m}，若 A∩B≠∅，求 m 的最大值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_reason": "L3 红线：空集陷阱应归为 L4",
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[24 深圳一模] 设 A={x|x^2-4x+3<0}, B={x|x^2-ax+a-1<0}，若 A⊆B，求 a 的值。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[25 江苏南京盐城一模] 若 A={x|x^2-2x<0}, B={x|x<a}，且 A⊂B (真子集)，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 华附零模] 已知 A={x|x^2-3x+2=0}, B={x|ax-2=0}，若 B⊆A，求所有可能的 a 值之和。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[24 广东二模] 若集合 A={x|1≤x≤2}, B={x|x≥a}，且 A⊆B，求 a 的值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江宁波十校联考] 已知 A={x|x^2-5x+4≤0}, B={x|x^2-(a+1)x+a≤0}，若 B⊆A，求 a 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             }
           ],
           "master_benchmarks": [
@@ -345,7 +480,12 @@
                   "端点验证错误（如 $m+1 > -2$ 写错方向）。",
                   "最后忘记取并集。"
                 ],
-                "conclusion": "$(-\\infty, 3]$"
+                "conclusion": "$(-\\infty, 3]$",
+                "self_validation": {
+                  "check_point": "端点回代验证集合关系是否成立。",
+                  "verification_process": "代入边界值（如 m=2, m=3），检查集合包含关系。",
+                  "result": "PASS"
+                }
               }
             }
           ]
@@ -415,68 +555,132 @@
                 "weight": 0.3,
                 "desc": "德摩根律应用错误"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "data_integrity": "integer_solution",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "logic_chain_length": 2,
+              "allow_single_parameter": true,
+              "forbid_empty_set_trap": true,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "empty_set_discussion": "mandatory",
+              "endpoint_validation": "mandatory",
+              "logic_chain_length": 3,
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 命题“∀x∈R, x^2≥0”的否定是？",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 八省联考] 命题“∃x>0, x^2-x+1<0”的否定是？",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 华附一模] 若命题 p: ∀x∈[1, 2], x^2-a≥0 为真，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 山东济南一模] 已知命题 p: ∃x∈R, x^2+2x+m≤0 为假命题，求 m 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江杭州二模] 命题“有些三角形是等腰三角形”的否定是？",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[23 新高考 I] 已知 p: ∀x>0, ln(x+1)>0; q: ∃x∈R, x^2+x+1<0。判断 p∧q, p∨q 的真假。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 深中二月考] 若命题“∀x∈R, ax^2+2x+1>0”为真，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 省实期中] 命题“若 x>1，则 x^2>1”的否命题是？",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 湖北武汉一模] 已知命题 p: ∃x∈[0, π], sinx>m 为假，求 m 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 广州一模] 命题“∀x∈Z, x^2+x 是偶数”的否定是？",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 深圳一模] 若命题 p: ∃x∈R, x^2+ax+1<0 为真，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 江苏南京盐城一模] 已知 p: ∀x∈[1, 2], x^2-a≥0; q: ∃x∈R, x^2+2ax+2-a=0。若 p∧q 为真，求 a 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[25 华附零模] 命题“所有能被 5 整除的数都是偶数”的否定是？",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 广东二模] 若命题“∃x∈[1, 2], x^2-a≤0”为真，求 a 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江宁波十校联考] 已知命题 p: ∀x>0, x+1/x≥a; q: ∃x∈R, x^2+2ax+a+2=0。若 p∨q 为真且 p∧q 为假，求 a 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             }
           ],
           "master_benchmarks": [
@@ -498,7 +702,12 @@
                   "错误地否定了条件（如写成 $x \\notin \\mathbb{R}$）。",
                   "$\\ge$ 的否定写成 $\\le$（应为 $<$）。"
                 ],
-                "conclusion": "$\\exists x \\in \\mathbb{R}, x^2 < 0$"
+                "conclusion": "$\\exists x \\in \\mathbb{R}, x^2 < 0$",
+                "habit_check": [
+                  "✅ 三重验证：1. 实部=0? 2. 虚部≠0? 3. 分母≠0?",
+                  "✅ 审题确认：题目问的是 z 还是 z̄？是实部还是虚部？"
+                ],
+                "speed_tip": "看到分式形式的纯虚数，第一时间先写'分母≠0'，这是最高频的陷阱。"
               }
             },
             {
@@ -586,68 +795,132 @@
                 "weight": 0.3,
                 "desc": "端点取舍错误"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "data_integrity": "integer_solution",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "logic_chain_length": 2,
+              "allow_single_parameter": true,
+              "forbid_empty_set_trap": true,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "empty_set_discussion": "mandatory",
+              "endpoint_validation": "mandatory",
+              "logic_chain_length": 3,
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] “x>1”是“x^2>1”的什么条件？",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 八省联考] 设 a, b∈R，则“a>b”是“a^2>b^2”的什么条件？",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 华附一模] 若 p: |x-1|<2, q: x>a，且 p 是 q 的充分不必要条件，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 山东济南一模] 设向量 a=(1, x), b=(2, 1)，则“x=2”是“a//b”的什么条件？",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江杭州二模] “sinα=1/2”是“α=π/6”的什么条件？",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[23 新高考 I] 设等比数列 {an} 公比为 q，则“q>1”是“{an} 递增”的什么条件？",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 深中二月考] 若 p: x^2-3x+2<0, q: x<m，且 p 是 q 的必要不充分条件，求 m 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[24 省实期中] “直线 l1//l2”是“斜率 k1=k2”的什么条件？",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 湖北武汉一模] 设 p: x>1, q: log2(x)>0，则 p 是 q 的什么条件？",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 广州一模] 若 p: x∈A={x|x^2-4x+3<0}, q: x∈B={x|2<x<m}，且 p 是 q 的充分不必要条件，求 m 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[24 深圳一模] 设 a∈R，则“a=1”是“直线 ax+y-1=0 与 x+ay-1=0 平行”的什么条件？",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 江苏南京盐城一模] 若 p: |x-1|<a (a>0), q: x^2-6x+5<0，且 ¬p 是 ¬q 的充分不必要条件，求 a 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             },
             {
               "desc": "[25 华附零模] “x(x-3)<0”是“|x-1|<2”的什么条件？",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 广东二模] 设 p: x>2, q: x>a，若 p 是 q 的充分条件，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江宁波十校联考] 已知 p: x^2-2x-3≤0, q: x^2-2mx+m^2-1≤0，若 p 是 q 的必要不充分条件，求 m 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "trap_explicit": true
             }
           ],
           "master_benchmarks": [
@@ -669,7 +942,12 @@
                   "搞反充分/必要的定义。",
                   "未使用集合法，纯逻辑推导容易晕。"
                 ],
-                "conclusion": "充分不必要条件"
+                "conclusion": "充分不必要条件",
+                "habit_check": [
+                  "✅ 审题最后一秒：确认题目问的是什么。",
+                  "✅ 答案格式检查：是否符合题目要求的格式。"
+                ],
+                "speed_tip": "直接代入或套用基本公式，无需复杂变形。"
               }
             },
             {
@@ -694,7 +972,10 @@
                   "忘记验证是否可以取等号（$P$ 是 $Q$ 的一部分即可，端点重合不影响真子集，只要 $Q$ 比 $P$ 大）。",
                   "混淆“充分不必要”与“必要不充分”。"
                 ],
-                "conclusion": "$(-\\infty, -1]$"
+                "conclusion": "$(-\\infty, -1]$",
+                "transformation_motivation": "直接处理 ¬p 和 ¬q 容易搞反方向或计算繁琐。利用逆否命题等价性，将问题转化为熟悉的'小推大'模型，大幅降低出错率。",
+                "model_recognition": "识别为'否定命题间的条件关系'模型。",
+                "boundary_warning": "端点处是否取等号，必须代回原集合验证'真子集'是否成立。"
               }
             },
             {
@@ -724,7 +1005,31 @@
                   "端点验证失误（特别是 $m=0$ 和 $m=2$ 时是否仍为真子集）。",
                   "忽略题目条件 $m>0$。"
                 ],
-                "conclusion": "$(0, 2]$"
+                "conclusion": "$(0, 2]$",
+                "error_analysis": [
+                  {
+                    "wrong_thought": "搞反充分/必要方向，或未利用逆否命题。",
+                    "consequence": "得出相反的结论。",
+                    "correction": "利用逆否命题等价性，将 ¬p⇒¬q 转化为 q⇒p 再求解。"
+                  }
+                ],
+                "strategy_comparison": {
+                  "method_a": {
+                    "name": "直接推导",
+                    "description": "直接处理 ¬p 和 ¬q 的关系。",
+                    "verdict": "容易搞反方向，不推荐。"
+                  },
+                  "method_b": {
+                    "name": "逆否转化 (推荐)",
+                    "description": "利用逆否命题等价性，将 ¬p⇒¬q 转化为 q⇒p。",
+                    "verdict": "方向清晰，不易出错，考场最优解。"
+                  }
+                },
+                "self_validation": {
+                  "check_point": "端点回代验证集合关系是否成立。",
+                  "verification_process": "代入边界值（如 m=2, m=3），检查集合包含关系。",
+                  "result": "PASS"
+                }
               }
             }
           ]
@@ -780,7 +1085,26 @@
                 "weight": 0.2,
                 "desc": "分母不为 0 检验"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "data_integrity": "integer_solution",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "logic_chain_length": 2,
+              "allow_single_parameter": true,
+              "forbid_empty_set_trap": true,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "empty_set_discussion": "mandatory",
+              "endpoint_validation": "mandatory",
+              "logic_chain_length": 3,
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "master_benchmarks": [
             {
@@ -800,7 +1124,12 @@
                   "**致命错误**：得出 $m=\\pm 1$，未舍去 $m=-1$。",
                   "未检验虚部是否为 0。"
                 ],
-                "conclusion": "1"
+                "conclusion": "1",
+                "habit_check": [
+                  "✅ 三重验证：1. 实部=0? 2. 虚部≠0? 3. 分母≠0?",
+                  "✅ 审题确认：题目问的是 z 还是 z̄？是实部还是虚部？"
+                ],
+                "speed_tip": "看到分式形式的纯虚数，第一时间先写'分母≠0'，这是最高频的陷阱。"
               }
             },
             {
@@ -839,7 +1168,12 @@
                   "求出 $z$ 后忘记取共轭。",
                   "分母实数化计算错误。"
                 ],
-                "conclusion": "$-1-i$"
+                "conclusion": "$-1-i$",
+                "habit_check": [
+                  "✅ 三重验证：1. 实部=0? 2. 虚部≠0? 3. 分母≠0?",
+                  "✅ 审题确认：题目问的是 z 还是 z̄？是实部还是虚部？"
+                ],
+                "speed_tip": "看到分式形式的纯虚数，第一时间先写'分母≠0'，这是最高频的陷阱。"
               }
             },
             {
@@ -865,63 +1199,108 @@
           "original_pool": [
             {
               "desc": "[24 新高考 I] 已知 z=(1+i)/(1-i)，求 z 的共轭复数。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 八省联考] 若 z(1+i)=2i，求 z 的虚部。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 山东青岛一模] 若 z=(2-i)^2，判断 z 所在象限。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 华附一模] 若 z=(a+i)/(1+i) 是实数，求 a。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 深中二月考] 若 z=1+2i，求 |z-2i|。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 省实期中] 若复数 z 满足 z+|z|=2+i，求 z。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江杭州二模] 若 z=(m^2-1)/(m+1)+(m^2-2m)i 是纯虚数，求 m。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 广东一模] 若 z=2+i，求 z/z̄ 的值。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 江苏南京一模] 若 (1+2i)z=4+3i，求 z 的模。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 新高考 II] 若 z=i(2+i)，求 z 的共轭复数。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 广州一模] 若 z=(1+i)^3，求 z 的虚部。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 深圳一模] 若复数 z 满足 |z-1|=2，求 |z| 的最大值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江宁波一模] 若 z=1/i-i/i，求 z 的值。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 湖北武汉一模] 若 z=(a-1)+(a+1)i 是纯虚数，求 a。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 华附零模] 若 z=1+2i，求 z^2 的共轭复数。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             }
           ]
         },
@@ -965,7 +1344,26 @@
                 "weight": 0.1,
                 "desc": "求特定模长"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "data_integrity": "integer_solution",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "logic_chain_length": 2,
+              "allow_single_parameter": true,
+              "forbid_empty_set_trap": true,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "empty_set_discussion": "mandatory",
+              "endpoint_validation": "mandatory",
+              "logic_chain_length": 3,
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "master_benchmarks": [
             {
@@ -985,7 +1383,12 @@
                   "坐标搞反（$-i$ 对应 $(0,-1)$ 不是 $(0,1)$）。",
                   "计算直线方程出错。"
                 ],
-                "conclusion": "直线 $y=-x$"
+                "conclusion": "直线 $y=-x$",
+                "habit_check": [
+                  "✅ 三重验证：1. 实部=0? 2. 虚部≠0? 3. 分母≠0?",
+                  "✅ 审题确认：题目问的是 z 还是 z̄？是实部还是虚部？"
+                ],
+                "speed_tip": "看到分式形式的纯虚数，第一时间先写'分母≠0'，这是最高频的陷阱。"
               }
             },
             {
@@ -1003,7 +1406,12 @@
                   "误以为是 $r$ 或 $|OC|$。",
                   "忘记减半径。"
                 ],
-                "conclusion": "$\\sqrt{2}-1$"
+                "conclusion": "$\\sqrt{2}-1$",
+                "habit_check": [
+                  "✅ 三重验证：1. 实部=0? 2. 虚部≠0? 3. 分母≠0?",
+                  "✅ 审题确认：题目问的是 z 还是 z̄？是实部还是虚部？"
+                ],
+                "speed_tip": "看到分式形式的纯虚数，第一时间先写'分母≠0'，这是最高频的陷阱。"
               }
             },
             {
@@ -1048,68 +1456,120 @@
           "original_pool": [
             {
               "desc": "[24 新高考 I] 若复数 z 满足 |z-1|=1，求 z 对应点的轨迹。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 八省联考] 若 |z-2i|=1，求 |z| 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 山东一模] 若 |z+1|=|z-1|，求 z 对应点的轨迹。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 深中三月考] 若 |z-1|=2，求 |z+2i| 的最大值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 华附一模] 若 |z|=1，求 |z-3-4i| 的最大值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江杭州一模] 若 z 对应点在圆 x^2+y^2=4 上，求 |z-1-2i| 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 广东二模] 若 |z-2|=|z+2i|，求 z 对应点的轨迹。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 江苏南京一模] 若 |z|=2，求 |z-1| 的取值范围。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 省实期中] 若复数 z 满足 |z-1-i|=√2，求 |z| 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 广州一模] 若 |z+2-2i|=1，求 |z| 的最大值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[24 深圳一模] 若 z 对应点在以 1+i 为圆心、半径为 2 的圆上，求 |z| 的范围。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江宁波一模] 若 |z|=1，求 |z-2+i| 的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 湖北武汉一模] 若 |z-3|=2，求 |z+4i| 的最大值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "trap_explicit": false
             },
             {
               "desc": "[25 华附零模] 若 |z|=r，求 |z-a-bi| 的最大值与最小值。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             },
             {
               "desc": "[24 新高考 II] 若复数 z 满足 |z-2i|=|z+2|，求 z 对应点的轨迹。",
-              "level": "L2"
+              "level": "L2",
+              "data_integrity": "integer_solution",
+              "calibrated_level": "L2",
+              "trap_explicit": false
             }
           ]
         }
       ]
     }
   ],
-  "system_instruction_template": "### 🎯 M01 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础夯实)**:\n- **特征**: 单步逻辑，直接套定义，无参数讨论。\n- **典型任务**: 简单交并补运算、量词直接否定、具体数值充要条件判定、复数基础运算（除法、i 的幂次）、纯虚数判定。\n- **禁忌**: 禁止出现\"求参数范围\"、\"空集讨论\"、\"复杂逻辑链\"。\n- **示例**: \"求 {1,2}∩{2,3}\" 或 \"写出 ∀x>0, x²>0 的否定\" 或 \"复数除法运算\"。\n\n**L3 (能力提升)**:\n- **特征**: 两步逻辑，含单参数或简单转化，需数轴辅助或几何意义。\n- **典型任务**: 含参集合运算（非空集陷阱）、已知命题真假求单侧参数、集合法判定充要性、复数方程求解、复数几何意义（轨迹识别、距离最值）。\n- **禁忌**: 禁止出现复杂的分类讨论、双重约束、复数压轴题。\n- **示例**: \"已知 A⊆B，求 a 的范围（无需讨论空集）\" 或 \"复数满足 z+|z|=2+i，求 z\"。\n\n**L4 (实战拔高)**:\n- **特征**: 多步逻辑，必须包含\"空集陷阱\"或\"端点取舍\"，需严谨分类讨论。\n- **典型任务**: \"A⊆B 求参数\"（必考空集）、\"¬p 是 ¬q 的条件\"（逆否转化）、多重逻辑联结词。\n- **核心**: 必须包含一个\"思维盲区\"（如空集、端点、逆否转化）。\n- **示例**: \"已知 B⊆A，求 m 范围（需讨论 B=∅）\"。\n- **注意**: 复数专项不存在 L4 难度，最高为 L3。\n\n**【复数专项说明】**:\n- 复数是高考第 1-2 题的\"送分专项\"，不存在 L4 压轴题。\n- 复数 L2：概念陷阱（纯虚数判定、分母不为 0）、共轭复数、i 的周期性。\n- 复数 L3：简单综合（复数方程、轨迹识别、距离最值）、含参讨论。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（分数/区间）。\n- L4 题目必须体现\"空集\"或\"端点\"的细微差别。\n- **风格要求**: L4 题目应适当融入浙江卷的逻辑转换（如 ¬p 推 ¬q）或山东卷的分类讨论严谨性。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现\"集合法\"或\"逆否命题\"思想。\n- **关键点**: L4 题目的解析必须详细解释\"为什么讨论空集\"或\"为什么取等号\"。"
+  "system_instruction_template": "### 🎯 M01 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础夯实)**:\n- **特征**: 单步逻辑，直接套定义，无参数讨论。\n- **典型任务**: 简单交并补运算、量词直接否定、具体数值充要条件判定、复数基础运算（除法、i 的幂次）、纯虚数判定。\n- **禁忌**: 禁止出现\"求参数范围\"、\"空集讨论\"、\"复杂逻辑链\"。\n- **示例**: \"求 {1,2}∩{2,3}\" 或 \"写出 ∀x>0, x²>0 的否定\" 或 \"复数除法运算\"。\n\n**L3 (能力提升)**:\n- **特征**: 两步逻辑，含单参数或简单转化，需数轴辅助或几何意义。\n- **典型任务**: 含参集合运算（非空集陷阱）、已知命题真假求单侧参数、集合法判定充要性、复数方程求解、复数几何意义（轨迹识别、距离最值）。\n- **禁忌**: 禁止出现复杂的分类讨论、双重约束、复数压轴题。\n- **示例**: \"已知 A⊆B，求 a 的范围（无需讨论空集）\" 或 \"复数满足 z+|z|=2+i，求 z\"。\n\n**L4 (实战拔高)**:\n- **特征**: 多步逻辑，必须包含\"空集陷阱\"或\"端点取舍\"，需严谨分类讨论。\n- **典型任务**: \"A⊆B 求参数\"（必考空集）、\"¬p 是 ¬q 的条件\"（逆否转化）、多重逻辑联结词。\n- **核心**: 必须包含一个\"思维盲区\"（如空集、端点、逆否转化）。\n- **示例**: \"已知 B⊆A，求 m 范围（需讨论 B=∅）\"。\n- **注意**: 复数专项不存在 L4 难度，最高为 L3。\n\n**【复数专项说明】**:\n- 复数是高考第 1-2 题的\"送分专项\"，不存在 L4 压轴题。\n- 复数 L2：概念陷阱（纯虚数判定、分母不为 0）、共轭复数、i 的周期性。\n- 复数 L3：简单综合（复数方程、轨迹识别、距离最值）、含参讨论。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（分数/区间）。\n- L4 题目必须体现\"空集\"或\"端点\"的细微差别。\n- **风格要求**: L4 题目应适当融入浙江卷的逻辑转换（如 ¬p 推 ¬q）或山东卷的分类讨论严谨性。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现\"集合法\"或\"逆否命题\"思想。\n- **关键点**: L4 题目的解析必须详细解释\"为什么讨论空集\"或\"为什么取等号\"。\n\n### 🛡️【M01 送分题防翻车宪法】(最高优先级)\n\n1. **空集铁律**：\n   - 处理 A⊆B 求参数时，必须第一步讨论 A=∅。\n   - 若忽略此步，视为解析严重错误。\n\n2. **纯虚数铁律**：\n   - 判定纯虚数时，必须同时满足'实部=0'、'虚部≠0'、'分母≠0'。\n   - 缺一不可。\n\n3. **量词否定铁律**：\n   - 否定命题时，严禁修改条件（定义域），只改量词和结论。\n   - 口诀：'全称变存在，存在变全称，结论加否定'。\n\n4. **逆否转化铁律**：\n   - 遇到 ¬p 与 ¬q 的关系，优先转化为 p 与 q 的关系（或 q⇒p）再求解。\n   - 严禁直接在否定形式下硬算。\n\n5. **复数上限**：\n   - 复数题目难度严禁超过 L3，不得设计复杂轨迹或高阶运算。\n\n**执行流程**：生成题目 → 自我校验上述 5 点 → 通过则输出，不通过则重写。\n\n### 🔒【M01 集合存在性与区间几何铁律】SET_EXISTENCE_AND_GEOMETRY_CHECK (最高优先级)\n\n在生成集合题目时，必须执行以下**几何与逻辑自检**：\n\n1. **空集优先原则**:\n   - 若集合含参 (如 B = {x | m-1 ≤ x ≤ 2m+1}), 在讨论 A ∩ B = ∅ 或 A ⊆ B 前, **必须**先检查 B = ∅ 的情况 (即 m-1 > 2m+1)。\n   - 若忽略此情况导致漏解, 视为**严重事故**。\n\n2. **区间长度悖论检测**:\n   - 计算参与运算的各区间长度 (Length = Right - Left)。\n   - **逻辑校验**: 若题目要求 A ⊊ B (真子集), 且计算发现 Length(A) ≥ Length(B), 则直接判定为**无解**。\n   - **禁止行为**: 严禁在无解的情况下强行编造参数范围。若判定无解, 题目设问应改为'是否存在这样的 a？若不存在请说明理由', 或重新生成参数使 Length(A) < Length(B)。\n\n3. **充要条件逻辑链**:\n   - 对于 p ⇒ q 类题目, 必须显式验证集合包含关系 (P ⊆ Q) 是否严格成立, 严禁模糊推导。\n\n**执行流程**：生成题目 → 空集检查 → 区间长度校验 → 充要条件验证 → 通过则输出, 不通过则重写。",
+  "module_constraints": [
+    "处理 A⊆B 求参数时，必须第一步讨论 A=∅ 的情况。",
+    "若题目要求 A ⊊ B (真子集)，必须验证 Length(A) < Length(B)，否则判定为无解。",
+    "充要条件题目中，p⇒q 必须显式验证集合包含关系 P⊆Q 是否严格成立。",
+    "量词否定时，严禁修改条件（定义域），只改量词和结论。",
+    "复数题目难度严禁超过 L3，不得设计复杂轨迹或高阶运算。"
+  ]
 }

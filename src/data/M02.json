@@ -58,68 +58,170 @@
                 "weight": 0.4,
                 "desc": "区间开闭搞错"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 不等式 x^2-5x+6<0 的解集是？",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 八省联考] 不等式 -x^2+2x+3≥0 的解集是？",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 华附一模] 分式不等式 (x-1)/(x+2)>0 的解集是？",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 山东济南一模] 不等式 x(x-2)(x+1)<0 的解集是？",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江杭州二模] 不等式 2x^2-x-1≤0 的解集是？",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[23 新高考 I] 已知集合 A={x|x^2-4x+3<0}, B={x|2<x<4}，求 A∩B。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 深中二月考] 不等式 (x^2-1)/(x-2)≤0 的解集是？",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[24 省实期中] 不等式 x^2-2x+1≥0 的解集是？",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 湖北武汉一模] 不等式 -2x^2+x+3>0 的解集是？",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 广州一模] 分式不等式 (3-x)/(x+1)≥0 的解集是？",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 深圳一模] 不等式 x^3-2x^2-x+2>0 的解集是？",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 江苏南京盐城一模] 不等式 x^2-3x+2<0 的解集是？",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 华附零模] 不等式 (x-1)^2(x+2)<0 的解集是？",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 广东二模] 不等式 4x^2-4x+1≤0 的解集是？",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江宁波十校联考] 不等式 (x-2)/(x^2-4) > 0 的解集是？",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             }
           ],
           "master_benchmarks": [
@@ -142,7 +244,13 @@
                   "口诀记反（大于取中间）。",
                   "区间开闭搞错（题目是<，应为开区间）。"
                 ],
-                "conclusion": "$(2, 3)$"
+                "conclusion": "$(2, 3)$",
+                "habit_check": [
+                  "✅ 符号检查：确认二次项系数符号，决定是否需要变号。",
+                  "✅ 区间检查：大于取两边，小于取中间，注意开闭区间。"
+                ],
+                "speed_tip": "看到整数系数，优先尝试十字相乘，避免使用求根公式增加计算量。",
+                "format_standard": "解集必须用集合 {x | ...} 或区间 (a, b) 表示，严禁写成 2<x<3 的形式。"
               }
             },
             {
@@ -165,7 +273,9 @@
                   "忘记分母不为 0 的条件（虽然此题大于 0 已隐含）。",
                   "区间并集符号写错。"
                 ],
-                "conclusion": "$(-\\infty, -2) \\cup (1, +\\infty)$"
+                "conclusion": "$(-\\infty, -2) \\cup (1, +\\infty)$",
+                "model_recognition": "识别为常规变形模型，需灵活运用配凑、换元等技巧。",
+                "transformation_motivation": "根据题目特征，选择合适的变形方向，简化问题结构。"
               }
             }
           ]
@@ -230,68 +340,178 @@
                 "weight": 0.3,
                 "desc": "根的大小顺序未讨论"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 II] 解关于 x 的不等式 ax^2-2x+1>0。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[25 八省联考] 已知不等式 x^2-ax+1<0 的解集为空集，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 华附一模] 解关于 x 的不等式 (x-a)(x-1)<0。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 山东济南一模] 若不等式 ax^2+bx+c>0 的解集为 (1, 2)，求 a:b:c。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江杭州二模] 解关于 x 的不等式 x^2-(a+1)x+a<0。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[23 新高考 I] 已知集合 A={x|x^2-2ax+a^2-1<0}，若 A≠∅，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 深中二月考] 解关于 x 的不等式 ax^2-(a+1)x+1<0。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[24 省实期中] 不等式 x^2-2x+a>0 恒成立，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 湖北武汉一模] 解关于 x 的不等式 (ax-1)(x-1)>0。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[25 广州一模] 已知不等式 ax^2+2x+a<0 无解，求 a 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[24 深圳一模] 解关于 x 的不等式 x^2-2ax+a^2-1<0。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 江苏南京盐城一模] 若不等式 (a-2)x^2+2(a-2)x-4<0 对一切 x∈R 恒成立，求 a 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[25 华附零模] 解关于 x 的不等式 ax^2-2x+a<0。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[24 广东二模] 已知不等式 x^2-ax+4≥0 在 [1, 3] 上恒成立，求 a 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[25 浙江宁波十校联考] 若不等式 ax^2-2x+1>0 的解集为 R，求 a 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             }
           ],
           "master_benchmarks": [
@@ -312,7 +532,13 @@
                   "混淆解集端点与方程根的关系。",
                   "忘记验证韦达定理两式。"
                 ],
-                "conclusion": "$a = 3$"
+                "conclusion": "$a = 3$",
+                "habit_check": [
+                  "✅ 符号检查：确认二次项系数符号，决定是否需要变号。",
+                  "✅ 区间检查：大于取两边，小于取中间，注意开闭区间。"
+                ],
+                "speed_tip": "看到整数系数，优先尝试十字相乘，避免使用求根公式增加计算量。",
+                "format_standard": "解集必须用集合 {x | ...} 或区间 (a, b) 表示，严禁写成 2<x<3 的形式。"
               }
             },
             {
@@ -338,7 +564,9 @@
                   "根的大小顺序搞反。",
                   "未写综合结论。"
                 ],
-                "conclusion": "\\text{见解析}"
+                "conclusion": "\\text{见解析}",
+                "model_recognition": "识别为常规变形模型，需灵活运用配凑、换元等技巧。",
+                "transformation_motivation": "根据题目特征，选择合适的变形方向，简化问题结构。"
               }
             },
             {
@@ -375,7 +603,36 @@
                   "$a>0$ 时未细分 $1/a$ 与 $1$ 的大小。",
                   "分类逻辑混乱，遗漏情况。"
                 ],
-                "conclusion": "\\text{见解析}"
+                "conclusion": "\\text{见解析}",
+                "error_analysis": [
+                  {
+                    "wrong_thought": "忽略 a=0 退化情况，直接按二次不等式处理。",
+                    "consequence": "漏掉一种解集，导致答案不完整。",
+                    "correction": "必须第一步讨论二次项系数是否为 0。"
+                  },
+                  {
+                    "wrong_thought": "盲目使用基本不等式，未验证等号是否可达。",
+                    "consequence": "得出错误最值（因为等号取不到）。",
+                    "correction": "使用基本不等式前，必须验证'三相等'条件是否在定义域内。若不可达，切换至单调性分析。"
+                  }
+                ],
+                "strategy_comparison": {
+                  "method_a": {
+                    "name": "代数硬算/公式套用",
+                    "description": "直接套用求根公式，列不等式组求解。",
+                    "verdict": "计算量大，容易遗漏讨论情况，不推荐。"
+                  },
+                  "method_b": {
+                    "name": "数形结合/单调性分析 (推荐)",
+                    "description": "画出二次函数图像，结合开口、根的位置直观分析。",
+                    "verdict": "直观清晰，不易遗漏，考场最优解。"
+                  }
+                },
+                "self_validation": {
+                  "check_point": "边界值测试（如 a=0, a=1）验证解集连续性。",
+                  "verification_process": "代入边界值，检查解集是否连续，是否遗漏情况。",
+                  "result": "PASS"
+                }
               }
             },
             {
@@ -404,7 +661,36 @@
                   "恒小于 0 时忘记要求开口向下。",
                   "判别式计算错误。"
                 ],
-                "conclusion": "$(-2, 2]$"
+                "conclusion": "$(-2, 2]$",
+                "error_analysis": [
+                  {
+                    "wrong_thought": "忽略 a=0 退化情况，直接按二次不等式处理。",
+                    "consequence": "漏掉一种解集，导致答案不完整。",
+                    "correction": "必须第一步讨论二次项系数是否为 0。"
+                  },
+                  {
+                    "wrong_thought": "盲目使用基本不等式，未验证等号是否可达。",
+                    "consequence": "得出错误最值（因为等号取不到）。",
+                    "correction": "使用基本不等式前，必须验证'三相等'条件是否在定义域内。若不可达，切换至单调性分析。"
+                  }
+                ],
+                "strategy_comparison": {
+                  "method_a": {
+                    "name": "代数硬算/公式套用",
+                    "description": "直接套用求根公式，列不等式组求解。",
+                    "verdict": "计算量大，容易遗漏讨论情况，不推荐。"
+                  },
+                  "method_b": {
+                    "name": "数形结合/单调性分析 (推荐)",
+                    "description": "画出二次函数图像，结合开口、根的位置直观分析。",
+                    "verdict": "直观清晰，不易遗漏，考场最优解。"
+                  }
+                },
+                "self_validation": {
+                  "check_point": "边界值测试（如 a=0, a=1）验证解集连续性。",
+                  "verification_process": "代入边界值，检查解集是否连续，是否遗漏情况。",
+                  "result": "PASS"
+                }
               }
             }
           ]
@@ -463,68 +749,177 @@
                 "weight": 0.5,
                 "desc": "等号无法取到"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 已知 x>0，求 x+1/x 的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 八省联考] 已知 x>1，求 x+1/(x-1) 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 华附一模] 已知 a,b>0, a+b=1，求 1/a+1/b 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 山东济南一模] 已知 x<0，求 x+1/x 的最大值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江杭州二模] 已知 a,b>0, ab=4，求 a+b 的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_reason": "L2 红线：禁止参数讨论",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[23 新高考 I] 已知 x>0, y>0, x+y=2，求 xy 的最大值。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 深中二月考] 已知 x>0，求 2x+8/x 的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 省实期中] 已知 a,b>0, a+2b=1，求 1/a+1/b 的最小值。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[25 湖北武汉一模] 已知 x>1，求 x^2/(x-1) 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 广州一模] 已知 a,b>0, a+b=ab，求 a+4b 的最小值。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[24 深圳一模] 已知 x>0，求 (x^2+1)/x 的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 江苏南京盐城一模] 已知 a,b>0, 1/a+2/b=1，求 a+b 的最小值。",
-              "level": "L4"
+              "level": "L4",
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "trap_explicit": true
             },
             {
               "desc": "[25 华附零模] 已知 x>0，求 x+4/(x+1) 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 广东二模] 已知 a,b>0, a+b=2，求 a^2+b^2 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江宁波十校联考] 已知 x,y>0, x+2y=1，求 1/x + 1/y 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             }
           ],
           "master_benchmarks": [
@@ -546,7 +941,12 @@
                   "等号成立条件未写出或不验证。",
                   "公式记错。"
                 ],
-                "conclusion": "2"
+                "conclusion": "2",
+                "habit_check": [
+                  "✅ 第一步检查：确认题目条件和定义域。",
+                  "✅ 最终检验：答案是否符合题目要求。"
+                ],
+                "speed_tip": "直接代入或套用基本公式，无需复杂变形。"
               }
             },
             {
@@ -569,7 +969,9 @@
                   "忘记加回配凑时减去的常数。",
                   "等号成立条件求解错误。"
                 ],
-                "conclusion": "3"
+                "conclusion": "3",
+                "model_recognition": "识别为常规变形模型，需灵活运用配凑、换元等技巧。",
+                "transformation_motivation": "根据题目特征，选择合适的变形方向，简化问题结构。"
               }
             },
             {
@@ -594,7 +996,31 @@
                   "未验证等号成立条件。",
                   "误用 $a+b \\ge 2\\sqrt{ab}$ 直接求 $1/a+1/b$ (导致变量不独立)。"
                 ],
-                "conclusion": "3 + 2\\sqrt{2}"
+                "conclusion": "3 + 2\\sqrt{2}",
+                "error_analysis": [
+                  {
+                    "wrong_thought": "忽略 a=0 退化情况，直接按二次不等式处理。",
+                    "consequence": "漏掉一种解集，导致答案不完整。",
+                    "correction": "必须第一步讨论二次项系数是否为 0。"
+                  }
+                ],
+                "strategy_comparison": {
+                  "method_a": {
+                    "name": "代数硬算/公式套用",
+                    "description": "直接套用求根公式，列不等式组求解。",
+                    "verdict": "计算量大，容易遗漏讨论情况，不推荐。"
+                  },
+                  "method_b": {
+                    "name": "数形结合/单调性分析 (推荐)",
+                    "description": "画出二次函数图像，结合开口、根的位置直观分析。",
+                    "verdict": "直观清晰，不易遗漏，考场最优解。"
+                  }
+                },
+                "self_validation": {
+                  "check_point": "边界值测试（如 a=0, a=1）验证解集连续性。",
+                  "verification_process": "代入边界值，检查解集是否连续，是否遗漏情况。",
+                  "result": "PASS"
+                }
               }
             }
           ]
@@ -659,68 +1085,172 @@
                 "weight": 0.2,
                 "desc": "单调性判断错误"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "degenerate_case": "mandatory",
+              "hook_function_vertex": "outside_interval",
+              "logic_chain_length": 3,
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 求函数 y=x+4/x 在 [1, 2] 上的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 八省联考] 求函数 y=x+1/x 在 [2, 3] 上的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 华附一模] 求函数 y=(x^2+4)/x 在 [1, 3] 上的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 山东济南一模] 求函数 y=x+9/(x+1) 在 x>-1 时的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江杭州二模] 求函数 y=x+4/x 在 [3, 4] 上的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[23 新高考 I] 求函数 y=x+1/x 在 (0, 1] 上的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 深中二月考] 求函数 y=(x-1)+4/(x-1) 在 x>1 时的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 省实期中] 求函数 y=x+4/x 在 [1, 1.5] 上的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 湖北武汉一模] 求函数 y=x^2+1/x^2 在 [1, 2] 上的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 广州一模] 求函数 y=x+4/(x-1) 在 x>1 时的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 深圳一模] 求函数 y=x+9/x 在 [1, 2] 上的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 江苏南京盐城一模] 求函数 y=x+1/x 在 [0.5, 2] 上的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 华附零模] 求函数 y=(x+1)+4/(x+1) 在 x>-1 时的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[24 广东二模] 求函数 y=x+4/x 在 [4, 5] 上的最小值。",
-              "level": "L2"
+              "level": "L2",
+              "allow_parameter": false,
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             },
             {
               "desc": "[25 浙江宁波十校联考] 求函数 f(x)=x+9/x 在 x∈[1,2] 上的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "discussion_levels": 1,
+              "hook_function_vertex": "on_boundary",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "trap_explicit": false
             }
           ],
           "master_benchmarks": [
@@ -744,7 +1274,12 @@
                   "单调性判断错误。",
                   "端点代入计算错误。"
                 ],
-                "conclusion": "2.5"
+                "conclusion": "2.5",
+                "habit_check": [
+                  "✅ 第一步检查：确认题目条件和定义域。",
+                  "✅ 最终检验：答案是否符合题目要求。"
+                ],
+                "speed_tip": "直接代入或套用基本公式，无需复杂变形。"
               }
             },
             {
@@ -768,7 +1303,9 @@
                   "未判断单调性直接代入左端点。",
                   "混淆增减区间。"
                 ],
-                "conclusion": "4"
+                "conclusion": "4",
+                "model_recognition": "识别为常规变形模型，需灵活运用配凑、换元等技巧。",
+                "transformation_motivation": "根据题目特征，选择合适的变形方向，简化问题结构。"
               }
             },
             {
@@ -791,7 +1328,31 @@
                   "误以为在左端点取最小值。",
                   "分数计算错误。"
                 ],
-                "conclusion": "\\frac{25}{6}"
+                "conclusion": "\\frac{25}{6}",
+                "error_analysis": [
+                  {
+                    "wrong_thought": "忽略 a=0 退化情况，直接按二次不等式处理。",
+                    "consequence": "漏掉一种解集，导致答案不完整。",
+                    "correction": "必须第一步讨论二次项系数是否为 0。"
+                  }
+                ],
+                "strategy_comparison": {
+                  "method_a": {
+                    "name": "代数硬算/公式套用",
+                    "description": "直接套用求根公式，列不等式组求解。",
+                    "verdict": "计算量大，容易遗漏讨论情况，不推荐。"
+                  },
+                  "method_b": {
+                    "name": "数形结合/单调性分析 (推荐)",
+                    "description": "画出二次函数图像，结合开口、根的位置直观分析。",
+                    "verdict": "直观清晰，不易遗漏，考场最优解。"
+                  }
+                },
+                "self_validation": {
+                  "check_point": "边界值测试（如 a=0, a=1）验证解集连续性。",
+                  "verification_process": "代入边界值，检查解集是否连续，是否遗漏情况。",
+                  "result": "PASS"
+                }
               }
             }
           ]
@@ -799,5 +1360,12 @@
       ]
     }
   ],
-  "system_instruction_template": "### 🎯 M02 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础夯实)**:\n- **特征**: 单步逻辑，直接套公式，无参数讨论。\n- **典型任务**: 简单二次不等式求解 (数字系数)、基本不等式直接应用 (等号可达)、对勾函数单调性明显区间。\n- **禁忌**: 禁止出现\"含参讨论\"、\"等号取不到\"、\"复杂变形\"。\n- **示例**: \"解 x^2-5x+6<0\" 或 \"求 x+1/x (x>0) 最小值\"。\n\n**L3 (能力提升)**:\n- **特征**: 两步逻辑，含简单变形或单参数，需数轴辅助或单调性分析。\n- **典型任务**: 分式/高次不等式、基本不等式配凑 (拆项)、对勾函数拐点在边界、含参二次不等式 (仅需讨论根序)。\n- **禁忌**: 禁止出现复杂的三级分类讨论、多重约束。\n- **示例**: \"求 x+1/(x-1) (x>1) 最小值\" 或 \"解 (x-a)(x-1)<0\"。\n\n**L4 (实战拔高)**:\n- **特征**: 多步逻辑，必须包含\"分类讨论\"或\"等号取不到\"，需严谨逻辑链条。\n- **典型任务**: \"含参二次不等式\" (开口 + 判别式 + 根序三级讨论)、\"1 的代换\"、对勾函数等号取不到 (纯单调性)。\n- **核心**: 必须包含一个\"思维盲区\" (如 a=0 退化、等号不可达、根序颠倒)。\n- **示例**: \"解 ax^2-(a+1)x+1<0\" 或 \"求 x+4/x 在 [1, 1.5] 最小值\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解 (分数/区间)。\n- L4 题目必须体现\"分类讨论\"或\"单调性替代\"的细微差别。\n- **风格要求**: L4 题目应适当融入浙江卷的分类讨论严谨性或江苏卷的变形技巧。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现\"分类讨论\"或\"单调性\"思想。\n- **关键点**: L4 题目的解析必须详细解释\"为什么要讨论\"或\"为什么不能用基本不等式\"。"
+  "system_instruction_template": "### 🎯 M02 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础夯实)**:\n- **特征**: 单步逻辑，直接套公式，无参数讨论。\n- **典型任务**: 简单二次不等式求解 (数字系数)、基本不等式直接应用 (等号可达)、对勾函数单调性明显区间。\n- **禁忌**: 禁止出现\"含参讨论\"、\"等号取不到\"、\"复杂变形\"。\n- **示例**: \"解 x^2-5x+6<0\" 或 \"求 x+1/x (x>0) 最小值\"。\n\n**L3 (能力提升)**:\n- **特征**: 两步逻辑，含简单变形或单参数，需数轴辅助或单调性分析。\n- **典型任务**: 分式/高次不等式、基本不等式配凑 (拆项)、对勾函数拐点在边界、含参二次不等式 (仅需讨论根序)。\n- **禁忌**: 禁止出现复杂的三级分类讨论、多重约束。\n- **示例**: \"求 x+1/(x-1) (x>1) 最小值\" 或 \"解 (x-a)(x-1)<0\"。\n\n**L4 (实战拔高)**:\n- **特征**: 多步逻辑，必须包含\"分类讨论\"或\"等号取不到\"，需严谨逻辑链条。\n- **典型任务**: \"含参二次不等式\" (开口 + 判别式 + 根序三级讨论)、\"1 的代换\"、对勾函数等号取不到 (纯单调性)。\n- **核心**: 必须包含一个\"思维盲区\" (如 a=0 退化、等号不可达、根序颠倒)。\n- **示例**: \"解 ax^2-(a+1)x+1<0\" 或 \"求 x+4/x 在 [1, 1.5] 最小值\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解 (分数/区间)。\n- L4 题目必须体现\"分类讨论\"或\"单调性替代\"的细微差别。\n- **风格要求**: L4 题目应适当融入浙江卷的分类讨论严谨性或江苏卷的变形技巧。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现\"分类讨论\"或\"单调性\"思想。\n- **关键点**: L4 题目的解析必须详细解释\"为什么要讨论\"或\"为什么不能用基本不等式\"。\n\n### 🛡️【M02 代数枢纽防翻车宪法】(最高优先级)\n\n1. **含参讨论铁律**：\n   - 处理含参二次不等式时，必须第一步讨论\"二次项系数是否为 0\"。\n   - 若忽略此步，视为解析严重错误。\n\n2. **基本不等式边界**：\n   - 使用基本不等式求最值前，必须验证\"三相等\"条件是否在给定定义域内。\n   - 若等号取不到，必须切换至对勾函数单调性分析，严禁强行套公式。\n\n3. **解集完整性**：\n   - 最终答案必须是所有讨论情况的并集。\n   - 需用集合或区间规范表示。\n\n4. **数形结合**：\n   - L4 题目解析中，建议简要描述对应的二次函数图像特征（开口、根的位置）。\n   - 以辅助理解解集的形成过程。\n\n5. **根序讨论**：\n   - 涉及两根比较时，必须讨论根的大小关系。\n   - 画出数轴辅助分析，避免边界错误。\n\n**执行流程**：生成题目 → 自我校验上述 5 点 → 通过则输出，不通过则重写。\n\n### 🔒【M02 取等条件与恒/能成立铁律】INEQUALITY_EQUALITY_AND_QUANTIFIER_CHECK (最高优先级)\n\n在生成不等式最值或恒成立题目时，必须执行**取等验证**与**量词校验**：\n\n1. **取等条件验证 (Equality Check)**:\n   - 若使用基本不等式 (a+b ≥ 2√ab) 求最值, **必须**验证等号成立的条件 (a=b) 是否在定义域内。\n   - **若取等条件不在定义域内** (如 x ∈ [2, 3] 但算出 x=1 时取等), 则**严禁**直接使用该最值。必须改用'对勾函数'单调性分析求解。\n\n2. **恒成立 vs 能成立 (For All vs Exists)**:\n   - **恒成立 (∀x, f(x) ≥ a)**: 转化为 f(x)_min ≥ a。\n   - **能成立 (∃x, f(x) ≥ a)**: 转化为 f(x)_max ≥ a。\n   - **自检**: 生成题目后, AI 需在内心默念：'题目问的是'任意'还是'存在'？我转化的最值对不对？'若混淆, 视为**逻辑错误**。\n\n3. **分式不等式分母**:\n   - 确保所有分式不等式的分母在解集中不为 0。\n\n**执行流程**：生成题目 → 取等条件验证 → 量词校验 → 分母检查 → 通过则输出, 不通过则重写。",
+  "module_constraints": [
+    "使用基本不等式求最值时，必须验证等号成立的条件是否在定义域内。",
+    "若取等条件不在定义域内，必须改用对勾函数单调性分析，严禁强行套公式。",
+    "恒成立 (∀x) 转化为 f_min ≥ a，能成立 (∃x) 转化为 f_max ≥ a，严禁混淆。",
+    "含参二次不等式必须第一步讨论二次项系数是否为 0。",
+    "分式不等式的分母在解集中必须不为 0。"
+  ]
 }

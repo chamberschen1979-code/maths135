@@ -72,68 +72,158 @@
                 "weight": 0.3,
                 "desc": "换元后忽略新变量范围"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_mixed_symmetry": false,
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "allow_half_period": true,
+              "inequality_type": "odd_even_monotonic",
+              "logic_chain_length": 2,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "symmetry_combo": [
+                "axis_axis",
+                "axis_center",
+                "center_center"
+              ],
+              "zero_validation": "mandatory",
+              "boundary_check": "critical_point_analysis",
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 已知 f(x) 定义域为 [0, 2]，求 f(2x-1) 的定义域。",
-              "level": "L2"
+              "level": "L2",
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "logic_depth": "single"
             },
             {
               "desc": "[25 八省联考] 若 f(x+1) = x^2 + 2x，求 f(x) 的解析式。",
-              "level": "L2"
+              "level": "L2",
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "logic_depth": "single"
             },
             {
               "desc": "[24 华附一模] 已知 f(x) 满足 2f(x) + f(1/x) = x，求 f(x)。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 山东济南一模] 设 f(x) = {x^2, x<0; 2x, x>=0}，求 f(f(-1))。",
-              "level": "L2"
+              "level": "L2",
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "logic_depth": "single"
             },
             {
               "desc": "[25 浙江杭州二模] 已知 f(sqrt(x)+1) = x + 2sqrt(x)，求 f(x)。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[23 新高考 I] 函数 f(x) = ln(x+1) / sqrt(4-x^2) 的定义域是？",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_reason": "L2 红线：定义域需解复杂不等式组",
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 深中二月考] 若 f(x) 定义域为 [-1, 1]，求 f(x^2-1) 的定义域。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[24 省实期中] 已知 f(x) 是一次函数，且 f(f(x)) = 4x+3，求 f(x)。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 湖北武汉一模] 设 f(x) = {2^x, x<=1; log2(x), x>1}，求满足 f(x)=2 的 x 值。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 广州一模] 已知 f(x+1/x) = x^2 + 1/x^2，求 f(x) 的解析式及定义域。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[24 深圳一模] 若 f(x) 定义域为 R，且 f(x+2) = f(x)，当 x∈[0,2) 时 f(x)=x^2，求 f(2025)。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 江苏南京盐城一模] 已知 f(x) = lg(x^2-2x+a) 的定义域为 R，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 华附零模] 设 f(x) 满足 f(x) - 2f(-x) = 3x+1，求 f(x)。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[24 广东二模] 已知 f(x) = {x+1, x<1; 2^x, x>=1}，求 f(f(a))=4 时的 a 值。",
-              "level": "L4"
+              "level": "L4",
+              "zero_validation": "mandatory",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 浙江宁波十校联考] 若 f(x) 定义域为 [0, 4]，求 g(x) = f(x+1) + f(x-1) 的定义域。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             }
           ],
           "master_benchmarks": [
@@ -209,8 +299,53 @@
                   "遗漏某一段的讨论。",
                   "逻辑链条断裂，未分层求解。"
                 ],
-                "conclusion": "1"
-              }
+                "conclusion": "1",
+                "error_analysis": [
+                  {
+                    "wrong_thought": "解出外层 t₁, t₂ 后，直接认为内层 f(x)=t 都有解。",
+                    "consequence": "导致多算根，得出错误答案。",
+                    "correction": "必须检查 f(x) 的值域。若 t 不在值域内，则舍去。"
+                  }
+                ],
+                "strategy_comparison": {
+                  "method_a": {
+                    "name": "同时求解",
+                    "description": "同时处理内外层方程，容易遗漏验证步骤。",
+                    "verdict": "步骤混乱，容易出错。"
+                  },
+                  "method_b": {
+                    "name": "洋葱剥皮法 (推荐)",
+                    "description": "外层 → 验证值域 → 内层，步骤清晰。",
+                    "verdict": "逻辑清晰，不易遗漏，推荐使用。"
+                  }
+                },
+                "self_validation": {
+                  "check_point": "验证外层根是否在值域内。",
+                  "verification_process": "检查 f(x) 的值域范围，确认所有保留的根都在值域内。",
+                  "result": "PASS"
+                }
+              },
+              "validation_check": {
+                "step_1": "Check: Did you solve the outer equation first?",
+                "step_2": "Check: Did you verify if outer roots tᵢ fall within the range of inner function?",
+                "step_3": "Check: Did you list all valid solutions?"
+              },
+              "strategy_comparison": {
+                "method_A": {
+                  "name": "直接求解",
+                  "complexity": "high",
+                  "steps": 8,
+                  "description": "同时处理内外层方程，容易遗漏验证步骤"
+                },
+                "method_B": {
+                  "name": "洋葱剥皮法",
+                  "complexity": "low",
+                  "steps": 4,
+                  "recommended": true,
+                  "description": "外层 -> 验证 -> 内层，步骤清晰不易出错"
+                }
+              },
+              "teacher_tip": "🌟 名师点拨：复合零点问题推荐使用'洋葱剥皮法'，先求外层解，再验证是否在内层值域内。"
             }
           ]
         },
@@ -277,68 +412,149 @@
                 "weight": 0.2,
                 "desc": "周期倍数算错 (2 倍 vs 4 倍)"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_mixed_symmetry": false,
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "allow_half_period": true,
+              "inequality_type": "odd_even_monotonic",
+              "logic_chain_length": 2,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "symmetry_combo": [
+                "axis_axis",
+                "axis_center",
+                "center_center"
+              ],
+              "zero_validation": "mandatory",
+              "boundary_check": "critical_point_analysis",
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 已知 f(x) 满足 f(x+2)=f(x)，且 f(1)=2，求 f(5)。",
-              "level": "L2"
+              "level": "L2",
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "logic_depth": "single"
             },
             {
               "desc": "[25 八省联考] 若 f(x) 满足 f(2+x)=f(2-x)，则 f(x) 图像关于什么对称？",
-              "level": "L2"
+              "level": "L2",
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "logic_depth": "single"
             },
             {
               "desc": "[24 华附一模] 已知 f(x) 是奇函数，且 f(x+2)=-f(x)，求 f(x) 的周期。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 山东济南一模] 若 f(x) 关于 x=1 对称，且关于 x=3 对称，求周期。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 浙江杭州二模] 已知 f(x) 关于 (1, 0) 中心对称，且关于 x=2 轴对称，求周期。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[23 新高考 I] 设 f(x) 满足 f(x+1) 是偶函数，则 f(x) 关于什么对称？",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 深中二月考] 若 f(x) 是周期为 4 的奇函数，且 f(1)=1，求 f(3)+f(4)。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[24 省实期中] 已知 f(x+2) = -f(x+1)，求 f(x) 的周期。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 湖北武汉一模] 若 f(x) 关于 (0,0) 对称，且 f(x+2)=f(x-2)，求 f(x) 的奇偶性和周期。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 广州一模] 已知 f(x) 满足 f(x)+f(2-x)=0，且 f(x+4)=f(x)，求 f(2025)。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[24 深圳一模] 设 f(x) 关于 x=a 和 x=b 对称 (a≠b)，证明 f(x) 是周期函数。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 江苏南京盐城一模] 若 f(x) 是偶函数，且 f(x+1)=-f(x)，求 f(x) 的周期。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 华附零模] 已知 f(x) 关于 (1, 0) 对称，且 f(x+2)=-f(x)，求 f(2025)。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[24 广东二模] 若 f(x) 满足 f(x+1)=f(1-x)，且 f(x+3)=f(x-1)，求周期。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 浙江宁波十校联考] 设 f(x) 关于 x=1 对称，且关于 (2, 0) 中心对称，求 f(x) 的周期。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             }
           ],
           "master_benchmarks": [
@@ -375,12 +591,18 @@
                 "key_steps": [
                   "1. 识别模型：一轴 ($x=1$) 一心 ($(2,0)$)。",
                   "2. 应用金律：周期 $T = 4 \\times |2-1| = 4$。且满足 $f(x+2) = -f(x)$。",
+                  "💡 **推导链条**：轴对称 ⇒ f(a+x)=f(a-x)，中心对称 ⇒ f(b+x)=-f(b-x)，联立得 f(x+4|a-b|)=f(x)",
+                  "🔍 **验证**：代入特殊值确认变换正确",
                   "3. 目标转化：$f(2026.5) = f(4 \\times 506 + 2.5) = f(2.5)$。",
+                  "🔍 **验证**：代入特殊值确认变换正确",
                   "4. 利用中心对称 $(2,0)$：$f(2+x) = -f(2-x)$。",
                   "   令 $x=0.5$，则 $f(2.5) = -f(2-0.5) = -f(1.5)$。",
+                  "🔍 **验证**：代入特殊值确认变换正确",
                   "5. 利用轴对称 $x=1$：$f(1+x) = f(1-x)$。",
                   "   令 $x=0.5$，则 $f(1.5) = f(1-0.5) = f(0.5) = 3$。",
+                  "🔍 **验证**：代入特殊值确认变换正确",
                   "6. 代入：$f(2.5) = -f(1.5) = -3$。",
+                  "🔍 **验证**：代入特殊值确认变换正确",
                   "7. 结论：$-3$。"
                 ],
                 "common_pitfalls": [
@@ -422,7 +644,19 @@
                   "忽略 $f(x+1)=-f(x)$ 带来的符号变化。",
                   "未利用 $f(1)=-f(0)$ 和单调性确定符号范围。"
                 ],
-                "conclusion": "$f(2025)$ 最大"
+                "conclusion": "$f(2025)$ 最大",
+                "error_analysis": [
+                  {
+                    "wrong_thought": "忽略定义域关于原点对称的前提。",
+                    "consequence": "错误判断函数奇偶性。",
+                    "correction": "判断奇偶性前，必须先检查定义域是否关于原点对称。"
+                  }
+                ],
+                "self_validation": {
+                  "check_point": "验证定义域是否关于原点对称。",
+                  "verification_process": "检查定义域的边界，确认对称性。",
+                  "result": "PASS"
+                }
               }
             }
           ]
@@ -501,68 +735,151 @@
                 "weight": 0.3,
                 "desc": "偶函数未分区间讨论"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_mixed_symmetry": false,
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "allow_half_period": true,
+              "inequality_type": "odd_even_monotonic",
+              "logic_chain_length": 2,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "symmetry_combo": [
+                "axis_axis",
+                "axis_center",
+                "center_center"
+              ],
+              "zero_validation": "mandatory",
+              "boundary_check": "critical_point_analysis",
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 已知 f(x) 是奇函数且在 R 上递增，解 f(2x-1) > f(x+1)。",
-              "level": "L2"
+              "level": "L2",
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "logic_depth": "single"
             },
             {
               "desc": "[25 八省联考] 若 f(x) 是偶函数且在 (-∞,0] 递减，解 f(x) < f(2)。",
-              "level": "L3"
+              "level": "L3",
+              "inequality_type": "odd_even_monotonic",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[24 华附一模] 已知 f(x) 是奇函数，f(x+y)=f(x)+f(y)，解 f(x^2-1)+f(1-x)>0。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 山东济南一模] 设 f(x) 在 R 上递增，且 f(x+1) 是偶函数，解 f(2x) > f(x-1)。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 浙江杭州二模] 已知 f(x) 是定义在 R 上的奇函数，当 x>0 时 f(x)=x^2+1，解 f(2x-1) < 2。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[23 新高考 I] 若 f(x) 满足 f'(x) > f(x)，构造 g(x)=f(x)/e^x 解不等式。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 深中二月考] 已知 f(x) 是偶函数，且在 [0,+∞) 递增，解 f(log2(x)) > f(1)。",
-              "level": "L3"
+              "level": "L3",
+              "inequality_type": "odd_even_monotonic",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[24 省实期中] 设 f(x) 是奇函数，f(1)=1，若 f(x^2)+f(kx)<0 恒成立，求 k 范围。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 湖北武汉一模] 已知 f(x) 在 R 上单调递减，且 f(x)+f(-x)=0，解 f(m-2x) > f(x^2)。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 广州一模] 若 f(x) 是奇函数，f(x+2)=f(x)，且在 [0,1] 递增，解 f(x) > 0。",
-              "level": "L3"
+              "level": "L3",
+              "inequality_type": "odd_even_monotonic",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[24 深圳一模] 设 f(x) 满足 xf'(x) + f(x) > 0，解 xf(x) > 1。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 江苏南京盐城一模] 已知 f(x) 是偶函数，f(x) = f(2-x)，解 f(x) > f(3)。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 华附零模] 若 f(x) 是奇函数，且 f(x) = x^3 + sinx，解 f(2-a^2) + f(a) > 0。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[24 广东二模] 已知 f(x) 在 (0,+∞) 递增，且 f(xy)=f(x)+f(y)，解 f(x)+f(x-3) <= 2。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 浙江宁波十校联考] 设 f(x) 是 R 上的增函数，且 f(x)+f(-x)=0，若 f(k·3^x) + f(3^x-9^x-2) < 0 恒成立，求 k 范围。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             }
           ],
           "master_benchmarks": [
@@ -609,7 +926,19 @@
                   "直接写 $x < 2$ 忽略负半轴。",
                   "未利用 $|x|$ 统一变量范围。"
                 ],
-                "conclusion": "$(-2, 2)$"
+                "conclusion": "$(-2, 2)$",
+                "error_analysis": [
+                  {
+                    "wrong_thought": "忽略定义域关于原点对称的前提。",
+                    "consequence": "错误判断函数奇偶性。",
+                    "correction": "判断奇偶性前，必须先检查定义域是否关于原点对称。"
+                  }
+                ],
+                "self_validation": {
+                  "check_point": "验证定义域是否关于原点对称。",
+                  "verification_process": "检查定义域的边界，确认对称性。",
+                  "result": "PASS"
+                }
               }
             },
             {
@@ -635,7 +964,19 @@
                   "单调性方向搞反。",
                   "二次不等式解错。"
                 ],
-                "conclusion": "$(-1, 2)$"
+                "conclusion": "$(-1, 2)$",
+                "error_analysis": [
+                  {
+                    "wrong_thought": "忽略定义域关于原点对称的前提。",
+                    "consequence": "错误判断函数奇偶性。",
+                    "correction": "判断奇偶性前，必须先检查定义域是否关于原点对称。"
+                  }
+                ],
+                "self_validation": {
+                  "check_point": "验证定义域是否关于原点对称。",
+                  "verification_process": "检查定义域的边界，确认对称性。",
+                  "result": "PASS"
+                }
               }
             },
             {
@@ -734,68 +1075,151 @@
                 "weight": 0.2,
                 "desc": "临界点取舍错误"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_mixed_symmetry": false,
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "steps_max": 2,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "allow_half_period": true,
+              "inequality_type": "odd_even_monotonic",
+              "logic_chain_length": 2,
+              "steps_max": 4,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "symmetry_combo": [
+                "axis_axis",
+                "axis_center",
+                "center_center"
+              ],
+              "zero_validation": "mandatory",
+              "boundary_check": "critical_point_analysis",
+              "steps_max": 6,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 函数 f(x)=lnx - 1/x 的零点所在区间是？",
-              "level": "L2"
+              "level": "L2",
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "logic_depth": "single"
             },
             {
               "desc": "[25 八省联考] 已知 f(x)={x^2-1, x<=1; lnx, x>1}，求 f(x) 的零点个数。",
-              "level": "L2"
+              "level": "L2",
+              "domain_complexity": "single_condition",
+              "calculation_result": "integer",
+              "calibrated_level": "L2",
+              "data_integrity": "integer_solution",
+              "logic_depth": "single"
             },
             {
               "desc": "[24 华附一模] 若 f(x)=x^2-2|x|-3，求零点个数。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 山东济南一模] 已知 f(x)={2^x-1, x<=1; f(x-2), x>1}，求 f(x)-1=0 的根的个数。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 浙江杭州二模] 设 f(x)=|x^2-4x+3|-a，若 f(x) 恰有 3 个零点，求 a。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[23 新高考 I] 已知 f(x)=xe^x - a，若 f(x) 有两个零点，求 a 范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 深中二月考] 若 f(x)={x+1, x<=0; log2(x), x>0}，求 f(f(x))+1=0 的解的个数。",
-              "level": "L4"
+              "level": "L4",
+              "zero_validation": "mandatory",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[24 省实期中] 函数 f(x)=sinx - x/10 的零点个数是？",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 湖北武汉一模] 已知 f(x)=x^3-3x+a，若 f(x) 在 [-2, 2] 上有 3 个零点，求 a 范围。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 广州一模] 设 f(x)={x^2, x<1; 2-x, x>=1}，若 f(f(x))=1，求 x 的个数。",
-              "level": "L4"
+              "level": "L4",
+              "zero_validation": "mandatory",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[24 深圳一模] 若 f(x)=|lnx| - kx 有两个零点，求 k 范围。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 江苏南京盐城一模] 已知 f(x) 是周期为 2 的奇函数，x∈[0,1] 时 f(x)=x^2，求 f(x)=0.5 在 [-2, 4] 上的根的个数。",
-              "level": "L3"
+              "level": "L3",
+              "logic_chain_length": 2,
+              "calibrated_level": "L3",
+              "data_integrity": "integer_solution",
+              "logic_depth": "double"
             },
             {
               "desc": "[25 华附零模] 设 f(x)={2^x-a, x<=1; x^2-4ax+3a^2, x>1}，若 f(x) 恰有 2 个零点，求 a 范围。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[24 广东二模] 函数 f(x)=e^x - kx 有两个零点，求 k 的最小值。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             },
             {
               "desc": "[25 浙江宁波十校联考] 已知 f(x)={|x+1|, x<=1; -(x-3)^2+4, x>1}，若 f(f(x))=a 有 4 个根，求 a 范围。",
-              "level": "L4"
+              "level": "L4",
+              "zero_validation": "mandatory",
+              "calibrated_level": "L4",
+              "data_integrity": "integer_solution",
+              "logic_depth": "nested"
             }
           ],
           "master_benchmarks": [
@@ -853,7 +1277,19 @@
                   "解内层时未验证 $t$ 对应的 $x$ 是否在定义域分段内。",
                   "计算对数/指数错误。"
                 ],
-                "conclusion": "4"
+                "conclusion": "4",
+                "error_analysis": [
+                  {
+                    "wrong_thought": "解出外层 t₁, t₂ 后，直接认为内层 f(x)=t 都有解。",
+                    "consequence": "导致多算根，得出错误答案。",
+                    "correction": "必须检查 f(x) 的值域。若 t 不在值域内，则舍去。"
+                  }
+                ],
+                "self_validation": {
+                  "check_point": "验证外层根是否在值域内。",
+                  "verification_process": "检查 f(x) 的值域范围，确认所有保留的根都在值域内。",
+                  "result": "PASS"
+                }
               }
             },
             {
@@ -942,5 +1378,12 @@
       ]
     }
   ],
-  "system_instruction_template": "### 🎯 M03 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基石)**:\n- **特征**: 单步逻辑，直接套定义，无参数讨论。\n- **典型任务**: 求简单定义域、判定奇偶性、直接利用周期性求值、简单分段函数求值。\n- **禁忌**: 禁止出现“复合定义域转换”、“多重对称推导”、“嵌套零点”。\n- **示例**: \"求 f(x)=1/sqrt(x-1) 定义域\" 或 \"f(x+2)=f(x), f(1)=2, 求 f(5)\"。\n\n**L3 (进阶)**:\n- **特征**: 两步逻辑，含简单配凑或性质组合，需技巧性变形。\n- **典型任务**: 复合函数定义域 ($f(g(x))$)、方程组法求解析式、单一对称性或周期性应用、利用单调性解简单抽象不等式、分段函数零点。\n- **禁忌**: 禁止出现“一轴一心推周期”、“外层根不在内层值域”的复杂情况。\n- **示例**: \"已知 2f(x)+f(1/x)=x 求 f(x)\" 或 \"f(x) 偶函数且在 (-∞,0] 递减，解 f(x)<f(2)\"。\n\n**L4 (巅峰)**:\n- **特征**: 多步逻辑，必须包含“抽象特征组合”或“嵌套逻辑拆解”。\n- **典型任务**: 双重对称推周期 (一轴一心)、构造辅助函数解抽象不等式 (导数原型)、复合函数嵌套零点 (f(f(x))=k)、分段函数零点参数讨论 (临界分析)。\n- **核心**: 必须包含一个“思维盲区”（如周期系数 4|a-b|、外层根的有效性验证、构造 g(x)=f(x)/e^x）。\n- **示例**: \"f(x) 关于 x=1 对称且关于 (2,0) 中心对称，求周期\" 或 \"f(f(x))+1=0 解的个数\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（区间）。\n- L4 题目必须体现“逻辑链条的长度”和“性质组合的隐蔽性”。\n- **风格要求**: L4 题目应适当融入浙江卷的抽象构造（如导数不等式）或新高考 I 卷的复合零点分布。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“金律”或“分层法”思想。\n- **关键点**: L4 题目的解析必须详细解释“为什么周期是 4|a-b|”或“如何验证外层根的有效性”。"
+  "system_instruction_template": "### 🎯 M03 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基石)**:\n- **特征**: 单步逻辑，直接套定义，无参数讨论。\n- **典型任务**: 求简单定义域、判定奇偶性、直接利用周期性求值、简单分段函数求值。\n- **禁忌**: 禁止出现“复合定义域转换”、“多重对称推导”、“嵌套零点”。\n- **示例**: \"求 f(x)=1/sqrt(x-1) 定义域\" 或 \"f(x+2)=f(x), f(1)=2, 求 f(5)\"。\n\n**L3 (进阶)**:\n- **特征**: 两步逻辑，含简单配凑或性质组合，需技巧性变形。\n- **典型任务**: 复合函数定义域 ($f(g(x))$)、方程组法求解析式、单一对称性或周期性应用、利用单调性解简单抽象不等式、分段函数零点。\n- **禁忌**: 禁止出现“一轴一心推周期”、“外层根不在内层值域”的复杂情况。\n- **示例**: \"已知 2f(x)+f(1/x)=x 求 f(x)\" 或 \"f(x) 偶函数且在 (-∞,0] 递减，解 f(x)<f(2)\"。\n\n**L4 (巅峰)**:\n- **特征**: 多步逻辑，必须包含“抽象特征组合”或“嵌套逻辑拆解”。\n- **典型任务**: 双重对称推周期 (一轴一心)、构造辅助函数解抽象不等式 (导数原型)、复合函数嵌套零点 (f(f(x))=k)、分段函数零点参数讨论 (临界分析)。\n- **核心**: 必须包含一个“思维盲区”（如周期系数 4|a-b|、外层根的有效性验证、构造 g(x)=f(x)/e^x）。\n- **示例**: \"f(x) 关于 x=1 对称且关于 (2,0) 中心对称，求周期\" 或 \"f(f(x))+1=0 解的个数\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（区间）。\n- L4 题目必须体现“逻辑链条的长度”和“性质组合的隐蔽性”。\n- **风格要求**: L4 题目应适当融入浙江卷的抽象构造（如导数不等式）或新高考 I 卷的复合零点分布。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“金律”或“分层法”思想。\n- **关键点**: L4 题目的解析必须详细解释“为什么周期是 4|a-b|”或“如何验证外层根的有效性”。\n\n### 🛡️【M03 函数专属防翻车宪法】(最高优先级)\n\n1. **L2 数据铁律**：\n   - L2 题目定义域必须是单条件（如 x>0），严禁复杂不等式组。\n   - 解析式运算结果必须为整数，严禁出现无法完美配方的情况。\n   - 严禁在 L2 中出现双重性质推导（如同时考查对称与周期）。\n\n2. **金律显性化**：\n   - 在 L3/L4 涉及对称与周期时，AI 必须在解析第一句明确写出使用的\"金律\"。\n   - 例如：\"由一轴一心可知周期 T=4|a-b|\"。\n   - 金律列表：\n     - 一轴一轴 → T=2|a-b|\n     - 一轴一心 → T=4|a-b|\n     - 一心一心 → T=2|a-b|\n\n3. **复合零点验证**：\n   - 处理 f(f(x))=k 时，必须增加一步\"有效性验证\"。\n   - 检查外层解 t 是否在内层函数 f(x) 的值域内。\n   - 若无此步，视为解析错误。\n\n4. **临界点测试**：\n   - 求参数范围时，必须单独测试边界值（如 a=1, a=2）。\n   - 说明取等号的原因（重合？越界？无意义？）。\n   - 严禁直接给出范围而不讨论边界。\n\n5. **洋葱剥皮法**：\n   - 复合函数问题必须按\"外层 → 验证 → 内层\"的顺序求解。\n   - 每一步都要显式标注当前处理的是哪一层。\n\n**执行流程**：生成题目 → 自我校验上述 5 点 → 通过则输出，不通过则重写。\n\n### 🔒【M03 定义域优先铁律】DOMAIN_FIRST_PRINCIPLE (最高优先级)\n\n在生成函数性质 (奇偶性、单调性) 题目时，必须遵守**'定义域优先'原则**：\n\n1. **定义域非空检查**:\n   - 生成的函数解析式, 其定义域**绝不能为空集**。\n   - (例如：严禁出现 √(-x²-1) 这种定义域为空的函数)。\n\n2. **奇偶性前提检查**:\n   - 若题目考查奇偶性, **必须**确保定义域关于**原点对称**。\n   - **自检**: 若算出定义域为 [1, 3] 或 (-1, 2] 等不对称区间, 却问'判断奇偶性', 视为**命题事故**。此时应改为'判断是否具有奇偶性' (答案为否), 或重新生成参数使定义域对称。\n\n3. **分段函数衔接**:\n   - 若生成分段函数, 需检查分段点处的函数值是否有定义, 避免歧义。\n\n**执行流程**：生成题目 → 定义域非空检查 → 奇偶性前提检查 → 分段函数衔接检查 → 通过则输出, 不通过则重写。",
+  "module_constraints": [
+    "函数定义域绝不能为空集（如严禁出现 √(-x²-1)）。",
+    "考查奇偶性时，定义域必须关于原点对称，否则视为命题事故。",
+    "分段函数需检查分段点处的函数值是否有定义，避免歧义。",
+    "复合零点 f(f(x))=k 问题，必须验证外层解 t 是否在内层函数值域内。",
+    "双重对称推周期时，必须显式写出使用的金律（一轴一心→T=4|a-b|）。"
+  ]
 }

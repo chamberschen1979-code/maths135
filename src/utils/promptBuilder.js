@@ -108,6 +108,30 @@ export const buildUserPrompt = (context = {}) => {
 
   const benchmarkText = benchmarkQuestion?.problem || benchmarkQuestion?.desc || '无特定标杆，请自由发挥'
 
+  // 读取标杆题的策略对比和名师点拨
+  let strategyComparisonSection = ''
+  if (benchmarkQuestion?.strategy_comparison) {
+    const sc = benchmarkQuestion.strategy_comparison
+    const methods = []
+    
+    Object.entries(sc).forEach(([key, method]) => {
+      const recommended = method.recommended ? ' ⭐推荐' : ''
+      const complexity = method.complexity === 'low' ? '简单' : method.complexity === 'high' ? '复杂' : '中等'
+      methods.push(`**${method.name}${recommended}**：${method.steps} 步 (${complexity})\n   - ${method.description}${method.advantage ? `\n   - 优势：${method.advantage}` : ''}${method.drawback ? `\n   - 缺点：${method.drawback}` : ''}`)
+    })
+    
+    strategyComparisonSection = `
+## 🌟 策略对比（学习标杆题的解题思路）
+${methods.join('\n\n')}
+`
+  }
+  
+  if (benchmarkQuestion?.teacher_tip) {
+    strategyComparisonSection += `
+${benchmarkQuestion.teacher_tip}
+`
+  }
+
   let strategySection = ''
   if (strategyInstructions) {
     strategySection = `
@@ -116,6 +140,152 @@ export const buildUserPrompt = (context = {}) => {
 ${strategyInstructions.map(s => `- ${s}`).join('\n')}
 
 **重要**：具体的数值（如数列的项、角度大小、方程系数）请由你根据上述策略自行构造，确保数据整洁且可解。`
+  }
+
+  // 提取难度级别约束
+  const level = difficultyConfig?.level || 'L2'
+  const levelConstraintsKey = `${level}_constraints`
+  const levelConstraints = variableKnobs?.[levelConstraintsKey] || null
+
+  let levelConstraintsSection = ''
+  if (levelConstraints) {
+    const constraintItems = []
+    
+    if (levelConstraints.omega_discussion === false) {
+      constraintItems.push(`🚫 **禁止 ω 范围讨论**：L2 题目严禁出现求 ω 范围的问题。`)
+    }
+    if (levelConstraints.phi_multiple_solutions === false) {
+      constraintItems.push(`🚫 **禁止 φ 多解筛选**：L2 题目必须给定 φ 范围，直接代入求解。`)
+    }
+    if (levelConstraints.phi_range_required) {
+      constraintItems.push(`✅ **必须给定 φ 范围**：题干中必须显式给出 φ 的范围（如 |φ| < π/2）。`)
+    }
+    if (levelConstraints.steps_max) {
+      constraintItems.push(`📏 **步骤上限**：解题步骤不超过 ${levelConstraints.steps_max} 步。`)
+    }
+    if (levelConstraints.context === 'direct_calculation') {
+      constraintItems.push(`📐 **计算类型**：直接计算，无需逆向推理或分类讨论。`)
+    }
+    if (levelConstraints.context === 'inverse_reasoning') {
+      constraintItems.push(`🔄 **推理类型**：需要逆向推理，可能涉及参数讨论。`)
+    }
+    if (levelConstraints.context === 'complex_construction') {
+      constraintItems.push(`🏗️ **构造类型**：复杂构造，需要多步分析和综合运用。`)
+    }
+    if (levelConstraints.zero_point_count === false) {
+      constraintItems.push(`🚫 **禁止零点个数讨论**：L2 题目严禁出现"恰有 N 个零点"的问题。`)
+    }
+    if (levelConstraints.open_close_boundary) {
+      constraintItems.push(`⚠️ **开闭区间端点校验**：必须明确说明端点等号的取舍理由。`)
+    }
+    if (levelConstraints.endpoint_equality_check) {
+      constraintItems.push(`⚠️ **端点等号校验**：解析中必须详细解释"为什么取等号"或"为什么不取等号"。`)
+    }
+    
+    // 向量专属约束
+    if (levelConstraints.allow_dynamic_point === false) {
+      constraintItems.push(`🚫 **禁止动点**：本题不得包含动点轨迹或参数范围讨论。`)
+    }
+    if (levelConstraints.allow_parameter_optimization === false) {
+      constraintItems.push(`🚫 **禁止参数优化**：本题不得包含求参数范围或最值的问题。`)
+    }
+    if (levelConstraints.model_complexity === 'direct') {
+      constraintItems.push(`✅ **直接应用**：本题应直接给出模型条件（如明确告知 M 是中点），不得要求学生自行构造。`)
+    }
+    if (levelConstraints.model_complexity === 'recognition_required') {
+      constraintItems.push(`🔍 **模型识别**：本题需要学生识别隐藏的几何模型（如极化恒等式、奔驰定理）。`)
+    }
+    if (levelConstraints.midpoint_given) {
+      constraintItems.push(`✅ **中点已给**：题干中必须明确给出中点条件，学生直接代入极化恒等式即可。`)
+    }
+    if (levelConstraints.collinear_condition_given) {
+      constraintItems.push(`✅ **共线条件已给**：题干中必须明确给出三点共线或中点条件。`)
+    }
+    if (levelConstraints.no_parameter_t_lambda) {
+      constraintItems.push(`🚫 **禁止参数 t/λ**：L2 题目不得包含参数 t 或 λ 的最值问题。`)
+    }
+    if (levelConstraints.strategy_trap) {
+      constraintItems.push(`⚠️ **策略陷阱**：必须包含"建系 vs 几何法"的策略选择陷阱，让学生体会方法选择的重要性。`)
+    }
+    if (levelConstraints.calculation_steps_max) {
+      constraintItems.push(`📏 **计算步骤上限**：坐标运算不超过 ${levelConstraints.calculation_steps_max} 步。`)
+    }
+    if (levelConstraints.advanced_theorems && levelConstraints.advanced_theorems.length > 0) {
+      constraintItems.push(`📚 **高级定理**：可使用 ${levelConstraints.advanced_theorems.join('、')} 等高级定理。`)
+    }
+    
+    // 函数专属约束
+    if (levelConstraints.allow_mixed_symmetry === false) {
+      constraintItems.push(`🚫 **禁止混合对称**：本题仅考查单一性质，严禁出现双重对称推导周期。`)
+    }
+    if (levelConstraints.domain_complexity === 'single_condition') {
+      constraintItems.push(`✅ **单条件定义域**：定义域必须是单条件（如 x>0），严禁复杂不等式组。`)
+    }
+    if (levelConstraints.calculation_result === 'integer') {
+      constraintItems.push(`✅ **整数结果**：解析式运算结果必须为整数，严禁出现无法完美配方的情况。`)
+    }
+    if (levelConstraints.allow_half_period) {
+      constraintItems.push(`📐 **半周期推导**：允许使用 f(x+T/2)=-f(x) 推导周期。`)
+    }
+    if (levelConstraints.inequality_type === 'odd_even_monotonic') {
+      constraintItems.push(`📊 **奇偶+单调**：允许使用奇偶性+单调性解不等式。`)
+    }
+    if (levelConstraints.logic_chain_length) {
+      constraintItems.push(`📏 **逻辑链长度**：逻辑链长度不超过 ${levelConstraints.logic_chain_length}。`)
+    }
+    if (levelConstraints.symmetry_combo && levelConstraints.symmetry_combo.length > 0) {
+      constraintItems.push(`🔄 **双重对称组合**：必须包含 ${levelConstraints.symmetry_combo.join('、')} 等双重对称推导。`)
+    }
+    if (levelConstraints.zero_validation === 'mandatory') {
+      constraintItems.push(`✅ **必须验证**：求出外层 t 后，必须显式验证 t 是否在 f(x) 值域内。`)
+    }
+    if (levelConstraints.boundary_check === 'critical_point_analysis') {
+      constraintItems.push(`🔍 **临界分析**：必须单独讨论边界值，并说明取舍理由。`)
+    }
+    
+    // 代数专属约束
+    if (levelConstraints.allow_parameter === false) {
+      constraintItems.push(`🚫 **禁止参数**：L2 题目严禁出现任何参数讨论。`)
+    }
+    if (levelConstraints.calculation_result === 'integer') {
+      constraintItems.push(`✅ **整数结果**：所有系数和根必须为整数，便于十字相乘。`)
+    }
+    if (levelConstraints.discussion_levels === 1) {
+      constraintItems.push(`📊 **单级讨论**：仅允许根序讨论或简单配凑，逻辑链长度 2。`)
+    }
+    if (levelConstraints.hook_function_vertex === 'on_boundary') {
+      constraintItems.push(`📐 **拐点在边界**：对勾函数拐点在区间边界，等号勉强可取。`)
+    }
+    if (levelConstraints.degenerate_case === 'mandatory') {
+      constraintItems.push(`⚠️ **退化预警**：本题必须讨论二次项系数为 0 的情况！`)
+    }
+    if (levelConstraints.hook_function_vertex === 'outside_interval') {
+      constraintItems.push(`🚫 **公式禁用**：等号无法取到，请使用单调性求解！`)
+    }
+    if (levelConstraints.logic_chain_length >= 3) {
+      constraintItems.push(`🔍 **三级讨论**：请按"开口 → 判别式 → 根序"顺序严谨推导。`)
+    }
+    
+    // 集合与逻辑专属约束 (M01)
+    if (levelConstraints.empty_set_discussion === 'mandatory') {
+      constraintItems.push(`⚠️ **空集预警**：本题必须讨论集合为空的情况！`)
+    }
+    if (levelConstraints.endpoint_validation === 'mandatory') {
+      constraintItems.push(`✅ **端点验证**：必须代入端点值验证集合关系是否成立。`)
+    }
+    if (levelConstraints.forbid_empty_set_trap === true) {
+      constraintItems.push(`🚫 **禁止空集陷阱**：L3 题目禁止涉及空集讨论，空集陷阱应归为 L4。`)
+    }
+    if (levelConstraints.data_integrity === 'integer_solution') {
+      constraintItems.push(`✅ **整数解**：运算结果必须为整数或简单分数，避免复杂根式。`)
+    }
+    
+    if (constraintItems.length > 0) {
+      levelConstraintsSection = `
+## 🎯 ${level} 难度专属约束
+以下约束针对 ${level} 难度题目，必须严格遵守：
+${constraintItems.map(c => `- ${c}`).join('\n')}`
+    }
   }
 
   let hardConstraintsSection = ''
@@ -201,7 +371,7 @@ ${systemSection}
 ## 参考标杆
 参考标杆题逻辑（不要照抄，仅参考逻辑结构）:
 ${benchmarkText}
-${strategySection}${hardConstraintsSection}${weaponSection}
+${strategyComparisonSection}${strategySection}${levelConstraintsSection}${hardConstraintsSection}${weaponSection}
 ## 生成指令
 1. **参数选择**：在 'reasoning' 中明确说明你选择了哪些参数，以及为什么它们符合目标难度和策略约束。
 2. **自我验证**：确保所选参数能构成有效的数学情境（如判别式 >= 0，定义域 > 0）。

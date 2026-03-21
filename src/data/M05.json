@@ -75,68 +75,134 @@
                 "difficulty_delta": "+0.5",
                 "desc": "圆上的动点 (新高考趋势)"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_dynamic_point": false,
+              "allow_parameter_optimization": false,
+              "model_complexity": "direct",
+              "calculation_steps_max": 3,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "allow_dynamic_point": true,
+              "allow_parameter_optimization": false,
+              "model_complexity": "recognition_required",
+              "calculation_steps_max": 5,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "allow_double_dynamic": true,
+              "allow_parameter_optimization": true,
+              "model_complexity": "multi_model",
+              "advanced_theorems": [],
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I·T5 风格] 向量坐标运算：已知 a=(1,2), b=(2,-1)，要求**应用投影向量公式** proj_b(a) = (a·b/|b|²)b，注意区分投影向量与投影长度。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2",
+              "difficulty_factors": [
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[25 八省联考·T6 风格] 向量夹角计算：已知 |a|=2, |b|=3, a·b=-3，要求**反推夹角余弦值** cosθ = (a·b)/(|a||b|)，并判断夹角是锐角还是钝角。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2"
             },
             {
               "desc": "[24 华附一模·T8 风格] 几何投影：正三角形 ABC 边长 2，D 为 BC 中点，要求**建立坐标系或利用基底分解**，求 AB 在 AD 上的投影向量。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "geometric_method",
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[25 山东济南一模·T15 风格] 动点投影最值：P 在圆 x²+y²=4 上运动，A(3,0)，要求**将投影长度转化为 |x_P - x_A|**，利用圆的参数范围求最大值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "range_discussion",
+                "dynamic_point",
+                "optimization"
+              ]
             },
             {
               "desc": "[25 浙江杭州二模·T7 风格] 垂直条件转化：已知 |a|=1, |b|=2 且 (a+b)⊥a，要求**利用垂直条件 a·(a+b)=0** 反推夹角余弦值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3"
             },
             {
               "desc": "[23 新高考 I·T6 风格] 向量模长与夹角：已知 |a|=|b|=1, |a-b|=√3，要求**利用 |a-b|² = |a|²+|b|²-2a·b** 反求数量积。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2"
             },
             {
               "desc": "[25 深中二月考·T16 风格] 复合投影：向量 a, b 夹角 120°，|a|=2，要求**先求 |a+b| 再计算投影**，考查投影定义在非正交基底下的应用。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4"
             },
             {
               "desc": "[24 省实期中·T5 风格] 坐标投影基础：向量 a=(3,4) 在 b=(1,0) 上的投影向量，要求**区分投影长度 3 与投影向量 (3,0)**。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2",
+              "difficulty_factors": [
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[25 湖北武汉一模·T16 风格] 动点数量积范围：O 为原点，A(1,0), B(0,1)，P 为单位圆上动点，要求**建立参数方程 P(cosθ, sinθ)**，求 PA·PB 的取值范围。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "difficulty_factors": [
+                "dynamic_point",
+                "range_discussion"
+              ]
             },
             {
               "desc": "[25 广州一模·T8 风格] 垂直条件应用：已知 |a|=2, |b|=1, (a-2b)⊥b，要求**利用垂直条件建立方程**，反推 a 与 b 的夹角。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3"
             },
             {
               "desc": "[24 深圳一模·T10 风格] 几何投影计算：正方形 ABCD 边长 1，E 为 CD 中点，要求**建立坐标系或利用几何关系**，求 AC 在 AE 上的投影长度。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "geometric_method",
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[25 江苏南京盐城一模·T6 风格] 向量等式判断：已知 |a+b|=|a-b|，要求**利用平方展开**推导 a·b=0，判断夹角为 90°。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2"
             },
             {
               "desc": "[25 华附零模·T16 风格] 条件最值逆向：已知 |a|=1, |b|=2，存在 λ 使 |a+λb| 最小值为 √3/2，要求**利用二次函数最值**反推夹角。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "difficulty_factors": [
+                "optimization"
+              ]
             },
             {
               "desc": "[24 广东二模·T5 风格] 夹角计算：向量 a=(1,√3) 与 b=(-1,0)，要求**利用 cosθ = (a·b)/(|a||b|)** 计算夹角。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2"
             },
             {
               "desc": "[25 浙江宁波十校联考·T16 风格] 多边形内动点：P 是边长 2 的正六边形 ABCDEF 内部一点，要求**建立坐标系或利用对称性**，求 PA·PB 的最小值。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "difficulty_factors": [
+                "dynamic_point",
+                "coordinate_method"
+              ]
             }
           ],
           "master_benchmarks": [
@@ -158,7 +224,13 @@
                   "计算失误导致非零结果。"
                 ],
                 "conclusion": "$\\vec{0}$"
-              }
+              },
+              "validation_check": {
+                "step_1": "Check calculation steps <= 3? YES",
+                "step_2": "Check no dynamic point? YES",
+                "step_3": "Check direct application? YES"
+              },
+              "explicit_condition": true
             },
             {
               "level": "L3",
@@ -202,6 +274,11 @@
                   "搞错 P 点横坐标的范围 $[-2, 2]$。"
                 ],
                 "conclusion": "5"
+              },
+              "validation_check": {
+                "step_1": "Check double dynamic points or complex model? YES",
+                "step_2": "Check strategy trap (coordinate vs geometric)? YES",
+                "step_3": "Check advanced theorem application? YES"
               }
             }
           ]
@@ -266,68 +343,174 @@
                 "weight": 0.4,
                 "desc": "动点轨迹边界判断"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_dynamic_point": false,
+              "allow_parameter_optimization": false,
+              "model_complexity": "direct",
+              "midpoint_given": true,
+              "calculation_steps_max": 3,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "allow_dynamic_point": true,
+              "allow_parameter_optimization": false,
+              "model_complexity": "recognition_required",
+              "midpoint_construction": true,
+              "calculation_steps_max": 5,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "allow_double_dynamic": true,
+              "allow_parameter_optimization": true,
+              "model_complexity": "multi_model",
+              "advanced_theorems": [
+                "Polarization_Identity"
+              ],
+              "strategy_trap": true,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 II·T8 风格] 定弦动点模型：正三角形 ABC 边长 2，P 为平面内一点，要求**识别 AB 中点 M**，应用**极化恒等式** PA·PB = |PM|² - |AB/2|²，求最小值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "polarization_identity",
+                "dynamic_point",
+                "model_recognition"
+              ]
             },
             {
               "desc": "[25 浙江温州一模·T6 风格] 直径圆模型：圆 O 半径 2，AB 为直径，P 为圆上动点，要求**利用极化恒等式** PA·PB = |PO|² - r²，直接得出定值。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "polarization_identity",
+                "dynamic_point",
+                "model_recognition"
+              ]
             },
             {
               "desc": "[25 华附一模·T16 风格] 非对称动点：正方形 ABCD 边长 2，P 在以 C 为圆心、1 为半径的圆上运动，要求**识别 AB 中点 M**，将 PA·PB 转化为 |PM|² 的最值，考查非对称结构下的几何转化。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "geometric_method",
+                "dynamic_point",
+                "optimization",
+                "model_recognition"
+              ]
             },
             {
               "desc": "[24 省实二模·T10 风格] 向量恒等变形：已知 |a|=2, |b|=1, (a+b)·(a-b)=3，要求**展开并利用极化恒等式**求 |a-b| 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "polarization_identity"
+              ]
             },
             {
               "desc": "[25 山东青岛一模·T8 风格] 三角形中线模型：三角形 ABC 中 AB=2, AC=3, BC=4，M 为 BC 中点，要求**应用极化恒等式** AB·AC = |AM|² - |BM|²，先求中线长。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "polarization_identity"
+              ]
             },
             {
               "desc": "[23 新高考 I·T6 风格] 向量模长关系：已知 |a+b|=3, |a-b|=1，要求**利用平方差公式** (a+b)²-(a-b)² = 4a·b，反求数量积。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2"
             },
             {
               "desc": "[25 深圳一模·T12 风格] 外接圆动点：P 在边长 2 的正方形 ABCD 外接圆上，要求**识别 AC 为直径**，利用极化恒等式 PA·PC = |PO|² - r² 求最值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "polarization_identity",
+                "dynamic_point",
+                "optimization",
+                "model_recognition"
+              ]
             },
             {
               "desc": "[24 广州二模·T14 风格] 圆上动点范围：圆 O: x²+y²=4，A(1,0), B(-1,0)，P 为圆上动点，要求**建立参数方程**或利用极化恒等式求 PA·PB 的取值范围。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "polarization_identity",
+                "dynamic_point",
+                "range_discussion",
+                "model_recognition"
+              ]
             },
             {
               "desc": "[25 湖北襄阳四中模拟·T16 风格] 边界动点：三角形 ABC 中 AB=AC=2, ∠BAC=120°，P 在 BC 边上运动，要求**建立坐标系**或利用极化恒等式求 PA·PB 的最小值。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "coordinate_method",
+                "polarization_identity",
+                "dynamic_point",
+                "model_recognition"
+              ]
             },
             {
               "desc": "[24 深中期中·T10 风格] 向量展开最值：已知 |a|=1, |b|=2，要求**展开 (a+b)·(a-2b)** 并利用夹角余弦的范围求最小值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "range_discussion",
+                "optimization"
+              ]
             },
             {
               "desc": "[23 广东一模·T16 风格] 多边形内动点：正六边形 ABCDEF 边长 1，P 为其内部一点，要求**识别 AD 为直径**或利用对称性，求 PA·PD 的最小值。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "dynamic_point",
+                "model_recognition"
+              ]
             },
             {
               "desc": "[25 省实零模·T14 风格] 优弧动点：圆 O 半径 R，AB 为定弦，P 在优弧 AB 上运动，要求**利用极化恒等式** PA·PB = |PO|² - r²，分析 P 到 O 距离的变化。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "polarization_identity",
+                "dynamic_point",
+                "model_recognition"
+              ]
             },
             {
               "desc": "[24 大湾区联考·T12 风格] 参数向量最值：已知 |a|=2, |b|=1, a·b=1，要求**展开 |a+tb|²** 并利用二次函数求最小值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "optimization"
+              ]
             },
             {
               "desc": "[23 深圳二模·T8 风格] 中线逆推：三角形 ABC 中 M 为 BC 中点，AM=3, BC=4，要求**利用极化恒等式** AB·AC = |AM|² - |BM|² 直接求解。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2",
+              "difficulty_factors": [
+                "polarization_identity"
+              ]
             },
             {
               "desc": "[25 江苏苏州中学模拟·T16 风格] 椭圆上动点：P 在椭圆 x²/4+y²=1 上，A(-2,0), B(2,0)，要求**利用椭圆参数方程**或极化恒等式求 PA·PB 的取值范围。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "polarization_identity",
+                "dynamic_point",
+                "range_discussion",
+                "model_recognition"
+              ]
             }
           ],
           "master_benchmarks": [
@@ -349,7 +532,13 @@
                   "中线长度计算错误。"
                 ],
                 "conclusion": "-2"
-              }
+              },
+              "validation_check": {
+                "step_1": "Check calculation steps <= 3? YES",
+                "step_2": "Check no dynamic point? YES",
+                "step_3": "Check direct application? YES"
+              },
+              "explicit_condition": true
             },
             {
               "level": "L3",
@@ -360,6 +549,7 @@
                 "core_idea": "新高考高频模型。$A, B$ 关于原点对称，$O$ 即为 $AB$ 中点。直接利用极化恒等式转化为 $|PO|$ 和 $|AO|$ 的关系。",
                 "key_steps": [
                   "1. 识别中点：$O(0,0)$ 是 $AB$ 的中点。",
+                  "💡 Decision: Use Polarization Identity because M is midpoint.",
                   "2. 应用公式：$\\vec{PA}\\cdot\\vec{PB} = |\\vec{PO}|^2 - |\\vec{AO}|^2$。",
                   "3. 代入数据：$P$ 在圆上 $\\Rightarrow |\\vec{PO}|=2$；$A(1,0) \\Rightarrow |\\vec{AO}|=1$。",
                   "4. 计算：$\\vec{PA}\\cdot\\vec{PB} = 2^2 - 1^2 = 3$。",
@@ -370,7 +560,16 @@
                   "未识别出 $O$ 是中点，寻找其他中点。",
                   "误以为结果是变化的，试图求最值。"
                 ],
-                "conclusion": "3"
+                "conclusion": "3",
+                "decision_nodes": [
+                  "识别中点条件 → 选择极化恒等式",
+                  "动点问题 → 转化为二次函数最值"
+                ]
+              },
+              "validation_check": {
+                "step_1": "Check if M is midpoint of AB? YES (given or constructible)",
+                "step_2": "Check formula sign (|AM|² - |BM|²)? YES",
+                "step_3": "Check single dynamic point? YES"
               }
             },
             {
@@ -396,7 +595,30 @@
                   "误用 $|PM|_{min}$。"
                 ],
                 "conclusion": "$5 + 2\\sqrt{5}$"
-              }
+              },
+              "validation_check": {
+                "step_1": "Check double dynamic points or complex model? YES",
+                "step_2": "Check strategy trap (coordinate vs geometric)? YES",
+                "step_3": "Check advanced theorem application? YES"
+              },
+              "strategy_comparison": {
+                "method_A": {
+                  "name": "建系法",
+                  "complexity": "high",
+                  "steps": 8,
+                  "description": "设 A(0,0), B(4,0), P(x,y)，建立坐标系，求 PA·PB 的表达式，再求最值",
+                  "drawback": "计算量大，需要处理两个变量"
+                },
+                "method_B": {
+                  "name": "极化恒等式 + 几何法",
+                  "complexity": "low",
+                  "steps": 3,
+                  "recommended": true,
+                  "description": "取 AB 中点 M，PA·PB = PM² - AM²，转化为求 PM 最小值",
+                  "advantage": "一步到位，计算简洁"
+                }
+              },
+              "teacher_tip": "🌟 名师点拨：本题推荐使用极化恒等式，因为中点条件明显。避免使用建系法导致计算量过大。"
             }
           ]
         }
@@ -466,68 +688,140 @@
                 "weight": 0.4,
                 "desc": "原点选择不当导致计算复杂"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_dynamic_point": false,
+              "allow_parameter_optimization": false,
+              "model_complexity": "direct",
+              "collinear_condition_given": true,
+              "calculation_steps_max": 3,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "allow_dynamic_point": true,
+              "allow_parameter_optimization": false,
+              "model_complexity": "recognition_required",
+              "mercedes_theorem_allowed": true,
+              "calculation_steps_max": 5,
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "allow_double_dynamic": true,
+              "allow_parameter_optimization": true,
+              "model_complexity": "multi_model",
+              "advanced_theorems": [
+                "Mercedes_Theorem"
+              ],
+              "coefficient_sum_verification": true,
+              "strategy_trap": true,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I·T6 风格] 中点与系数和：三角形 ABC 中 D 为 BC 中点，E 为 AD 中点，若 BE = xBA + yBC，要求**利用中点公式分解**并验证系数和 x+y=1。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2"
             },
             {
               "desc": "[25 八省联考·T8 风格] 重心与面积比：P 为三角形 ABC 所在平面内一点，若 PA+PB+PC=0，要求**识别 P 为重心**，利用重心性质 S_PAB : S_ABC = 1:3。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3"
             },
             {
               "desc": "[24 华附一模·T5 风格] 三点共线判定：A, B, C 三点共线，且 OC = mOA + nOB（O 不在直线上），要求**利用共线条件**推导 m+n=1。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "inverse_reasoning"
+              ]
             },
             {
               "desc": "[25 山东济南一模·T10 风格] 重心向量分解：G 为三角形 ABC 重心，P 为平面内一点，若 PG = xPA + yPB + zPC，要求**利用重心坐标公式**推导 x+y+z=0。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "inverse_reasoning",
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[25 浙江杭州二模·T12 风格] 平行四边形交点：平行四边形 ABCD 中 E 为 CD 中点，AE 交 BD 于 F，要求**利用向量共线条件**求 AF = λAE 中的 λ。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3"
             },
             {
               "desc": "[23 新高考 I·T6 风格] 共线条件：向量 a, b 不共线，若 a+λb 与 2a-b 共线，要求**利用共线向量成比例**建立方程求 λ。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "implicit_condition"
+              ]
             },
             {
               "desc": "[25 深中二月考·T16 风格] 奔驰定理应用：P 为三角形 ABC 内一点，满足 2PA+3PB+4PC=0，要求**利用奔驰定理** S_PBC : S_PCA : S_PAB = 2:3:4，求面积比。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "difficulty_factors": [
+                "mercedes_theorem"
+              ]
             },
             {
               "desc": "[24 省实期中·T8 风格] 定比分点：D 为三角形 ABC 边 BC 上一点，BD=2DC，若 AD = xAB + yAC，要求**利用定比分点公式**求 x, y。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "implicit_condition"
+              ]
             },
             {
               "desc": "[25 湖北武汉一模·T6 风格] 直线上的点：O 为原点，A(1,0), B(0,1)，P 在直线 AB 上，OP = mOA + nOB，要求**利用共线条件**求 m+n=1。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "implicit_condition"
+              ]
             },
             {
               "desc": "[25 广州一模·T16 风格] 重心与截线：G 为三角形 ABC 重心，过 G 的直线交 AB, AC 于 M, N，若 AM = xAB, AN = yAC，要求**利用重心坐标性质**推导 1/x + 1/y = 3。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "inverse_reasoning",
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[24 深圳一模·T12 风格] 梯形向量分解：梯形 ABCD 中 AB//CD, AB=2CD，E 为 BC 中点，若 AE = xAB + yAD，要求**建立基底分解**求 x+y。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3"
             },
             {
               "desc": "[25 江苏南京盐城一模·T10 风格] 共线逆向：A, B, C 三点共线，O 为直线外一点，OC = 2OA - OB，要求**检验系数和**是否为 1，判断是否可能。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "inverse_reasoning"
+              ]
             },
             {
               "desc": "[25 华附零模·T16 风格] 外心向量特征：P 为三角形 ABC 外接圆圆心，aPA+bPB+cPC=0（a,b,c 为边长），要求**利用外心到各顶点距离相等**判断三角形形状。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4"
             },
             {
               "desc": "[24 广东二模·T8 风格] 中线交点：D 为 BC 中点，E 为 AC 中点，AD 与 BE 交于 G，若 AG = λAD，要求**利用重心性质**求 λ=2/3。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2"
             },
             {
               "desc": "[25 浙江宁波十校联考·T16 风格] 面积比逆向：P 为三角形 ABC 内一点，S_PAB:S_PBC:S_PCA = 1:2:3，要求**利用奔驰定理逆推**用向量表示 P 点位置。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "inverse_reasoning",
+                "mercedes_theorem"
+              ]
             }
           ],
           "master_benchmarks": [
@@ -549,7 +843,13 @@
                   "混淆‘D 在 BC 上’与‘表达式基底’的关系。"
                 ],
                 "conclusion": "1"
-              }
+              },
+              "validation_check": {
+                "step_1": "Check calculation steps <= 3? YES",
+                "step_2": "Check no dynamic point? YES",
+                "step_3": "Check direct application? YES"
+              },
+              "explicit_condition": true
             },
             {
               "level": "L3",
@@ -570,7 +870,17 @@
                   "忘记‘三点共线则系数和为 1’的充要条件。",
                   "试图建立坐标系硬算，导致计算量大增。"
                 ],
-                "conclusion": "3"
+                "conclusion": "3",
+                "decision_nodes": [
+                  "识别三点共线 → 应用等系数和性质",
+                  "验证系数和 = 0 → 确认奔驰定理适用"
+                ],
+                "verification": "Check: ∑kᵢ = 0? YES. Area ratio corresponds to opposite coefficient."
+              },
+              "validation_check": {
+                "step_1": "Check if sum of coefficients is 0? YES",
+                "step_2": "Verify area ratio corresponds to opposite coefficient? YES",
+                "step_3": "Check single dynamic point? YES"
               }
             },
             {
@@ -594,7 +904,30 @@
                   "计算总份数错误。"
                 ],
                 "conclusion": "2:9"
-              }
+              },
+              "validation_check": {
+                "step_1": "Check double dynamic points or complex model? YES",
+                "step_2": "Check strategy trap (coordinate vs geometric)? YES",
+                "step_3": "Check advanced theorem application? YES"
+              },
+              "strategy_comparison": {
+                "method_A": {
+                  "name": "向量展开法",
+                  "complexity": "high",
+                  "steps": 6,
+                  "description": "将所有向量用基底表示，展开计算",
+                  "drawback": "计算繁琐，容易出错"
+                },
+                "method_B": {
+                  "name": "奔驰定理",
+                  "complexity": "low",
+                  "steps": 3,
+                  "recommended": true,
+                  "description": "直接应用奔驰定理，系数与面积比对应",
+                  "advantage": "一步得出结论，无需展开"
+                }
+              },
+              "teacher_tip": "🌟 名师点拨：本题推荐使用奔驰定理，因为涉及三角形内点与顶点的关系。避免使用向量展开法导致计算量过大。"
             }
           ]
         },
@@ -663,73 +996,167 @@
                 "weight": 0.5,
                 "desc": "忽略动点轨迹边界"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "allow_dynamic_point": false,
+              "allow_parameter_optimization": false,
+              "model_complexity": "direct",
+              "no_parameter_t_lambda": true,
+              "calculation_steps_max": 3,
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "allow_dynamic_point": true,
+              "allow_parameter_optimization": true,
+              "model_complexity": "recognition_required",
+              "single_parameter_optimization": true,
+              "calculation_steps_max": 6,
+              "context": "optimization"
+            },
+            "L4_constraints": {
+              "allow_double_dynamic": true,
+              "allow_parameter_optimization": true,
+              "model_complexity": "multi_model",
+              "advanced_theorems": [
+                "Apollonius_Circle"
+              ],
+              "strategy_trap": true,
+              "double_parameter": true,
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I·T8 风格] 规则图形建系：正方形 ABCD 边长 1，E, F 分别为 BC, CD 中点，要求**建立坐标系**求 AE·AF，或利用几何性质直接求解。",
-              "level": "L2"
+              "level": "L2",
+              "calibrated_level": "L2",
+              "difficulty_factors": [
+                "geometric_method",
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[25 八省联考·T10 风格] 向量模长最值：已知 |a|=1, |b|=2，要求**展开 |a+tb|²** 并利用二次函数求最小值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "optimization",
+                "parameter_optimization",
+                "quadratic_optimization"
+              ]
             },
             {
               "desc": "[24 华附一模·T16 风格] 方法陷阱题：矩形 ABCD 中 AB=2, AD=1，P 为平面内一点，PA·PC=0，要求**识别 P 在以 AC 为直径的圆上**，避免建系硬算，求 PB·PD 的最小值。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "difficulty_factors": [
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[25 山东烟台一模·T16 风格] 外接圆动点：三角形 ABC 中 AB=AC=2, ∠BAC=120°，P 为外接圆上动点，要求**建立坐标系**或利用向量分解求 PA·PB+PB·PC+PC·PA 的最大值。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "difficulty_factors": [
+                "dynamic_point",
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[25 浙江金华十校模拟·T16 风格] 椭圆参数方程：P 在椭圆 x²/4+y²=1 上，A(-2,0), B(0,1)，要求**利用椭圆参数方程** P(2cosθ, sinθ) 求 PA·PB 的取值范围。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "range_discussion",
+                "parameter_optimization"
+              ]
             },
             {
               "desc": "[23 新高考 II·T10 风格] 向量轨迹：已知 a=(1,0), b=(0,1)，c 满足 (c-a)·(c-b)=0，要求**识别 c 的轨迹为以 a, b 为直径端点的圆**，求 |c| 的最大值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3"
             },
             {
               "desc": "[25 深圳一模·T12 风格] 正三角形中心：正三角形 ABC 边长 2，P 为平面内一点，|PA|²+|PB|²+|PC|²=10，要求**利用重心性质**或建系求 |PO|（O 为中心）。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[24 广州二模·T12 风格] 向量模长优化：向量 a, b 夹角 60°，|a|=2, |b|=1，要求**展开 |a+λb|²** 求最小值及对应 λ。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "parameter_optimization"
+              ]
             },
             {
               "desc": "[25 湖北黄冈模拟·T16 风格] 圆上动点轨迹：圆 O: x²+y²=4，A(1,1)，P, Q 为圆上两动点且 AP⊥AQ，要求**建立坐标系**求 PQ 中点 M 的轨迹方程。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "difficulty_factors": [
+                "dynamic_point",
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[25 八省联考·T14 风格] 对角线动点：菱形 ABCD 边长 2，∠BAD=60°，P 为对角线 BD 上动点，要求**建立坐标系**或利用向量分解求 PA·PC 的最小值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "dynamic_point",
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[24 深中期中·T10 风格] 等边三角形向量：已知 |a|=|b|=|a-b|=2，要求**识别 a, b 夹角为 60°**，展开 |a+tb|² 求最小值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "parameter_optimization"
+              ]
             },
             {
               "desc": "[23 广东一模·T12 风格] 梯形建系：梯形 ABCD 中 AB//CD, AB=2, CD=1, ∠DAB=60°，要求**建立坐标系**求 AC·BD。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[25 省实零模·T16 风格] 双曲线焦点向量：P 在双曲线 x²-y²=1 右支上，F1, F2 为焦点，要求**利用双曲线定义**或建系求 PF1·PF2 的最小值。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "difficulty_factors": [
+                "coordinate_method"
+              ]
             },
             {
               "desc": "[24 大湾区联考·T12 风格] 向量轨迹最值：已知 a=(1,2), b=(2,1)，c 满足 |c-a-b|=1，要求**识别 c 的轨迹为圆**，求 |c| 的最大值。",
-              "level": "L3"
+              "level": "L3",
+              "calibrated_level": "L3",
+              "difficulty_factors": [
+                "optimization"
+              ]
             },
             {
               "desc": "[25 江苏南通一模·T16 风格] 圆弧动点：正方形 ABCD 边长 1，P 在以 A 为圆心、1 为半径的圆弧 BD 上运动，要求**建立坐标系**或利用几何性质求 PB·PD 的取值范围。",
-              "level": "L4"
+              "level": "L4",
+              "calibrated_level": "L4",
+              "difficulty_factors": [
+                "geometric_method",
+                "dynamic_point",
+                "range_discussion",
+                "coordinate_method"
+              ]
             }
           ],
           "master_benchmarks": [
             {
-              "level": "L2",
+              "level": "L3",
               "id": "M05_V2.2_MB_L2_V96",
               "problem": "[基础巩固] 已知正方形 $ABCD$ 边长为 1，$E, F$ 分别为 $BC, CD$ 的中点。求 $\\vec{AE} \\cdot \\vec{AF}$ 的值。",
               "logic_key": "建系法直接计算 (规则图形)",
@@ -747,8 +1174,19 @@
                   "数量积公式记错（如写成叉乘形式）。",
                   "试图用几何法却找不到夹角。"
                 ],
-                "conclusion": "1"
-              }
+                "conclusion": "1",
+                "decision_nodes": [
+                  "识别动点 → 设参数 t",
+                  "建立目标函数 → 二次函数配方",
+                  "验证最值点是否在有效范围内"
+                ]
+              },
+              "validation_check": {
+                "step_1": "Check calculation steps <= 3? YES",
+                "step_2": "Check no dynamic point? YES",
+                "step_3": "Check direct application? YES"
+              },
+              "calibrated_reason": "含参数 t/λ，需要二次函数优化，升级为 L3"
             },
             {
               "level": "L3",
@@ -769,7 +1207,17 @@
                   "数量积 $\\vec{a}\\cdot\\vec{b}$ 计算错误。",
                   "求出 $t$ 后忘记开方得到模长。"
                 ],
-                "conclusion": "$\\sqrt{3}$"
+                "conclusion": "$\\sqrt{3}$",
+                "decision_nodes": [
+                  "识别动点 → 设参数 t",
+                  "建立目标函数 → 二次函数配方",
+                  "验证最值点是否在有效范围内"
+                ]
+              },
+              "validation_check": {
+                "step_1": "Check single parameter optimization? YES",
+                "step_2": "Check quadratic function vertex? YES",
+                "step_3": "Check calculation steps <= 6? YES"
               }
             },
             {
@@ -793,12 +1241,42 @@
                   "误以为结果是变量，试图求导或三角换元求最值。"
                 ],
                 "conclusion": "0"
-              }
+              },
+              "validation_check": {
+                "step_1": "Check double dynamic points or complex model? YES",
+                "step_2": "Check strategy trap (coordinate vs geometric)? YES",
+                "step_3": "Check advanced theorem application? YES"
+              },
+              "strategy_comparison": {
+                "method_A": {
+                  "name": "纯代数法",
+                  "complexity": "high",
+                  "steps": 10,
+                  "description": "设参数，展开向量运算，求导或配方",
+                  "drawback": "计算量极大，容易出错"
+                },
+                "method_B": {
+                  "name": "几何意义 + 阿波罗尼斯圆",
+                  "complexity": "low",
+                  "steps": 4,
+                  "recommended": true,
+                  "description": "识别动点轨迹为圆，利用圆的性质求最值",
+                  "advantage": "几何直观，计算简洁"
+                }
+              },
+              "teacher_tip": "🌟 名师点拨：本题推荐识别动点轨迹（阿波罗尼斯圆），利用几何性质秒杀。避免纯代数展开导致计算量过大。"
             }
           ]
         }
       ]
     }
   ],
-  "system_instruction_template": "### 🎯 M05 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础夯实)**:\n- **特征**: 单步逻辑，无参数或简单坐标运算，直接套公式。\n- **典型任务**: 直接计算数量积、投影向量、夹角、中点公式。\n- **禁忌**: 禁止出现“求参数范围”、“动点轨迹”、“复杂最值”。\n- **示例**: \"求向量 a=(1,2) 在 b=(2,1) 上的投影向量。\"\n\n**L3 (能力提升)**:\n- **特征**: 两步逻辑，含单参数或简单动点，需简单转化（如建系、极化恒等式基础）。\n- **典型任务**: 求夹角范围、利用共线求参数、圆上动点数量积定值、二次函数型模长最值。\n- **禁忌**: 禁止出现双动点联动、复杂的轨迹方程推导。\n- **示例**: \"已知 P 在圆 x^2+y^2=4 上，A(3,0)，求 PA 在 x 轴投影的最大值。\"\n\n**L4 (实战拔高)**:\n- **特征**: 多步逻辑，双动点或复杂约束，需策略选择（基底 vs 建系）或高级定理（奔驰定理、极化恒等式进阶）。\n- **典型任务**: 双动点关联最值、非对称结构数量积范围、轨迹与最值综合、面积比与向量系数联动。\n- **核心**: 必须包含一个“策略陷阱”（如建系计算量过大，需用几何法）或“模型识别难点”。\n- **示例**: \"P 在以 C 为圆心 1 为半径的圆上，求 PA·PB 的最大值（A,B 为正方形顶点）。\"\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解，严禁出现无法手算的无理数根（除非保留根号形式）。\n- L2 题目计算步骤不超过 3 步。\n- L4 题目必须体现“几何直观”或“策略优化”。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“模型识别”而非单纯计算步骤。\n- **风格要求**: L4 题目应适当融入浙江卷的巧妙构造（如极化恒等式秒杀）或山东卷的严谨分类，以提升区分度。"
+  "system_instruction_template": "### 🎯 M05 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础夯实)**:\n- **特征**: 单步逻辑，无参数或简单坐标运算，直接套公式。\n- **典型任务**: 直接计算数量积、投影向量、夹角、中点公式。\n- **禁忌**: 禁止出现“求参数范围”、“动点轨迹”、“复杂最值”。\n- **示例**: \"求向量 a=(1,2) 在 b=(2,1) 上的投影向量。\"\n\n**L3 (能力提升)**:\n- **特征**: 两步逻辑，含单参数或简单动点，需简单转化（如建系、极化恒等式基础）。\n- **典型任务**: 求夹角范围、利用共线求参数、圆上动点数量积定值、二次函数型模长最值。\n- **禁忌**: 禁止出现双动点联动、复杂的轨迹方程推导。\n- **示例**: \"已知 P 在圆 x^2+y^2=4 上，A(3,0)，求 PA 在 x 轴投影的最大值。\"\n\n**L4 (实战拔高)**:\n- **特征**: 多步逻辑，双动点或复杂约束，需策略选择（基底 vs 建系）或高级定理（奔驰定理、极化恒等式进阶）。\n- **典型任务**: 双动点关联最值、非对称结构数量积范围、轨迹与最值综合、面积比与向量系数联动。\n- **核心**: 必须包含一个“策略陷阱”（如建系计算量过大，需用几何法）或“模型识别难点”。\n- **示例**: \"P 在以 C 为圆心 1 为半径的圆上，求 PA·PB 的最大值（A,B 为正方形顶点）。\"\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解，严禁出现无法手算的无理数根（除非保留根号形式）。\n- L2 题目计算步骤不超过 3 步。\n- L4 题目必须体现“几何直观”或“策略优化”。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“模型识别”而非单纯计算步骤。\n- **风格要求**: L4 题目应适当融入浙江卷的巧妙构造（如极化恒等式秒杀）或山东卷的严谨分类，以提升区分度。\n\n### 🛡️【M05 向量专属防翻车宪法】(最高优先级)\n\n1. **L2 红线 - 禁止构造模型**：\n   - L2 题目严禁出现需要\"构造中点\"才能使用极化恒等式的情况。\n   - L2 必须直接给坐标或直接给中点，学生直接代入公式即可。\n\n2. **计算量控制**：\n   - 若题目选择建系法，L2/L3 题目的坐标运算必须在 3 步内完成。\n   - 若发现运算量过大，必须切换为几何法或简化数据。\n\n3. **奔驰定理校验**：\n   - 涉及奔驰定理的题目，AI 必须在解析前自我验证 ∑kᵢPAᵢ = 0 是否成立。\n   - 系数和必须为 0，面积比必须对应相反系数。\n\n4. **策略陷阱设计 (L4)**：\n   - L4 题目必须包含\"建系 vs 几何法\"的策略选择陷阱。\n   - 若学生盲目建系，计算量应显著增大；若选择几何法，应能快速求解。\n\n5. **动点约束**：\n   - L2 禁止动点轨迹或参数范围讨论。\n   - L3 允许单动点，但必须给出明确的约束条件。\n   - L4 允许双动点，需要综合运用多种方法。\n\n**执行流程**：生成题目 → 自我校验上述 5 点 → 通过则输出，不通过则重写。\n\n### 🔒【M05 变量依赖性铁律】vector_dependency_check (最高优先级)\n\n在生成涉及'动点' (如 M 在线段 BC 上运动) 与'最值/范围'的题目时，必须执行以下**自检步骤**：\n\n1. **提取目标表达式** (例如 AB · AC)。\n2. **变量追踪**: 检查该表达式中的向量是否随动点位置变化而变化。\n   - 若表达式中**不包含**动点变量 (如 AB, AC 均为定向量),则其值为**常数**。\n   - **严禁**对常数设问\"求最大值/最小值\"。\n3. **自动修正策略**:\n   - 若发现目标是定值，必须将设问改为\"求该定值\"。\n   - 若必须考\"最值\",必须修改目标表达式，使其包含动点 (例如改为 MA · MB, AM · BC, 或 |AM| 的最值)。\n4. **极化恒等式特例**: 若考查极化恒等式，标准模型必须是 PA · PB = |PM|² - |AM|² (其中 M 为 AB 中点，P 为动点)。确保 P 是变化的,从而引起 |PM| 变化。\n\n**执行流程**：生成题目 → 变量追踪 → 发现定值 → 修正设问或目标表达式 → 通过则输出, 不通过则重写。",
+  "module_constraints": [
+    "若向量坐标均为常数，严禁设问'求取值范围'或'求最大值'。",
+    "若使用 AD = xAB + yAC 且 A,B,C 共线，严禁求 x+y 的唯一值（除非考查 x+y=1 的定值结论）。",
+    "作为基底的两个向量必须线性无关（不共线）。",
+    "动点向量题中，目标表达式必须含动点变量，严禁对定值设问最值。",
+    "极化恒等式标准模型：PA·PB = |PM|² - |AM|²，必须确保 P 是动点。"
+  ]
 }

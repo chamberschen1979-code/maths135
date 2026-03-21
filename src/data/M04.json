@@ -69,68 +69,244 @@
                 "weight": 0.2,
                 "desc": "负数底数处理错误"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "complexity_score_max": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "no_negative_fractional_exponent": true,
+              "no_nested_radical": true,
+              "calculation_load": "light",
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "complexity_score_max": 2,
+              "steps_max": 4,
+              "trap_visibility": "required",
+              "domain_priority": true,
+              "calculation_load": "medium",
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "complexity_score_max": 3,
+              "strategy_comparison": "required",
+              "advanced_techniques": [
+                "symmetry",
+                "isomorphism",
+                "construction"
+              ],
+              "calculation_load": "heavy",
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 计算 log_2 3 * log_3 4 * log_4 5 * log_5 2 的值。",
-              "level": "L2"
+              "level": "L3",
+              "calibrated_reason": "L2 红线：计算量过大或需要变形，降级为 L3",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "换底公式"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 八省联考] 若 a=log_3 2, b=log_5 3, 求 log_10 2 (用 a,b 表示)。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "换底公式"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[24 华附一模] 化简 (sqrt(a^3) * a^(1/3)) / a^(5/6) (a>0)。",
-              "level": "L2"
+              "level": "L3",
+              "calibrated_reason": "L2 红线：计算量过大或需要变形，降级为 L3",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "指数运算",
+                  "不等式方向讨论"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 山东济南一模] 已知 log_x (2x^2+1) < log_x (3x)，求 x 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "换底公式",
+                  "不等式方向讨论"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 浙江杭州二模] 设 a=2^(1/3), b=4^(1/5), c=8^(1/7)，比较大小。",
-              "level": "L2"
+              "level": "L3",
+              "calibrated_reason": "L2 红线：计算量过大或需要变形，降级为 L3",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[23 新高考 I] 已知 ln 2 = a, ln 3 = b，求 log_12 5。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 深中二月考] 若 log_2 (x-1) + log_2 (x+1) = 3，求 x。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "换底公式"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[24 省实期中] 计算 (0.027)^(-1/3) - (-1/7)^(-2) + (2 7/9)^(1/2)。",
-              "level": "L2"
+              "level": "L3",
+              "calibrated_reason": "L2 红线：计算量过大或需要变形，降级为 L3",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 湖北武汉一模] 已知 a^x = b^y = c^z，且 1/x + 1/y + 1/z = 0，求 abc。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 广州一模] 若 log_a (2/3) < 1，求 a 的取值范围。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "不等式方向讨论"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[24 深圳一模] 化简 log_2 (sqrt(3+sqrt(5)) + sqrt(3-sqrt(5)))。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             },
             {
               "desc": "[25 江苏南京盐城一模] 已知 3^a = 5^b = k，且 1/a + 1/b = 2，求 k。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 华附零模] 设 x,y,z 为正数，且 2^x = 3^y = 5^z，比较 2x, 3y, 5z 大小。",
-              "level": "L4"
+              "level": "L4",
+              "logic_key": "构造函数比大小",
+              "strategy_hints": [
+                "Compare by constructing functions or using monotonicity"
+              ],
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             },
             {
               "desc": "[24 广东二模] 若 log_2 (log_3 x) = 1，求 x。",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[25 浙江宁波十校联考] 已知 a>0, a!=1，若 log_a (a^2+1) > log_a (2a)，求 a 范围。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "换底公式",
+                  "不等式方向讨论"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             }
           ],
           "master_benchmarks": [
@@ -250,68 +426,231 @@
                 "weight": 0.3,
                 "desc": "忽略函数单调区间限制"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "complexity_score_max": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "no_negative_fractional_exponent": true,
+              "no_nested_radical": true,
+              "calculation_load": "light",
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "complexity_score_max": 2,
+              "steps_max": 4,
+              "trap_visibility": "required",
+              "domain_priority": true,
+              "calculation_load": "medium",
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "complexity_score_max": 3,
+              "strategy_comparison": "required",
+              "advanced_techniques": [
+                "symmetry",
+                "isomorphism",
+                "construction"
+              ],
+              "calculation_load": "heavy",
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 已知 a=2^0.1, b=0.1^2, c=log_2 0.1，比较大小（常规）。",
-              "level": "L2"
+              "level": "L3",
+              "calibrated_reason": "L2 红线：计算量过大或需要变形，降级为 L3",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 八省联考] 比较 $e^\\pi$ 与 $\\pi^e$ 的大小。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[24 华附一模] 若 $x e^x = y e^y$，且 $x \\neq y$，求 $x+y$ 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             },
             {
               "desc": "[25 山东济南一模] 已知 $a, b \\in (0, 1)$，且 $a \\ln a = b \\ln b$，比较 $a, b$ 大小。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             },
             {
               "desc": "[25 浙江杭州二模] 设 $a = \\frac{\\ln 2}{2}, b = \\frac{\\ln 3}{3}, c = \\frac{\\ln 5}{5}$，比较大小。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[23 新高考 I] 已知 $e^x = x+2$，判断解的个数。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 深中二月考] 若 $2^a + 2a = 2^b + 3b$，且 $a,b>0$，比较 $a,b$。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             },
             {
               "desc": "[24 省实期中] 比较 $3^4$ 与 $4^3$ 的大小。",
-              "level": "L2"
+              "level": "L3",
+              "calibrated_reason": "L2 红线：计算量过大或需要变形，降级为 L3",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 湖北武汉一模] 已知 $a \\in (-1/e, 0)\\$，方程 $x e^x = a\\$ 有两根 $x_1, x_2\\$，求 $x_1 + x_2\\$ 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 广州一模] 设 $a, b$ 满足 $a e^a = b e^b$ ($a \\neq b$)，求证 $a+b < -2$。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             },
             {
               "desc": "[24 深圳一模] 比较 $\\log_3 4$ 与 $\\log_4 5$ 的大小。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "换底公式"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 江苏南京盐城一模] 若 $e^x \\ge kx$ 恒成立，求 $k$ 最大值。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 华附零模] 已知 $a = \\log_2 3 \\cdot \\log_3 4 \\dots \\log_{n} (n+1)$，化简。",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[24 广东二模] 设 $x_1$ 满足 $2^x + x = 4$， $x_2$ 满足 $\\log_2 x + x = 4$，求 $x_1+x_2$。",
-              "level": "L4"
+              "level": "L4",
+              "logic_key": "反函数对称性",
+              "strategy_hints": [
+                "Consider symmetry of inverse functions about y=x"
+              ],
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "geometric_symmetry"
+              }
             },
             {
               "desc": "[25 浙江宁波十校联考] 已知 $a, b > 0$，且 $a^b = b^a$，若 $a < b$，求 $a$ 的范围。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             }
           ],
           "master_benchmarks": [
@@ -509,68 +848,241 @@
                 "weight": 0.4,
                 "desc": "误用对称性（非反函数关系）"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "complexity_score_max": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "no_negative_fractional_exponent": true,
+              "no_nested_radical": true,
+              "calculation_load": "light",
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "complexity_score_max": 2,
+              "steps_max": 4,
+              "trap_visibility": "required",
+              "domain_priority": true,
+              "calculation_load": "medium",
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "complexity_score_max": 3,
+              "strategy_comparison": "required",
+              "advanced_techniques": [
+                "symmetry",
+                "isomorphism",
+                "construction"
+              ],
+              "calculation_load": "heavy",
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 函数 f(x)=a^(x-2)+3 (a>0, a!=1) 的图象恒过定点 P，求 P 坐标。",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[25 八省联考] 函数 f(x)=log_a (x+1) - 2 的图象恒过定点？",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[24 华附一模] 若函数 f(x)=a^x 与 g(x)=log_a x 的图象有交点，求 a 的范围。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 山东济南一模] 将 y=log_2 x 图象向左平移 1 单位，再向下平移 2 单位，求新解析式。",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[25 浙江杭州二模] 已知 f(x)=a^(x-1)+1 过定点 (1, 2)，求 a 的值？(陷阱题，a 任意)。",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[23 新高考 I] 函数 y=a^x 与 y=log_a (-x) 的图象关于什么对称？",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 深中二月考] 若 f(x)=log_a (x-1)+2 的图象不过第四象限，求 a 范围。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[24 省实期中] 已知 f(x)=a^x+b 过 (0, 2) 和 (1, 3)，求 f(x)。",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[25 湖北武汉一模] 设 f(x)=log_a (x+1)，若 f(x) 在 (0, +∞) 上恒正，求 a 范围。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 广州一模] 函数 y=a^x 与 y=x 相切，求 a。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             },
             {
               "desc": "[24 深圳一模] 若 f(x)=log_a (x^2-2x+3) 有最小值，求 a 范围。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 江苏南京盐城一模] 已知 f(x)=a^(x-1)-1 恒过定点 A，若 A 在直线 mx+ny=1 上，求 m+n 最小值。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "复合函数",
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 华附零模] 设 f(x)=log_a (x+1) 与 g(x)=a^x-1 的图象交点个数为？",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[24 广东二模] 函数 f(x)=|log_2 x| 的图象关于什么对称？",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[25 浙江宁波十校联考] 若 a>1，比较 a^x 与 log_a x 在 x>0 时的增长快慢。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "不等式方向讨论"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             }
           ],
           "master_benchmarks": [
@@ -721,68 +1233,235 @@
                 "weight": 0.1,
                 "desc": "同增异减法则用反"
               }
-            ]
+            ],
+            "L2_constraints": {
+              "complexity_score_max": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "no_negative_fractional_exponent": true,
+              "no_nested_radical": true,
+              "calculation_load": "light",
+              "context": "direct_calculation"
+            },
+            "L3_constraints": {
+              "complexity_score_max": 2,
+              "steps_max": 4,
+              "trap_visibility": "required",
+              "domain_priority": true,
+              "calculation_load": "medium",
+              "context": "inverse_reasoning"
+            },
+            "L4_constraints": {
+              "complexity_score_max": 3,
+              "strategy_comparison": "required",
+              "advanced_techniques": [
+                "symmetry",
+                "isomorphism",
+                "construction"
+              ],
+              "calculation_load": "heavy",
+              "context": "complex_construction"
+            }
           },
           "original_pool": [
             {
               "desc": "[24 新高考 I] 求函数 f(x)=log_2 (x^2-4) 的单调递增区间。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 八省联考] 函数 f(x)=log_0.5 (x^2-2x-3) 的单调递减区间是？",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[24 华附一模] 若 f(x)=log_a (2-ax) 在 [0, 1] 上递减，求 a 范围。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             },
             {
               "desc": "[25 山东济南一模] 求 f(x)=sqrt(log_2 (x-1)) 的定义域。",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[25 浙江杭州二模] 函数 f(x)=3^(x^2-2x) 的值域是？",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "复合函数",
+                  "指数运算"
+                ],
+                "trap_risk": "low",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[23 新高考 I] 已知 f(x)=log_a (x^2-ax+1) 定义域为 R，求 a 范围。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "复合函数",
+                  "对数底数讨论",
+                  "定义域优先"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 深中二月考] 求 f(x)=|log_3 x| 的单调递增区间。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[24 省实期中] 若 f(x)=log_2 (x^2-2ax+3) 在 (2, +∞) 递增，求 a 范围。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             },
             {
               "desc": "[25 湖北武汉一模] 函数 f(x)=log_(1/2) (sin x) 的单调递增区间？",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 广州一模] 已知 f(x)=a^x (a>1) 在 [-1, 1] 最大值为 2，求 a。",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[24 深圳一模] 求 f(x)=log_2 (4x-x^2) 的最大值。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[25 江苏南京盐城一模] 若 f(x)=log_a (x^2-2x) 在 (2, 4) 上恒有意义且递增，求 a 范围。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             },
             {
               "desc": "[25 华附零模] 设 f(x)=log_2 (x+1) + log_2 (3-x)，求值域。",
-              "level": "L3"
+              "level": "L3",
+              "meta": {
+                "core_logic": [
+                  "对数底数讨论",
+                  "换底公式",
+                  "复合函数"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "light",
+                "recommended_strategy": "substitution"
+              }
             },
             {
               "desc": "[24 广东二模] 函数 f(x)=2^(|x|-1) 的单调递减区间是？",
-              "level": "L2"
+              "level": "L2",
+              "complexity_score": 1,
+              "steps_max": 2,
+              "data_purity": "direct_substitution",
+              "meta": {
+                "core_logic": [
+                  "直接计算"
+                ],
+                "trap_risk": "none",
+                "calculation_load": "light",
+                "recommended_strategy": "direct"
+              }
             },
             {
               "desc": "[25 浙江宁波十校联考] 已知 f(x)=log_a (ax^2-x) 在 [2, 4] 上递增，求 a 范围。",
-              "level": "L4"
+              "level": "L4",
+              "meta": {
+                "core_logic": [
+                  "综合运用"
+                ],
+                "trap_risk": "high",
+                "calculation_load": "medium",
+                "recommended_strategy": "construction"
+              }
             }
           ],
           "master_benchmarks": [
@@ -910,5 +1589,12 @@
       ]
     }
   ],
-  "system_instruction_template": "### 🎯 M04 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础)**:\n- **特征**: 单步逻辑，直接套公式，无参数讨论。\n- **典型任务**: 简单指对换算、求定点坐标、求简单定义域、比较明显的大小。\n- **禁忌**: 禁止出现“同构构造”、“复合函数单调性讨论”、“参数范围求解”。\n- **示例**: \"计算 log_2 8\" 或 \"求 f(x)=a^(x-1)+2 定点\"。\n\n**L3 (进阶)**:\n- **特征**: 两步逻辑，含简单复合或性质组合，需技巧性变形。\n- **典型任务**: 换底公式链式运算、复合函数单调区间 (定底数)、指对图象变换、常规比大小 (中间值)。\n- **禁忌**: 禁止出现“极值点偏移”、“定义域与单调性双重约束求参”、“隐零点同构”。\n- **示例**: \"求 log_2 (x^2-4) 增区间\" 或 \"比较 e^π 与 π^e\"。\n\n**L4 (巅峰)**:\n- **特征**: 多步逻辑，必须包含“结构构造”或“多重约束博弈”。\n- **典型任务**: 指对同构解超越方程/不等式 (构造 xe^x 或 lnx/x)、含参复合函数单调性求参 (需同时满足单调性和定义域)、极值点偏移证明。\n- **核心**: 必须包含一个“思维盲区”（如同构结构的识别、定义域的一票否决权、双变量对称性构造）。\n- **示例**: \"已知 ae^a=be^b 证 a+b<-2\" 或 \"f(x)=log_a(2-ax) 在 [0,1] 递减求 a\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（区间）。\n- L4 题目必须体现“结构洞察”和“逻辑严密性”。\n- **风格要求**: L4 题目应适当融入浙江卷的同构构造技巧或新高考 I 卷的定义域陷阱。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“同构”或“定义域优先”思想。\n- **关键点**: L4 题目的解析必须详细解释“如何构造同构函数”或“为什么定义域限制了参数范围”。"
+  "system_instruction_template": "### 🎯 M04 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础)**:\n- **特征**: 单步逻辑，直接套公式，无参数讨论。\n- **典型任务**: 简单指对换算、求定点坐标、求简单定义域、比较明显的大小。\n- **禁忌**: 禁止出现“同构构造”、“复合函数单调性讨论”、“参数范围求解”。\n- **示例**: \"计算 log_2 8\" 或 \"求 f(x)=a^(x-1)+2 定点\"。\n\n**L3 (进阶)**:\n- **特征**: 两步逻辑，含简单复合或性质组合，需技巧性变形。\n- **典型任务**: 换底公式链式运算、复合函数单调区间 (定底数)、指对图象变换、常规比大小 (中间值)。\n- **禁忌**: 禁止出现“极值点偏移”、“定义域与单调性双重约束求参”、“隐零点同构”。\n- **示例**: \"求 log_2 (x^2-4) 增区间\" 或 \"比较 e^π 与 π^e\"。\n\n**L4 (巅峰)**:\n- **特征**: 多步逻辑，必须包含“结构构造”或“多重约束博弈”。\n- **典型任务**: 指对同构解超越方程/不等式 (构造 xe^x 或 lnx/x)、含参复合函数单调性求参 (需同时满足单调性和定义域)、极值点偏移证明。\n- **核心**: 必须包含一个“思维盲区”（如同构结构的识别、定义域的一票否决权、双变量对称性构造）。\n- **示例**: \"已知 ae^a=be^b 证 a+b<-2\" 或 \"f(x)=log_a(2-ax) 在 [0,1] 递减求 a\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（区间）。\n- L4 题目必须体现“结构洞察”和“逻辑严密性”。\n- **风格要求**: L4 题目应适当融入浙江卷的同构构造技巧或新高考 I 卷的定义域陷阱。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“同构”或“定义域优先”思想。\n- **关键点**: L4 题目的解析必须详细解释“如何构造同构函数”或“为什么定义域限制了参数范围”。\n\n### 🛡️【M04 指数对数专属防翻车宪法】(最高优先级)\n\n1. **L2 红线 - 禁止复杂计算**：\n   - L2 题目严禁出现负分数指数、嵌套根式、多步混合运算。\n   - L2 必须是\"一眼看出答案\"的直接代入题，步骤不超过 2 步。\n\n2. **L3 陷阱显性化**：\n   - 涉及 log_x(...) 的题目，必须在解析中显式讨论底数 x>0, x≠1。\n   - 涉及 log_a(f(x)) < 1 的题目，必须分 a>1 和 0<a<1 两种情况讨论。\n   - 复合函数问题必须先求定义域，再求解。\n\n3. **L4 策略对比**：\n   - 若题目包含 strategy_hints（如对称性、同构），解析必须展示\"常规法\"与\"优解法\"的对比。\n   - 优解法必须标注为\"推荐\"，并解释为什么更简洁。\n\n4. **数据纯净度控制**：\n   - L2 题目的数据必须是整数或简单分数，避免小数和复杂根式。\n   - L3 题目的数据可以有适度复杂度，但必须保证计算路径清晰。\n\n5. **定义域优先原则**：\n   - 所有涉及对数、根式的题目，解析第一步必须是\"确定定义域\"。\n   - 若学生忽略定义域，极易掉入\"增根陷阱\"。\n\n**执行流程**：生成题目 → 自我校验上述 5 点 → 通过则输出，不通过则重写。\n\n### 🔒【M04 非恒等式铁律】NON_tautoology_check (最高优先级)\n\n在生成'已知方程有解/已知解求参数'类题目时，必须执行**代数退化检测**：\n\n1. **代入验证**: 将已知解 (如 x=a) 代入原方程。\n2. **恒等式判定**: 若代入后方程变为 A=A (如 ln(a)/a = ln(a)/a)，则判定为**无效命题 (废题)**。\n3. **自动修正策略** (三选一):\n   - **策略 A (多根分布)**: 改为\"已知方程有**两个不相等**的实数根 x₁, x₂, 求 a 的取值范围\"。(这是高考热点：同构 + 单调性分析)\n   - **策略 B (极值点偏移)**: 改为\"已知 x₁, x₂ 是方程的两根，证明 x₁ + x₂ > 2a 或 x₁ x₂ > e²\"。\n   - **策略 C (增加约束)**: 增加额外条件，如\"x=a 是方程在区间 (0, 1) 上的**唯一**解\"，迫使构造需要讨论单调性的情境。\n4. **禁止项**: 严禁生成\"代入即恒成立\"的简单求值题。\n\n**执行流程**：生成题目 → 代入验证 → 发现恒等式 → 选择修正策略 → 通过则输出， 不通过则重写。",
+  "module_constraints": [
+    "严禁赋予对数函数或指数函数关于直线 x=k 的轴对称性。",
+    "若题目涉及求参数 a, c，必须保证方程组有唯一解，否则设问需改为求范围。",
+    "比较大小题目中，底数 a 必须明确区分 (0,1) 或 (1,+∞)，严禁模糊。",
+    "已知方程有解/已知解求参数类题目，必须执行代数退化检测，严禁生成代入即恒成立的废题。",
+    "涉及 log_x(...) 的题目，必须在解析中显式讨论底数 x>0, x≠1。"
+  ]
 }
