@@ -344,6 +344,9 @@ const WeeklyMission = ({
     // 提取 module_constraints (模块专属约束)
     const moduleConstraints = motifData.module_constraints || null;
     
+    // 提取 math_invariants (数学不变量)
+    const mathInvariants = motifData.math_invariants || null;
+    
     const userPrompt = buildUserPrompt({
       motifName: motifData.motif_name || motifData.name,
       specName: specName || '通用数学',
@@ -355,7 +358,8 @@ const WeeklyMission = ({
       constraints: weaponConstraints,
       hardConstraints,
       systemInstructionTemplate,
-      moduleConstraints
+      moduleConstraints,
+      mathInvariants
     });
 
     const response = await fetch(BASE_URL, {

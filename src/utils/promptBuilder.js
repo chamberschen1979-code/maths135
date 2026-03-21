@@ -139,7 +139,8 @@ export const buildUserPrompt = (context = {}) => {
     constraints = {},
     hardConstraints = null,
     systemInstructionTemplate = null,
-    moduleConstraints = null
+    moduleConstraints = null,
+    mathInvariants = null
   } = context
 
   const strategyInstructions = buildStrategyInstructions(variableKnobs)
@@ -376,6 +377,18 @@ ${moduleConstraints.map((rule, index) => `${index + 1}. ${rule}`).join('\n')}
 `
   }
 
+  // 构建数学不变量段落
+  let mathInvariantsSection = ''
+  if (mathInvariants && Array.isArray(mathInvariants) && mathInvariants.length > 0) {
+    mathInvariantsSection = `
+## 🛡️ ${motifName} 专属数学不变量 (最高优先级 - 违反即逻辑崩塌)
+在"逻辑冲突排查"环节，必须逐条验证以下规则：
+${mathInvariants.map((rule, index) => `${index + 1}. ${rule}`).join('\n')}
+
+**验证流程**：逆向构造 → 逐条验证不变量 → 通过则继续，不通过则重造。
+`
+  }
+
   let systemSection = ''
   if (systemInstructionTemplate) {
     systemSection = `
@@ -421,11 +434,25 @@ ${systemSection}
 ## 参考标杆
 参考标杆题逻辑（不要照抄，仅参考逻辑结构）:
 ${benchmarkText}
-${strategyComparisonSection}${strategySection}${levelConstraintsSection}${hardConstraintsSection}${moduleConstraintsSection}${weaponSection}
+${strategyComparisonSection}${strategySection}${levelConstraintsSection}${hardConstraintsSection}${moduleConstraintsSection}${mathInvariantsSection}${weaponSection}
 ## 生成指令
-1. **参数选择**：在 'reasoning' 中明确说明你选择了哪些参数，以及为什么它们符合目标难度和策略约束。
-2. **自我验证**：确保所选参数能构成有效的数学情境（如判别式 >= 0，定义域 > 0）${moduleConstraints ? '，**并再次核对 "' + motifName + ' 专属铁律"**' : ''}。
-3. **题目生成**：基于这些参数创建一道两问的题目（第一问：基础，第二问：进阶/讨论）。
+1. **启动沙盘推演**：在 'reasoning' 中严格执行三步推演：
+   - 第一步：逆向数学构造（设定目标答案 → 正向推导表达式 → 参数锁定）
+   - 第二步：逻辑冲突排查（参数遮蔽检查 → 极值存在性检查 → 条件自洽性检查）
+   - 第三步：文案生成（只有通过才生成题目）
+2. **自我验证**：确保所选参数能构成有效的数学情境（如判别式 >= 0，定义域 > 0）${moduleConstraints ? '，**并再次核对 "' + motifName + ' 专属铁律"**' : ''}${mathInvariants ? '，**逐条验证数学不变量**' : ''}。
+3. **题目生成**：基于验证通过的参数创建一道两问的题目（第一问：基础，第二问：进阶/讨论）。
 4. **解析编写**：提供分步解答，使用清晰的 LaTeX 格式。${weaponId ? '\n5. **杀手锏体现**：确保解析中显式体现「' + weaponName + '」的应用步骤。' : ''}
-6. **输出**：立即生成 JSON 对象。`
+
+---
+
+## 🚨 生死自检（输出前必须回答）
+
+在输出 JSON 之前，请在 'reasoning' 中显式回答以下三个问题：
+
+1. **参数遮蔽检查**：待求参数是否在题干中意外暴露？(是/否)
+2. **极值/范围存在性检查**：所求最值/范围在数学上是否严格存在？(存在/不存在)
+3. **条件自洽性检查**：所有已知条件是否互相兼容？(自洽/冲突)
+
+**警告**：若任意一项检查不通过，必须立即重造，严禁输出有逻辑缺陷的题目！`
 }
