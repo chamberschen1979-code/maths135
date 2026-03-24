@@ -97,6 +97,53 @@
               ],
               "calculation_load": "heavy",
               "context": "complex_construction"
+            },
+            "level_constraints": {
+              "L2": {
+                "safe_param_pool": {
+                  "bases": [2, 3, 10, "e"],
+                  "exponents": [1, 2, -1, "1/2", 3, -2],
+                  "constants": [0, 1, -1, 2, 4, 8, 9],
+                  "log_arguments": [2, 3, 4, 8, 9, 10, 100]
+                },
+                "forbidden_models": [
+                  "xe^x = a (超越方程)",
+                  "ln(x)/x = a (双解讨论)",
+                  "复合函数超过 2 层嵌套",
+                  "底数含参且需分类讨论",
+                  "负数底数的分数指数幂"
+                ],
+                "forced_method": "direct_substitution",
+                "max_steps": 2
+              },
+              "L3": {
+                "safe_param_pool": {
+                  "bases": [2, 3, 4, 5, 10, "e", "1/2", "1/3"],
+                  "exponents": [1, 2, -1, "1/2", 3, -2, "2/3", "-1/2"],
+                  "constants": [-2, -1, 0, 1, 2, 3, 4],
+                  "log_arguments": [2, 3, 4, 5, 6, 8, 9, 10, 12, 16]
+                },
+                "forbidden_models": [
+                  "极值点偏移证明",
+                  "双变量同构复杂构造",
+                  "涉及 Lambert W 函数的隐式解"
+                ],
+                "forced_method": "domain_first_analysis",
+                "max_steps": 4
+              },
+              "L4": {
+                "safe_param_pool": {
+                  "bases": [2, 3, "e", "1/2", "1/3", 10],
+                  "exponents": ["任意实数 (需保证可解)"],
+                  "constants": ["任意实数 (需保证有界)"]
+                },
+                "forbidden_models": [
+                  "无解析解且无法估算范围的超越方程",
+                  "大学数学工具 (如泰勒展开解方程)"
+                ],
+                "required_logic": ["domain_check", "monotonicity_analysis", "boundary_verification"],
+                "max_steps": 6
+              }
             }
           },
           "original_pool": [
@@ -358,7 +405,29 @@
                 "conclusion": "3"
               }
             }
-          ]
+          ],
+          "type_label": "log_exp_operation",
+          "identification_rules": {
+            "required_objects": [
+              "log",
+              "exp"
+            ],
+            "required_relations": [
+              "equation"
+            ],
+            "forbidden_objects": [
+              "derivative",
+              "trig"
+            ],
+            "keywords": [
+              "换底",
+              "化简",
+              "运算",
+              "计算",
+              "求值"
+            ]
+          },
+          "expected_method": "base_change_chain"
         },
         {
           "var_id": "1.2",
@@ -454,6 +523,50 @@
               ],
               "calculation_load": "heavy",
               "context": "complex_construction"
+            },
+            "level_constraints": {
+              "L2": {
+                "safe_param_pool": {
+                  "bases": [2, 3, 10, "e"],
+                  "exponents": [1, 2, -1, "1/2", 3, -2],
+                  "constants": [0, 1, -1, 2, 4, 8, 9]
+                },
+                "forbidden_models": [
+                  "xe^x = a (超越方程)",
+                  "ln(x)/x = a (双解讨论)",
+                  "复合函数超过 2 层嵌套",
+                  "底数含参且需分类讨论"
+                ],
+                "forced_method": "direct_substitution",
+                "max_steps": 2
+              },
+              "L3": {
+                "safe_param_pool": {
+                  "bases": [2, 3, 4, 5, 10, "e", "1/2", "1/3"],
+                  "exponents": [1, 2, -1, "1/2", 3, -2, "2/3", "-1/2"],
+                  "constants": [-2, -1, 0, 1, 2, 3, 4]
+                },
+                "forbidden_models": [
+                  "极值点偏移证明",
+                  "双变量同构复杂构造",
+                  "涉及 Lambert W 函数的隐式解"
+                ],
+                "forced_method": "domain_first_analysis",
+                "max_steps": 4
+              },
+              "L4": {
+                "safe_param_pool": {
+                  "bases": [2, 3, "e", "1/2", "1/3", 10],
+                  "exponents": ["任意实数 (需保证可解)"],
+                  "constants": ["任意实数 (需保证有界)"]
+                },
+                "forbidden_models": [
+                  "无解析解且无法估算范围的超越方程",
+                  "大学数学工具 (如泰勒展开解方程)"
+                ],
+                "required_logic": ["domain_check", "monotonicity_analysis", "boundary_verification"],
+                "max_steps": 6
+              }
             }
           },
           "original_pool": [
@@ -780,7 +893,31 @@
                 "conclusion": "4"
               }
             }
-          ]
+          ],
+          "type_label": "log_exp_isomorphism",
+          "identification_rules": {
+            "required_objects": [
+              "log",
+              "exp"
+            ],
+            "required_relations": [
+              "equation",
+              "zeroPoint"
+            ],
+            "forbidden_objects": [
+              "derivative"
+            ],
+            "keywords": [
+              "方程",
+              "根",
+              "解",
+              "同构",
+              "xe^x",
+              "lnx/x",
+              "零点"
+            ]
+          },
+          "expected_method": "construct_function_monotonicity"
         }
       ]
     },
@@ -876,6 +1013,48 @@
               ],
               "calculation_load": "heavy",
               "context": "complex_construction"
+            },
+            "level_constraints": {
+              "L2": {
+                "safe_param_pool": {
+                  "shift_values": [1, -1, 2, -2, 3, -3],
+                  "bases": [2, 3, 10, "e"],
+                  "constants": [0, 1, -1, 2, 3]
+                },
+                "forbidden_models": [
+                  "含参单调性讨论",
+                  "多层变换超过 2 步",
+                  "底数含参且需分类讨论"
+                ],
+                "forced_method": "direct_substitution",
+                "max_steps": 2
+              },
+              "L3": {
+                "safe_param_pool": {
+                  "shift_values": [-3, -2, -1, 0, 1, 2, 3, 4],
+                  "bases": [2, 3, 4, 5, 10, "e", "1/2", "1/3"],
+                  "constants": [-2, -1, 0, 1, 2, 3, 4]
+                },
+                "forbidden_models": [
+                  "复杂的多层复合变换",
+                  "涉及导数的切线问题"
+                ],
+                "forced_method": "coordinate_or_geometric",
+                "max_steps": 4
+              },
+              "L4": {
+                "safe_param_pool": {
+                  "shift_values": ["任意整数"],
+                  "bases": ["任意正实数 (a>0, a≠1)"],
+                  "constants": ["任意实数"]
+                },
+                "forbidden_models": [
+                  "无几何意义的纯代数硬算",
+                  "大学数学工具"
+                ],
+                "required_logic": ["symmetry_proof", "domain_check"],
+                "max_steps": 6
+              }
             }
           },
           "original_pool": [
@@ -1168,7 +1347,28 @@
                 "conclusion": "$e^{1/e}$"
               }
             }
-          ]
+          ],
+          "type_label": "log_exp_fixed_point_symmetry",
+          "identification_rules": {
+            "required_objects": [
+              "log",
+              "exp"
+            ],
+            "required_relations": [
+              "symmetry"
+            ],
+            "forbidden_objects": [
+              "derivative"
+            ],
+            "keywords": [
+              "定点",
+              "对称",
+              "反函数",
+              "过点",
+              "关于"
+            ]
+          },
+          "expected_method": "inverse_function_symmetry"
         },
         {
           "var_id": "2.2",
@@ -1261,6 +1461,48 @@
               ],
               "calculation_load": "heavy",
               "context": "complex_construction"
+            },
+            "level_constraints": {
+              "L2": {
+                "safe_param_pool": {
+                  "inner_functions": ["x^2", "x^2+1", "x^2-1", "x+1", "x-1", "2x", "x/2"],
+                  "bases": [2, 3, 10, "e"],
+                  "domains": ["x>0", "x>1", "x>-1", "x>2"]
+                },
+                "forbidden_models": [
+                  "底数含参需讨论",
+                  "多层复合超过 2 层",
+                  "绝对值嵌套"
+                ],
+                "forced_method": "domain_first_then_monotonicity",
+                "max_steps": 2
+              },
+              "L3": {
+                "safe_param_pool": {
+                  "inner_functions": ["x^2-ax", "x^2-2x", "x^2-4", "ax^2-x", "|x|", "sin(x)"],
+                  "bases": [2, 3, 4, 5, 10, "e", "1/2", "1/3"],
+                  "domains": ["x^2>4", "x^2-2x>0", "x^2-ax>0"]
+                },
+                "forbidden_models": [
+                  "复杂的含参区间讨论",
+                  "导数结合的最值问题"
+                ],
+                "forced_method": "composite_analysis",
+                "max_steps": 4
+              },
+              "L4": {
+                "safe_param_pool": {
+                  "inner_functions": ["任意二次函数", "含绝对值的函数", "三角函数"],
+                  "bases": ["任意正实数 (a>0, a≠1)"],
+                  "domains": ["需验证定义域"]
+                },
+                "forbidden_models": [
+                  "无定义域验证直接求单调区间",
+                  "大学数学工具"
+                ],
+                "required_logic": ["domain_verification", "monotonicity_matching", "boundary_check"],
+                "max_steps": 6
+              }
             }
           },
           "original_pool": [
@@ -1584,30 +1826,49 @@
                 "conclusion": "$(-\\infty, \\frac{7}{4}]$"
               }
             }
-          ]
+          ],
+          "type_label": "log_exp_composite_monotonicity",
+          "identification_rules": {
+            "required_objects": [
+              "log",
+              "exp"
+            ],
+            "required_relations": [
+              "monotonicity",
+              "extremum"
+            ],
+            "forbidden_objects": [
+              "derivative"
+            ],
+            "keywords": [
+              "单调",
+              "值域",
+              "最值",
+              "复合函数",
+              "定义域"
+            ]
+          },
+          "expected_method": "composite_function_analysis"
         }
       ]
     }
   ],
-  "system_instruction_template": "### 🎯 M04 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础)**:\n- **特征**: 单步逻辑，直接套公式，无参数讨论。\n- **典型任务**: 简单指对换算、求定点坐标、求简单定义域、比较明显的大小。\n- **禁忌**: 禁止出现“同构构造”、“复合函数单调性讨论”、“参数范围求解”。\n- **示例**: \"计算 log_2 8\" 或 \"求 f(x)=a^(x-1)+2 定点\"。\n\n**L3 (进阶)**:\n- **特征**: 两步逻辑，含简单复合或性质组合，需技巧性变形。\n- **典型任务**: 换底公式链式运算、复合函数单调区间 (定底数)、指对图象变换、常规比大小 (中间值)。\n- **禁忌**: 禁止出现“极值点偏移”、“定义域与单调性双重约束求参”、“隐零点同构”。\n- **示例**: \"求 log_2 (x^2-4) 增区间\" 或 \"比较 e^π 与 π^e\"。\n\n**L4 (巅峰)**:\n- **特征**: 多步逻辑，必须包含“结构构造”或“多重约束博弈”。\n- **典型任务**: 指对同构解超越方程/不等式 (构造 xe^x 或 lnx/x)、含参复合函数单调性求参 (需同时满足单调性和定义域)、极值点偏移证明。\n- **核心**: 必须包含一个“思维盲区”（如同构结构的识别、定义域的一票否决权、双变量对称性构造）。\n- **示例**: \"已知 ae^a=be^b 证 a+b<-2\" 或 \"f(x)=log_a(2-ax) 在 [0,1] 递减求 a\"。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解（区间）。\n- L4 题目必须体现“结构洞察”和“逻辑严密性”。\n- **风格要求**: L4 题目应适当融入浙江卷的同构构造技巧或新高考 I 卷的定义域陷阱。\n\n**逻辑要求**:\n- AI 解析时需**隐性调用** Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现“同构”或“定义域优先”思想。\n- **关键点**: L4 题目的解析必须详细解释“如何构造同构函数”或“为什么定义域限制了参数范围”。\n\n### 🛡️【M04 指数对数专属防翻车宪法】(最高优先级)\n\n1. **L2 红线 - 禁止复杂计算**：\n   - L2 题目严禁出现负分数指数、嵌套根式、多步混合运算。\n   - L2 必须是\"一眼看出答案\"的直接代入题，步骤不超过 2 步。\n\n2. **L3 陷阱显性化**：\n   - 涉及 log_x(...) 的题目，必须在解析中显式讨论底数 x>0, x≠1。\n   - 涉及 log_a(f(x)) < 1 的题目，必须分 a>1 和 0<a<1 两种情况讨论。\n   - 复合函数问题必须先求定义域，再求解。\n\n3. **L4 策略对比**：\n   - 若题目包含 strategy_hints（如对称性、同构），解析必须展示\"常规法\"与\"优解法\"的对比。\n   - 优解法必须标注为\"推荐\"，并解释为什么更简洁。\n\n4. **数据纯净度控制**：\n   - L2 题目的数据必须是整数或简单分数，避免小数和复杂根式。\n   - L3 题目的数据可以有适度复杂度，但必须保证计算路径清晰。\n\n5. **定义域优先原则**：\n   - 所有涉及对数、根式的题目，解析第一步必须是\"确定定义域\"。\n   - 若学生忽略定义域，极易掉入\"增根陷阱\"。\n\n**执行流程**：生成题目 → 自我校验上述 5 点 → 通过则输出，不通过则重写。\n\n### 🔒【M04 非恒等式铁律】NON_tautoology_check (最高优先级)\n\n在生成'已知方程有解/已知解求参数'类题目时，必须执行**代数退化检测**：\n\n1. **代入验证**: 将已知解 (如 x=a) 代入原方程。\n2. **恒等式判定**: 若代入后方程变为 A=A (如 ln(a)/a = ln(a)/a)，则判定为**无效命题 (废题)**。\n3. **自动修正策略** (三选一):\n   - **策略 A (多根分布)**: 改为\"已知方程有**两个不相等**的实数根 x₁, x₂, 求 a 的取值范围\"。(这是高考热点：同构 + 单调性分析)\n   - **策略 B (极值点偏移)**: 改为\"已知 x₁, x₂ 是方程的两根，证明 x₁ + x₂ > 2a 或 x₁ x₂ > e²\"。\n   - **策略 C (增加约束)**: 增加额外条件，如\"x=a 是方程在区间 (0, 1) 上的**唯一**解\"，迫使构造需要讨论单调性的情境。\n4. **禁止项**: 严禁生成\"代入即恒成立\"的简单求值题。\n\n**执行流程**：生成题目 → 代入验证 → 发现恒等式 → 选择修正策略 → 通过则输出， 不通过则重写。",
+  "system_instruction_template": "本题难度为 ${level}，请严格遵循系统生成的难度约束与指对模块专属数学不变量。解题时优先调用已配置的杀手锏（如 S-LOG-01 换底公式链式消去、S-LOG-02 指对同构构造法、S-LOG-03 定点与反函数对称、S-LOG-04 复合函数定义域一票否决）。",
   "module_constraints": [
-    "【高一·绝对红线】严禁使用'导数'、'洛必达'、'泰勒展开'。单调性/最值必须通过'定义法'、'图像法'、'复合函数同增异减'解决。",
-    "【高一·难度控制】严禁'隐零点代换'、'极值点偏移'。L2 题目必须是直接代入，步骤≤2步。",
-    "【高二·进阶限制】允许'基础导数'（求导判断单调性/极值），但严禁'泰勒展开'、'洛必达'、'隐零点代换'、'极值点偏移'、'双变量复杂构造'。",
-    "【高二·难度控制】构造函数比大小必须能'一次求导'解决。严禁需'二次求导'或'复杂放缩'的题目。",
-    "【高三·全开模式】允许使用所有高中技巧（包括极值点偏移、隐零点代换、复杂放缩、切线不等式）。",
-    "【高三·绝对底线】严禁使用'大学工具'：泰勒展开式、洛必达法则、级数敛散性、严格极限定义。解题必须基于高中代数变形和函数性质。",
-    "【通用·非恒等式铁律】已知方程有解类题目，若代入后变为 A=A (恒等式)，视为废题。必须改为'多根分布'或'极值点偏移'情境。",
-    "【通用·定义域一票否决】解析第一步必须是'确定定义域'。若学生忽略定义域，极易掉入'增根陷阱'。",
-    "【通用·底数分类铁律】比较 log_a(x) 大小时，必须明确 a>1 还是 0<a<1。",
-    "【指对专项铁律】1. **逻辑连贯性**：第一问必须直接利用题干给出的函数 f(x) 的性质（如单调性）来解决，严禁出现与 f(x) 无关的'拼盘'比较题。2. **区间定义**：若题目涉及'在区间 [a, b] 上'，**必须**在题干中显式给出 a, b 的具体数值（如 [1, e]），或者将 a, b 设为已知常数并给出关系。**严禁**出现未定义的字母区间。3. **同构检查**：若考查指对同构，需验证构造的函数 g(t) 是否在给定区间单调。"
+    "【指对事实】换底公式：log_a b = ln b / ln a，可实现不同底数的统一。",
+    "【指对事实】指数函数 y=a^x 恒过定点 (0, 1)；对数函数 y=log_a x 恒过定点 (1, 0)。",
+    "【指对事实】指数函数 y=a^(x-h)+k 恒过定点 (h, 1+k)；对数函数 y=log_a(x-h)+k 恒过定点 (h+1, k)。",
+    "【指对事实】y=a^x 与 y=log_a x 互为反函数，图像关于直线 y=x 对称。",
+    "【指对事实】比较 log_a(x) 大小时，需讨论底数 a>1 还是 0<a<1，单调性相反。",
+    "【指对事实】复合函数 y=log_a f(x) 的单调性遵循“同增异减”法则，前提是 f(x)>0。"
   ],
   "math_invariants": [
-    "【隐性导数题型排雷】：虽然系统已全局禁用导数，但特别警告：在构造指对数方程（如 xe^x=k 或 lnx/x=k）时，严禁设问'有两个根 x1,x2，比较 x1+x2 与某常数的大小'。这种'极值点偏移'题型在数学本质上必须依赖导数才能证明，强行在初等代数下出题会迫使解析发生严重幻觉！",
-    "【定点真实性铁律】：若构造 f(x) = a^(g(x)) + c 恒过定点，必须通过令指数 g(x)=0 算出 x0。严禁将指数函数与对数函数（如 a^x 和 log_a(x)）直接加减拼凑来求'恒过定点'，因为它们无法同时消除参数 a，这是违背代数常识的！",
-    "【真数大于零铁律】：任何涉及对数函数复合（如求单调区间、值域）的题目，解析的第一步必须是算出真数 f(x)>0 的区间！这是定义域的一票否决权，最后的结论区间必须包含在定义域内。",
-    "【函数形态常识铁律】：1. 指数函数与对数函数绝对不可能关于某一个'点'对称！2. 形如 f(x)=log_a(二次函数) 的复合函数，若二次函数开口向下，其值域必然是 (-∞, M] (当a>1) 或 [M, +∞) (当0<a<1)，绝对不可能出现 [1, +∞) 这种值域。严禁凭空捏造不可能的值域或对称性！",
-    "【复合单调性分界铁律】：构造 log_a(二次函数) 的单调区间时，题干给出的单调区间分界点，必须严格等于内部二次函数的对称轴！（如 x^2-4x+5 分界点必须是2，绝不能瞎编数值）。",
-    "【反函数代数配平】：设定两函数关于 y=x 对称时，必须在草稿纸上严格求出反函数。例如 log_a(x+1) 的反函数只能是 a^x - 1，严禁乱加减常数！"
+    "【数学事实】形如 x·e^x=k 的方程若有两解 x₁, x₂，其和差关系需依赖导数分析单调性才能确定。",
+    "【数学事实】指数函数与对数函数无法通过简单加减同时消除参数 a，故不存在此类恒过定点。",
+    "【数学事实】对数函数复合问题中，真数 f(x)>0 是定义域的一票否决条件。",
+    "【数学事实】指数函数与对数函数不可能关于某一点对称。",
+    "【数学事实】形如 log_a(二次函数) 的复合函数，若二次函数开口向下，值域为 (-∞, M] (a>1) 或 [M, +∞) (0<a<1)。",
+    "【数学事实】log_a(二次函数) 的单调区间分界点必须等于内部二次函数的对称轴。",
+    "【数学事实】log_a(x+1) 的反函数为 a^x - 1，两者关于 y=x 对称。"
   ]
 }

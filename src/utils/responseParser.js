@@ -225,18 +225,35 @@ const fixJsonEscaping = (jsonString) => {
 
 /**
  * 从原始文本中提取 JSON 字符串
+ * 🚀 V5.1 增强：支持多种代码块格式和更强的容错能力
  */
 const extractJsonString = (rawText) => {
-  // 1. 先尝试匹配 ```json 代码块
+  // 1. 先尝试匹配 ```json 代码块 (最高优先级)
   const jsonBlockMatch = rawText.match(/```(?:json)?\s*([\s\S]*?)```/)
   if (jsonBlockMatch) {
     const content = jsonBlockMatch[1].trim()
     if (content.startsWith('{') && content.endsWith('}')) {
+      console.log('[JSON提取] 从 markdown 代码块中提取成功')
       return content
     }
   }
   
-  // 2. 尝试找到第一个完整的 JSON 对象
+  // 2. 尝试匹配 ```json ... ``` 格式 (可能没有闭合的 ```)
+  const openBlockMatch = rawText.match(/```(?:json)?\s*([\s\S]*)/)
+  if (openBlockMatch) {
+    const content = openBlockMatch[1].trim()
+    // 尝试找到最后一个 }
+    const lastBrace = content.lastIndexOf('}')
+    if (lastBrace > 0) {
+      const potentialJson = content.substring(0, lastBrace + 1)
+      if (potentialJson.startsWith('{')) {
+        console.log('[JSON提取] 从未闭合的代码块中提取成功')
+        return potentialJson
+      }
+    }
+  }
+  
+  // 3. 尝试找到第一个完整的 JSON 对象
   const firstBrace = rawText.indexOf('{')
   if (firstBrace === -1) {
     throw new Error("未在响应中找到有效的 JSON 花括号结构")
@@ -282,7 +299,79 @@ const extractJsonString = (rawText) => {
     throw new Error("未找到完整的 JSON 结构")
   }
   
+  console.log('[JSON提取] 从原始文本中提取成功')
   return rawText.substring(firstBrace, endPos + 1)
+}
+
+/**
+ * 🚀 V6.0 流式解析 Fallback
+ * 当 JSON 解析彻底失败时，使用正则表达式直接提取关键字段
+ */
+const fallbackExtractFields = (rawText) => {
+  console.log('[JSON提取] 🚨 启用 Fallback 模式：正则提取')
+  
+  const result = {
+    question: null,
+    analysis: null,
+    answer: null,
+    _fallback: true
+  }
+  
+  // 尝试提取 question 字段
+  const questionPatterns = [
+    /"question"\s*:\s*"([\s\S]*?)"\s*,\s*"/,
+    /"question"\s*:\s*"([\s\S]*?)"\s*}/,
+    /题目[：:]\s*([\s\S]*?)(?=解析|答案|$)/,
+    /【题目】\s*([\s\S]*?)(?=【解析】|【答案】|$)/
+  ]
+  
+  for (const pattern of questionPatterns) {
+    const match = rawText.match(pattern)
+    if (match && match[1]) {
+      result.question = match[1].trim()
+      break
+    }
+  }
+  
+  // 尝试提取 analysis 字段
+  const analysisPatterns = [
+    /"analysis"\s*:\s*"([\s\S]*?)"\s*,\s*"/,
+    /"analysis"\s*:\s*"([\s\S]*?)"\s*}/,
+    /解析[：:]\s*([\s\S]*?)(?=答案|$)/,
+    /【解析】\s*([\s\S]*?)(?=【答案】|$)/
+  ]
+  
+  for (const pattern of analysisPatterns) {
+    const match = rawText.match(pattern)
+    if (match && match[1]) {
+      result.analysis = match[1].trim()
+      break
+    }
+  }
+  
+  // 尝试提取 answer 字段
+  const answerPatterns = [
+    /"answer"\s*:\s*"([\s\S]*?)"\s*}/,
+    /"answer"\s*:\s*\[([\s\S]*?)\]\s*}/,
+    /答案[：:]\s*([\s\S]*?)(?=$)/,
+    /【答案】\s*([\s\S]*?)(?=$)/
+  ]
+  
+  for (const pattern of answerPatterns) {
+    const match = rawText.match(pattern)
+    if (match && match[1]) {
+      result.answer = match[1].trim()
+      break
+    }
+  }
+  
+  // 检查是否至少提取到一个字段
+  if (!result.question && !result.analysis && !result.answer) {
+    throw new Error("Fallback 模式也无法提取任何有效字段")
+  }
+  
+  console.log('[JSON提取] ✅ Fallback 模式提取成功')
+  return result
 }
 
 /**
@@ -306,20 +395,111 @@ const cleanReasoning = (obj) => {
  */
 export const parseAIResponse = (rawText) => {
   try {
-    const jsonString = extractJsonString(rawText)
+    // 🔧 修复5: 预处理原始文本，处理常见的 LaTeX 转义问题
+    let preprocessedText = rawText
+    
+    // 5.1 统一换行符
+    preprocessedText = preprocessedText.replace(/\r\n/g, '\n')
+    
+    // 5.2 处理 JSON 字符串中的双反斜杠问题
+    // AI 返回的 \\frac 在 JSON 中应该表示为 \\\\frac
+    // 但有时 AI 直接返回 \frac，导致 JSON 解析失败
+    
+    const jsonString = extractJsonString(preprocessedText)
     let parsedObj
     
-    try {
-      parsedObj = JSON.parse(jsonString)
-    } catch (e) {
-      console.warn("[JSON 修复] 原始解析失败，尝试修复转义字符...")
-      const fixedString = fixJsonEscaping(jsonString)
+    // 尝试多种解析策略
+    const parseStrategies = [
+      { name: '原始解析', fn: (s) => s },
+      { name: '修复转义', fn: fixJsonEscaping },
+      {
+        name: 'LaTeX 预处理',
+        fn: (s) => {
+          // 🔧 新增：针对 LaTeX 内容的预处理
+          let cleaned = s
+          
+          // 1. 临时替换 LaTeX 公式中的问题字符
+          // 将 $...$ 中的内容临时保护起来
+          const latexPlaceholders = []
+          cleaned = cleaned.replace(/\$([^$]+)\$/g, (match, latex) => {
+            // 修复 LaTeX 内部的双引号问题
+            const fixed = latex.replace(/"/g, "'")
+            latexPlaceholders.push(fixed)
+            return `__LATEX_${latexPlaceholders.length - 1}__`
+          })
+          
+          // 2. 修复字符串值中的问题
+          // 移除控制字符（保留换行、制表符）
+          cleaned = cleaned.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+          
+          // 3. 还原 LaTeX 公式
+          latexPlaceholders.forEach((latex, i) => {
+            cleaned = cleaned.replace(`__LATEX_${i}__`, `$${latex}$`)
+          })
+          
+          return cleaned
+        }
+      },
+      { 
+        name: '宽松模式', 
+        fn: (s) => {
+          // 移除控制字符
+          let cleaned = s.replace(/[\x00-\x1F\x7F]/g, (char) => {
+            if (char === '\n' || char === '\r' || char === '\t') return char
+            return ''
+          })
+          // 修复未转义的反斜杠
+          cleaned = cleaned.replace(/\\(?!["\\/bfnrtu])/g, '\\\\')
+          return cleaned
+        }
+      },
+      {
+        name: '激进修复',
+        fn: (s) => {
+          // 将所有单反斜杠变成双反斜杠（除了 JSON 特殊字符）
+          let cleaned = s
+          // 先保护已正确转义的
+          cleaned = cleaned.replace(/\\\\(["\\/bfnrtu])/g, '\x00$1')
+          // 转义单反斜杠
+          cleaned = cleaned.replace(/\\/g, '\\\\')
+          // 恢复保护的
+          cleaned = cleaned.replace(/\x00(["\\/bfnrtu])/g, '\\\\$1')
+          return cleaned
+        }
+      }
+    ]
+    
+    let lastError = null
+    for (const strategy of parseStrategies) {
       try {
-        parsedObj = JSON.parse(fixedString)
-        console.warn("[JSON 修复] 自动修复成功")
-      } catch (e2) {
-        console.error("[JSON 修复] 修复后仍失败")
-        throw new Error(`JSON 格式严重错误：${e.message}`)
+        const processedString = strategy.fn(jsonString)
+        parsedObj = JSON.parse(processedString)
+        if (strategy.name !== '原始解析') {
+          console.warn(`[JSON 修复] 使用策略 "${strategy.name}" 成功解析`)
+        }
+        break
+      } catch (e) {
+        lastError = e
+        console.warn(`[JSON 修复] 策略 "${strategy.name}" 失败: ${e.message.substring(0, 50)}`)
+        continue
+      }
+    }
+    
+    if (!parsedObj) {
+      console.error("[JSON 修复] 所有解析策略均失败，尝试 Fallback 模式")
+      
+      // 🚀 V6.0 启用 Fallback 模式
+      try {
+        const fallbackResult = fallbackExtractFields(rawText)
+        if (fallbackResult) {
+          console.log("[JSON 修复] ✅ Fallback 模式成功提取字段")
+          parsedObj = fallbackResult
+        } else {
+          throw new Error("Fallback 模式也失败")
+        }
+      } catch (fallbackError) {
+        console.error("[JSON 修复] Fallback 模式失败:", fallbackError.message)
+        throw new Error(`JSON 格式严重错误：${lastError?.message || '未知错误'}`)
       }
     }
 
@@ -386,6 +566,15 @@ export const parseAIResponse = (rawText) => {
     // 4. 处理 Reasoning
     if (parsedObj.reasoning) {
       parsedObj.reasoning = cleanReasoning(parsedObj.reasoning)
+    }
+    
+    // 🔧 修复6: 确保返回的对象包含 content 字段
+    // 兼容多种结构，确保后续验证能正确读取题目内容
+    if (!parsedObj.content) {
+      parsedObj.content = parsedObj.question?.content || 
+                          parsedObj.question || 
+                          parsedObj.text || 
+                          ''
     }
 
     return { success: true, data: parsedObj }

@@ -15,6 +15,7 @@ import {
 import { loadMotifData } from '../utils/dataLoader';
 import { judgeAnswerWithFallback } from '../utils/aiGrader';
 import { getWeaponNameById, getWeaponLogicFlow } from '../utils/weaponUtils';
+import { verifyQuestionWithRetry } from '../services/questionVerifier';
 
 const API_KEY = import.meta.env.VITE_QWEN_API_KEY || 'YOUR_API_KEY';
 const BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
@@ -218,6 +219,8 @@ const WeeklyMission = ({
   const [showPrintPreview, setShowPrintPreview] = useState(false);
   const [debugInfo, setDebugInfo] = useState(null);
   const [loadedMotifData, setLoadedMotifData] = useState({});
+  const [verificationStatus, setVerificationStatus] = useState(null);
+  const [generatedQuestions, setGeneratedQuestions] = useState([]);
 
   const allEncounters = tacticalData?.tactical_maps?.flatMap(m => m.encounters) || [];
 
@@ -306,6 +309,9 @@ const WeeklyMission = ({
     const eloScore = encounter?.elo_score || 2000;
     const difficultyConfig = getDifficultyByElo(eloScore);
     
+    // 简化版：固定温度 0.7
+    const temperature = 0.7
+    
     if (eloScore < 1001) return null;
 
     const motifData = await findMotifData(targetId, CROSS_FILE_INDEX, loadMotifData);
@@ -372,7 +378,9 @@ const WeeklyMission = ({
       moduleConstraints,
       mathInvariants,
       userGrade: currentGrade || '高三',
-      motifId: motifData.id || motifData.motif_id || ''
+      motifId: motifData.id || motifData.motif_id || '',
+      problemIndex,
+      totalProblems: PROBLEMS_PER_MOTIF
     });
 
     const response = await fetch(BASE_URL, {
@@ -387,7 +395,7 @@ const WeeklyMission = ({
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.7,
+        temperature: temperature, // 🚀 V5.1 使用动态温度
         max_tokens: 8000,
         stream: true
       })
@@ -473,6 +481,8 @@ const WeeklyMission = ({
     setIsGenerating(true);
     setDebugInfo(null);
     setWeeklyTasks([]);
+    setGeneratedQuestions([]);
+    setVerificationStatus(null);
 
     try {
       const selectedMotifTasks = [];
@@ -495,7 +505,6 @@ const WeeklyMission = ({
             if (errorInfo?.specName) constraints.specName = errorInfo.specName;
             if (errorInfo?.varName) constraints.varName = errorInfo.varName;
             
-            // 从错题诊断结果中提取武器 ID
             const suggestedWeapons = errorInfo?.diagnosisDetails?.suggestedWeapons || 
                                      errorInfo?.diagnosis?.suggestedWeapons || [];
             if (suggestedWeapons.length > 0) {
@@ -534,36 +543,113 @@ const WeeklyMission = ({
       const totalProblems = selectedMotifTasks.length * PROBLEMS_PER_MOTIF;
       setDebugInfo(`正在为 ${selectedMotifTasks.length} 个母题生成 ${totalProblems} 道定制题目...`);
 
-      const generateWithRetry = async (motifTask, problemIndex, maxRetries = 2) => {
-        for (let attempt = 0; attempt <= maxRetries; attempt++) {
-          try {
-            const task = await generateSingleProblem(
-              motifTask.motifId, 
-              motifTask.encounter, 
-              problemIndex,
-              motifTask.dualLevelContext,
-              motifTask.source,
-              motifTask.constraints
-            );
-            if (task) return task;
-          } catch (err) {
-            console.error(`生成任务 ${motifTask.motifId} #${problemIndex} 尝试 ${attempt + 1} 失败:`, err);
-            if (attempt < maxRetries) {
-              await new Promise(resolve => setTimeout(resolve, 1000));
+      const generateWithVerification = async (motifTask, problemIndex, existingQuestions, maxRetries = 3) => { // 🚀 增加重试次数从 2 到 3
+        const targetLevel = motifTask.encounter?.elo_score 
+          ? getDifficultyByElo(motifTask.encounter.elo_score).level 
+          : 'L3';
+        
+        const generateFn = async (negativeConstraints, retryCount = 0) => {
+          const extraConstraints = negativeConstraints.length > 0 
+            ? { ...motifTask.constraints, negativeHints: negativeConstraints }
+            : motifTask.constraints;
+          
+          // 简化版：固定温度 0.7，保持创造力
+          const temperature = 0.7
+          
+          return await generateSingleProblem(
+            motifTask.motifId, 
+            motifTask.encounter, 
+            problemIndex,
+            motifTask.dualLevelContext,
+            motifTask.source,
+            extraConstraints,
+            { temperature, retryCount } // 🚀 传递动态温度
+          );
+        };
+        
+        const onStatusUpdate = (status) => {
+          setVerificationStatus({
+            motifId: motifTask.motifId,
+            problemIndex,
+            ...status
+          });
+          
+          const phaseMessages = {
+            'generating': `正在生成第 ${problemIndex} 题...`,
+            'verifying_math': `正在验算数学逻辑 (母题 ${motifTask.motifId})...`,
+            'evaluating_fitness': `正在评估难度匹配度 (目标 ${targetLevel})...`,
+            'retrying': `题目质量不足，正在重新构思...`,
+            'passed': `✅ 题目验证通过`,
+            'failed': `❌ 验证失败`
+          };
+          
+          setDebugInfo(phaseMessages[status.phase] || status.phase);
+        };
+        
+        const result = await verifyQuestionWithRetry(
+          generateFn,
+          motifTask.motifId,
+          targetLevel,
+          existingQuestions,
+          maxRetries,
+          onStatusUpdate
+        );
+        
+        if (result.success) {
+          const task = result.question;
+          if (task) {
+            task.verification = result.verification;
+            task.fitnessScore = result.fitnessScore;
+            task.fitnessDetails = result.verification?.fitnessDetails;
+            // 🆕 存储指纹，用于后续去重
+            if (result.fingerprint) {
+              task.fingerprint = result.fingerprint;
             }
           }
+          return task;
         }
+        
         return null;
       };
 
-      const promises = [];
-      selectedMotifTasks.forEach((motifTask) => {
+      const results = [];
+      const failedTasks = [];
+      
+      for (const motifTask of selectedMotifTasks) {
         for (let i = 0; i < PROBLEMS_PER_MOTIF; i++) {
-          promises.push(generateWithRetry(motifTask, i + 1));
+          // 🔧 修复4: 增强异常处理，防止单个题目解析失败导致整个批量生成中断
+          try {
+            const task = await generateWithVerification(
+              motifTask, 
+              i + 1, 
+              [...results, ...generatedQuestions],
+              2
+            );
+            
+            if (task) {
+              results.push(task);
+              setGeneratedQuestions(prev => [...prev, task]);
+            } else {
+              failedTasks.push({ motifId: motifTask.motifId, index: i + 1, reason: '返回空结果' });
+            }
+          } catch (error) {
+            // 🚨 捕获异常但不中断流程，保证其他题目能继续生成
+            console.error(`[WeeklyMission] 题目 ${motifTask.motifId}#${i + 1} 处理异常:`, error);
+            failedTasks.push({ 
+              motifId: motifTask.motifId, 
+              index: i + 1, 
+              reason: error?.message || '未知异常',
+              error: error
+            });
+            
+            // 更新 UI 显示错误信息
+            setDebugInfo(`⚠️ 题目 ${motifTask.motifId}#${i + 1} 生成异常: ${error?.message?.substring(0, 50) || '未知错误'}，跳过继续...`);
+            
+            // 短暂延迟后继续，避免快速重试导致 API 压力
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
         }
-      });
-
-      const results = (await Promise.all(promises)).filter(Boolean);
+      }
       
       if (results.length === 0) {
         throw new Error("所有题目生成失败，请检查网络或 API 配额");
@@ -575,15 +661,19 @@ const WeeklyMission = ({
       }
 
       setWeeklyTasks(results);
-      setDebugInfo(`✅ 成功生成 ${results.length} 道题目${failedCount > 0 ? `（${failedCount} 道失败）` : ''}`);
+      setGeneratedQuestions(results);
+      
+      const avgFitness = results.reduce((sum, t) => sum + (t.fitnessScore || 0), 0) / results.length;
+      setDebugInfo(`✅ 成功生成 ${results.length} 道题目${failedCount > 0 ? `（${failedCount} 道失败）` : ''}，平均适配度 ${avgFitness.toFixed(1)}/5.0`);
 
     } catch (err) {
       console.error("批量生成出错:", err);
       setDebugInfo(`❌ 生成失败: ${err.message}`);
     } finally {
       setIsGenerating(false);
+      setVerificationStatus(null);
     }
-  }, [allSelectedMotifs, allEncounters, errorNotebook, generateSingleProblem]);
+  }, [allSelectedMotifs, allEncounters, errorNotebook, generateSingleProblem, errorMotifIds, selectedMotifs, reinforcementMotifs]);
 
   const parseMultiQuestionAnswer = useCallback((rawInput, expectedCount) => {
     if (!rawInput) return { status: 'EMPTY', answers: [] };
@@ -1027,11 +1117,15 @@ const WeeklyMission = ({
         allSelectedMotifs={allSelectedMotifs}
         onGenerate={handleGenerateTasks}
         onPrint={() => setShowPrintPreview(true)}
-        onClear={() => setWeeklyTasks([])}
+        onClear={() => {
+          setWeeklyTasks([]);
+          setGeneratedQuestions([]);
+        }}
         isGenerating={isGenerating}
         hasTasks={weeklyTasks.length > 0}
         debugInfo={debugInfo}
         isAcademicMode={isAcademicMode}
+        verificationStatus={verificationStatus}
       />
 
       {weeklyTasks.length > 0 && (

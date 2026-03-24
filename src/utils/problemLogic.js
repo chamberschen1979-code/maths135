@@ -1,62 +1,12 @@
 import { getDifficultyConfig, getQuestionLevelsForUser } from '../config/difficultyConfig.js'
+import { 
+  GRADE_RESTRICTIONS, 
+  getGradeConfig as getSharedGradeConfig,
+  checkTextContainsForbidden 
+} from '../config/syllabusRules.js'
 
-const GRADE_RESTRICTIONS = {
-  universityForbidden: [
-    '洛必达法则', '泰勒展开', '级数敛散性', '严格极限定义',
-    '矩阵变换', '行列式计算', '特征值分解', '群论', '拓扑',
-    '洛必达', '泰勒', '级数', '极限定义', '特征值', '行列式'
-  ],
-
-  grade10: {
-    allowedMotifs: ['M01', 'M02', 'M03', 'M04', 'M05', 'M06'],
-    toolForbidden: [
-      '导数', '微分', '积分', '空间向量', '三维坐标', '法向量',
-      '复数三角形式', '棣莫弗', '柯西不等式', '排序不等式',
-      '和差化积', '积化和差', '反三角函数运算', '特征方程', '不动点',
-      '极坐标', '参数方程', '圆锥曲线', '椭圆', '双曲线', '抛物线',
-      '数列求和', '等比数列', '等差数列求和', '裂项', '错位相减',
-      '二项式定理', '排列组合', '条件概率', '独立事件'
-    ],
-    l2ThoughtForbidden: [
-      '取值范围', '参数讨论', '零点个数', '恰有', '恒成立', '存在性',
-      '最值博弈', '不等式证明', '充要条件证明', '存在性问题',
-      '参数范围', '最值问题', '证明'
-    ]
-  },
-
-  grade12: {
-    allowedMotifs: ['M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'M07', 'M08', 'M09', 'M10', 'M11', 'M12'],
-    toolForbidden: [
-      '泰勒展开', '洛必达', '极值点偏移', '隐零点代换', '复杂构造函数',
-      '极点极线', '第二定义', '复杂放缩', '裂项放缩', '生成函数',
-      '正态分布积分', '复杂条件概率', '多重集排列',
-      '切线不等式', '端点效应', '必要性探路'
-    ],
-    contextSpecific: {
-      'M07': ['导数', '空间向量', '坐标法'],
-      'M06': ['导数', '微分']
-    },
-    l2ThoughtForbidden: [
-      '取值范围', '参数讨论', '零点个数', '恰有', '恒成立', '存在性',
-      '最值博弈', '不等式证明', '一般性结论', '存在性问题',
-      '极值点偏移', '隐零点'
-    ]
-  },
-
-  grade13: {
-    allowedMotifs: 'ALL',
-    toolForbidden: [],
-    l2ThoughtForbidden: [
-      '竞赛级技巧', '超纲背景', '大学方法', '高阶技巧'
-    ]
-  }
-}
-
-export const getGradeConfig = (grade) => {
-  if (grade === '高一') return GRADE_RESTRICTIONS.grade10
-  if (grade === '高二') return GRADE_RESTRICTIONS.grade12
-  return GRADE_RESTRICTIONS.grade13
-}
+// 复用共享配置
+export const getGradeConfig = getSharedGradeConfig
 
 export const normalizeId = (id) => {
   if (!id || typeof id !== 'string') return null
@@ -130,12 +80,6 @@ export const findMotifData = async (targetId, crossFileIndex, loadMotifDataFn = 
 
 export const getDifficultyByElo = (elo) => {
   return getDifficultyConfig(elo)
-}
-
-const checkTextContainsForbidden = (text, forbiddenList) => {
-  if (!text || !forbiddenList || forbiddenList.length === 0) return false
-  const lowerText = text.toLowerCase()
-  return forbiddenList.some(keyword => lowerText.includes(keyword.toLowerCase()))
 }
 
 const filterByGradeRestrictions = (item, motifId, targetLevel, grade, gradeConfig) => {
@@ -542,6 +486,7 @@ export const selectSeedQuestion = (motifData, targetLevel, benchmark, problemInd
   
   const specId = benchmark.specId || ''
   const varId = benchmark.varId || ''
+  const varName = benchmark.varName || ''
   
   const specialties = motifData.specialties || []
   let originalPool = []
@@ -585,8 +530,69 @@ export const selectSeedQuestion = (motifData, targetLevel, benchmark, problemInd
     return null
   }
   
-  const randomIndex = (problemIndex + Math.floor(Math.random() * 1000)) % candidatePool.length
-  const seedQuestion = candidatePool[randomIndex]
+  // 🔧 新增：种子题安全性过滤 - 避免选择容易导致"退化"的种子
+  // 如果目标是求"范围"，过滤掉高对称性种子
+  if (varName.includes("范围") || varName.includes("最值")) {
+    const safeSeeds = candidatePool.filter(q => {
+      // 检查是否标记为高对称性
+      if (q.tags && q.tags.includes('highly_symmetric')) {
+        return false
+      }
+      
+      // 启发式规则：检查题目是否包含对称性关键词
+      const desc = q.desc || q.problem || ''
+      const symmetricPatterns = [
+        /原点.*圆|圆.*原点/,
+        /对称.*轴|轴.*对称/,
+        /等腰|等边|正三角形/,
+        /A\s*\(\s*-?\d+\s*,\s*0\s*\).*B\s*\(\s*\d+\s*,\s*0\s*\)/,  // A(-a,0), B(a,0) 对称
+        /圆心.*原点|原点.*圆心/
+      ]
+      
+      const isHighlySymmetric = symmetricPatterns.some(p => p.test(desc))
+      return !isHighlySymmetric
+    })
+    
+    if (safeSeeds.length > 0) {
+      candidatePool = safeSeeds
+      console.log(`[种子题安全过滤] 目标含"范围/最值"，已过滤高对称性种子，剩余 ${safeSeeds.length} 题`)
+    } else {
+      console.log(`[种子题安全过滤] 警告：所有种子都具有高对称性，将在 Prompt 中强制添加防退化检查`)
+    }
+  }
+  
+  // 🔧 新增：参数不规则性优先 - 优先选择参数不规则的种子
+  const irregularityScore = (q) => {
+    const desc = q.desc || q.problem || ''
+    let score = 0
+    
+    // 检查是否包含非整数参数（更不容易退化）
+    if (/\d+\.\d+|\d+\/\d+|√\d+/.test(desc)) score += 2
+    
+    // 检查是否包含非对称坐标
+    if (/\(\s*-?\d+\s*,\s*-?\d+\s*\)/.test(desc)) {
+      const coords = desc.match(/\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/g) || []
+      for (const coord of coords) {
+        const match = coord.match(/\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/)
+        if (match && match[1] !== '0' && match[2] !== '0') {
+          score += 1  // 非原点坐标加分
+        }
+      }
+    }
+    
+    // 检查是否包含参数符号（如 a, b, k）
+    if (/[a-z]\s*[=<>∈]/i.test(desc)) score += 1
+    
+    return score
+  }
+  
+  // 按不规则性排序
+  candidatePool.sort((a, b) => irregularityScore(b) - irregularityScore(a))
+  
+  // 从前 50% 的候选中随机选择（平衡随机性和安全性）
+  const topHalf = candidatePool.slice(0, Math.max(1, Math.ceil(candidatePool.length / 2)))
+  const randomIndex = (problemIndex + Math.floor(Math.random() * 1000)) % topHalf.length
+  const seedQuestion = topHalf[randomIndex]
   
   console.log(`[出题种子] 母题:${motifData.motif_id || motifData.id} | 变例:${specId}/${varId} | 目标难度:${targetLevel} | 选中种子难度:${seedQuestion.level} | 种子ID:${seedQuestion.id || 'unknown'}`)
   

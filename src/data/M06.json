@@ -233,7 +233,29 @@
                 "conclusion": "$-4/3$"
               }
             }
-          ]
+          ],
+          "type_label": "trig_angle_transformation",
+          "identification_rules": {
+            "required_objects": [
+              "trig"
+            ],
+            "required_relations": [
+              "equation"
+            ],
+            "forbidden_objects": [
+              "derivative",
+              "vector"
+            ],
+            "keywords": [
+              "配角",
+              "和差角",
+              "给值求值",
+              "sin",
+              "cos",
+              "tan"
+            ]
+          },
+          "expected_method": "angle_unification"
         },
         {
           "var_id": "1.2",
@@ -540,7 +562,29 @@
                 "step_3": "Verify monotonicity: x ∈ (0, π/3) → x+π/6 ∈ (π/6, π/2), sin is increasing"
               }
             }
-          ]
+          ],
+          "type_label": "trig_auxiliary_angle",
+          "identification_rules": {
+            "required_objects": [
+              "trig"
+            ],
+            "required_relations": [
+              "extremum",
+              "symmetry"
+            ],
+            "forbidden_objects": [
+              "derivative"
+            ],
+            "keywords": [
+              "辅助角",
+              "最值",
+              "对称轴",
+              "对称中心",
+              "振幅",
+              "周期"
+            ]
+          },
+          "expected_method": "auxiliary_angle_formula"
         }
       ]
     },
@@ -823,7 +867,29 @@
                 "conclusion": "3"
               }
             }
-          ]
+          ],
+          "type_label": "trig_graph_transform",
+          "identification_rules": {
+            "required_objects": [
+              "trig"
+            ],
+            "required_relations": [
+              "range"
+            ],
+            "forbidden_objects": [
+              "derivative"
+            ],
+            "keywords": [
+              "平移",
+              "伸缩",
+              "图象",
+              "变换",
+              "ω",
+              "φ",
+              "周期"
+            ]
+          },
+          "expected_method": "phase_shift_analysis"
         },
         {
           "var_id": "2.2",
@@ -1189,7 +1255,29 @@
                 "step_3": "Check existence in [0, π]? YES (verified)"
               }
             }
-          ]
+          ],
+          "type_label": "trig_zero_point_range",
+          "identification_rules": {
+            "required_objects": [
+              "trig"
+            ],
+            "required_relations": [
+              "zeroPoint",
+              "range"
+            ],
+            "forbidden_objects": [
+              "derivative"
+            ],
+            "keywords": [
+              "零点",
+              "恰有",
+              "范围",
+              "ω",
+              "端点",
+              "个数"
+            ]
+          },
+          "expected_method": "integral_point_analysis"
         }
       ]
     }

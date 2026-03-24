@@ -8,7 +8,8 @@ const TaskGenerator = ({
   isGenerating,
   hasTasks,
   debugInfo,
-  isAcademicMode
+  isAcademicMode,
+  verificationStatus
 }) => {
   const [showPrintPreview, setShowPrintPreview] = useState(false);
 
@@ -24,6 +25,37 @@ const TaskGenerator = ({
 
   const handleClear = () => {
     onClear?.();
+  };
+
+  const getPhaseIcon = (phase) => {
+    const icons = {
+      'generating': '📝',
+      'verifying_math': '🔬',
+      'evaluating_fitness': '📊',
+      'retrying': '🔄',
+      'passed': '✅',
+      'failed': '❌'
+    };
+    return icons[phase] || '⏳';
+  };
+
+  const getPhaseText = (status) => {
+    if (!status) return null;
+    
+    const { phase, attempt, maxRetries, fitnessScore, errorType } = status;
+    
+    const texts = {
+      'generating': `正在生成第 ${status.problemIndex} 题...`,
+      'verifying_math': `🔬 正在验算数学逻辑...`,
+      'evaluating_fitness': fitnessScore 
+        ? `📊 评估完成：适配度 ${fitnessScore.toFixed(1)}/5.0` 
+        : `📊 正在评估难度匹配度...`,
+      'retrying': `🔄 题目质量不足 (${errorType})，正在重新构思...`,
+      'passed': `✅ 验证通过`,
+      'failed': `❌ 验证失败`
+    };
+    
+    return texts[phase] || phase;
   };
 
   return (
@@ -51,7 +83,7 @@ const TaskGenerator = ({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              生成中...
+              智能打磨中...
             </span>
           ) : (
             `生成任务 (${allSelectedMotifs.length} 个母题)`
@@ -94,7 +126,47 @@ const TaskGenerator = ({
         </p>
       )}
 
-      {debugInfo && (
+      {isGenerating && verificationStatus && (
+        <div className={`mt-3 p-3 rounded-lg text-xs ${
+          isAcademicMode ? 'bg-blue-50 border border-blue-100' : 'bg-blue-900/20 border border-blue-800'
+        }`}>
+          <div className="flex items-center gap-2">
+            <span className="text-base">{getPhaseIcon(verificationStatus.phase)}</span>
+            <span className={`font-medium ${
+              isAcademicMode ? 'text-blue-700' : 'text-blue-300'
+            }`}>
+              {getPhaseText(verificationStatus)}
+            </span>
+          </div>
+          
+          {verificationStatus.phase === 'evaluating_fitness' && verificationStatus.details && (
+            <div className={`mt-2 grid grid-cols-3 gap-2 text-xs ${
+              isAcademicMode ? 'text-blue-600' : 'text-blue-400'
+            }`}>
+              <div className="flex flex-col items-center">
+                <span className="opacity-70">难度匹配</span>
+                <span className="font-bold">
+                  {verificationStatus.details.difficultyMatch?.score?.toFixed(1) || '-'}
+                </span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="opacity-70">考纲合规</span>
+                <span className="font-bold">
+                  {verificationStatus.details.syllabusCheck?.score?.toFixed(1) || '-'}
+                </span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="opacity-70">区分度</span>
+                <span className="font-bold">
+                  {verificationStatus.details.uniqueness?.score?.toFixed(1) || '-'}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {debugInfo && !isGenerating && (
         <div className={`mt-3 p-2 rounded-lg text-xs text-center ${
           debugInfo.startsWith('✅') 
             ? (isAcademicMode ? 'bg-green-50 text-green-600' : 'bg-green-900/20 text-green-400')
