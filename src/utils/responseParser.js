@@ -2,223 +2,65 @@
 
 /**
  * LaTeX 内容清洗与修复
- * 
- * ⚠️ 转义字符特别说明：
- * 在 JS 字符串中，要表示正则中的单个反斜杠 \，需要写四个反斜杠 \\\\
+ * 🔧 V10.0 逻辑重构版：解析时容错，输出前脱敏
+ */
+
+/**
+ * 基础清洗：只做必要的格式统一，不做反斜杠倍增
  */
 const sanitizeLatex = (str) => {
-  if (!str) return str
-  let cleaned = str
-
-  // 1. 清理 Markdown 标记
-  cleaned = cleaned.replace(/```json/g, '').replace(/```/g, '')
+  if (!str) return str;
+  let cleaned = str;
   
-  // 2. 修复错误的美元符包裹 "$ $" -> "$$"
-  cleaned = cleaned.replace(/\$\s+\$/g, '$$')
-
-  // 3. 【关键】预处理：移除命令与参数之间的空白 (解决 "sqrt 2" -> "sqrt2")
-  const commandsThatNeedArgs = [
-    'sqrt', 'frac', 'mathbb', 'text', 'bf', 'it', 'rm', 'cal', 'bb', 
-    'vec', 'hat', 'bar', 'tilde', 'widehat', 'widetilde', 'overline', 
-    'underline', 'left', 'right'
-  ]
+  // 1. 统一换行符，处理控制字符
+  cleaned = cleaned.replace(/\r\n/g, '\n').replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
   
-  commandsThatNeedArgs.forEach(cmd => {
-    const regex = new RegExp(`(?<!\\\\)${cmd}\\s+([a-zA-Z0-9()])`, 'g')
-    cleaned = cleaned.replace(regex, `${cmd}$1`)
-  })
-
-  // 4. 【修复 BUG】修复上标/下标缺失花括号 (保护 ^\circ 等命令)
-  // 4.1 处理数字：^2 -> ^{2}
-  cleaned = cleaned.replace(/([\^_])\s*([0-9]+)/g, '$1{$2}')
+  // 2. 角度符号修复
+  cleaned = cleaned.replace(/(\d+)\s*°/g, '$1^\\circ').replace(/°/g, '^\\circ');
   
-  // 4.2 处理单字母 (且前面没有反斜杠)：^x -> ^{x}
-  cleaned = cleaned.replace(/([\^_])\s*(?<!\\)([a-zA-Z])(?![a-zA-Z])/g, '$1{$2}')
+  // 3. 【注意】这里不再强制 replace(/\\/g, '\\\\')，让解析策略去处理
+  return cleaned;
+}
+
+/**
+ * 最终输出清洗：将多重转义还原为单转义，确保 KaTeX/MathJax 识别
+ */
+const finalCleanup = (str) => {
+  if (typeof str !== 'string') return str;
+  let res = str;
   
-  // 4.3 处理命令前的多余空格：^ \circ -> ^\circ (不要加花括号)
-  cleaned = cleaned.replace(/([\^_])\s+(\\[a-zA-Z]+)/g, '$1$2')
-
-  // 5. 【核心修复】针对 "命令 + 数字/字母" 的紧凑格式
-  // 5.1 sqrt
-  cleaned = cleaned.replace(/(?<!\\)sqrt(\d+)/g, '\\sqrt{$1}')
-  cleaned = cleaned.replace(/(?<!\\)sqrt([a-zA-Z])(?!\w)/g, '\\sqrt{$1}')
-
-  // 5.2 frac
-  cleaned = cleaned.replace(/(?<!\\)frac(\d+)(\d+)/g, '\\frac{$1}{$2}')
+  // 将 2个或更多连续反斜杠 统一还原为 1个反斜杠
+  // 逻辑：在 JS 字符串里，"\\" 代表一个杠。我们要把所有多余的转义全部干掉。
+  res = res.replace(/\\{2,}/g, '\\');
   
-  // 5.3 mathbb
-  cleaned = cleaned.replace(/(?<!\\)mathbb([A-Z])/g, '\\mathbb{$1}')
-  
-  // 5.4 希腊字母 + 数字
-  const greekWithNumbers = ['alpha', 'beta', 'gamma', 'delta', 'theta', 'pi', 'sigma', 'omega']
-  greekWithNumbers.forEach(cmd => {
-    const regex = new RegExp(`(?<!\\\\)${cmd}(\\d+)`, 'g')
-    cleaned = cleaned.replace(regex, `\\${cmd}$1`)
-  })
-
-  // 6. 普通命令修复列表
-  const latexFixes = [
-    // --- 集合论 ---
-    { pattern: /(?<!\\)\bmid\b/g, replacement: '\\mid' },
-    { pattern: /(?<!\\)\bcap\b/g, replacement: '\\cap' },
-    { pattern: /(?<!\\)\bcup\b/g, replacement: '\\cup' },
-    { pattern: /(?<!\\)\bemptyset\b/g, replacement: '\\emptyset' },
-    { pattern: /(?<!\\)\bin\b(?![a-z])/g, replacement: '\\in' },
-    { pattern: /(?<!\\)\bnotin\b/g, replacement: '\\notin' },
-    { pattern: /(?<!\\)\bsubset\b/g, replacement: '\\subset' },
-    { pattern: /(?<!\\)\bsubseteq\b/g, replacement: '\\subseteq' },
-    { pattern: /(?<!\\)\bunion\b/g, replacement: '\\cup' },
-    { pattern: /(?<!\\)\bintersection\b/g, replacement: '\\cap' },
-    { pattern: /(?<!\\)\bcomplement\b/g, replacement: '\\complement' },
-    
-    // --- 希腊字母 ---
-    { pattern: /(?<!\\)\balpha\b/g, replacement: '\\alpha' },
-    { pattern: /(?<!\\)\bbeta\b/g, replacement: '\\beta' },
-    { pattern: /(?<!\\)\bgamma\b/g, replacement: '\\gamma' },
-    { pattern: /(?<!\\)\bdelta\b/g, replacement: '\\delta' },
-    { pattern: /(?<!\\)\bDelta\b/g, replacement: '\\Delta' },
-    { pattern: /(?<!\\)\bpi\b(?!\s*\()/g, replacement: '\\pi' },
-    { pattern: /(?<!\\)\btheta\b/g, replacement: '\\theta' },
-    { pattern: /(?<!\\)\blambda\b/g, replacement: '\\lambda' },
-    { pattern: /(?<!\\)\bmu\b/g, replacement: '\\mu' },
-    { pattern: /(?<!\\)\bsigma\b/g, replacement: '\\sigma' },
-    { pattern: /(?<!\\)\bomega\b/g, replacement: '\\omega' },
-    { pattern: /(?<!\\)\bOmega\b/g, replacement: '\\Omega' },
-    { pattern: /(?<!\\)\bphi\b/g, replacement: '\\phi' },
-    { pattern: /(?<!\\)\bPhi\b/g, replacement: '\\Phi' },
-    { pattern: /(?<!\\)\bepsilon\b/g, replacement: '\\epsilon' },
-
-    // --- 运算符 ---
-    { pattern: /(?<!\\)\binfty\b/g, replacement: '\\infty' },
-    { pattern: /(?<!\\)\bpartial\b/g, replacement: '\\partial' },
-    { pattern: /(?<!\\)\bleq\b/g, replacement: '\\leq' },
-    { pattern: /(?<!\\)\bgeq\b/g, replacement: '\\geq' },
-    { pattern: /(?<!\\)\bneq\b/g, replacement: '\\neq' },
-    { pattern: /(?<!\\)\bapprox\b/g, replacement: '\\approx' },
-    { pattern: /(?<!\\)\bcdot\b/g, replacement: '\\cdot' },
-    { pattern: /(?<!\\)\btimes\b/g, replacement: '\\times' },
-    { pattern: /(?<!\\)\bdiv\b/g, replacement: '\\div' },
-    { pattern: /(?<!\\)\bpm\b/g, replacement: '\\pm' },
-    { pattern: /(?<!\\)\bmp\b/g, replacement: '\\mp' },
-    { pattern: /(?<!\\)\bprime\b/g, replacement: '\\prime' },
-    { pattern: /(?<!\\)\bcirc\b/g, replacement: '\\circ' },
-    
-    // --- 大型运算符 ---
-    { pattern: /(?<!\\)\bsum\b(?!\s*=)/g, replacement: '\\sum' },
-    { pattern: /(?<!\\)\bprod\b/g, replacement: '\\prod' },
-    { pattern: /(?<!\\)\bint\b/g, replacement: '\\int' },
-
-    // --- 三角函数/对数 ---
-    { pattern: /(?<!\\)\bsin\b/g, replacement: '\\sin' },
-    { pattern: /(?<!\\)\bcos\b/g, replacement: '\\cos' },
-    { pattern: /(?<!\\)\btan\b/g, replacement: '\\tan' },
-    { pattern: /(?<!\\)\bcot\b/g, replacement: '\\cot' },
-    { pattern: /(?<!\\)\bsec\b/g, replacement: '\\sec' },
-    { pattern: /(?<!\\)\bcsc\b/g, replacement: '\\csc' },
-    { pattern: /(?<!\\)\blog\b/g, replacement: '\\log' },
-    { pattern: /(?<!\\)\bln\b/g, replacement: '\\ln' },
-    { pattern: /(?<!\\)\blim\b/g, replacement: '\\lim' },
-    { pattern: /(?<!\\)\bexp\b/g, replacement: '\\exp' },
-
-    // --- 箭头与关系 ---
-    { pattern: /(?<!\\)\bto\b/g, replacement: '\\to' },
-    { pattern: /(?<!\\)\bgets\b/g, replacement: '\\gets' },
-    { pattern: /(?<!\\)\brightarrow\b/g, replacement: '\\rightarrow' },
-    { pattern: /(?<!\\)\bleftarrow\b/g, replacement: '\\leftarrow' },
-    { pattern: /(?<!\\)\bRightarrow\b/g, replacement: '\\Rightarrow' },
-    { pattern: /(?<!\\)\bLeftarrow\b/g, replacement: '\\Leftarrow' },
-    { pattern: /(?<!\\)\bleftrightarrow\b/g, replacement: '\\leftrightarrow' },
-    { pattern: /(?<!\\)\bequiv\b/g, replacement: '\\equiv' },
-    { pattern: /(?<!\\)\bcong\b/g, replacement: '\\cong' },
-    { pattern: /(?<!\\)\bperp\b/g, replacement: '\\perp' },
-    { pattern: /(?<!\\)\bparallel\b/g, replacement: '\\parallel' },
-    { pattern: /(?<!\\)\bangle\b/g, replacement: '\\angle' },
-    { pattern: /(?<!\\)\bmeasuredangle\b/g, replacement: '\\measuredangle' },
-    { pattern: /(?<!\\)\bsphericalangle\b/g, replacement: '\\sphericalangle' },
-
-    // --- 逻辑量词 ---
-    { pattern: /(?<!\\)\bforall\b/g, replacement: '\\forall' },
-    { pattern: /(?<!\\)\bexists\b/g, replacement: '\\exists' },
-    { pattern: /(?<!\\)\bnexists\b/g, replacement: '\\nexists' },
-
-    // --- 排版与符号 ---
-    { pattern: /(?<!\\)\bdots\b/g, replacement: '\\dots' },
-    { pattern: /(?<!\\)\bcdots\b/g, replacement: '\\cdots' },
-    { pattern: /(?<!\\)\bldots\b/g, replacement: '\\ldots' },
-    { pattern: /(?<!\\)\bvdots\b/g, replacement: '\\vdots' },
-    { pattern: /(?<!\\)\bddots\b/g, replacement: '\\ddots' },
-    { pattern: /(?<!\\)\bquad\b/g, replacement: '\\quad' },
-    { pattern: /(?<!\\)\bqquad\b/g, replacement: '\\qquad' },
-    { pattern: /(?<!\\)\bleft\b/g, replacement: '\\left' },
-    { pattern: /(?<!\\)\bright\b/g, replacement: '\\right' },
-    { pattern: /(?<!\\)\bBig\b/g, replacement: '\\Big' },
-    { pattern: /(?<!\\)\bbigg\b/g, replacement: '\\bigg' },
-    { pattern: /(?<!\\)\bBigg\b/g, replacement: '\\Bigg' },
-    { pattern: /(?<!\\)\boverline\b/g, replacement: '\\overline' },
-    { pattern: /(?<!\\)\bunderline\b/g, replacement: '\\underline' },
-    { pattern: /(?<!\\)\bvec\b/g, replacement: '\\vec' },
-    { pattern: /(?<!\\)\bhat\b/g, replacement: '\\hat' },
-    { pattern: /(?<!\\)\bbar\b/g, replacement: '\\bar' },
-    { pattern: /(?<!\\)\btilde\b/g, replacement: '\\tilde' },
-    { pattern: /(?<!\\)\bwidehat\b/g, replacement: '\\widehat' },
-    { pattern: /(?<!\\)\bwidetilde\b/g, replacement: '\\widetilde' },
-    
-    // --- 特殊关系 ---
-    { pattern: /(?<!\\)\bll\b/g, replacement: '\\ll' },
-    { pattern: /(?<!\\)\bgg\b/g, replacement: '\\gg' },
-    { pattern: /(?<!\\)\bprec\b/g, replacement: '\\prec' },
-    { pattern: /(?<!\\)\bsucc\b/g, replacement: '\\succ' },
-    { pattern: /(?<!\\)\bpreceq\b/g, replacement: '\\preceq' },
-    { pattern: /(?<!\\)\bsucceq\b/g, replacement: '\\succeq' },
-    { pattern: /(?<!\\)\bsim\b/g, replacement: '\\sim' },
-    { pattern: /(?<!\\)\bpropto\b/g, replacement: '\\propto' },
-    { pattern: /(?<!\\)\bleqslant\b/g, replacement: '\\leqslant' },
-    { pattern: /(?<!\\)\bgeqslant\b/g, replacement: '\\geqslant' },
-  ]
-
-  for (const { pattern, replacement } of latexFixes) {
-    cleaned = cleaned.replace(pattern, replacement)
-  }
-
-  return cleaned
+  return res;
 }
 
 /**
  * JSON 转义字符修复
+ * 🔧 V9.5 极简版：删除过度修复的反斜杠处理
  */
 const fixJsonEscaping = (jsonString) => {
   let fixed = jsonString
 
-  // 1. 修复特殊符号前的单反斜杠
-  fixed = fixed.replace(/(?<!\\)\\([{}_%&^#~])/g, '\\\\$1')
+  try {
+    JSON.parse(fixed)
+    return fixed
+  } catch (e) {
+    console.log('[JSON修复] 检测到非法JSON，启动深度修复...', e.message)
+  }
 
-  // 2. 修复已知 LaTeX 命令前的单反斜杠
-  const latexCommands = [
-    'frac', 'sqrt', 'sum', 'int', 'infty', 'geq', 'leq', 'neq', 'approx', 'equiv',
-    'cdot', 'times', 'div', 'alpha', 'beta', 'gamma', 'delta', 'Delta', 'pi',
-    'theta', 'lambda', 'mu', 'sigma', 'Sigma', 'Omega', 'omega', 'epsilon', 'phi', 'Phi',
-    'mathbb', 'mathbf', 'mathcal', 'text', 'textbf', 'textit',
-    'dots', 'cdots', 'ldots', 'vdots', 'ddots',
-    'quad', 'qquad', 'left', 'right', 'mid', 'Big', 'bigg', 'Bigg',
-    'sin', 'cos', 'tan', 'cot', 'sec', 'csc',
-    'arcsin', 'arccos', 'arctan',
-    'log', 'ln', 'lg', 'exp',
-    'lim', 'limsup', 'liminf',
-    'vec', 'hat', 'bar', 'tilde', 'overline', 'underline', 'overrightarrow',
-    'partial', 'nabla', 'forall', 'exists', 'in', 'notin', 'subset', 'subseteq',
-    'cup', 'cap', 'emptyset', 'varnothing',
-    'rightarrow', 'leftarrow', 'Rightarrow', 'Leftarrow', 'leftrightarrow',
-    'prime', 'circ', 'angle', 'perp', 'parallel',
-    'R', 'N', 'Z', 'Q', 'C',
-    'Re', 'Im', 'arg', 'deg', 'gcd', 'lcm', 'mod', 'pm', 'mp', 'll', 'gg',
-    'complement', 'measuredangle', 'sphericalangle', 'nexists', 'leqslant', 'geqslant',
-    'prec', 'succ', 'preceq', 'succeq', 'sim', 'propto', 'widehat', 'widetilde'
-  ]
-  const cmdPattern = latexCommands.join('|')
-  fixed = fixed.replace(new RegExp(`(?<!\\\\)\\\\(${cmdPattern})`, 'g'), '\\\\$1')
+  fixed = fixed.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim()
 
-  // 3. 兜底规则
-  fixed = fixed.replace(/(?<!\\)\\([^"\\\/bfnrtu{}_%&^#~])/g, '\\\\$1')
+  // 清理控制字符
+  fixed = fixed.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+
+  // 修复常见的 JSON 格式问题
+  // 修复未转义的引号（但不是 \" 这种已经转义的）
+  fixed = fixed.replace(/(?<!\\)"/g, '\\"')
+  
+  // 修复未闭合的字符串（简单处理）
+  // 注意：不再强制双写反斜杠，让 JSON 解析器自己处理 LaTeX 转义
 
   return fixed
 }
@@ -314,22 +156,59 @@ const fallbackExtractFields = (rawText) => {
     question: null,
     analysis: null,
     answer: null,
+    reasoning: null,
     _fallback: true
   }
   
-  // 尝试提取 question 字段
-  const questionPatterns = [
-    /"question"\s*:\s*"([\s\S]*?)"\s*,\s*"/,
-    /"question"\s*:\s*"([\s\S]*?)"\s*}/,
-    /题目[：:]\s*([\s\S]*?)(?=解析|答案|$)/,
-    /【题目】\s*([\s\S]*?)(?=【解析】|【答案】|$)/
+  // 🔥 新增：更激进的提取策略
+  const aggressivePatterns = [
+    // 尝试提取 question.content (对象形式)
+    /"question"\s*:\s*\{[^}]*"content"\s*:\s*"([\s\S]*?)"\s*\}/,
+    // 尝试提取整个 question 对象
+    /"question"\s*:\s*(\{[\s\S]*?"content"\s*:\s*"[\s\S]*?"\s*\})/,
+    // 尝试提取 reasoning 对象
+    /"reasoning"\s*:\s*(\{[\s\S]*?\})\s*,\s*"question"/,
   ]
   
-  for (const pattern of questionPatterns) {
+  // 先尝试激进策略
+  for (const pattern of aggressivePatterns) {
     const match = rawText.match(pattern)
     if (match && match[1]) {
-      result.question = match[1].trim()
-      break
+      console.log(`[JSON 修复] 🟢 激进策略命中`)
+      // 如果匹配到 content
+      if (match[1].includes('content') || match[1].length > 20) {
+        let content = match[1]
+        // 清理转义字符
+        content = content.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\\\/g, '\\')
+        // 如果匹配的是对象形式，提取 content
+        if (content.startsWith('{')) {
+          const contentMatch = content.match(/"content"\s*:\s*"([\s\S]*?)"/)
+          if (contentMatch) {
+            result.question = { content: contentMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n') }
+          }
+        } else {
+          result.question = { content }
+        }
+        break
+      }
+    }
+  }
+  
+  // 尝试提取 question 字段 (原有逻辑)
+  if (!result.question) {
+    const questionPatterns = [
+      /"question"\s*:\s*"([\s\S]*?)"\s*,\s*"/,
+      /"question"\s*:\s*"([\s\S]*?)"\s*}/,
+      /题目[：:]\s*([\s\S]*?)(?=解析|答案|$)/,
+      /【题目】\s*([\s\S]*?)(?=【解析】|【答案】|$)/
+    ]
+    
+    for (const pattern of questionPatterns) {
+      const match = rawText.match(pattern)
+      if (match && match[1]) {
+        result.question = match[1].trim()
+        break
+      }
     }
   }
   
@@ -337,6 +216,7 @@ const fallbackExtractFields = (rawText) => {
   const analysisPatterns = [
     /"analysis"\s*:\s*"([\s\S]*?)"\s*,\s*"/,
     /"analysis"\s*:\s*"([\s\S]*?)"\s*}/,
+    /"analysis"\s*:\s*(\{[\s\S]*?\})\s*,\s*"/,
     /解析[：:]\s*([\s\S]*?)(?=答案|$)/,
     /【解析】\s*([\s\S]*?)(?=【答案】|$)/
   ]
@@ -344,7 +224,16 @@ const fallbackExtractFields = (rawText) => {
   for (const pattern of analysisPatterns) {
     const match = rawText.match(pattern)
     if (match && match[1]) {
-      result.analysis = match[1].trim()
+      let analysis = match[1].trim()
+      // 如果是对象形式，提取 core_idea
+      if (analysis.startsWith('{')) {
+        const coreIdeaMatch = analysis.match(/"core_idea"\s*:\s*"([\s\S]*?)"/)
+        if (coreIdeaMatch) {
+          result.analysis = { core_idea: coreIdeaMatch[1].replace(/\\"/g, '"').replace(/\\n/g, '\n') }
+        }
+      } else {
+        result.analysis = analysis
+      }
       break
     }
   }
@@ -353,6 +242,7 @@ const fallbackExtractFields = (rawText) => {
   const answerPatterns = [
     /"answer"\s*:\s*"([\s\S]*?)"\s*}/,
     /"answer"\s*:\s*\[([\s\S]*?)\]\s*}/,
+    /"answer"\s*:\s*(\{[\s\S]*?\})\s*}/,
     /答案[：:]\s*([\s\S]*?)(?=$)/,
     /【答案】\s*([\s\S]*?)(?=$)/
   ]
@@ -360,14 +250,49 @@ const fallbackExtractFields = (rawText) => {
   for (const pattern of answerPatterns) {
     const match = rawText.match(pattern)
     if (match && match[1]) {
-      result.answer = match[1].trim()
+      let answer = match[1].trim()
+      // 如果是对象形式，提取 l1
+      if (answer.startsWith('{')) {
+        const l1Match = answer.match(/"l1"\s*:\s*"([\s\S]*?)"/)
+        const l2Match = answer.match(/"l2"\s*:\s*"([\s\S]*?)"/)
+        result.answer = {
+          l1: l1Match ? l1Match[1].replace(/\\"/g, '"') : null,
+          l2: l2Match ? l2Match[1].replace(/\\"/g, '"') : null
+        }
+      } else {
+        result.answer = answer
+      }
+      break
+    }
+  }
+  
+  // 尝试提取 reasoning 字段
+  const reasoningPatterns = [
+    /"reasoning"\s*:\s*(\{[\s\S]*?\})\s*,\s*"question"/,
+    /"reasoning"\s*:\s*"([\s\S]*?)"\s*,\s*"question"/
+  ]
+  
+  for (const pattern of reasoningPatterns) {
+    const match = rawText.match(pattern)
+    if (match && match[1]) {
+      result.reasoning = match[1].trim()
       break
     }
   }
   
   // 检查是否至少提取到一个字段
   if (!result.question && !result.analysis && !result.answer) {
-    throw new Error("Fallback 模式也无法提取任何有效字段")
+    // 🔥 最后的尝试：直接提取所有中文内容
+    const lastResortMatch = rawText.match(/[\u4e00-\u9fa5]+[\s\S]*?[\u4e00-\u9fa5]+/g)
+    if (lastResortMatch && lastResortMatch.length > 0) {
+      console.log('[JSON 修复] 🟡 最后手段：提取所有中文内容')
+      result.question = { content: lastResortMatch.slice(0, 3).join('\n') }
+      result.analysis = { core_idea: '自动提取' }
+      result.answer = { l1: null, l2: null }
+      result._lastResort = true
+    } else {
+      throw new Error("Fallback 模式也无法提取任何有效字段")
+    }
   }
   
   console.log('[JSON提取] ✅ Fallback 模式提取成功')
@@ -415,24 +340,24 @@ export const parseAIResponse = (rawText) => {
       {
         name: 'LaTeX 预处理',
         fn: (s) => {
-          // 🔧 新增：针对 LaTeX 内容的预处理
           let cleaned = s
           
-          // 1. 临时替换 LaTeX 公式中的问题字符
-          // 将 $...$ 中的内容临时保护起来
+          // 1. 保护 $...$ 中的 LaTeX 内容
           const latexPlaceholders = []
           cleaned = cleaned.replace(/\$([^$]+)\$/g, (match, latex) => {
-            // 修复 LaTeX 内部的双引号问题
             const fixed = latex.replace(/"/g, "'")
             latexPlaceholders.push(fixed)
             return `__LATEX_${latexPlaceholders.length - 1}__`
           })
           
-          // 2. 修复字符串值中的问题
-          // 移除控制字符（保留换行、制表符）
+          // 2. 清理控制字符
           cleaned = cleaned.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
           
-          // 3. 还原 LaTeX 公式
+          // 3. 【关键】将单反斜杠转为双反斜杠，确保 JSON.parse 通过
+          // 这样即使 AI 返回 \frac，也能骗过 JSON.parse
+          cleaned = cleaned.replace(/\\/g, '\\\\')
+          
+          // 4. 还原 LaTeX 占位符
           latexPlaceholders.forEach((latex, i) => {
             cleaned = cleaned.replace(`__LATEX_${i}__`, `$${latex}$`)
           })
@@ -443,30 +368,17 @@ export const parseAIResponse = (rawText) => {
       { 
         name: '宽松模式', 
         fn: (s) => {
-          // 移除控制字符
           let cleaned = s.replace(/[\x00-\x1F\x7F]/g, (char) => {
             if (char === '\n' || char === '\r' || char === '\t') return char
             return ''
           })
-          // 修复未转义的反斜杠
           cleaned = cleaned.replace(/\\(?!["\\/bfnrtu])/g, '\\\\')
           return cleaned
         }
-      },
-      {
-        name: '激进修复',
-        fn: (s) => {
-          // 将所有单反斜杠变成双反斜杠（除了 JSON 特殊字符）
-          let cleaned = s
-          // 先保护已正确转义的
-          cleaned = cleaned.replace(/\\\\(["\\/bfnrtu])/g, '\x00$1')
-          // 转义单反斜杠
-          cleaned = cleaned.replace(/\\/g, '\\\\')
-          // 恢复保护的
-          cleaned = cleaned.replace(/\x00(["\\/bfnrtu])/g, '\\\\$1')
-          return cleaned
-        }
       }
+      // ⚠️ 已停用"激进修复"和"超级修复"策略
+      // 这两个策略在处理标准 LaTeX 时往往"帮倒忙"
+      // LaTeX 预处理 和 宽松模式 已经足够应对 90% 的场景
     ]
     
     let lastError = null
@@ -515,49 +427,63 @@ export const parseAIResponse = (rawText) => {
     // 1. 处理 Question (保留换行，因为题干可能有多行)
     if (parsedObj.question) {
       if (typeof parsedObj.question === 'string') {
-        parsedObj.question = sanitizeLatex(parsedObj.question)
+        parsedObj.question = finalCleanup(sanitizeLatex(parsedObj.question))
       } else if (parsedObj.question.content) {
-        parsedObj.question.content = sanitizeLatex(parsedObj.question.content)
+        parsedObj.question.content = finalCleanup(sanitizeLatex(parsedObj.question.content))
       }
     }
     
     // 2. 处理 Analysis (保留换行，因为解析需要段落结构)
     if (parsedObj.analysis) {
       if (typeof parsedObj.analysis === 'string') {
-        parsedObj.analysis = sanitizeLatex(parsedObj.analysis)
+        parsedObj.analysis = finalCleanup(sanitizeLatex(parsedObj.analysis))
       } else {
-        if (parsedObj.analysis.core_idea) parsedObj.analysis.core_idea = sanitizeLatex(parsedObj.analysis.core_idea)
+        if (parsedObj.analysis.core_idea) parsedObj.analysis.core_idea = finalCleanup(sanitizeLatex(parsedObj.analysis.core_idea))
         if (parsedObj.analysis.steps && Array.isArray(parsedObj.analysis.steps)) {
-          parsedObj.analysis.steps = parsedObj.analysis.steps.map(step => sanitizeLatex(step))
+          parsedObj.analysis.steps = parsedObj.analysis.steps.map(step => finalCleanup(sanitizeLatex(step)))
         }
-        if (parsedObj.analysis.trap_hint) parsedObj.analysis.trap_hint = sanitizeLatex(parsedObj.analysis.trap_hint)
+        if (parsedObj.analysis.trap_hint) parsedObj.analysis.trap_hint = finalCleanup(sanitizeLatex(parsedObj.analysis.trap_hint))
         Object.keys(parsedObj.analysis).forEach(key => {
           if (typeof parsedObj.analysis[key] === 'string' && !['core_idea', 'steps', 'trap_hint'].includes(key)) {
-             parsedObj.analysis[key] = sanitizeLatex(parsedObj.analysis[key])
+             parsedObj.analysis[key] = finalCleanup(sanitizeLatex(parsedObj.analysis[key]))
           }
         })
       }
     }
     
-    // 3. 处理 Answer (【关键修复】强制移除换行符，防止公式断裂)
+    // 3. 处理 Answer
     if (parsedObj.answer) {
+      const processStr = (before) => {
+        if (typeof before !== 'string') return before;
+        
+        // 保留原始换行，只清理多余空格
+        let ans = before.trim()
+        
+        // 【核心修复】先清理多余杠，确保 KaTeX 识别
+        ans = finalCleanup(ans)
+ 
+        // 自动包裹数学内容 (只有在没有 $ 且看起来像数学公式时)
+        const mathSigns = ['\\', '^', '_', '{', '}', '=', '>', '<']
+        const looksLikeMath = mathSigns.some(sign => ans.includes(sign))
+        
+        if (ans && !ans.includes('$') && looksLikeMath) {
+          ans = `$${ans}$`
+        }
+        return ans;
+      }
+
       if (typeof parsedObj.answer === 'string') {
-        // 先移除换行，再清洗
-        parsedObj.answer = sanitizeLatex(parsedObj.answer.replace(/\n/g, ' ').replace(/\s+/g, ' '))
+        parsedObj.answer = processStr(parsedObj.answer)
       } else {
         Object.keys(parsedObj.answer).forEach(key => {
           const before = parsedObj.answer[key]
-          if (typeof before === 'string') {
-            // 【核心逻辑】移除换行符，合并多余空格
-            const noNewLineStr = before.replace(/\n/g, ' ').replace(/\s+/g, ' ')
-            parsedObj.answer[key] = sanitizeLatex(noNewLineStr)
-            
-            const after = parsedObj.answer[key]
-            if (before !== after) {
-               console.log(`🟢 [已修复] answer.${key}:`, before.substring(0, 50), "->", after.substring(0, 50))
-            } else {
-               console.log(`⚪ [无变化] answer.${key}:`, before.substring(0, 50))
-            }
+          parsedObj.answer[key] = processStr(before)
+          
+          const after = parsedObj.answer[key]
+          if (before !== after) {
+            console.log(`🟢 [已修复] answer.${key}:`, before.substring(0, 50), "->", after.substring(0, 50))
+          } else {
+            console.log(`⚪ [无变化] answer.${key}:`, before.substring(0, 50))
           }
         })
       }

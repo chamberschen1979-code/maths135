@@ -99,12 +99,15 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
         const renderedVariants = [];
 
         spec.variations.forEach(variation => {
+          // 🔥 兼容新旧结构：优先使用 master_benchmarks，备选使用 original_pool
           const benchmarks = variation.master_benchmarks || [];
+          const pool = variation.original_pool || [];
           
+          // 从 original_pool 中提取各难度的题目
           const levelBenchmarks = {
-            L2: benchmarks.filter(b => b.level === 'L2')[0] || null,
-            L3: benchmarks.filter(b => b.level === 'L3')[0] || null,
-            L4: benchmarks.filter(b => b.level === 'L4')[0] || null
+            L2: benchmarks.filter(b => b.level === 'L2')[0] || pool.filter(q => q.level === 'L2')[0] || null,
+            L3: benchmarks.filter(b => b.level === 'L3')[0] || pool.filter(q => q.level === 'L3')[0] || null,
+            L4: benchmarks.filter(b => b.level === 'L4')[0] || pool.filter(q => q.level === 'L4')[0] || null
           };
 
           let variantMastered = 0;

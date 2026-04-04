@@ -1,30 +1,26 @@
-import strategyLib from '../data/strategy_lib.json'
+import weaponDetailsAdapter from './weaponDetailsAdapter'
 
 export const buildWeaponKeywordMap = () => {
   const keywordMap = new Map()
   
-  if (!strategyLib?.categories) return keywordMap
+  const allWeapons = weaponDetailsAdapter.getAllWeapons()
   
-  strategyLib.categories.forEach(category => {
-    if (!category.weapons) return
+  allWeapons.forEach(weapon => {
+    if (!weapon.triggerKeywords) return
     
-    category.weapons.forEach(weapon => {
-      if (!weapon.trigger_keywords) return
+    weapon.triggerKeywords.forEach(keyword => {
+      const normalizedKeyword = keyword.toLowerCase().trim()
       
-      weapon.trigger_keywords.forEach(keyword => {
-        const normalizedKeyword = keyword.toLowerCase().trim()
-        
-        if (!keywordMap.has(normalizedKeyword)) {
-          keywordMap.set(normalizedKeyword, [])
-        }
-        
-        keywordMap.get(normalizedKeyword).push({
-          weaponId: weapon.id,
-          weaponName: weapon.name,
-          category: category.name,
-          motifIds: weapon.linked_motifs?.map(m => m.id) || [],
-          logicFlow: weapon.logic_flow || ''
-        })
+      if (!keywordMap.has(normalizedKeyword)) {
+        keywordMap.set(normalizedKeyword, [])
+      }
+      
+      keywordMap.get(normalizedKeyword).push({
+        weaponId: weapon.id,
+        weaponName: weapon.name,
+        category: weapon.category,
+        motifIds: weapon.linkedMotifs?.map(m => m.id) || [],
+        logicFlow: weapon.logicFlow || ''
       })
     })
   })
@@ -34,7 +30,7 @@ export const buildWeaponKeywordMap = () => {
 }
 
 export const matchWeaponsByKeywords = (text, keywordMap) => {
-  if (!text || !keywordMap) return []
+  if (!text) return []
   
   const normalizedText = text.toLowerCase()
   const matches = []

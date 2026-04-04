@@ -4,7 +4,7 @@ import { Lock, AlertTriangle, Crosshair, Shield, Skull, Heart, Zap, Map, RotateC
 import { ThemeContext, GradeContext } from '../App'
 import HoloMap from './HoloMap'
 import LevelIndicator, { LevelIndicatorDetailed } from './LevelIndicator'
-import strategyLib from '../data/strategy_lib.json'
+import weaponDetails from '../data/weapon_details.json'
 
 const CATEGORY_TO_MOTIF = {
   'S-SET': 'M01',
@@ -34,7 +34,7 @@ const MOTIF_NAMES = {
   'M07': '解三角形综合',
   'M08': '数列基础与求和',
   'M09': '立体几何基础',
-  'M10': '解析几何基础',
+  'M10': '圆锥曲线基础',
   'M11': '导数工具基础',
   'M12': '概率与统计综合',
   'M13': '解析几何综合压轴',
@@ -371,19 +371,79 @@ function TacticalDashboard({ tacticalData, onDeployToZone, currentGrade, onGloba
 
   const getRelatedWeapons = (targetId) => {
     const related = []
-    strategyLib.categories.forEach(category => {
-      category.weapons.forEach(weapon => {
-        const motifId = CATEGORY_TO_MOTIF[category.id]
-        if (motifId === targetId) {
-          related.push({
-            name: weapon.name,
-            id: weapon.id,
-            category: category.name
-          })
-        }
-      })
+    const WEAPON_NAMES = {
+      'S-SET-01': '空集优先讨论',
+      'S-SET-02': '集合运算化简',
+      'S-SET-03': '韦恩图分析',
+      'S-FUNC-01': '定义域优先',
+      'S-FUNC-02': '同增异减法则',
+      'S-FUNC-03': '奇偶性判断',
+      'S-FUNC-04': '零点交点转化',
+      'S-FUNC-05': '数形结合分析',
+      'S-TRIG-01': '恒等变换技巧',
+      'S-TRIG-02': '图象变换铁律',
+      'S-TRIG-03': '五点作图法',
+      'S-TRIG-04': 'ω范围讨论',
+      'S-TRIG-05': '辅助角公式',
+      'S-VEC-01': '基底法',
+      'S-VEC-02': '坐标法',
+      'S-VEC-03': '几何意义',
+      'S-VEC-04': '建系策略',
+      'S-VEC-05': '数量积应用',
+      'S-SEQ-01': '下标和性质',
+      'S-SEQ-02': '错位相减',
+      'S-SEQ-03': '裂项相消',
+      'S-SEQ-04': '分组求和',
+      'S-SEQ-05': '通项公式',
+      'S-GEO-01': '建系坐标法',
+      'S-GEO-02': '几何法',
+      'S-GEO-03': '体积转化',
+      'S-GEO-04': '空间向量',
+      'S-GEO-05': '二面角计算',
+      'S-ANA-01': '设点求参',
+      'S-ANA-02': '韦达定理',
+      'S-ANA-03': '点差法',
+      'S-ANA-04': '切线方程',
+      'S-ANA-05': '轨迹方程',
+      'S-DER-01': '求导法则',
+      'S-DER-02': '切线方程',
+      'S-DER-03': '单调性讨论',
+      'S-DER-04': '极值最值',
+      'S-DER-05': '零点讨论',
+      'S-PROB-01': '古典概型',
+      'S-PROB-02': '条件概率',
+      'S-PROB-03': '期望方差',
+      'S-PROB-04': '分布列',
+      'S-PROB-05': '统计推断'
+    }
+    
+    Object.entries(weaponDetails).forEach(([weaponId, details]) => {
+      const categoryPrefix = weaponId.split('-').slice(0, 2).join('-')
+      const motifId = CATEGORY_TO_MOTIF[categoryPrefix]
+      if (motifId === targetId) {
+        related.push({
+          name: WEAPON_NAMES[weaponId] || weaponId,
+          id: weaponId,
+          category: getCategoryName(categoryPrefix)
+        })
+      }
     })
     return related
+  }
+  
+  const getCategoryName = (categoryId) => {
+    const names = {
+      'S-SET': '集合与逻辑',
+      'S-FUNC': '函数与性质',
+      'S-TRIG': '三角函数',
+      'S-VEC': '平面向量',
+      'S-SEQ': '数列',
+      'S-GEO': '立体几何',
+      'S-ANA': '解析几何',
+      'S-DER': '导数',
+      'S-PROB': '概率统计'
+    }
+    return names[categoryId] || '其他'
   }
 
   const handleGoToTraining = (targetId, e) => {

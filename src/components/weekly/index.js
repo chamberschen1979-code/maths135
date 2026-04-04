@@ -7,3 +7,4 @@ export { default as TaskDisplay } from './TaskDisplay';
 export { default as AnswerInput } from './AnswerInput';
 export { default as PrintPreview } from './PrintPreview';
 export { default as ErrorLibrary } from './ErrorLibrary';
+export { default as QuestionHistoryPanel } from './QuestionHistoryPanel';

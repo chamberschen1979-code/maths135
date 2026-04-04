@@ -16,21 +16,91 @@ const PrintPreview = ({
     if (!printContent) return;
 
     const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
+    if (!printWindow) {
+      alert('请允许弹出窗口以进行打印');
+      return;
+    }
+
+    const tasksHtml = tasks.map((task, index) => {
+      let question = task.variant?.question || task.problem || task.question || '';
+      
+      console.log('[PrintPreview] 题目', index + 1, '原始内容:', question.substring(0, 100));
+      console.log('[PrintPreview] 题目', index + 1, '转义下划线:', question.match(/\\_+/g));
+      console.log('[PrintPreview] 题目', index + 1, '普通下划线:', question.match(/_+/g));
+      
+      const parts = question.split(/(\$[^$]+\$)/g);
+      question = parts.map(part => {
+        if (part.startsWith('$') && part.endsWith('$')) {
+          return part;
+        }
+        part = part.replace(/(\\_)+/g, function(match) {
+          const count = match.length / 2;
+          return '<span class="blank-line" style="display:inline-block;width:' + (count * 8) + 'px;border-bottom:1px solid #333;height:1em;"></span>';
+        });
+        part = part.replace(/_{2,}/g, function(match) {
+          return '<span class="blank-line" style="display:inline-block;width:' + (match.length * 8) + 'px;border-bottom:1px solid #333;height:1em;"></span>';
+        });
+        return part;
+      }).join('');
+      
+      return `
+        <div class="task">
+          <div class="task-header">
+            <div class="task-number">${index + 1}</div>
+            <div class="task-meta">
+              ${task.motifName || task.motifId}
+              ${task.specName ? ` · ${task.specName}` : ''}
+              ${task.varName ? ` · ${task.varName}` : ''}
+            </div>
+          </div>
+          <div class="task-content">${question}</div>
+          <div class="answer-area">
+            <div class="answer-label">答题区：</div>
+          </div>
+        </div>
+      `;
+    }).join('');
 
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
+          <meta charset="UTF-8">
           <title>周度任务 - 打印版</title>
-          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-          <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+          <script>
+            window.MathJax = {
+              tex: {
+                inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
+                displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']]
+              },
+              svg: {
+                fontCache: 'global'
+              },
+              startup: {
+                pageReady: function() {
+                  return MathJax.startup.defaultPageReady().then(function() {
+                    setTimeout(function() {
+                      window.print();
+                    }, 500);
+                  });
+                }
+              }
+            };
+          </script>
+          <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
           <style>
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
             body {
               font-family: 'SimSun', 'Songti SC', serif;
               padding: 20mm;
               max-width: 210mm;
               margin: 0 auto;
+              background: white;
+              color: black;
             }
             .header {
               text-align: center;
@@ -87,7 +157,6 @@ const PrintPreview = ({
             }
             @media print {
               body { padding: 15mm; }
-              .no-print { display: none; }
             }
           </style>
         </head>
@@ -99,33 +168,12 @@ const PrintPreview = ({
               题目数量: ${tasks.length} 道
             </div>
           </div>
-          ${tasks.map((task, index) => {
-            const question = task.variant?.question || task.problem || task.question || '';
-            return `
-              <div class="task">
-                <div class="task-header">
-                  <div class="task-number">${index + 1}</div>
-                  <div class="task-meta">
-                    ${task.motifName || task.motifId}
-                    ${task.specName ? ` · ${task.specName}` : ''}
-                    ${task.varName ? ` · ${task.varName}` : ''}
-                  </div>
-                </div>
-                <div class="task-content">${question}</div>
-                <div class="answer-area">
-                  <div class="answer-label">答题区：</div>
-                </div>
-              </div>
-            `;
-          }).join('')}
+          ${tasksHtml}
         </body>
       </html>
     `);
 
     printWindow.document.close();
-    setTimeout(() => {
-      printWindow.print();
-    }, 1000);
   };
 
   return (

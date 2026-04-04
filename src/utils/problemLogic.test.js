@@ -125,7 +125,7 @@ describe('selectBenchmark', () => {
   })
 })
 
-describe('selectVariableKnobs (M 文件驱动)', () => {
+describe('selectVariableKnobs (M 文件驱动 - 搬运工模式)', () => {
   it('空 motifData 应返回 fallback', () => {
     const result = selectVariableKnobs(null, 'L3')
     expect(result.fallback).toBe(true)
@@ -141,7 +141,7 @@ describe('selectVariableKnobs (M 文件驱动)', () => {
     expect(result.fallback).toBe(true)
   })
 
-  it('应根据权重选择策略', () => {
+  it('应根据权重选择策略 (忽略难度过滤)', () => {
     const mockData = {
       specialties: [{
         variations: [{
@@ -165,69 +165,6 @@ describe('selectVariableKnobs (M 文件驱动)', () => {
     expect(results.index_sum).toBeGreaterThan(results.segment_sum)
   })
 
-  it('L2 应过滤掉 difficulty_delta > 0 的选项', () => {
-    const mockData = {
-      specialties: [{
-        variations: [{
-          variable_knobs: {
-            property_type: [
-              { type: 'basic', weight: 1, desc: '基础' },
-              { type: 'hard', weight: 1, difficulty_delta: '+1', desc: '困难' }
-            ]
-          }
-        }]
-      }]
-    }
-
-    for (let i = 0; i < 20; i++) {
-      const selected = selectVariableKnobs(mockData, 'L2')
-      expect(selected.property_type?.type).toBe('basic')
-    }
-  })
-
-  it('L3 应过滤掉 difficulty_delta > 0.5 的选项', () => {
-    const mockData = {
-      specialties: [{
-        variations: [{
-          variable_knobs: {
-            property_type: [
-              { type: 'basic', weight: 1, desc: '基础' },
-              { type: 'medium', weight: 1, difficulty_delta: '+0.5', desc: '中等' },
-              { type: 'hard', weight: 1, difficulty_delta: '+1', desc: '困难' }
-            ]
-          }
-        }]
-      }]
-    }
-
-    for (let i = 0; i < 20; i++) {
-      const selected = selectVariableKnobs(mockData, 'L3')
-      expect(['basic', 'medium']).toContain(selected.property_type?.type)
-    }
-  })
-
-  it('L4 应允许所有选项', () => {
-    const mockData = {
-      specialties: [{
-        variations: [{
-          variable_knobs: {
-            property_type: [
-              { type: 'basic', weight: 1, desc: '基础' },
-              { type: 'hard', weight: 1, difficulty_delta: '+1', desc: '困难' }
-            ]
-          }
-        }]
-      }]
-    }
-
-    const types = new Set()
-    for (let i = 0; i < 50; i++) {
-      const selected = selectVariableKnobs(mockData, 'L4')
-      types.add(selected.property_type?.type)
-    }
-    expect(types.size).toBe(2)
-  })
-
   it('应处理多个维度', () => {
     const mockData = {
       specialties: [{
@@ -247,6 +184,68 @@ describe('selectVariableKnobs (M 文件驱动)', () => {
     const selected = selectVariableKnobs(mockData, 'L3')
     expect(selected.property_type).toBeDefined()
     expect(selected.trap_condition).toBeDefined()
+  })
+
+  // 🔥 搬运工模式：不再过滤 difficulty_delta，所有难度都可以选择所有选项
+  it('搬运工模式：L2 也可选择任意选项 (不再过滤 difficulty_delta)', () => {
+    const mockData = {
+      specialties: [{
+        variations: [{
+          variable_knobs: {
+            property_type: [
+              { type: 'basic', weight: 1, desc: '基础' },
+              { type: 'hard', weight: 1, difficulty_delta: '+1', desc: '困难' }
+            ]
+          }
+        }]
+      }]
+    }
+
+    // 在新逻辑下，L2 也不过滤 difficulty_delta，全看权重
+    const selected = selectVariableKnobs(mockData, 'L2')
+    // 只要返回了数据，且是数组里的其中一个，就算通过
+    expect(['basic', 'hard']).toContain(selected.property_type?.type)
+  })
+
+  it('搬运工模式：L3 也可选择任意选项', () => {
+    const mockData = {
+      specialties: [{
+        variations: [{
+          variable_knobs: {
+            property_type: [
+              { type: 'basic', weight: 1, desc: '基础' },
+              { type: 'medium', weight: 1, difficulty_delta: '+0.5', desc: '中等' },
+              { type: 'hard', weight: 1, difficulty_delta: '+1', desc: '困难' }
+            ]
+          }
+        }]
+      }]
+    }
+
+    const selected = selectVariableKnobs(mockData, 'L3')
+    expect(['basic', 'medium', 'hard']).toContain(selected.property_type?.type)
+  })
+
+  it('搬运工模式：L4 可选择所有选项', () => {
+    const mockData = {
+      specialties: [{
+        variations: [{
+          variable_knobs: {
+            property_type: [
+              { type: 'basic', weight: 1, desc: '基础' },
+              { type: 'hard', weight: 1, difficulty_delta: '+1', desc: '困难' }
+            ]
+          }
+        }]
+      }]
+    }
+
+    const types = new Set()
+    for (let i = 0; i < 50; i++) {
+      const selected = selectVariableKnobs(mockData, 'L4')
+      types.add(selected.property_type?.type)
+    }
+    expect(types.size).toBe(2)
   })
 })
 

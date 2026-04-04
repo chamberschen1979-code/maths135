@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { TopicScopeCard, TaskGenerator, TaskDisplay, PrintPreview } from './weekly';
+import { TopicScopeCard, TaskGenerator, TaskDisplay, PrintPreview, QuestionHistoryPanel } from './weekly';
 import { buildSystemPrompt, buildUserPrompt } from '../utils/promptBuilder';
 import { parseAIResponse } from '../utils/responseParser';
 import { 
@@ -16,6 +16,13 @@ import { loadMotifData } from '../utils/dataLoader';
 import { judgeAnswerWithFallback } from '../utils/aiGrader';
 import { getWeaponNameById, getWeaponLogicFlow } from '../utils/weaponUtils';
 import { verifyQuestionWithRetry } from '../services/questionVerifier';
+import { useUserProgress } from '../context/UserProgressContext';
+import ManualEntryModal from './weekly/ManualEntryModal';
+import { aiFillAnswerAndKeyPoints } from '../utils/aiFillUtils';
+import { 
+  updateHistoryOnIssue, 
+  updateHistoryOnAnswer
+} from '../utils/questionHistoryUtils';
 
 const API_KEY = import.meta.env.VITE_QWEN_API_KEY || 'YOUR_API_KEY';
 const BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
@@ -212,15 +219,26 @@ const WeeklyMission = ({
   currentGrade,
   weeklyTasks,
   setWeeklyTasks,
+  questionHistory,
+  setQuestionHistory,
   onUpdateMotifElo
 }) => {
   const [selectedMotifs, setSelectedMotifs] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPrintPreview, setShowPrintPreview] = useState(false);
+  const [showEntryModal, setShowEntryModal] = useState(false);
   const [debugInfo, setDebugInfo] = useState(null);
   const [loadedMotifData, setLoadedMotifData] = useState({});
   const [verificationStatus, setVerificationStatus] = useState(null);
   const [generatedQuestions, setGeneratedQuestions] = useState([]);
+  const [allSelectedMotifs, setAllSelectedMotifs] = useState([]);
+
+  const { 
+    markAsMastered, 
+    markAsWeak, 
+    userProgress,
+    isLoaded: progressLoaded 
+  } = useUserProgress();
 
   const allEncounters = tacticalData?.tactical_maps?.flatMap(m => m.encounters) || [];
 
@@ -283,34 +301,9 @@ const WeeklyMission = ({
     return allEncounters.filter(e => e.elo_score >= 1001);
   }, [allEncounters]);
 
-  const reinforcementMotifs = useMemo(() => {
-    const excludedIds = new Set([
-      ...Array.from(errorMotifIds),
-      ...(selectedMotifs?.map(s => s.motifId) || [])
-    ]);
-    
-    return activeMotifs
-      .filter(m => !excludedIds.has(m.target_id))
-      .sort((a, b) => a.elo_score - b.elo_score)
-      .slice(0, 2);
-  }, [activeMotifs, errorMotifIds, selectedMotifs]);
-
-  const allSelectedMotifs = useMemo(() => {
-    const motifSet = new Set();
-    
-    errorMotifIds.forEach(id => motifSet.add(id));
-    selectedMotifs?.forEach(s => motifSet.add(s.motifId));
-    reinforcementMotifs.forEach(m => motifSet.add(m.target_id));
-    
-    return Array.from(motifSet);
-  }, [errorMotifIds, selectedMotifs, reinforcementMotifs]);
-
   const generateSingleProblem = useCallback(async (targetId, encounter, problemIndex, dualLevelContext = {}, source = 'active', constraints = {}) => {
     const eloScore = encounter?.elo_score || 2000;
     const difficultyConfig = getDifficultyByElo(eloScore);
-    
-    // 简化版：固定温度 0.7
-    const temperature = 0.7
     
     if (eloScore < 1001) return null;
 
@@ -322,14 +315,12 @@ const WeeklyMission = ({
 
     const benchmark = selectBenchmark(motifData, difficultyConfig.level, problemIndex, { 
       ...constraints, 
-      grade: currentGrade || '高三' 
-    });
-    const selectedStrategy = selectVariableKnobs(motifData, difficultyConfig.level, problemIndex, { 
-      ...constraints, 
-      grade: currentGrade || '高三' 
-    }, benchmark);
+      grade: currentGrade || '高三'
+    }, userProgress);
     
-    const seedQuestion = selectSeedQuestion(motifData, difficultyConfig.level, benchmark, problemIndex);
+    // 🔥 修改：使用 selectSeedQuestion 返回的增强对象
+    const seedResult = selectSeedQuestion(motifData, difficultyConfig.level, benchmark, problemIndex);
+    const seedQuestion = seedResult?.question || seedResult;
     
     const variationInfo = getVariationInfo(benchmark);
     
@@ -337,143 +328,133 @@ const WeeklyMission = ({
     const varName = variationInfo.varName;
     const linkedWeapons = variationInfo.linkedWeapons;
 
-    // 构建杀手锏约束信息
-    const weaponConstraints = {}
-    if (constraints.weaponId) {
-      const weaponName = getWeaponNameById(constraints.weaponId);
-      const weaponLogicFlow = getWeaponLogicFlow(constraints.weaponId);
-      
-      if (weaponName) {
-        weaponConstraints.weaponId = constraints.weaponId;
-        weaponConstraints.weaponName = weaponName;
-        weaponConstraints.weaponLogicFlow = weaponLogicFlow;
-        console.log(`[周任务] 注入杀手锏约束: ${weaponName} (${constraints.weaponId})`);
-      }
-    }
-
-    const systemPrompt = buildSystemPrompt(currentGrade || '高一');
-    
-    // 提取 hard_constraints 和 system_instruction_template
-    const hardConstraints = selectedStrategy?.hard_constraints || null;
-    const systemInstructionTemplate = motifData.system_instruction_template || null;
-    
-    // 提取 module_constraints (模块专属约束)
-    const moduleConstraints = motifData.module_constraints || null;
-    
-    // 提取 math_invariants (数学不变量)
-    const mathInvariants = motifData.math_invariants || null;
-    
-    const userPrompt = buildUserPrompt({
-      motifName: motifData.motif_name || motifData.name,
-      specName: specName || '通用数学',
-      varName: varName || '基础变式',
-      difficultyConfig,
-      variableKnobs: selectedStrategy,
-      benchmarkQuestion: benchmark,
-      seedQuestion: seedQuestion,
-      dualLevelContext,
-      constraints: weaponConstraints,
-      hardConstraints,
-      systemInstructionTemplate,
-      moduleConstraints,
-      mathInvariants,
-      userGrade: currentGrade || '高三',
-      motifId: motifData.id || motifData.motif_id || '',
-      problemIndex,
-      totalProblems: PROBLEMS_PER_MOTIF
+    console.log('[Debug] variationInfo:', {
+      specName,
+      varName,
+      linkedWeapons,
+      benchmarkLinkedWeapons: benchmark?.linkedWeapons,
+      benchmarkWeapons: benchmark?.weapons
     });
 
-    const response = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json', 
-        'Authorization': `Bearer ${API_KEY}` 
-      },
-      body: JSON.stringify({
-        model: MODEL_NAME,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: temperature, // 🚀 V5.1 使用动态温度
-        max_tokens: 8000,
-        stream: true
-      })
+    // 🚀 【核心重构】纯 RAG 模式：直接返回库里的原始数据，不经过 AI
+    console.log(`[RAG 模式] 直接提取题目: ${seedQuestion?.id || benchmark?.id}`);
+    
+    // 🔥 【调试】打印原始数据结构
+    console.log('[Debug] seedQuestion 原始数据:', {
+      id: seedQuestion?.id,
+      hasProblem: !!seedQuestion?.problem,
+      problemPreview: seedQuestion?.problem?.substring(0, 50),
+      hasAnalysis: !!seedQuestion?.analysis,
+      hasKeyPoints: !!(seedQuestion?.key_points?.length > 0),
+      keyPointsLength: seedQuestion?.key_points?.length || 0
+    });
+    console.log('[Debug] benchmark 原始数据:', {
+      id: benchmark?.id,
+      hasProblem: !!benchmark?.problem,
+      problemPreview: benchmark?.problem?.substring(0, 50),
+      hasAnalysis: !!benchmark?.analysis,
+      hasKeyPoints: !!(benchmark?.key_points?.length > 0),
+      keyPointsLength: benchmark?.key_points?.length || 0
+    });
+    
+    // 🔥 【字段对齐修复】RAG 库字段映射
+    // RAG 库字段: problem, answer, key_points, analysis
+    // 前端需要字段: question, answer, analysis
+    
+    // 1. 题干：优先使用 problem 字段
+    const rawQuestion = seedQuestion?.problem || benchmark?.problem || '';
+    
+    // 2. 解析：优先使用 analysis，备选使用 key_points（排除最后一步答案）
+    let rawAnalysis = seedQuestion?.analysis || benchmark?.analysis || '';
+    if (!rawAnalysis && (seedQuestion?.key_points || benchmark?.key_points)) {
+      const keyPoints = seedQuestion?.key_points || benchmark?.key_points || [];
+      // 🔥 排除最后一步（通常包含答案），只保留分析步骤
+      const analysisSteps = keyPoints.slice(0, -1);
+      rawAnalysis = analysisSteps.join('\n');
+    }
+    
+    // 🔥 移除解析末尾的【答案】部分（避免与答案区域重复）
+    if (rawAnalysis) {
+      // 匹配【答案】或【答案：】及其后面的所有内容
+      rawAnalysis = rawAnalysis.replace(/【答案[：:]?】[\s\S]*$/g, '').trim();
+      // 也匹配"答案："格式
+      rawAnalysis = rawAnalysis.replace(/答案[：:][\s\S]*$/g, '').trim();
+    }
+    
+    // 3. 答案：直接使用 answer 字段
+    const rawAnswer = seedQuestion?.answer || benchmark?.answer || '';
+
+    // 🔥 检查关键字段
+    if (!rawQuestion) {
+      console.warn('[⚠️ 字段缺失] RAG 库中未找到题目内容', { seedQuestion, benchmark });
+      return null;
+    }
+
+    console.log('[Debug] RAG 直接返回:', {
+      id: seedQuestion?.id || benchmark?.id,
+      questionLength: rawQuestion.length,
+      hasAnalysis: !!rawAnalysis,
+      hasAnswer: !!rawAnswer
     });
 
-    if (!response.ok) {
-      throw new Error(`API 请求失败: ${response.status} ${response.statusText}`);
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let fullContent = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      
-      const chunk = decoder.decode(value);
-      const lines = chunk.split('\n');
-      
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === '[DONE]') continue;
-          try {
-            const data = JSON.parse(jsonStr);
-            fullContent += data.choices?.[0]?.delta?.content || '';
-          } catch { /* 忽略解析错误 */ }
-        }
-      }
-    }
-
-    if (!fullContent.trim()) throw new Error("AI 返回内容为空");
-
-    const parseResult = parseAIResponse(fullContent);
-    if (!parseResult.success) throw new Error(`解析失败: ${parseResult.error}`);
-    
-    const extractQuestion = (q) => {
-      if (!q) return '';
-      if (typeof q === 'string') return q;
-      if (q.content) return q.content;
-      if (q.text) return q.text;
-      return q;
-    };
-
-    return {
-      id: `task-${targetId}-${problemIndex}-${Date.now()}`,
+    const taskResult = {
+      id: `task-${targetId}-${seedQuestion?.id || benchmark?.id || problemIndex}-${Date.now()}`,
       motifId: targetId,
       motifName: motifData.motif_name || motifData.name,
       specName: specName,
       varName: varName,
       level: difficultyConfig.level,
       targetLevel: difficultyConfig.level,
+      questionId: seedQuestion?.id || benchmark?.id,
       variant: {
-        question: extractQuestion(parseResult.data.question),
-        analysis: parseResult.data.analysis,
-        answer: parseResult.data.answer
+        question: rawQuestion,
+        analysis: rawAnalysis || '暂无解析',
+        answer: rawAnswer || '暂无答案'
       },
-      variableKnobs: selectedStrategy,
+      variableKnobs: seedResult?.variableKnobs || {},
       benchmark: {
         ...benchmark,
         linked_weapons: linkedWeapons || benchmark?.linked_weapons || []
       },
-      isAIGenerated: true,
-      aiLabel: `[${difficultyConfig.tier}: ${eloScore}战力]`,
+      isAIGenerated: false,
+      aiLabel: `[RAG库: ${seedQuestion?.id || benchmark?.id}]`,
       problemIndex,
       source: source,
       questionMeta: {
-        questions: difficultyConfig.multiQuestion 
-          ? [{ level: 'L2' }, { level: difficultyConfig.level }]
-          : [{ level: difficultyConfig.level }]
+        questions: [{ level: difficultyConfig.level }]
       }
     };
-  }, [CROSS_FILE_INDEX, loadMotifData, API_KEY, BASE_URL, MODEL_NAME]);
+    
+    if (setQuestionHistory && questionHistory !== undefined) {
+      const questionId = seedQuestion?.id || benchmark?.id;
+      if (questionId) {
+        setQuestionHistory(prev => updateHistoryOnIssue(
+          prev, 
+          questionId, 
+          targetId, 
+          varName, 
+          difficultyConfig.level,
+          {
+            motifName: motifData.motif_name || motifData.name,
+            specId: benchmark?.specId || '',
+            specName: specName,
+            varName: varName,
+            questionText: rawQuestion
+          }
+        ));
+      }
+    }
+    
+    console.log('[Debug] RAG 封装结果:', {
+      id: taskResult.id,
+      questionLength: taskResult.variant.question?.length || 0,
+      analysisLength: taskResult.variant.analysis?.length || 0,
+      linkedWeapons: taskResult.benchmark?.linked_weapons,
+      benchmarkId: taskResult.benchmark?.id
+    });
 
-  const handleImportError = useCallback((errorData) => {
-    setErrorNotebook?.(prev => [...(prev || []), errorData]);
-  }, [setErrorNotebook]);
+    return taskResult;
+  }, [CROSS_FILE_INDEX, loadMotifData]);
 
   const handleGenerateTasks = useCallback(async () => {
     if (allSelectedMotifs.length === 0) return;
@@ -488,7 +469,6 @@ const WeeklyMission = ({
       const selectedMotifTasks = [];
       const errorMotifIdSet = errorMotifIds;
       const customMotifIdSet = new Set(selectedMotifs?.map(s => s.motifId) || []);
-      const reinforcementMotifIdSet = new Set(reinforcementMotifs.map(m => m.target_id));
       
       allSelectedMotifs.forEach(motifId => {
         const enc = allEncounters.find(e => e.target_id === motifId);
@@ -548,13 +528,10 @@ const WeeklyMission = ({
           ? getDifficultyByElo(motifTask.encounter.elo_score).level 
           : 'L3';
         
-        const generateFn = async (negativeConstraints, retryCount = 0) => {
-          const extraConstraints = negativeConstraints.length > 0 
+        const generateFn = async (negativeConstraints = [], retryCount = 0) => {
+          const extraConstraints = negativeConstraints?.length > 0 
             ? { ...motifTask.constraints, negativeHints: negativeConstraints }
             : motifTask.constraints;
-          
-          // 简化版：固定温度 0.7，保持创造力
-          const temperature = 0.7
           
           return await generateSingleProblem(
             motifTask.motifId, 
@@ -562,8 +539,7 @@ const WeeklyMission = ({
             problemIndex,
             motifTask.dualLevelContext,
             motifTask.source,
-            extraConstraints,
-            { temperature, retryCount } // 🚀 传递动态温度
+            extraConstraints
           );
         };
         
@@ -576,16 +552,19 @@ const WeeklyMission = ({
           
           const phaseMessages = {
             'generating': `正在生成第 ${problemIndex} 题...`,
-            'verifying_math': `正在验算数学逻辑 (母题 ${motifTask.motifId})...`,
-            'evaluating_fitness': `正在评估难度匹配度 (目标 ${targetLevel})...`,
-            'retrying': `题目质量不足，正在重新构思...`,
-            'passed': `✅ 题目验证通过`,
-            'failed': `❌ 验证失败`
+            'verifying_math': `🔍 正在核对题目指纹 (RAG 校验)...`,
+            'evaluating_fitness': `📊 正在评估难度匹配度 (目标 ${targetLevel})...`,
+            'retrying': `🔄 数据不一致，正在重新同步...`,
+            'passed': `✅ 源头验证通过`,
+            'failed': `❌ 源头同步失败`
           };
           
           setDebugInfo(phaseMessages[status.phase] || status.phase);
         };
         
+        // 🔥 RAG 模式：验证器只核对一致性，不需要复杂的难度适配
+        // TODO: 当 verifyQuestionWithRetry 接口重构后，可简化传参：
+        // const result = await verifyQuestionWithRetry(generateFn, motifTask.motifId, onStatusUpdate);
         const result = await verifyQuestionWithRetry(
           generateFn,
           motifTask.motifId,
@@ -673,7 +652,7 @@ const WeeklyMission = ({
       setIsGenerating(false);
       setVerificationStatus(null);
     }
-  }, [allSelectedMotifs, allEncounters, errorNotebook, generateSingleProblem, errorMotifIds, selectedMotifs, reinforcementMotifs]);
+  }, [allSelectedMotifs, allEncounters, errorNotebook, generateSingleProblem, errorMotifIds, selectedMotifs]);
 
   const parseMultiQuestionAnswer = useCallback((rawInput, expectedCount) => {
     if (!rawInput) return { status: 'EMPTY', answers: [] };
@@ -1002,6 +981,15 @@ const WeeklyMission = ({
 
       const questionMeta = task.questionMeta || { questions: [{ level }] };
 
+      console.log('[handleSubmitAnswer] 判题参数:', {
+        motifId: task.motifId,
+        motifName: task.motifName,
+        level,
+        targetLevel: task.targetLevel,
+        questionMeta,
+        questionLength: question?.length
+      });
+
       const aiResult = await judgeAnswerWithFallback(
         question,
         correctAnswer,
@@ -1015,7 +1003,13 @@ const WeeklyMission = ({
         answerType
       );
 
-      console.log('[handleSubmitAnswer] AI 判题结果:', aiResult);
+      console.log('[handleSubmitAnswer] AI 判题结果:', {
+        isCorrect: aiResult.isCorrect,
+        delta: aiResult.delta,
+        reason: aiResult.reason,
+        isFallback: aiResult.isFallback,
+        details: aiResult.details
+      });
 
       const evaluationResult = {
         status: 'OK',
@@ -1051,12 +1045,79 @@ const WeeklyMission = ({
         onUpdateMotifElo(task.motifId, aiResult.delta);
       }
 
+      const questionId = task.benchmark?.id || task.id;
+      const questionLevel = task.targetLevel || task.level;
+
+      if (aiResult.isCorrect) {
+        const result = markAsMastered(questionId, questionLevel);
+        console.log(`[Mastery] ${result.message}`);
+        
+        if (setQuestionHistory && task.questionId) {
+          const grade = aiResult.delta >= 30 ? 'S' : aiResult.delta >= 15 ? 'A' : 'B';
+          setQuestionHistory(prev => updateHistoryOnAnswer(
+            prev,
+            task.questionId,
+            task.motifId,
+            task.varName,
+            grade,
+            true
+          ));
+        }
+        
+        if (setErrorNotebook) {
+          const specId = task.benchmark?.specId || task.specId;
+          const varId = task.benchmark?.varId || task.varId;
+          
+          if (specId && varId) {
+            setErrorNotebook(prev => {
+              const beforeCount = prev.filter(e => !e.resolved).length;
+              const updated = prev.map(e => 
+                e.targetId === task.motifId 
+                && e.specId === specId 
+                && e.varId === varId 
+                && !e.resolved
+                  ? { ...e, resolved: true, resolvedAt: new Date().toISOString(), resolvedBy: 'auto' }
+                  : e
+              );
+              const afterCount = updated.filter(e => !e.resolved).length;
+              const resolvedCount = beforeCount - afterCount;
+              
+              if (resolvedCount > 0) {
+                console.log(`[错题消灭] 自动消灭了 ${resolvedCount} 道相同变例的错题`);
+              }
+              return updated;
+            });
+          }
+        }
+      } else {
+        markAsWeak(questionId, questionLevel, task.motifId);
+        console.log(`[Error Loop] 题目 ${questionId} 已进入冷却循环`);
+        
+        if (setQuestionHistory && task.questionId) {
+          setQuestionHistory(prev => updateHistoryOnAnswer(
+            prev,
+            task.questionId,
+            task.motifId,
+            task.varName,
+            'C',
+            false
+          ));
+        }
+      }
+
       if (setErrorNotebook && !aiResult.isCorrect) {
+        const specId = task.benchmark?.specId || task.specId;
+        const varId = task.benchmark?.varId || task.varId;
+        
         const errorEntry = {
           id: `error-${task.id}-${Date.now()}`,
           targetId: task.motifId,
           motifName: task.motifName,
+          specId: specId,
           specName: task.specName,
+          varId: varId,
+          varName: task.varName,
+          level: task.targetLevel || task.level,
           question: question,
           userAnswer: answerType === 'text' ? answer : '[图片答案]',
           correctAnswer: correctAnswer,
@@ -1069,6 +1130,18 @@ const WeeklyMission = ({
         setErrorNotebook(prev => {
           const newNotebook = [...prev, errorEntry];
           console.log('[错题本] 添加错题:', errorEntry);
+          
+          aiFillAnswerAndKeyPoints(question, task.motifName).then(result => {
+            if (result) {
+              setErrorNotebook(prev => prev.map(e => 
+                e.id === errorEntry.id 
+                  ? { ...e, correctAnswer: result.answer, keyPoints: result.keyPoints }
+                  : e
+              ));
+              console.log('[错题本] AI自动补全答案和解析');
+            }
+          });
+          
           return newNotebook;
         });
       }
@@ -1108,9 +1181,8 @@ const WeeklyMission = ({
         tacticalData={tacticalData}
         selectedMotifs={selectedMotifs}
         onSelectionChange={setSelectedMotifs}
-        onImportError={handleImportError}
-        onNavigateToErrorLibrary={onNavigateToErrorLibrary}
         isAcademicMode={isAcademicMode}
+        onAllSelectedChange={setAllSelectedMotifs}
       />
 
       <TaskGenerator
@@ -1138,11 +1210,28 @@ const WeeklyMission = ({
         />
       )}
 
+      {questionHistory && Object.keys(questionHistory).length > 0 && (
+        <QuestionHistoryPanel
+          questionHistory={questionHistory}
+          setQuestionHistory={setQuestionHistory}
+          isAcademicMode={isAcademicMode}
+        />
+      )}
+
       <PrintPreview
         tasks={weeklyTasks}
         isOpen={showPrintPreview}
         onClose={() => setShowPrintPreview(false)}
         isAcademicMode={isAcademicMode}
+      />
+
+      <ManualEntryModal
+        isOpen={showEntryModal}
+        onClose={() => setShowEntryModal(false)}
+        motifId={selectedMotifs[0]?.motifId || selectedMotifs[0]?.id || 'M04'}
+        specId={selectedMotifs[0]?.specId || 'V1'}
+        varId={selectedMotifs[0]?.varId || '1.1'}
+        motifName={selectedMotifs[0]?.motifName || selectedMotifs[0]?.name || '未选择'}
       />
       </div>
     </div>

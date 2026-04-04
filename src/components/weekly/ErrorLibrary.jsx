@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from 'react';
+import ManualEntryModal from './ManualEntryModal';
+import { useUserProgress } from '../../context/UserProgressContext';
 
 const ErrorLibrary = ({
   errorNotebook,
@@ -7,8 +9,11 @@ const ErrorLibrary = ({
   isAcademicMode,
   onClose
 }) => {
+  const { removeFromUserPool } = useUserProgress();
   const [filter, setFilter] = useState('all');
   const [selectedError, setSelectedError] = useState(null);
+  const [showEntryModal, setShowEntryModal] = useState(false);
+  const [entryErrorId, setEntryErrorId] = useState(null);
 
   const allEncounters = tacticalData?.tactical_maps?.flatMap(m => m.encounters) || [];
 
@@ -19,11 +24,11 @@ const ErrorLibrary = ({
       errors = errors.filter(e => !e.resolved);
     } else if (filter === 'resolved') {
       errors = errors.filter(e => e.resolved);
-    } else if (['weekly', 'training', 'import'].includes(filter)) {
+    } else if (['weekly', 'photo', 'import'].includes(filter)) {
       errors = errors.filter(e => e.source === filter);
     }
     
-    return errors.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
+    return errors.sort((a, b) => new Date(b.addedAt || b.createdAt) - new Date(a.addedAt || a.createdAt));
   }, [errorNotebook, filter]);
 
   const errorStats = useMemo(() => {
@@ -33,7 +38,7 @@ const ErrorLibrary = ({
       unresolved: all.filter(e => !e.resolved).length,
       resolved: all.filter(e => e.resolved).length,
       weekly: all.filter(e => e.source === 'weekly').length,
-      training: all.filter(e => e.source === 'training').length,
+      photo: all.filter(e => e.source === 'photo').length,
       import: all.filter(e => e.source === 'import').length
     };
   }, [errorNotebook]);
@@ -65,10 +70,16 @@ const ErrorLibrary = ({
   const getSourceLabel = (source) => {
     const labels = {
       weekly: { text: '周任务', color: 'blue' },
-      training: { text: '日训练', color: 'green' },
+      photo: { text: '错题导入', color: 'purple' },
       import: { text: '导入', color: 'purple' }
     };
-    return labels[source] || { text: source, color: 'gray' };
+    return labels[source] || { text: source || '未知', color: 'gray' };
+  };
+
+  const getDifficultyColor = (level) => {
+    if (level === 'L4') return isAcademicMode ? 'bg-amber-100 text-amber-700' : 'bg-amber-900/30 text-amber-400';
+    if (level === 'L3') return isAcademicMode ? 'bg-purple-100 text-purple-700' : 'bg-purple-900/30 text-purple-400';
+    return isAcademicMode ? 'bg-green-100 text-green-700' : 'bg-green-900/30 text-green-400';
   };
 
   const handleResolveError = (errorId) => {
@@ -124,9 +135,8 @@ const ErrorLibrary = ({
           { key: 'all', label: `全部 (${errorStats.total})` },
           { key: 'unresolved', label: `待消灭 (${errorStats.unresolved})` },
           { key: 'resolved', label: `已消灭 (${errorStats.resolved})` },
-          { key: 'weekly', label: `周任务 (${errorStats.weekly})` },
-          { key: 'training', label: `日训练 (${errorStats.training})` },
-          { key: 'import', label: `导入 (${errorStats.import})` }
+          { key: 'photo', label: `错题导入 (${errorStats.photo})` },
+          { key: 'weekly', label: `周任务 (${errorStats.weekly})` }
         ].map(tab => (
           <button
             key={tab.key}
@@ -158,66 +168,109 @@ const ErrorLibrary = ({
           <div className="space-y-2">
             {filteredErrors.map(error => {
               const motifInfo = getMotifInfo(error.targetId);
-              const weaponMatch = getWeaponMatch(error.targetId);
               const sourceInfo = getSourceLabel(error.source);
+              const difficulty = error.level || 'L2';
+              
+              const questionPreview = error.question 
+                ? (error.question.length > 50 ? error.question.substring(0, 50) + '...' : error.question)
+                : '暂无题目内容';
+              
+              let locationInfo = error.motifName || motifInfo.name;
+              if (error.specId || error.specName) {
+                locationInfo += ' → ' + (error.specId || '') + (error.specName ? ' ' + error.specName : '');
+              }
+              if (error.varId || error.varName) {
+                locationInfo += ' → ' + (error.varId || '') + (error.varName ? ' ' + error.varName : '');
+              }
+              
+              const isEntered = error.enteredToPool;
               
               return (
                 <div
                   key={error.id}
-                  onClick={() => setSelectedError(error)}
-                  className={`p-3 rounded-lg cursor-pointer transition-all ${
+                  className={`p-2.5 rounded-lg transition-all ${
                     error.resolved
                       ? isAcademicMode 
                         ? 'bg-green-50 border border-green-200 opacity-75' 
                         : 'bg-green-900/10 border border-green-800/30 opacity-75'
                       : isAcademicMode
-                        ? 'bg-white border border-slate-200 hover:border-red-300'
-                        : 'bg-zinc-800 border border-zinc-700 hover:border-red-500'
+                        ? 'bg-white border border-slate-200'
+                        : 'bg-zinc-800 border border-zinc-700'
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-xs px-1.5 py-0.5 rounded ${
-                          sourceInfo.color === 'blue' 
-                            ? isAcademicMode ? 'bg-blue-100 text-blue-600' : 'bg-blue-900/30 text-blue-400'
-                            : sourceInfo.color === 'green'
-                              ? isAcademicMode ? 'bg-green-100 text-green-600' : 'bg-green-900/30 text-green-400'
-                              : isAcademicMode ? 'bg-purple-100 text-purple-600' : 'bg-purple-900/30 text-purple-400'
+                  <div className="flex items-center gap-2 text-sm">
+                    <div 
+                      onClick={() => setSelectedError(error)}
+                      className="flex items-center gap-2 flex-1 min-w-0 cursor-pointer"
+                    >
+                      <span className={`px-1.5 py-0.5 rounded text-xs font-medium whitespace-nowrap ${getDifficultyColor(difficulty)}`}>
+                        {difficulty}
+                      </span>
+                      <span className={`px-1.5 py-0.5 rounded text-xs whitespace-nowrap ${
+                        sourceInfo.color === 'blue' 
+                          ? isAcademicMode ? 'bg-blue-100 text-blue-600' : 'bg-blue-900/30 text-blue-400'
+                          : isAcademicMode ? 'bg-purple-100 text-purple-600' : 'bg-purple-900/30 text-purple-400'
+                      }`}>
+                        {sourceInfo.text}
+                      </span>
+                      {error.resolved && (
+                        <span className={`px-1.5 py-0.5 rounded text-xs whitespace-nowrap ${
+                          isAcademicMode ? 'bg-green-100 text-green-600' : 'bg-green-900/30 text-green-400'
                         }`}>
-                          {sourceInfo.text}
+                          ✓
                         </span>
-                        {error.resolved && (
-                          <span className={`text-xs px-1.5 py-0.5 rounded ${
+                      )}
+                      <span className={`flex-1 truncate min-w-0 ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>
+                        {questionPreview}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className={`text-xs whitespace-nowrap ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
+                        {formatDate(error.addedAt)}
+                      </span>
+                      <span className={`text-xs whitespace-nowrap ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
+                        📍 {locationInfo}
+                      </span>
+                      {isEntered ? (
+                        <>
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
                             isAcademicMode ? 'bg-green-100 text-green-600' : 'bg-green-900/30 text-green-400'
                           }`}>
-                            ✓ 已消灭
+                            已入库
                           </span>
-                        )}
-                      </div>
-                      <p className={`font-medium text-sm truncate ${
-                        isAcademicMode ? 'text-slate-800' : 'text-zinc-200'
-                      }`}>
-                        {motifInfo.name}
-                      </p>
-                      <p className={`text-xs mt-0.5 ${
-                        isAcademicMode ? 'text-slate-500' : 'text-zinc-400'
-                      }`}>
-                        武器库: {weaponMatch}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className={`text-xs ${
-                        isAcademicMode ? 'text-slate-400' : 'text-zinc-500'
-                      }`}>
-                        入库: {formatDate(error.addedAt)}
-                      </p>
-                      {error.resolved && error.resolvedAt && (
-                        <p className={`text-xs ${
-                          isAcademicMode ? 'text-green-500' : 'text-green-400'
-                        }`}>
-                          消灭: {formatDate(error.resolvedAt)}
-                        </p>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (error.enteredQuestionId) {
+                                removeFromUserPool(error.enteredQuestionId);
+                                setErrorNotebook(prev => prev.map(e => 
+                                  e.id === error.id 
+                                    ? { ...e, enteredToPool: false, enteredQuestionId: null }
+                                    : e
+                                ));
+                              }
+                            }}
+                            className={`px-2 py-1 rounded text-xs font-medium ${
+                              isAcademicMode 
+                                ? 'bg-red-50 text-red-600 hover:bg-red-100' 
+                                : 'bg-red-900/20 text-red-400 hover:bg-red-900/30'
+                            }`}
+                          >
+                            撤回
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedError(error);
+                            setShowEntryModal(true);
+                          }}
+                          className="px-2 py-1 rounded text-xs font-medium bg-emerald-500 text-white hover:bg-emerald-600"
+                        >
+                          📥 入库
+                        </button>
                       )}
                     </div>
                   </div>
@@ -248,31 +301,51 @@ const ErrorLibrary = ({
             </div>
 
             <div className="p-4 space-y-3">
-              <div>
-                <label className={`text-xs font-medium ${
-                  isAcademicMode ? 'text-slate-500' : 'text-zinc-400'
-                }`}>
-                  母题归属
-                </label>
-                <p className={`font-medium ${
-                  isAcademicMode ? 'text-slate-800' : 'text-zinc-200'
-                }`}>
-                  {getMotifInfo(selectedError.targetId).name}
-                </p>
-              </div>
+              {selectedError.question && (
+                <div>
+                  <label className={`text-xs font-medium ${
+                    isAcademicMode ? 'text-slate-500' : 'text-zinc-400'
+                  }`}>
+                    题目内容
+                  </label>
+                  <p className={`text-sm mt-1 p-2 rounded ${
+                    isAcademicMode ? 'bg-slate-100 text-slate-700' : 'bg-zinc-700 text-zinc-300'
+                  }`}>
+                    {selectedError.question}
+                  </p>
+                </div>
+              )}
 
               <div>
                 <label className={`text-xs font-medium ${
                   isAcademicMode ? 'text-slate-500' : 'text-zinc-400'
                 }`}>
-                  匹配武器库
+                  所属位置
                 </label>
-                <p className={isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}>
-                  {getWeaponMatch(selectedError.targetId)}
+                <p className={`font-medium text-sm ${
+                  isAcademicMode ? 'text-slate-800' : 'text-zinc-200'
+                }`}>
+                  📍 {selectedError.motifName || getMotifInfo(selectedError.targetId).name}
+                  {(selectedError.specId || selectedError.specName) && (
+                    <span> → {selectedError.specId || ''}{selectedError.specName ? ' ' + selectedError.specName : ''}</span>
+                  )}
+                  {(selectedError.varId || selectedError.varName) && (
+                    <span> → {selectedError.varId || ''}{selectedError.varName ? ' ' + selectedError.varName : ''}</span>
+                  )}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={`text-xs font-medium ${
+                    isAcademicMode ? 'text-slate-500' : 'text-zinc-400'
+                  }`}>
+                    难度
+                  </label>
+                  <p className={`text-sm font-medium ${getDifficultyColor(selectedError.level || 'L2')}`}>
+                    {selectedError.level || 'L2'}
+                  </p>
+                </div>
                 <div>
                   <label className={`text-xs font-medium ${
                     isAcademicMode ? 'text-slate-500' : 'text-zinc-400'
@@ -283,16 +356,42 @@ const ErrorLibrary = ({
                     {getSourceLabel(selectedError.source).text}
                   </p>
                 </div>
-                <div>
-                  <label className={`text-xs font-medium ${
-                    isAcademicMode ? 'text-slate-500' : 'text-zinc-400'
-                  }`}>
-                    入库时间
-                  </label>
-                  <p className={isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}>
-                    {formatDate(selectedError.addedAt)}
+              </div>
+
+              <div>
+                <label className={`text-xs font-medium ${
+                  isAcademicMode ? 'text-slate-500' : 'text-zinc-400'
+                }`}>
+                  答案
+                </label>
+                <p className={`text-sm mt-1 p-2 rounded ${
+                  isAcademicMode ? 'bg-green-50 text-green-700' : 'bg-green-900/20 text-green-400'
+                }`}>
+                  {selectedError.correctAnswer || selectedError.answer || '暂无'}
+                </p>
+              </div>
+
+              <div>
+                <label className={`text-xs font-medium ${
+                  isAcademicMode ? 'text-slate-500' : 'text-zinc-400'
+                }`}>
+                  解析要点
+                </label>
+                {selectedError.keyPoints && selectedError.keyPoints.length > 0 ? (
+                  <div className="mt-1 space-y-1">
+                    {selectedError.keyPoints.map((point, idx) => (
+                      <p key={idx} className={`text-xs ${
+                        isAcademicMode ? 'text-slate-600' : 'text-zinc-300'
+                      }`}>
+                        {point}
+                      </p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={`text-xs ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
+                    暂无
                   </p>
-                </div>
+                )}
               </div>
 
               {selectedError.resolved && selectedError.resolvedAt && (
@@ -304,21 +403,6 @@ const ErrorLibrary = ({
                   </label>
                   <p className={isAcademicMode ? 'text-green-600' : 'text-green-400'}>
                     {formatDate(selectedError.resolvedAt)}
-                  </p>
-                </div>
-              )}
-
-              {selectedError.diagnosis && (
-                <div>
-                  <label className={`text-xs font-medium ${
-                    isAcademicMode ? 'text-slate-500' : 'text-zinc-400'
-                  }`}>
-                    错误诊断
-                  </label>
-                  <p className={`text-sm ${
-                    isAcademicMode ? 'text-slate-700' : 'text-zinc-300'
-                  }`}>
-                    {selectedError.diagnosis}
                   </p>
                 </div>
               )}
@@ -337,6 +421,30 @@ const ErrorLibrary = ({
               >
                 删除
               </button>
+              
+              {entryErrorId === selectedError.id ? (
+                <span className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium text-center ${
+                  isAcademicMode ? 'bg-green-100 text-green-600' : 'bg-green-900/30 text-green-400'
+                }`}>
+                  ✓ 已入库
+                  <button
+                    onClick={() => setEntryErrorId(null)}
+                    className="ml-2 underline hover:no-underline"
+                  >
+                    撤回
+                  </button>
+                </span>
+              ) : (
+                <button
+                  onClick={() => {
+                    setShowEntryModal(true);
+                  }}
+                  className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500 text-white hover:bg-emerald-600"
+                >
+                  📥 入库
+                </button>
+              )}
+              
               {selectedError.resolved ? (
                 <button
                   onClick={() => handleUnresolveError(selectedError.id)}
@@ -359,6 +467,28 @@ const ErrorLibrary = ({
             </div>
           </div>
         </div>
+      )}
+
+      {showEntryModal && selectedError && (
+        <ManualEntryModal
+          isOpen={showEntryModal}
+          onClose={() => setShowEntryModal(false)}
+          initialMotifId={selectedError.targetId}
+          initialSpecId={selectedError.specId}
+          initialVarId={selectedError.varId}
+          initialMotifName={selectedError.motifName}
+          initialQuestion={selectedError.question}
+          initialLevel={selectedError.level}
+          isAcademicMode={isAcademicMode}
+          onEntrySuccess={(questionId) => {
+            setErrorNotebook(prev => prev.map(e => 
+              e.id === selectedError.id 
+                ? { ...e, enteredToPool: true, enteredQuestionId: questionId }
+                : e
+            ));
+            setShowEntryModal(false);
+          }}
+        />
       )}
     </div>
   );

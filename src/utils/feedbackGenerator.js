@@ -1,5 +1,5 @@
 import scoringEngine from '../data/scoringEngine.json'
-import strategyLib from '../data/strategy_lib.json'
+import weaponDetails from '../data/weapon_details.json'
 
 const LEVEL_SCORES = scoringEngine.level_scores
 const LEVEL_INDICATORS = scoringEngine.level_indicators
@@ -15,7 +15,7 @@ const loadMotifData = async (motifId) => {
   }
   
   try {
-    const response = await fetch(`/src/data/${motifId}.json`)
+    const response = await fetch(`/data/${motifId}.json`)
     if (!response.ok) {
       console.warn(`Failed to load ${motifId}.json`)
       return null
@@ -29,26 +29,85 @@ const loadMotifData = async (motifId) => {
   }
 }
 
-const getWeaponFromStrategyLib = (weaponId) => {
-  if (!strategyLib || !strategyLib.categories) return null
+const WEAPON_NAMES = {
+  'S-SET-01': '空集优先讨论',
+  'S-SET-02': '集合运算化简',
+  'S-SET-03': '韦恩图分析',
+  'S-FUNC-01': '定义域优先',
+  'S-FUNC-02': '同增异减法则',
+  'S-FUNC-03': '奇偶性判断',
+  'S-FUNC-04': '零点交点转化',
+  'S-FUNC-05': '数形结合分析',
+  'S-TRIG-01': '恒等变换技巧',
+  'S-TRIG-02': '图象变换铁律',
+  'S-TRIG-03': '五点作图法',
+  'S-TRIG-04': 'ω范围讨论',
+  'S-TRIG-05': '辅助角公式',
+  'S-VEC-01': '基底法',
+  'S-VEC-02': '坐标法',
+  'S-VEC-03': '几何意义',
+  'S-VEC-04': '建系策略',
+  'S-VEC-05': '数量积应用',
+  'S-SEQ-01': '下标和性质',
+  'S-SEQ-02': '错位相减',
+  'S-SEQ-03': '裂项相消',
+  'S-SEQ-04': '分组求和',
+  'S-SEQ-05': '通项公式',
+  'S-GEO-01': '建系坐标法',
+  'S-GEO-02': '几何法',
+  'S-GEO-03': '体积转化',
+  'S-GEO-04': '空间向量',
+  'S-GEO-05': '二面角计算',
+  'S-ANA-01': '设点求参',
+  'S-ANA-02': '韦达定理',
+  'S-ANA-03': '点差法',
+  'S-ANA-04': '切线方程',
+  'S-ANA-05': '轨迹方程',
+  'S-DER-01': '求导法则',
+  'S-DER-02': '切线方程',
+  'S-DER-03': '单调性讨论',
+  'S-DER-04': '极值最值',
+  'S-DER-05': '零点讨论',
+  'S-PROB-01': '古典概型',
+  'S-PROB-02': '条件概率',
+  'S-PROB-03': '期望方差',
+  'S-PROB-04': '分布列',
+  'S-PROB-05': '统计推断'
+}
+
+const WEAPON_CATEGORIES = {
+  'S-SET': { id: 'set', name: '集合与逻辑' },
+  'S-FUNC': { id: 'func', name: '函数与性质' },
+  'S-TRIG': { id: 'trig', name: '三角函数' },
+  'S-VEC': { id: 'vec', name: '平面向量' },
+  'S-SEQ': { id: 'seq', name: '数列' },
+  'S-GEO': { id: 'geo', name: '立体几何' },
+  'S-ANA': { id: 'ana', name: '解析几何' },
+  'S-DER': { id: 'der', name: '导数' },
+  'S-PROB': { id: 'prob', name: '概率统计' }
+}
+
+const getWeaponFromWeaponDetails = (weaponId) => {
+  if (!weaponId) return null
   
-  for (const category of strategyLib.categories) {
-    const weapon = category.weapons?.find(w => w.id === weaponId)
-    if (weapon) {
-      return {
-        id: weapon.id,
-        name: weapon.name,
-        rank: weapon.rank,
-        logicFlow: weapon.logic_flow,
-        description: weapon.description,
-        triggerKeywords: weapon.trigger_keywords,
-        category: category.id,
-        categoryName: category.name
-      }
-    }
+  const details = weaponDetails[weaponId]
+  if (!details) return null
+  
+  const categoryPrefix = weaponId.split('-').slice(0, 2).join('-')
+  const category = WEAPON_CATEGORIES[categoryPrefix] || { id: 'other', name: '其他' }
+  
+  return {
+    id: weaponId,
+    name: WEAPON_NAMES[weaponId] || weaponId,
+    rank: weaponId.includes('-05') ? 'killer' : 'standard',
+    logicFlow: details.coreLogic || '',
+    description: details.coreLogic || '',
+    triggerKeywords: details.scenarios || [],
+    category: category.id,
+    categoryName: category.name,
+    pitfalls: details.pitfalls || [],
+    example: details.example || null
   }
-  
-  return null
 }
 
 const findWeaponsForMotifFromLib = async (motifId, variationId = null) => {
@@ -62,7 +121,7 @@ const findWeaponsForMotifFromLib = async (motifId, variationId = null) => {
       if (!variationId || variation.var_id === variationId) {
         const linkedWeapons = variation.toolkit?.linked_weapons || []
         for (const weaponId of linkedWeapons) {
-          const weaponInfo = getWeaponFromStrategyLib(weaponId)
+          const weaponInfo = getWeaponFromWeaponDetails(weaponId)
           if (weaponInfo && !weapons.find(w => w.id === weaponId)) {
             weapons.push(weaponInfo)
           }
@@ -424,7 +483,7 @@ export const formatFeedbackForDisplay = (feedback, type = 'default') => {
 }
 
 export const getWeaponDetails = (weaponId) => {
-  return getWeaponFromStrategyLib(weaponId)
+  return getWeaponFromWeaponDetails(weaponId)
 }
 
 export const getMotifWeapons = async (motifId, variationId = null) => {

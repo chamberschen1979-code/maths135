@@ -23,6 +23,7 @@ const DiagnosisView = ({
   onFileUpload,
   onDiagnosisComplete,
   onRealDiagnosis,
+  onImageCapture,
   onNavigateBack,
   fileInputRef
 }) => {
@@ -205,7 +206,7 @@ const DiagnosisView = ({
                 <input
                   type="file"
                   ref={fileInputRef}
-                  accept="image/*,application/pdf"
+                  accept="image/*"
                   capture="environment"
                   onChange={onFileUpload}
                   className="hidden"
@@ -227,6 +228,7 @@ const DiagnosisView = ({
                   isAcademicMode={isAcademicMode}
                   tacticalData={tacticalData}
                   onRealDiagnosis={onRealDiagnosis}
+                  onImageCapture={onImageCapture}
                 />
                 <input
                   type="text"

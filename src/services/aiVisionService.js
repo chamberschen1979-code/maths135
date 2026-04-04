@@ -1,71 +1,60 @@
 import { API_KEY, BASE_URL, VISION_MODEL_NAME } from '../constants/config'
 import { enhanceDiagnosisWithKeywords } from '../utils/classificationUtils'
+import { getWeaponNameById } from '../utils/weaponUtils'
+import { loadMotifData } from '../utils/dataLoader'
+import { buildStructurePrompt } from '../utils/motifStructureExtractor'
 
 const VISION_API_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
 
 const TEXT_MODEL_NAME = 'qwen-turbo'
 
-const DIAGNOSIS_PROMPT = `你是高中数学教研专家。请分析这道错题图片，重点识别题干内容并归类。
+let diagnosisPromptCache = null
 
-【核心任务】
-1. OCR提取题干（忽略手写答案的潦草程度）
-2. 判断题目属于哪个母题、专项
-3. 识别关键考点和陷阱类型
-4. 推荐相关杀手锏
+const buildDiagnosisPrompt = async () => {
+  if (diagnosisPromptCache) return diagnosisPromptCache
+  
+  const structureInfo = await buildStructurePrompt()
+  
+  diagnosisPromptCache = `你是高中数学教研专家。请分析这道错题图片。
 
-【输出格式】纯JSON（无Markdown标记）：
-{
-  "questionText": "提取的题干内容（完整题目，不含答案）",
-  "classification": {
-    "motifId": "M01",
-    "motifName": "集合、逻辑用语与复数",
-    "specialtyId": "V1",
-    "specialtyName": "集合的运算与关系",
-    "difficulty": "L2"
-  },
-  "diagnosis": {
-    "keyPoints": ["考点1", "考点2"],
-    "trapType": "空集陷阱",
-    "suggestedWeapons": ["S-SET-01", "S-SET-02"],
-    "message": "诊断评语"
-  },
-  "confidence": 0.85
-}
+【第一步：OCR识别】
+完整提取题干内容（忽略手写答案的潦草程度）
 
-【母题列表】
+【第二步：母题定位】
+根据题目内容，匹配到以下母题体系中的一个：
 M01 集合、逻辑与复数, M02 不等式性质, M03 函数概念与性质, M04 指对数函数, M05 平面向量,
-M06 三角函数基础, M07 解三角形综合, M08 数列基础与求和, M09 立体几何基础, M10 解析几何基础,
+M06 三角函数基础, M07 解三角形综合, M08 数列基础与求和, M09 立体几何基础, M10 圆锥曲线基础,
 M11 导数工具基础, M12 概率与统计, M13 解析几何压轴, M14 导数综合压轴, M15 数列综合压轴,
 M16 计数原理, M17 创新思维与情境
 
-【专项列表】（每个母题下的V1, V2, V3等）
-M01: V1集合运算, V2逻辑用语, V3复数
-M02: V1不等式解法, V2基本不等式
-M03: V1函数概念, V2单调性, V3奇偶性, V4零点
-M04: V1指数函数, V2对数函数, V3指对数运算
-M05: V1向量运算, V2数量积, V3向量几何
-M06: V1三角定义, V2恒等变换, V3图像性质
-M07: V1正弦定理, V2余弦定理, V3解三角形综合
-M08: V1等差数列, V2等比数列, V3数列求和
-M09: V1空间几何体, V2点线面, V3空间向量
-M10: V1直线, V2圆, V3直线与圆
-M11: V1导数概念, V2导数与单调性, V3导数与极值
-M12: V1概率, V2统计
-M13: V1椭圆, V2双曲线, V3抛物线
-M14: V1导数综合, V2导数证明
-M15: V1数列综合, V2数列压轴
-M16: V1排列组合, V2二项式
-M17: V1新定义, V2数学文化
+${structureInfo}
 
-【杀手锏ID参考】
-S-SET-01 空集陷阱, S-SET-02 端点取舍
-S-FUNC-01 数形结合, S-FUNC-02 复合函数
-S-TRI-01 正弦定理, S-TRI-02 余弦定理
-S-VEC-01 向量几何, S-VEC-02 数量积
-S-SEQ-01 等差等比, S-SEQ-02 数列求和
-S-GEO-01 空间想象, S-GEO-02 体积最值
-S-ANA-01 韦达定理, S-ANA-02 联立消元
-S-DER-01 导数单调性, S-DER-02 零点分布`
+【严格约束】
+1. 母题选择：必须从上述列表的 [Mxx] 中选择一个最匹配的。
+2. 专项/变例选择：
+   - 必须先确定母题，然后在该母题的专项列表中选择 specId。
+   - 必须在选定的专项中选择存在的 varId。
+   - 严禁编造列表中不存在的 ID（例如：如果 M08 只有 2.1，绝不能返回 2.3）。
+3. 难度评估：
+   - 必须参考"支持难度"列表。
+   - 如果题目看起来很难，但该变例不支持 L4，请选择该变例支持的最高难度。
+
+【输出格式】纯JSON（无Markdown标记）：
+{
+  "questionText": "提取的题干内容",
+  "motifId": "M03",
+  "specId": "V1",
+  "varId": "1.2",
+  "difficulty": "L3",
+  "keyPoints": ["考点1", "考点2"],
+  "trapType": "陷阱类型",
+  "message": "诊断评语（一句话指出问题所在）"
+}
+
+注意：只返回 motifId、specId、varId 编号，不需要返回名称。`
+  
+  return diagnosisPromptCache
+}
 
 const CERTIFICATION_GRADING_PROMPT = (strategy) => {
   if (strategy?.certification?.promptSystem) {
@@ -322,7 +311,7 @@ export const generateRemedialQuestion = async (strategy, weakScenario, previousF
 }
 
 export const processImageWithAI = async (base64Image, options = {}) => {
-  const { mode, context = {} } = options
+  const { mode, context = {}, customPrompt } = options
 
   if (!API_KEY) {
     throw new Error('API Key 未配置，请检查 .env 文件中的 VITE_QWEN_API_KEY')
@@ -331,24 +320,29 @@ export const processImageWithAI = async (base64Image, options = {}) => {
   let systemPrompt = ''
   let userPrompt = ''
 
-  switch (mode) {
-    case 'DIAGNOSIS':
-      systemPrompt = DIAGNOSIS_PROMPT
-      userPrompt = '请分析这道题目并返回 JSON 格式的诊断结果。'
-      break
+  if (customPrompt) {
+    systemPrompt = customPrompt
+    userPrompt = '请分析这道题目并返回 JSON 格式的诊断结果。'
+  } else {
+    switch (mode) {
+      case 'DIAGNOSIS':
+        systemPrompt = await buildDiagnosisPrompt()
+        userPrompt = '请分析这道题目并返回 JSON 格式的诊断结果。'
+        break
 
-    case 'CERTIFICATION_GRADING':
-      systemPrompt = CERTIFICATION_GRADING_PROMPT(context.strategy)
-      userPrompt = '请评判学生的解题过程并返回 JSON 格式的评分结果。'
-      break
+      case 'CERTIFICATION_GRADING':
+        systemPrompt = CERTIFICATION_GRADING_PROMPT(context.strategy)
+        userPrompt = '请评判学生的解题过程并返回 JSON 格式的评分结果。'
+        break
 
-    case 'WEEKLY_TASK_GEN':
-      systemPrompt = WEEKLY_TASK_GEN_PROMPT
-      userPrompt = '请识别题目并生成变式题，返回 JSON 格式结果。'
-      break
+      case 'WEEKLY_TASK_GEN':
+        systemPrompt = WEEKLY_TASK_GEN_PROMPT
+        userPrompt = '请识别题目并生成变式题，返回 JSON 格式结果。'
+        break
 
-    default:
-      throw new Error(`未知的 AI 处理模式: ${mode}`)
+      default:
+        throw new Error(`未知的 AI 处理模式: ${mode}`)
+    }
   }
 
   console.log(`[AI Vision Service] 模式: ${mode}, 图片长度: ${base64Image?.length}`)
@@ -403,31 +397,97 @@ export const processImageWithAI = async (base64Image, options = {}) => {
 export const diagnoseError = async (base64Image) => {
     const result = await processImageWithAI(base64Image, { mode: 'DIAGNOSIS' })
     
+    console.log('[AI Vision Service] AI 返回结果:', result)
+    
+    const motifId = result.motifId || 'M01'
+    let specId = result.specId || 'V1'
+    let varId = result.varId || '1.1'
+    
+    let motifName = ''
+    let specName = ''
+    let varName = ''
+    let linkedWeapons = []
+    
+    try {
+      const motifData = await loadMotifData(motifId)
+      
+      if (motifData) {
+        motifName = motifData.motif_name || motifData.name || motifId
+        
+        const specialty = motifData.specialties?.find(
+          s => s.spec_id === specId
+        )
+        
+        if (specialty) {
+          specName = specialty.spec_name || specId
+          
+          const variation = specialty.variations?.find(
+            v => v.var_id === varId
+          )
+          
+          if (variation) {
+            varName = variation.name || varId
+            
+            if (variation.toolkit?.linked_weapons) {
+              linkedWeapons = variation.toolkit.linked_weapons
+            }
+          } else {
+            const firstVariation = specialty.variations?.[0]
+            if (firstVariation) {
+              console.log(`[AI Vision Service] AI返回变例 ${varId} 无效，自动修正为 ${firstVariation.var_id}`)
+              varId = firstVariation.var_id
+              varName = firstVariation.name || varId
+              if (firstVariation.toolkit?.linked_weapons) {
+                linkedWeapons = firstVariation.toolkit.linked_weapons
+              }
+            }
+          }
+        } else {
+          const firstSpecialty = motifData.specialties?.[0]
+          if (firstSpecialty) {
+            console.log(`[AI Vision Service] AI返回专项 ${specId} 无效，自动修正为 ${firstSpecialty.spec_id}`)
+            specId = firstSpecialty.spec_id
+            specName = firstSpecialty.spec_name || specId
+            
+            const firstVariation = firstSpecialty.variations?.[0]
+            if (firstVariation) {
+              varId = firstVariation.var_id
+              varName = firstVariation.name || varId
+              if (firstVariation.toolkit?.linked_weapons) {
+                linkedWeapons = firstVariation.toolkit.linked_weapons
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('[AI Vision Service] 加载母题数据失败:', error)
+    }
+    
     const normalizedResult = {
       questionText: result.questionText || '',
       classification: {
-        motifId: result.classification?.motifId || result.targetId || 'M01',
-        motifName: result.classification?.motifName || '',
-        specialtyId: result.classification?.specialtyId || 'V1',
-        specialtyName: result.classification?.specialtyName || '',
-        difficulty: result.classification?.difficulty || 'L2'
+        motifId,
+        motifName,
+        specId,
+        specName,
+        varId,
+        varName,
+        difficulty: result.difficulty || 'L2'
       },
       diagnosis: {
-        keyPoints: result.diagnosis?.keyPoints || [],
-        trapType: result.diagnosis?.trapType || null,
-        suggestedWeapons: result.diagnosis?.suggestedWeapons || [],
-        message: result.diagnosis?.message || result.message || ''
+        keyPoints: result.keyPoints || [],
+        trapType: result.trapType || null,
+        suggestedWeapons: linkedWeapons,
+        message: result.message || ''
       },
-      confidence: result.confidence || 0.5,
-      targetId: result.classification?.motifId || result.targetId || 'M01',
-      greenSubIds: result.greenSubIds || [],
-      message: result.diagnosis?.message || result.message || ''
+      targetId: motifId,
+      greenSubIds: [],
+      message: result.message || ''
     }
     
-    const enhancedResult = enhanceDiagnosisWithKeywords(normalizedResult)
-    
-    console.log('[AI Vision Service] 增强诊断结果:', enhancedResult)
-    return enhancedResult
+    console.log('[AI Vision Service] 标准化诊断结果:', normalizedResult)
+    return normalizedResult
   }
 
 export const gradeCertification = async (base64Image, strategy) => {

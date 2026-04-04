@@ -9,22 +9,24 @@ import StrategyHub from './components/StrategyHub'
 import WeeklyMissionNew from './components/WeeklyMissionNew'
 import DiagnosisView from './components/DiagnosisView'
 import InitModal from './components/InitModal'
-import BattleResultModal from './components/BattleResultModal'
-import LaoQiaoWarning from './components/LaoQiaoWarning'
 import Navigation from './components/Navigation'
 import { migrateTacticalData, SCHEMA_VERSION } from './utils/migrateDataStructure'
 import * as userManager from './utils/userManager'
+import { UserProgressProvider } from './context/UserProgressContext'
 
 import { 
   API_KEY, 
   BASE_URL, 
   MODEL_NAME, 
+  VISION_MODEL_NAME,
   CATEGORY_TO_MOTIF,
   DATA_VERSION,
   getSystemPrompt
 } from './constants/config'
 
 import { diagnoseError } from './services/aiVisionService'
+import { getWeaponNameById } from './utils/weaponUtils'
+import { aiFillAnswerAndKeyPoints } from './utils/aiFillUtils'
 
 import {
   getAllBenchmarks,
@@ -42,11 +44,20 @@ import {
 } from './utils/eloUtils'
 
 import {
-  getWeaponInfo,
-  checkLowProficiencyWarning
+  getWeaponInfo
 } from './utils/weaponUtils'
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`
+import {
+  updateHistoryOnIssue,
+  updateHistoryOnAnswer,
+  resetQuestionHistory,
+  getHistoryStats
+} from './utils/questionHistoryUtils'
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString()
 
 const getDaysSincePractice = (lastPracticeDate) => {
   if (!lastPracticeDate) return Infinity
@@ -160,7 +171,7 @@ function App() {
     
     eloUpdateRef.current = { lastTargetId: targetId, lastDelta: delta, lastTime: now };
 
-    console.log(`[Elo 更新] 母题 ${targetId} 分数变动: ${delta}`);
+    console.log(`[Elo 更新] 母题 ${targetId} 分数变动: ${delta >= 0 ? '+' : ''}${delta}`);
 
     setTacticalData(prevData => {
       if (!prevData) return prevData;
@@ -173,6 +184,8 @@ function App() {
         if (encounter) {
           const oldElo = encounter.elo_score || 800;
           const newElo = Math.max(0, oldElo + delta);
+          const oldGearLevel = encounter.gear_level;
+          
           encounter.elo_score = newElo;
 
           if (newElo >= 2501) encounter.gear_level = 'L4';
@@ -181,7 +194,7 @@ function App() {
           else encounter.gear_level = 'L1';
 
           found = true;
-          console.log(`[Elo 更新成功] ${targetId}: ${oldElo} -> ${newElo} (${delta})`);
+          console.log(`[Elo 更新成功] ${targetId}: ${oldElo} -> ${newElo} (${delta >= 0 ? '+' : ''}${delta}), 等级: ${oldGearLevel} -> ${encounter.gear_level}`);
           break;
         }
       }
@@ -202,10 +215,6 @@ function App() {
   const [messages, setMessages] = useState([])
   const [selectedImage, setSelectedImage] = useState(null)
   const [currentTarget, setCurrentTarget] = useState(null)
-  const [battleResult, setBattleResult] = useState(null)
-  const [winStreak, setWinStreak] = useState(0)
-  const [showStreakEffect, setShowStreakEffect] = useState(false)
-  const [laoQiaoWarning, setLaoQiaoWarning] = useState(null)
   const fileInputRef = useRef(null)
 
   const [errorNotebook, setErrorNotebook] = useState(() => {
@@ -258,6 +267,17 @@ function App() {
     }
   })
 
+  const [questionHistory, setQuestionHistory] = useState(() => {
+    if (!userManager.isLoggedIn()) return {}
+    try {
+      const key = userManager.getStorageKey('question_history')
+      const saved = localStorage.getItem(key)
+      return saved ? JSON.parse(saved) : {}
+    } catch {
+      return {}
+    }
+  })
+
   useEffect(() => {
     if (!userManager.isLoggedIn()) return
     const key = userManager.getStorageKey('error_notebook')
@@ -275,6 +295,12 @@ function App() {
     const key = userManager.getStorageKey('weekly_tasks')
     localStorage.setItem(key, JSON.stringify(weeklyTasks))
   }, [weeklyTasks])
+
+  useEffect(() => {
+    if (!userManager.isLoggedIn()) return
+    const key = userManager.getStorageKey('question_history')
+    localStorage.setItem(key, JSON.stringify(questionHistory))
+  }, [questionHistory])
 
   const generateWeeklyBundle = () => {
     const selectedMotifs = [];
@@ -430,6 +456,19 @@ function App() {
     )
   }
 
+  const processBattleResult = (aiResponse, targetId) => {
+    let cleanText = aiResponse || ''
+    let grade = null
+    
+    const gradeMatch = cleanText.match(/\[系统评级:\s*([SABC])\]|\[战术结算:\s*([SABC])\]/)
+    if (gradeMatch) {
+      grade = gradeMatch[1] || gradeMatch[2]
+      cleanText = cleanText.replace(gradeMatch[0], '').trim()
+    }
+    
+    return { cleanText, grade, targetId }
+  }
+
   const resolveError = (errorId) => {
     setErrorNotebook(prev => 
       prev.map(e => e.id === errorId ? { ...e, resolved: true, resolvedAt: new Date().toISOString() } : e)
@@ -486,9 +525,10 @@ function App() {
     }
   }
 
-  const callLLM = async (historyMessages) => {
+  const callLLM = async (historyMessages, imageBase64Override = null) => {
     const lastMessage = historyMessages[historyMessages.length - 1]
-    const hasImage = lastMessage?.imageBase64
+    const hasImage = imageBase64Override || lastMessage?.imageBase64
+    const imageBase64 = imageBase64Override || lastMessage?.imageBase64
 
     let formattedMessages
 
@@ -504,11 +544,11 @@ function App() {
           content: [
             {
               type: 'image_url',
-              image_url: { url: lastMessage.imageBase64 },
+              image_url: { url: imageBase64 },
             },
             {
               type: 'text',
-              text: lastMessage.content,
+              text: lastMessage?.content || '请分析这道题',
             },
           ],
         },
@@ -548,40 +588,8 @@ function App() {
     }
   }
 
-  const processBattleResult = (responseText, targetId) => {
-    const match = responseText.match(/\[(系统评级|战术结算):\s*([SABC])\]/)
-    if (!match || !targetId) return { cleanText: responseText, settled: false }
-
-    const grade = match[2]
-    const cleanText = responseText.replace(/\[(系统评级|战术结算):\s*[SABC]\]/g, '').trim()
-    
-    let diagnosis = ''
-    if (grade === 'C') {
-      const lines = cleanText.split('\n').filter(l => l.trim())
-      const lastLines = lines.slice(-3).join('。')
-      diagnosis = lastLines || '概念不清需要重新讲解'
-    }
-
-    updateTargetData(targetId, grade, [], false, diagnosis)
-
-    return { cleanText, settled: true }
-  }
-
   const updateTargetData = (targetId, grade, masteredSubIds = [], isDiminished = false, diagnosis = '') => {
     const isWin = grade === 'S' || grade === 'A'
-    
-    if (isWin) {
-      setWinStreak(prev => {
-        const newStreak = prev + 1
-        if (newStreak >= 3) {
-          setShowStreakEffect(true)
-          setTimeout(() => setShowStreakEffect(false), 2000)
-        }
-        return newStreak
-      })
-    } else {
-      setWinStreak(0)
-    }
     
     if (grade === 'B' || grade === 'C') {
       addErrorToNotebook(targetId, diagnosis || '需要加强练习', 'L2')
@@ -626,18 +634,6 @@ function App() {
           
           const currentLevel = encounter.gear_level
           const currentElo = encounter.elo_score
-          const eloCap = getEloCeilingFromSpecialties(encounter.specialties || [])
-          
-          if (isWin && currentElo >= eloCap) {
-            const nextLevel = { 'L1': 'L2', 'L2': 'L3', 'L3': 'L4' }[currentLevel]
-            if (nextLevel) {
-              setLaoQiaoWarning({
-                currentLevel,
-                nextLevel,
-                message: `别白费力气了，低阶战斗已无法提升你的境界。去挑战 ${nextLevel} 陷阱，那里才有你需要的晋级能量！`
-              })
-            }
-          }
           
           encounter.elo_score = calculateEloFromSpecialties(encounter.specialties || [])
           encounter.total_raids += 1
@@ -646,22 +642,6 @@ function App() {
           
           const currentWins = Math.round(encounter.win_rate * (encounter.total_raids - 1))
           encounter.win_rate = (currentWins + (isWin ? 1 : 0)) / encounter.total_raids
-          
-          const levelUp = encounter.gear_level !== oldLevel && encounter.gear_level > oldLevel
-          
-          const eloChange = encounter.elo_score - currentElo
-          
-          setBattleResult({
-            grade,
-            eloChange,
-            newElo: encounter.elo_score,
-            levelUp,
-            newLevel: encounter.gear_level,
-            targetName: encounter.target_name,
-            isDiminished,
-            isCapped: isEloCappedFromSpecialties(encounter.specialties),
-            winStreak: winStreak + (isWin ? 1 : 0),
-          })
           
           map.encounters[encounterIndex] = encounter
           break
@@ -777,6 +757,58 @@ function App() {
     try {
       const result = await diagnoseError(base64Data)
       console.log('[App] 诊断结果:', result)
+      
+      if (result && result.classification) {
+        console.log('[App] AI 正在补全答案和解析...')
+        
+        let fillResult = null
+        try {
+          fillResult = await aiFillAnswerAndKeyPoints(
+            result.questionText,
+            result.classification.motifName
+          )
+          console.log('[App] AI 补全结果:', fillResult)
+        } catch (fillError) {
+          console.error('[App] AI 补全失败，使用默认值:', fillError)
+        }
+        
+        const errorEntry = {
+          id: `error-${Date.now()}`,
+          targetId: result.classification.motifId || result.targetId || 'M01',
+          motifName: result.classification.motifName || '',
+          specId: result.classification.specId || 'V1',
+          specName: result.classification.specName || '',
+          varId: result.classification.varId || '1.1',
+          varName: result.classification.varName || '',
+          level: result.classification.difficulty || 'L2',
+          question: result.questionText || '',
+          userAnswer: '',
+          correctAnswer: fillResult?.answer || '',
+          keyPoints: fillResult?.key_points || [],
+          diagnosis: fillResult?.key_points?.join('\n') || result.diagnosis?.message || '',
+          diagnosisDetails: {
+            keyPoints: fillResult?.key_points || result.diagnosis?.keyPoints || [],
+            trapType: result.diagnosis?.trapType || '',
+            suggestedWeapons: result.diagnosis?.suggestedWeapons || []
+          },
+          source: 'photo',
+          imageData: base64Data,
+          confidence: result.confidence || 0.5,
+          createdAt: new Date().toISOString(),
+          resolved: false
+        }
+        
+        setErrorNotebook(prev => {
+          const newNotebook = [...(prev || []), errorEntry]
+          console.log('[App] 已添加到错题库:', errorEntry.id)
+          return newNotebook
+        })
+        
+        result.greenSubIds = result.greenSubIds || []
+        result.targetId = result.classification.motifId || result.targetId
+        result.message = result.diagnosis?.message || ''
+      }
+      
       return result
     } catch (error) {
       console.error('[App] 视觉诊断失败:', error)
@@ -800,6 +832,79 @@ function App() {
       
       return newData
     })
+  }
+
+  const handleImageCapture = async (base64Data) => {
+    console.log('[App] 收到截图，开始诊断...')
+    
+    setSelectedImage(null)
+    
+    const userMessage = {
+      id: Date.now(),
+      type: 'user',
+      content: '请分析这道题',
+      imageBase64: base64Data,
+      imageName: 'screenshot.jpg',
+    }
+    
+    const newMessages = [userMessage]
+    setMessages(newMessages)
+    setInputValue('')
+    setIsLoading(true)
+    setActiveTab('diagnosis')
+    
+    try {
+      console.log('[App] 开始图片诊断...')
+      const diagnosisResult = await handleRealDiagnosis(base64Data)
+      
+      console.log('[App] 诊断结果:', diagnosisResult)
+      
+      if (diagnosisResult && diagnosisResult.classification) {
+        const { classification, diagnosis, questionText } = diagnosisResult
+        
+        const weaponList = diagnosis?.suggestedWeapons?.map(wId => {
+          const weaponName = getWeaponNameById(wId)
+          return weaponName ? `**${wId}** · ${weaponName}` : `**${wId}**`
+        }) || []
+        
+        const locationInfo = `📍 **${classification.motifId} ${classification.motifName}** → ${classification.specId} ${classification.specName} → ${classification.varId} ${classification.varName} → ${classification.difficulty}难度`
+        
+        const diagnosisInfo = `${locationInfo}
+
+${weaponList.length > 0 ? `🔥 **适配杀手锏**：${weaponList.join('、')}` : ''}
+
+${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
+
+---
+
+✅ **已自动加入错题库**，可在"错题库"标签页查看，或在"每周任务"中生成针对性训练。`
+        
+        const aiMessage = {
+          id: Date.now() + 1,
+          type: 'ai',
+          content: diagnosisInfo,
+        }
+        
+        setMessages(prev => [...prev, aiMessage])
+      } else {
+        const aiMessage = {
+          id: Date.now() + 1,
+          type: 'ai',
+          content: '抱歉，AI 未能识别这道题目。请尝试上传更清晰的图片，或手动描述题目内容。',
+        }
+        setMessages(prev => [...prev, aiMessage])
+      }
+    } catch (error) {
+      console.error('[App] 图片诊断失败:', error)
+      const aiMessage = {
+        id: Date.now() + 1,
+        type: 'ai',
+        content: '诊断请求失败，请稍后重试。',
+      }
+      setMessages(prev => [...prev, aiMessage])
+    }
+    
+    setIsLoading(false)
   }
 
   const handleDiagnosisComplete = (result) => {
@@ -880,52 +985,25 @@ function App() {
     const file = e.target.files?.[0]
     if (!file) return
 
+    if (!file.type.startsWith('image/')) {
+      alert('此入口仅支持图片上传。PDF/Word 文件请点击"拍照诊断"按钮上传。')
+      e.target.value = ''
+      return
+    }
+
     try {
-      if (file.type.includes('image')) {
-        const reader = new FileReader()
-        reader.onload = (event) => {
-          setSelectedImage({
-            base64: event.target.result,
-            name: file.name,
-            type: 'image',
-          })
-        }
-        reader.readAsDataURL(file)
-      } else if (file.type === 'application/pdf') {
-        const reader = new FileReader()
-        reader.onload = async (event) => {
-          try {
-            const arrayBuffer = event.target.result
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
-            const page = await pdf.getPage(1)
-            
-            const scale = 2.0
-            const viewport = page.getViewport({ scale })
-            
-            const canvas = document.createElement('canvas')
-            const context = canvas.getContext('2d')
-            canvas.height = viewport.height
-            canvas.width = viewport.width
-            
-            await page.render({
-              canvasContext: context,
-              viewport: viewport,
-            }).promise
-            
-            const base64 = canvas.toDataURL('image/jpeg', 0.9)
-            
-            setSelectedImage({
-              base64: base64,
-              name: file.name,
-              type: 'pdf',
-            })
-          } catch (error) {
-            console.error('PDF 解析错误:', error)
-            alert('PDF 解析失败，请重试')
-          }
-        }
-        reader.readAsArrayBuffer(file)
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        setSelectedImage({
+          base64: event.target.result,
+          name: file.name,
+          type: 'image',
+        })
       }
+      reader.onerror = () => {
+        alert('图片读取失败，请重试')
+      }
+      reader.readAsDataURL(file)
     } catch (error) {
       console.error('文件处理错误:', error)
       alert('文件处理失败，请重试')
@@ -1011,6 +1089,67 @@ function App() {
     setSelectedImage(null)
     setIsLoading(true)
 
+    if (hasImage) {
+      try {
+        console.log('[App] 开始图片诊断...')
+        const diagnosisResult = await handleRealDiagnosis(imageBase64)
+        
+        console.log('[App] 诊断结果:', diagnosisResult)
+        
+        if (diagnosisResult && diagnosisResult.classification) {
+          const { classification, diagnosis, questionText } = diagnosisResult
+          
+          const weaponList = diagnosis?.suggestedWeapons?.map(wId => {
+            const weaponName = getWeaponNameById(wId)
+            return weaponName ? `**${wId}** · ${weaponName}` : `**${wId}**`
+          }) || []
+          
+          const locationInfo = `📍 **${classification.motifId} ${classification.motifName}** → ${classification.specId} ${classification.specName} → ${classification.varId} ${classification.varName} → ${classification.difficulty}难度`
+          
+          const diagnosisInfo = `${locationInfo}
+
+${weaponList.length > 0 ? `🔥 **适配杀手锏**：${weaponList.join('、')}` : ''}
+
+${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
+
+---
+
+现在我们来分析这道题...`
+
+          setMessages((prev) => [
+            ...prev,
+            { id: Date.now() + 1, type: 'ai', content: diagnosisInfo },
+          ])
+          
+          setTimeout(async () => {
+            setIsLoading(true)
+            
+            const messagesWithImage = [
+              ...newMessages,
+              { 
+                id: Date.now() + 2, 
+                type: 'ai', 
+                content: diagnosisInfo 
+              }
+            ]
+            
+            const aiResponse = await callLLM(messagesWithImage, imageBase64)
+            const { cleanText } = processBattleResult(aiResponse, classification.motifId)
+            
+            setMessages((prev) => [
+              ...prev,
+              { id: Date.now() + 3, type: 'ai', content: cleanText },
+            ])
+            setIsLoading(false)
+          }, 100)
+          
+          return
+        }
+      } catch (error) {
+        console.error('[App] 图片诊断失败:', error)
+      }
+    }
+
     const aiResponse = await callLLM(newMessages)
     const { cleanText } = processBattleResult(aiResponse, currentTarget?.target_id)
 
@@ -1029,46 +1168,24 @@ function App() {
   }
 
   return (
-    <ThemeContext.Provider value={{ isAcademicMode, setIsAcademicMode }}>
-      <GradeContext.Provider value={{ currentGrade, setCurrentGrade }}>
-      <div className="h-screen w-full bg-slate-50 dark:bg-zinc-950 overflow-hidden flex">
-        <BattleResultModal
-          isOpen={!!battleResult}
-          onClose={() => {
-            setBattleResult(null)
-            const warning = checkLowProficiencyWarning(tacticalData)
-            if (warning) {
-              setTimeout(() => {
-                setLaoQiaoWarning({
-                  message: `特遣队员，你的【${warning.weaponName}】熟练度严重不足（仅 ${warning.exp} EXP），这是你在 ${warning.zone} 被锁死的元凶！建议回武器库闭关，点亮 3 个专项变例！`
-                })
-              }, 500)
-            }
-          }}
-          result={battleResult}
-          showStreakEffect={showStreakEffect}
-          isAcademicMode={isAcademicMode}
-        />
-        <LaoQiaoWarning
-          show={!!laoQiaoWarning}
-          message={laoQiaoWarning?.message}
-          onClose={() => setLaoQiaoWarning(null)}
-        />
+    <UserProgressProvider>
+      <ThemeContext.Provider value={{ isAcademicMode, setIsAcademicMode }}>
+        <GradeContext.Provider value={{ currentGrade, setCurrentGrade }}>
+        <div className="h-screen w-full bg-slate-50 dark:bg-zinc-950 overflow-hidden flex">
+          <Navigation
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            currentGrade={currentGrade}
+            setCurrentGrade={setCurrentGrade}
+            isAcademicMode={isAcademicMode}
+            setIsAcademicMode={setIsAcademicMode}
+            gradeDropdownOpen={gradeDropdownOpen}
+            setGradeDropdownOpen={setGradeDropdownOpen}
+            onInitClick={() => setInitModalOpen(true)}
+          />
 
-        <Navigation
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          currentGrade={currentGrade}
-          setCurrentGrade={setCurrentGrade}
-          isAcademicMode={isAcademicMode}
-          setIsAcademicMode={setIsAcademicMode}
-          gradeDropdownOpen={gradeDropdownOpen}
-          setGradeDropdownOpen={setGradeDropdownOpen}
-          onInitClick={() => setInitModalOpen(true)}
-        />
-
-        <main className="flex-1 flex flex-col h-full overflow-y-auto pb-16 md:pb-0 relative">
-          {activeTab === 'dashboard' && (
+          <main className="flex-1 flex flex-col h-full overflow-y-auto pb-16 md:pb-0 relative">
+            {activeTab === 'dashboard' && (
             <button
               onClick={() => setInitModalOpen(true)}
               className="flex absolute top-4 right-4 z-40 items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700 transition-all shadow-sm"
@@ -1125,6 +1242,7 @@ function App() {
               onFileUpload={handleFileUpload}
               onDiagnosisComplete={handleDiagnosisComplete}
               onRealDiagnosis={handleRealDiagnosis}
+              onImageCapture={handleImageCapture}
               onNavigateBack={() => setActiveTab('dashboard')}
               fileInputRef={fileInputRef}
             />
@@ -1155,6 +1273,8 @@ function App() {
               currentGrade={currentGrade}
               weeklyTasks={weeklyTasks}
               setWeeklyTasks={setWeeklyTasks}
+              questionHistory={questionHistory}
+              setQuestionHistory={setQuestionHistory}
               onUpdateMotifElo={handleUpdateMotifElo}
               onNavigateToErrorLibrary={() => {
                 setActiveTab('diagnosis')
@@ -1204,6 +1324,7 @@ function App() {
       )}
       </GradeContext.Provider>
     </ThemeContext.Provider>
+    </UserProgressProvider>
   )
 }
 

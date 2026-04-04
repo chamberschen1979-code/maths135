@@ -81,44 +81,41 @@ const InitModal = ({
             e.specialties = JSON.parse(JSON.stringify(motifData.specialties))
             e.specialties.forEach(spec => {
               spec.variations?.forEach(v => {
-                v.master_benchmarks?.forEach(b => {
-                  if (b.level === 'L2') {
-                    if (l2Status === 'green') {
-                      b.is_mastered = true
-                      b.consecutive_correct = 3
-                    } else if (l2Status === 'red') {
-                      b.is_mastered = false
-                      b.consecutive_correct = 0
-                    } else {
-                      b.is_mastered = null
-                      b.consecutive_correct = null
+                // ✅ 更新旧格式：master_benchmarks
+                if (v.master_benchmarks) {
+                  v.master_benchmarks.forEach(b => {
+                    if (b.level === 'L2') {
+                      b.is_mastered = l2Status === 'green' ? true : (l2Status === 'red' ? false : null)
+                      b.consecutive_correct = l2Status === 'green' ? 3 : (l2Status === 'red' ? 0 : null)
                     }
-                  }
-                  if (b.level === 'L3') {
-                    if (l3Status === 'green') {
-                      b.is_mastered = true
-                      b.consecutive_correct = 3
-                    } else if (l3Status === 'red') {
-                      b.is_mastered = false
-                      b.consecutive_correct = 0
-                    } else {
-                      b.is_mastered = null
-                      b.consecutive_correct = null
+                    if (b.level === 'L3') {
+                      b.is_mastered = l3Status === 'green' ? true : (l3Status === 'red' ? false : null)
+                      b.consecutive_correct = l3Status === 'green' ? 3 : (l3Status === 'red' ? 0 : null)
                     }
-                  }
-                  if (b.level === 'L4') {
-                    if (l4Status === 'green') {
-                      b.is_mastered = true
-                      b.consecutive_correct = 3
-                    } else if (l4Status === 'red') {
-                      b.is_mastered = false
-                      b.consecutive_correct = 0
-                    } else {
-                      b.is_mastered = null
-                      b.consecutive_correct = null
+                    if (b.level === 'L4') {
+                      b.is_mastered = l4Status === 'green' ? true : (l4Status === 'red' ? false : null)
+                      b.consecutive_correct = l4Status === 'green' ? 3 : (l4Status === 'red' ? 0 : null)
                     }
-                  }
-                })
+                  })
+                }
+                
+                // ✅ 更新新格式 (RAG)：original_pool
+                if (v.original_pool) {
+                  v.original_pool.forEach(q => {
+                    if (q.level === 'L2') {
+                      q.is_mastered = l2Status === 'green' ? true : (l2Status === 'red' ? false : null)
+                      q.consecutive_correct = l2Status === 'green' ? 3 : (l2Status === 'red' ? 0 : null)
+                    }
+                    if (q.level === 'L3') {
+                      q.is_mastered = l3Status === 'green' ? true : (l3Status === 'red' ? false : null)
+                      q.consecutive_correct = l3Status === 'green' ? 3 : (l3Status === 'red' ? 0 : null)
+                    }
+                    if (q.level === 'L4') {
+                      q.is_mastered = l4Status === 'green' ? true : (l4Status === 'red' ? false : null)
+                      q.consecutive_correct = l4Status === 'green' ? 3 : (l4Status === 'red' ? 0 : null)
+                    }
+                  })
+                }
               })
             })
           }
@@ -193,11 +190,22 @@ const InitModal = ({
             
             if (motifData?.specialties) {
               motifData.specialties.forEach(spec => spec.variations?.forEach(v => {
-                v.master_benchmarks?.forEach(b => {
-                  if (b.level === 'L2') hasL2 = true
-                  if (b.level === 'L3') hasL3 = true
-                  if (b.level === 'L4') hasL4 = true
-                })
+                // ✅ 兼容旧格式：检查 master_benchmarks
+                if (v.master_benchmarks) {
+                  v.master_benchmarks.forEach(b => {
+                    if (b.level === 'L2') hasL2 = true
+                    if (b.level === 'L3') hasL3 = true
+                    if (b.level === 'L4') hasL4 = true
+                  })
+                }
+                // ✅ 兼容 RAG 格式：检查 original_pool
+                if (v.original_pool) {
+                  v.original_pool.forEach(q => {
+                    if (q.level === 'L2') hasL2 = true
+                    if (q.level === 'L3') hasL3 = true
+                    if (q.level === 'L4') hasL4 = true
+                  })
+                }
               }))
             } else {
               hasL2 = true

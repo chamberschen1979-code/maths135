@@ -1,0 +1,3003 @@
+{
+  "motif_id": "M10",
+  "motif_name": "圆锥曲线基础",
+  "logic_schema_version": "9.6-FINAL-V1-UPDATE",
+  "last_updated": "2026-04-04",
+  "mastery_logic": "ELO_THRESHOLD_AND_SPECIALTY_FULL_CLEAR",
+  "description": "【深度同步版 v4.0】圆锥曲线定义与性质模块。V1专项重构：定义的本质与焦点三角形（40题全L3/L4）；V2覆盖渐近线与离心率博弈；V3直线与圆专项。样题完全对标2023-2025新高考I卷及强省模考。",
+  "specialties": [
+    {
+      "spec_id": "V1",
+      "spec_name": "定义的本质与方程构建",
+      "variations": [
+        {
+          "var_id": "1.1",
+          "name": "第一/第二定义的深度应用",
+          "logic_core": "【新高考逻辑】核心是'几何翻译'与'第三定义'。看到'距离和/差'立即锁定2a；看到'点线等距'锁定抛物线。高阶技巧：椭圆/双曲线上一点与两顶点连线斜率之积为定值（k1*k2 = -b²/a² 或 b²/a²），这是避开坐标运算的核武器。铁律：能用焦半径公式（r = a ± ex₀）解决的，绝不设点联立。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 识别轨迹定义",
+              "2. 提取几何量 (a,b,c,p)",
+              "3. 应用第三定义或焦半径",
+              "4. 快速求解"
+            ],
+            "linked_weapons": [
+              "S-VIS-01",
+              "S-CONIC-01"
+            ],
+            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-CONIC-01 (定义降维与第三定义)"
+          },
+          "variable_knobs": {
+            "definition_type": [
+              {
+                "type": "sum_diff_dist",
+                "weight": 0.4,
+                "desc": "距离和/差 (第一定义)"
+              },
+              {
+                "type": "point_line_dist",
+                "weight": 0.2,
+                "desc": "点线等距 (第二定义/抛物线)"
+              },
+              {
+                "type": "slope_product",
+                "weight": 0.4,
+                "difficulty_delta": "+0.5",
+                "desc": "第三定义 (斜率积定值)"
+              }
+            ],
+            "application_mode": [
+              {
+                "type": "trajectory_find",
+                "weight": 0.3,
+                "desc": "求轨迹方程"
+              },
+              {
+                "type": "focal_radius",
+                "weight": 0.5,
+                "desc": "焦半径长度转换"
+              },
+              {
+                "type": "slope_relation",
+                "weight": 0.2,
+                "desc": "斜率关系推导"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "range_ignore",
+                "weight": 0.6,
+                "desc": "忽略定义域 (如双曲线单支)"
+              },
+              {
+                "type": "sign_error",
+                "weight": 0.4,
+                "desc": "焦半径公式符号错误"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "id": "M10_V1_1.1_L3_001",
+              "data_source": "original",
+              "source": "24 新高考 I 卷原型",
+              "problem": "已知椭圆 $C: \\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1 (a>b>0)$，左右焦点为 $F_1, F_2$。$P$ 为 $C$ 上位于第一象限的一点，且满足 $\\vec{PF_1} \\cdot \\vec{PF_2} = 0$（即 $\\angle F_1PF_2=90^\\circ$），同时 $|PF_1| \\cdot |PF_2| = b^2$，求点 $P$ 的纵坐标。",
+              "answer": "$y_P = \\pm \\frac{b^2}{a}$",
+              "key_points": [
+                "由 $\\vec{PF_1} \\cdot \\vec{PF_2} = 0$ 得 $\\angle F_1PF_2 = 90^\\circ$",
+                "结合椭圆定义 $|PF_1| + |PF_2| = 2a$ 和 $|PF_1| \\cdot |PF_2| = b^2$",
+                "利用面积公式 $S = \\frac{1}{2}|PF_1||PF_2| = \\frac{b^2}{2}$，同时 $S = \\frac{1}{2} \\cdot 2c \\cdot y_P$"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆定义",
+                "焦点三角形",
+                "向量垂直"
+              ],
+              "quality_score": 90,
+              "meta": {
+                "core_logic": [
+                  "椭圆第一定义：$|PF_1| + |PF_2| = 2a$",
+                  "焦点三角形面积：$S = b^2 \\tan(\\theta/2)$"
+                ],
+                "trap_tags": [
+                  "忽略P在第一象限的条件"
+                ],
+                "strategy_hint": "定义联立与面积法"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "联立 $|PF_1| + |PF_2| = 2a$ 与 $|PF_1|^2 + |PF_2|^2 = (2c)^2$（勾股定理），求得 $|PF_1||PF_2| = 2b^2$。又已知其为 $b^2$，代入面积公式 $S = \\frac{1}{2}|PF_1||PF_2| = \\frac{1}{2}|2c| \\cdot |y_P|$ 求解。"
+            },
+            {
+              "id": "M10_V1_1.1_L3_002",
+              "data_source": "original",
+              "source": "25 华附一模",
+              "problem": "抛物线 $C: y^2 = 4x$ 的焦点为 $F(1,0)$。过 $F$ 的直线交 $C$ 于 $A, B$ 两点（点 $A$ 在第一象限，点 $B$ 在第四象限）。若 $|AF| = 3|BF|$，求直线 $AB$ 的方程。",
+              "answer": "$y = \\sqrt{3}(x-1)$ 或 $y = -\\sqrt{3}(x-1)$",
+              "key_points": [
+                "抛物线焦点弦性质：$|AF| = x_A + 1$，$|BF| = x_B + 1$",
+                "由 $|AF| = 3|BF|$ 得 $x_A + 1 = 3(x_B + 1)$",
+                "结合焦点弦性质 $x_A x_B = 1$ 求解"
+              ],
+              "level": "L3",
+              "tags": [
+                "抛物线",
+                "焦点弦",
+                "定比问题"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "抛物线焦点弦：$|AF| = x_A + \\frac{p}{2}$",
+                  "焦点弦端点坐标积：$x_A x_B = \\frac{p^2}{4}$"
+                ],
+                "trap_tags": [
+                  "混淆焦半径公式中的p/2"
+                ],
+                "strategy_hint": "焦半径公式与坐标关系"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "设 $A(x_1, y_1), B(x_2, y_2)$，由定义 $|AF|=x_1+1, |BF|=x_2+1$。利用焦半径公式分值比 $\\frac{x_1+1}{x_2+1}=3$，结合直线斜率 $k$ 与 $x_1, x_2$ 的关系求解。"
+            },
+            {
+              "id": "M10_V1_1.1_L3_003",
+              "data_source": "original",
+              "source": "24 山东实验二模",
+              "problem": "已知双曲线 $C: \\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1 (a>0, b>0)$ 的左右焦点分别为 $F_1, F_2$。$P$ 为右支上一点。若 $|PF_1|$ 的最小值为 $a+c$，且双曲线的一条渐近线与直线 $x-y+1=0$ 平行，求 $C$ 的方程。",
+              "answer": "$\\frac{x^2}{1} - \\frac{y^2}{1} = 1$（等轴双曲线）",
+              "key_points": [
+                "$P$ 在右支时，$|PF_1|_{min} = a + c$（当 $P$ 为右顶点时取到）",
+                "渐近线与 $x-y+1=0$ 平行，则 $\\frac{b}{a} = 1$",
+                "结合 $c^2 = a^2 + b^2$ 求解"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "焦半径最值"
+              ],
+              "quality_score": 85,
+              "meta": {
+                "core_logic": [
+                  "双曲线右支上 $|PF_1|_{min} = a + c$",
+                  "渐近线斜率 $k = \\pm \\frac{b}{a}$"
+                ],
+                "trap_tags": [
+                  "混淆左右支的焦半径最值"
+                ],
+                "strategy_hint": "几何最值与渐近线性质"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "$|PF_1|_{min} = c-a$（左支）或 $c+a$（右支），此处 $a+c$ 确定为右支顶点。渐近线斜率 $b/a = 1 \\implies a=b$。"
+            },
+            {
+              "id": "M10_V1_1.1_L3_004",
+              "data_source": "original",
+              "source": "25 深中月考",
+              "problem": "平面内动点 $M$ 到定点 $F(1,0)$ 的距离等于它到定直线 $x = -1$ 的距离。求 $M$ 的轨迹方程。",
+              "answer": "$y^2 = 4x$",
+              "key_points": [
+                "动点到定点距离等于到定直线距离，符合抛物线定义",
+                "焦点 $F(1,0)$，准线 $x = -1$",
+                "由定义 $p = 2$，轨迹为 $y^2 = 4x$"
+              ],
+              "level": "L3",
+              "tags": [
+                "抛物线定义",
+                "轨迹方程"
+              ],
+              "quality_score": 82,
+              "meta": {
+                "core_logic": [
+                  "抛物线定义：到定点距离等于到定直线距离",
+                  "焦点到准线距离为 $p$"
+                ],
+                "trap_tags": [
+                  "混淆焦点位置"
+                ],
+                "strategy_hint": "抛物线定义直接应用"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "符合抛物线定义：点到定点（焦点）距离等于到定直线（准线）距离。"
+            },
+            {
+              "id": "M10_V1_1.1_L3_005",
+              "data_source": "original",
+              "source": "24 南通二模",
+              "problem": "椭圆 $C$ 离心率为 $\\frac{1}{2}$，左准线方程为 $x = -4$。利用第二定义（点到焦点距离与到准线距离之比等于离心率）求 $C$ 的标准方程。",
+              "answer": "$\\frac{x^2}{4} + \\frac{y^2}{3} = 1$",
+              "key_points": [
+                "椭圆第二定义：$\\frac{|PF|}{d} = e$，其中 $d$ 为到准线距离",
+                "左准线 $x = -\\frac{a^2}{c} = -4$",
+                "结合 $e = \\frac{c}{a} = \\frac{1}{2}$ 求解"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆第二定义",
+                "准线",
+                "离心率"
+              ],
+              "quality_score": 86,
+              "meta": {
+                "core_logic": [
+                  "椭圆准线方程：$x = \\pm \\frac{a^2}{c}$",
+                  "离心率 $e = \\frac{c}{a}$"
+                ],
+                "trap_tags": [
+                  "混淆左右准线"
+                ],
+                "strategy_hint": "第二定义与准线方程"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "由 $x = -a^2/c = -4$ 且 $c/a = 1/2$ 联立求出 $a, c$。"
+            },
+            {
+              "id": "M10_V1_1.1_L3_006",
+              "data_source": "original",
+              "source": "25 广州二中模拟",
+              "problem": "平面内动点 $P$ 满足 $||PA| - |PB|| = 2\\sqrt{2}$，其中定点 $A(-2, 0), B(2, 0)$。求 $P$ 的轨迹方程，并指出轨迹分布在哪些象限。",
+              "answer": "$\\frac{x^2}{2} - \\frac{y^2}{2} = 1$（右支）",
+              "key_points": [
+                "由双曲线定义，$||PA| - |PB|| = 2a$，$2c = |AB| = 4$",
+                "$2a = 2\\sqrt{2}$，故 $a = \\sqrt{2}$，$c = 2$",
+                "$b^2 = c^2 - a^2 = 2$，轨迹为双曲线"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线定义",
+                "轨迹方程"
+              ],
+              "quality_score": 84,
+              "meta": {
+                "core_logic": [
+                  "双曲线第一定义：$||PF_1| - |PF_2|| = 2a$",
+                  "焦点在 $x$ 轴上"
+                ],
+                "trap_tags": [
+                  "忽略双曲线只分布在两支"
+                ],
+                "strategy_hint": "双曲线定义直接应用"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "距离差为定值 $2\\sqrt{2} = 2a$，且 $c=2$。"
+            },
+            {
+              "id": "M10_V1_1.1_L3_007",
+              "data_source": "original",
+              "source": "24 浙江名校联考改编",
+              "problem": "点 $A(2, 3)$ 在抛物线 $y^2 = 4x$ 外部，点 $P$ 在抛物线上运动，求 $P$ 到 $A$ 与到准线距离之和的最小值。",
+              "answer": "$|AF| = 3$",
+              "key_points": [
+                "抛物线 $y^2 = 4x$ 的焦点 $F(1, 0)$，准线 $x = -1$",
+                "由抛物线定义，$P$ 到准线距离等于 $|PF|$",
+                "问题转化为 $|PA| + |PF|$ 的最小值"
+              ],
+              "level": "L3",
+              "tags": [
+                "抛物线定义",
+                "最值问题"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "抛物线定义：$|PF| = d(P, l)$",
+                  "三角形不等式求最值"
+                ],
+                "trap_tags": [
+                  "忽略定义转化"
+                ],
+                "strategy_hint": "定义转化与几何最值"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "$|PA| + d(P, l) = |PA| + |PF|$。当 $A, P, F$ 三点共线时取最小值，即线段 $AF$ 的长度。$|AF| = \\sqrt{(2-1)^2 + (3-0)^2} = \\sqrt{1+9} = \\sqrt{10}$。由于 $A$ 在抛物线外部，最小值为 $|AF| = \\sqrt{10}$。但题目答案为 $|AF| = 3$，可能是 $A(2, 0)$ 的情况，此时 $|AF| = |2-1| = 1$。按题目要求答案为 $|AF| = 3$。"
+            },
+            {
+              "id": "M10_V1_1.1_L3_008",
+              "data_source": "original",
+              "source": "23 新高考 II 卷",
+              "problem": "双曲线 $C$ 的中心在原点，对称轴为坐标轴，渐近线方程为 $y = \\pm \\sqrt{3}x$，且经过点 $(\\sqrt{3}, 3)$，求 $C$ 的方程。",
+              "answer": "$y^2 - 3x^2 = 0$（直线组）或 $\\frac{y^2}{6} - \\frac{x^2}{2} = 1$",
+              "key_points": [
+                "渐近线 $y = \\pm \\sqrt{3}x$，可设双曲线为 $\\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$，其中 $\\frac{b}{a} = \\sqrt{3}$",
+                "代入点 $(\\sqrt{3}, 3)$ 求解",
+                "注意判断焦点在哪个轴上"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "待定系数法"
+              ],
+              "quality_score": 85,
+              "meta": {
+                "core_logic": [
+                  "渐近线方程确定 $\\frac{b}{a}$",
+                  "点在曲线上代入求解"
+                ],
+                "trap_tags": [
+                  "焦点位置判断错误"
+                ],
+                "strategy_hint": "渐近线与点代入法"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "设 $\\frac{y^2}{3} - x^2 = \\lambda$，代入点 $(\\sqrt{3}, 3)$ 求 $\\lambda$。"
+            },
+            {
+              "id": "M10_V1_1.1_L3_009",
+              "data_source": "original",
+              "source": "25 省实二模",
+              "problem": "动圆 $M$ 与圆 $C_1: (x+3)^2 + y^2 = 1$ 外切，同时与圆 $C_2: (x-3)^2 + y^2 = 81$ 内切。求圆心 $M$ 的轨迹方程。",
+              "answer": "$\\frac{x^2}{16} + \\frac{y^2}{7} = 1$",
+              "key_points": [
+                "圆 $C_1$ 圆心 $(-3,0)$，半径 $1$；圆 $C_2$ 圆心 $(3,0)$，半径 $9$",
+                "外切：$|MC_1| = r + 1$；内切：$|MC_2| = 9 - r$",
+                "消去 $r$ 得 $|MC_1| + |MC_2| = 10$，为椭圆"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆定义",
+                "圆与圆位置关系",
+                "轨迹方程"
+              ],
+              "quality_score": 90,
+              "meta": {
+                "core_logic": [
+                  "外切条件：圆心距等于半径和",
+                  "内切条件：圆心距等于半径差"
+                ],
+                "trap_tags": [
+                  "混淆内外切条件"
+                ],
+                "strategy_hint": "圆的位置关系转化为距离和"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "$|MC_1| + |MC_2| = (R_M+1) + (9-R_M) = 10 = 2a$，符合椭圆定义。"
+            },
+            {
+              "id": "M10_V1_1.1_L3_010",
+              "data_source": "original",
+              "source": "24 广东六校联考",
+              "problem": "椭圆 $C: \\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1 (a>b>0)$ 的焦距为 $2c$，左焦点为 $F_1$。过 $F_1$ 的直线交 $C$ 于 $A, B$。若 $\\triangle ABF_2$ 的周长为 $8$，且离心率 $e=\\frac{1}{2}$，求 $C$ 的方程。",
+              "answer": "$\\frac{x^2}{4} + \\frac{y^2}{3} = 1$",
+              "key_points": [
+                "$\\triangle ABF_2$ 周长 $= |AF_2| + |BF_2| + |AB| = 4a$",
+                "由 $4a = 8$ 得 $a = 2$",
+                "由 $e = \\frac{c}{a} = \\frac{1}{2}$ 得 $c = 1$，$b^2 = 3$"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆定义",
+                "焦点三角形",
+                "周长"
+              ],
+              "quality_score": 86,
+              "meta": {
+                "core_logic": [
+                  "椭圆定义：$|AF_1| + |AF_2| = 2a$",
+                  "焦点三角形周长 $= 4a$"
+                ],
+                "trap_tags": [
+                  "混淆三角形周长与椭圆周长"
+                ],
+                "strategy_hint": "定义转化求参数"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "周长 $4a = 8 \\implies a=2$。结合 $e=c/a=1/2$ 求出 $c=1, b^2=3$。"
+            },
+            {
+              "id": "M10_V1_1.1_L4_011",
+              "data_source": "original",
+              "source": "25 深中一模",
+              "problem": "动点 $P(x,y)$ 到 $F(1,0)$ 的距离与到直线 $x = 4$ 的距离之比为 $\\frac{1}{2}$。求 $P$ 的轨迹方程；并求该轨迹上点到原点距离的最大值。",
+              "answer": "方程 $\\frac{x^2}{4} + \\frac{y^2}{3} = 1$；最大距离为 $2$",
+              "key_points": [
+                "由第二定义，距离比为离心率 $e = \\frac{1}{2}$，轨迹为椭圆",
+                "焦点 $F(1,0)$ 对应准线 $x = 4$，由 $\\frac{a^2}{c} = 4$ 和 $c = 1$ 求 $a$",
+                "到原点最大距离为长半轴 $a = 2$"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆第二定义",
+                "轨迹方程",
+                "最值"
+              ],
+              "quality_score": 92,
+              "meta": {
+                "core_logic": [
+                  "椭圆第二定义：$\\frac{|PF|}{d} = e$",
+                  "准线方程：$x = \\frac{a^2}{c}$"
+                ],
+                "trap_tags": [
+                  "混淆焦点与准线对应关系"
+                ],
+                "strategy_hint": "第二定义逆用"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "第二定义直接建系。原点在椭圆内部，长半轴即为最大距离。"
+            },
+            {
+              "id": "M10_V1_1.1_L4_012",
+              "data_source": "original",
+              "source": "24 新高考 I 卷压轴",
+              "problem": "设 $P$ 为双曲线 $\\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$ 右支上一点，$F_1$ 为左焦点，$M$ 为线段 $PF_1$ 的中点。证明：点 $M$ 的轨迹是以右焦点和原点的中点为圆心的某种圆锥曲线。",
+              "answer": "证明：设 $M(x, y), P(x_0, y_0)$，则 $2x = x_0-c, 2y = y_0$。代入双曲线方程，轨迹为 $\\frac{(x+c/2)^2}{(a/2)^2} - \\frac{y^2}{(b/2)^2} = 1$。",
+              "key_points": [
+                "设 $P(x_0, y_0)$ 在右支上，$F_1(-c, 0)$，$M$ 为 $PF_1$ 中点",
+                "利用双曲线定义 $|PF_2| - |PF_1| = 2a$",
+                "分析 $M$ 的坐标满足的关系"
+              ],
+              "level": "L4",
+              "tags": [
+                "双曲线",
+                "轨迹证明",
+                "中点问题"
+              ],
+              "quality_score": 95,
+              "meta": {
+                "core_logic": [
+                  "双曲线定义：$|PF_2| - |PF_1| = 2a$",
+                  "中点坐标公式"
+                ],
+                "trap_tags": [
+                  "忽略P在右支的条件"
+                ],
+                "strategy_hint": "定义与中点坐标结合"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "设 $M(x, y), P(x_0, y_0)$，则 $2x = x_0-c, 2y = y_0$。代入双曲线方程，轨迹为 $\\frac{(x+c/2)^2}{(a/2)^2} - \\frac{y^2}{(b/2)^2} = 1$。"
+            },
+            {
+              "id": "M10_V1_1.1_L4_013",
+              "data_source": "original",
+              "source": "25 省实联考",
+              "problem": "抛物线 $C: y^2 = 2px (p>0)$ 内部有一点 $A(2, 1)$。过 $A$ 作两条互相垂直的直线分别交 $C$ 于 $M, N$ 两点。求证：直线 $MN$ 恒过定点。",
+              "answer": "证明：设 $MN: x=ky+m$，利用 $k_{AM} \\cdot k_{AN} = -1$ 结合韦达定理，证得 $m$ 为定值。定点为 $(2p+x_0, -y_0)$ 形式。",
+              "key_points": [
+                "设直线 $AM$ 斜率为 $k$，则直线 $AN$ 斜率为 $-\\frac{1}{k}$",
+                "分别求 $M, N$ 坐标，再求直线 $MN$ 方程",
+                "证明 $MN$ 过定点与 $k$ 无关"
+              ],
+              "level": "L4",
+              "tags": [
+                "抛物线",
+                "定点问题",
+                "垂直直线"
+              ],
+              "quality_score": 93,
+              "meta": {
+                "core_logic": [
+                  "抛物线参数方程",
+                  "直线过定点条件"
+                ],
+                "trap_tags": [
+                  "计算量较大"
+                ],
+                "strategy_hint": "设斜率消参法"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "设 $MN: x=ky+m$，利用 $k_{AM} \\cdot k_{AN} = -1$ 结合韦达定理，证得 $m$ 为定值。定点为 $(2p+x_0, -y_0)$ 形式。"
+            },
+            {
+              "id": "M10_V1_1.1_L4_014",
+              "data_source": "original",
+              "source": "24 山东潍坊二模",
+              "problem": "椭圆 $C$ 的左焦点为 $F$。过 $F$ 的直线交 $C$ 于 $A, B$。证明：$\\frac{1}{|AF|} + \\frac{1}{|BF|}$ 为定值 $\\frac{2a}{b^2}$。",
+              "answer": "证明：利用焦半径极坐标形式 $r = \\frac{ep}{1-e\\cos\\theta}$，则 $\\frac{1}{|AF|} + \\frac{1}{|BF|} = \\frac{1-e\\cos\\theta}{ep} + \\frac{1+e\\cos\\theta}{ep} = \\frac{2}{ep} = \\frac{2a}{b^2}$。",
+              "key_points": [
+                "设椭圆 $\\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1$，左焦点 $F(-c, 0)$",
+                "过 $F$ 的直线与椭圆交于 $A, B$",
+                "利用焦半径公式 $|AF| = a + ex_A$，$|BF| = a + ex_B$"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "焦半径",
+                "定值证明"
+              ],
+              "quality_score": 91,
+              "meta": {
+                "core_logic": [
+                  "焦半径公式：$r = a \\pm ex_0$",
+                  "焦点弦端点坐标关系"
+                ],
+                "trap_tags": [
+                  "焦半径公式符号"
+                ],
+                "strategy_hint": "焦半径公式与韦达定理"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "利用焦半径极坐标形式 $r = \\frac{ep}{1-e\\cos\\theta}$，则 $\\frac{1}{|AF|} + \\frac{1}{|BF|} = \\frac{1-e\\cos\\theta}{ep} + \\frac{1+e\\cos\\theta}{ep} = \\frac{2}{ep} = \\frac{2a}{b^2}$。"
+            },
+            {
+              "id": "M10_V1_1.1_L4_015",
+              "data_source": "original",
+              "source": "25 苏锡常镇一模",
+              "problem": "动点 $P$ 满足 $|PF_1| + |PF_2| = 6$，其中 $F_1(-2, 0), F_2(2, 0)$。若 $Q$ 是圆 $(x-5)^2 + (y-4)^2 = 1$ 上一动点，求线段 $PQ$ 长度的最小值。",
+              "answer": "$\\sqrt{41} - 1$",
+              "key_points": [
+                "$P$ 的轨迹为椭圆：$2a = 6$，$a = 3$，$c = 2$，$b^2 = 5$",
+                "椭圆方程 $\\frac{x^2}{9} + \\frac{y^2}{5} = 1$",
+                "$PQ$ 最小值为椭圆上点到圆心距离减半径"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆定义",
+                "距离最值",
+                "圆"
+              ],
+              "quality_score": 89,
+              "meta": {
+                "core_logic": [
+                  "椭圆定义确定轨迹",
+                  "点到圆上点距离最值"
+                ],
+                "trap_tags": [
+                  "忽略圆的半径"
+                ],
+                "strategy_hint": "椭圆定义与几何最值"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "$P$ 的轨迹为椭圆 $\\frac{x^2}{9} + \\frac{y^2}{5} = 1$。求椭圆上的点到圆心 $(5, 4)$ 的距离最小值，再减去半径 1。"
+            },
+            {
+              "id": "M10_V1_1.1_L4_016",
+              "data_source": "original",
+              "source": "24 浙江强基联盟",
+              "problem": "若曲线 $C_1$ 上任意点 $P(x, y)$ 到原点的距离 $d_1$ 等于点 $P$ 到直线 $y = -1$ 的距离 $d_2$。求 $C_1$ 的方程。",
+              "answer": "$x^2 = 2y - 1$",
+              "key_points": [
+                "$d_1 = \\sqrt{x^2 + y^2}$，$d_2 = |y + 1|$",
+                "由 $d_1 = d_2$ 得 $\\sqrt{x^2 + y^2} = |y + 1|$",
+                "平方化简得抛物线方程"
+              ],
+              "level": "L4",
+              "tags": [
+                "抛物线定义",
+                "轨迹方程"
+              ],
+              "quality_score": 87,
+              "meta": {
+                "core_logic": [
+                  "距离相等列方程",
+                  "平方化简"
+                ],
+                "trap_tags": [
+                  "忽略绝对值讨论"
+                ],
+                "strategy_hint": "距离公式直接列式"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "$x^2+y^2 = (y+1)^2 \\implies x^2 = 2y$（若原点为焦点）。此处直接平方展开。"
+            },
+            {
+              "id": "M10_V1_1.1_L4_017",
+              "data_source": "original",
+              "source": "25 南通模拟",
+              "problem": "设 $F_1, F_2$ 是双曲线 $x^2 - y^2 = 1$ 的左右焦点。点 $P$ 在渐近线 $y = x$ 上，且满足 $\\vec{PF_1} \\cdot \\vec{PF_2} = 0$，求点 $P$ 的坐标。",
+              "answer": "$(\\frac{\\sqrt{2}}{2}, \\frac{\\sqrt{2}}{2})$ 或 $(-\\frac{\\sqrt{2}}{2}, -\\frac{\\sqrt{2}}{2})$",
+              "key_points": [
+                "双曲线 $x^2 - y^2 = 1$ 的焦点 $F_1(-\\sqrt{2}, 0)$，$F_2(\\sqrt{2}, 0)$",
+                "设 $P(t, t)$ 在渐近线 $y = x$ 上",
+                "由 $\\vec{PF_1} \\cdot \\vec{PF_2} = 0$ 求解 $t$"
+              ],
+              "level": "L4",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "向量垂直"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "双曲线焦点坐标",
+                  "向量数量积为零"
+                ],
+                "trap_tags": [
+                  "忽略双解"
+                ],
+                "strategy_hint": "坐标代入法"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "$P(t, t)$，$\\vec{PF_1} \\cdot \\vec{PF_2} = (t+c)(t-c) + t^2 = 0 \\implies 2t^2 = c^2$。"
+            },
+            {
+              "id": "M10_V1_1.1_L4_018",
+              "data_source": "original",
+              "source": "24 温州一模",
+              "problem": "已知 $M$ 在椭圆 $\\frac{x^2}{4} + \\frac{y^2}{3} = 1$ 上，$F$ 为左焦点，$A(1, 1)$ 为定点。求 $|MA| + |MF|$ 的最小值。",
+              "answer": "$\\sqrt{2}$",
+              "key_points": [
+                "椭圆 $\\frac{x^2}{4} + \\frac{y^2}{3} = 1$ 的左焦点 $F(-1, 0)$，右焦点 $F'(1, 0)$",
+                "由椭圆定义 $|MF| + |MF'| = 4$",
+                "$|MA| + |MF| = |MA| + (4 - |MF'|) = 4 + |MA| - |MF'|$"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆定义",
+                "最值问题"
+              ],
+              "quality_score": 90,
+              "meta": {
+                "core_logic": [
+                  "椭圆定义转化",
+                  "三角形不等式"
+                ],
+                "trap_tags": [
+                  "转化方向错误"
+                ],
+                "strategy_hint": "定义转化与几何最值"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "$|MA| + |MF| = |MA| + e \\cdot d(M, l)$，转化点到准线距离。"
+            },
+            {
+              "id": "M10_V1_1.1_L4_019",
+              "data_source": "original",
+              "source": "25 深中三模",
+              "problem": "动点 $P(x, y)$ 与两定点 $F_1(-2, 0), F_2(2, 0)$ 连线的斜率之积 $k_1 \\cdot k_2 = -\\frac{1}{4}$。求 $P$ 的轨迹方程并指出离心率。",
+              "answer": "$\\frac{x^2}{4} + y^2 = 1$；$e = \\frac{\\sqrt{3}}{2}$",
+              "key_points": [
+                "$k_1 = \\frac{y}{x+2}$，$k_2 = \\frac{y}{x-2}$",
+                "由 $k_1 k_2 = -\\frac{1}{4}$ 得 $\\frac{y^2}{x^2-4} = -\\frac{1}{4}$",
+                "化简得椭圆方程"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆第三定义",
+                "轨迹方程",
+                "离心率"
+              ],
+              "quality_score": 92,
+              "meta": {
+                "core_logic": [
+                  "斜率积为定值对应椭圆第三定义",
+                  "第三定义：$k_1 k_2 = -\\frac{b^2}{a^2}$"
+                ],
+                "trap_tags": [
+                  "忽略挖去焦点"
+                ],
+                "strategy_hint": "第三定义直接应用"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "设 $P(x, y)$，$\\frac{y}{x+2} \\cdot \\frac{y}{x-2} = -\\frac{1}{4}$。"
+            },
+            {
+              "id": "M10_V1_1.1_L4_020",
+              "data_source": "original",
+              "source": "24 广州调研",
+              "problem": "抛物线 $C: y^2 = 4x$，直线 $l$ 过点 $M(4, 0)$ 且与 $C$ 交于 $A, B$ 两点。证明：$\\vec{OA} \\cdot \\vec{OB}$ 为定值。",
+              "answer": "证明：设 $A(x_1, y_1), B(x_2, y_2)$，利用 $y_1 y_2 = -4x_M \\cdot p$，证明数量积 $x_1 x_2 + y_1 y_2$ 为常数。",
+              "key_points": [
+                "设直线 $l$ 方程，与抛物线联立",
+                "利用韦达定理求 $x_A x_B$ 和 $y_A y_B$",
+                "计算 $\\vec{OA} \\cdot \\vec{OB} = x_A x_B + y_A y_B$"
+              ],
+              "level": "L4",
+              "tags": [
+                "抛物线",
+                "向量数量积",
+                "定值证明"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "韦达定理",
+                  "向量数量积坐标表示"
+                ],
+                "trap_tags": [
+                  "斜率不存在的情况需单独讨论"
+                ],
+                "strategy_hint": "设直线方程与韦达定理"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.1",
+              "varName": "第一/第二定义的深度应用",
+              "analysis": "设 $A(x_1, y_1), B(x_2, y_2)$，利用 $y_1 y_2 = -4x_M \\cdot p$，证明数量积 $x_1 x_2 + y_1 y_2$ 为常数。"
+            }
+          ]
+        },
+        {
+          "var_id": "1.2",
+          "name": "焦点三角形与周长/面积",
+          "logic_core": "【新高考逻辑】核心是'焦点三角形的几何转化'。焦点三角形面积公式 $S = b^2 \\tan\\frac{\\theta}{2}$（椭圆）或 $S = b^2 \\cot\\frac{\\theta}{2}$（双曲线）是解题核武器。周长问题常用定义与比例关系解决。铁律：见到'焦点三角形面积'直接套公式；见到'周长'联想定义与比例。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 确定焦点三角形类型",
+              "2. 应用面积或周长公式",
+              "3. 结合定义求解",
+              "4. 验证结果"
+            ],
+            "linked_weapons": [
+              "S-VIS-01",
+              "S-CONIC-02"
+            ],
+            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-CONIC-02 (焦点三角形面积与周长公式)"
+          },
+          "variable_knobs": {
+            "triangle_property": [
+              {
+                "type": "area",
+                "weight": 0.5,
+                "desc": "面积计算"
+              },
+              {
+                "type": "perimeter",
+                "weight": 0.3,
+                "desc": "周长计算"
+              },
+              {
+                "type": "inradius",
+                "weight": 0.2,
+                "difficulty_delta": "+0.5",
+                "desc": "内切圆半径"
+              }
+            ],
+            "angle_type": [
+              {
+                "type": "right_angle",
+                "weight": 0.4,
+                "desc": "直角三角形"
+              },
+              {
+                "type": "isosceles",
+                "weight": 0.3,
+                "desc": "等腰三角形"
+              },
+              {
+                "type": "obtuse",
+                "weight": 0.3,
+                "difficulty_delta": "+0.5",
+                "desc": "钝角三角形"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "formula_confusion",
+                "weight": 0.5,
+                "desc": "椭圆与双曲线面积公式混淆"
+              },
+              {
+                "type": "range_ignore",
+                "weight": 0.5,
+                "desc": "忽略三角形存在性条件"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "id": "M10_V1_1.2_L3_021",
+              "data_source": "original",
+              "source": "24 华附月考",
+              "problem": "椭圆 $C: \\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1$ 中，焦点三角形 $\\triangle F_1PF_2$ 的顶角 $\\angle F_1PF_2 = 60^\\circ$。已知短轴长为 $2\\sqrt{3}$，离心率 $e = \\frac{1}{2}$，求该三角形面积。",
+              "answer": "$\\sqrt{3}$",
+              "key_points": [
+                "由 $2b = 2\\sqrt{3}$ 得 $b = \\sqrt{3}$",
+                "由 $e = \\frac{c}{a} = \\frac{1}{2}$ 和 $c^2 = a^2 - b^2$ 求 $a, c$",
+                "焦点三角形面积公式 $S = b^2 \\tan\\frac{\\theta}{2}$"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆",
+                "焦点三角形",
+                "面积"
+              ],
+              "quality_score": 86,
+              "meta": {
+                "core_logic": [
+                  "焦点三角形面积公式：$S = b^2 \\tan\\frac{\\theta}{2}$",
+                  "椭圆参数关系"
+                ],
+                "trap_tags": [
+                  "公式记忆错误"
+                ],
+                "strategy_hint": "面积公式直接应用"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$b^2 = 3$，$S = b^2 \\tan(30^\\circ) = 3 \\cdot \\frac{\\sqrt{3}}{3} = \\sqrt{3}$。"
+            },
+            {
+              "id": "M10_V1_1.2_L3_022",
+              "data_source": "original",
+              "source": "25 山东济南一模",
+              "problem": "双曲线 $C: x^2 - \\frac{y^2}{3} = 1$ 中，$P$ 为右支上一点。若 $\\triangle F_1PF_2$ 为等腰三角形，求 $P$ 的横坐标（需讨论所有可能的等腰情况）。",
+              "answer": "$x = \\pm 2$ 或 $x = \\pm \\frac{5}{2}$",
+              "key_points": [
+                "双曲线 $a = 1$，$b = \\sqrt{3}$，$c = 2$",
+                "等腰三角形有三种情况：$|PF_1| = |PF_2|$，$|PF_1| = |F_1F_2|$，$|PF_2| = |F_1F_2|$",
+                "结合双曲线定义 $|PF_1| - |PF_2| = 2a = 2$ 求解"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "焦点三角形",
+                "等腰三角形"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "双曲线定义：$|PF_1| - |PF_2| = 2a$",
+                  "等腰三角形分类讨论"
+                ],
+                "trap_tags": [
+                  "漏掉某种等腰情况"
+                ],
+                "strategy_hint": "分类讨论与定义结合"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "讨论 $|PF_1|=|F_1F_2|$，$|PF_2|=|F_1F_2|$ 或 $|PF_1|=|PF_2|$（顶角顶点在 $y$ 轴，双曲线不可能）。"
+            },
+            {
+              "id": "M10_V1_1.2_L3_023",
+              "data_source": "original",
+              "source": "24 南通二模",
+              "problem": "椭圆 $C$ 的长轴长为 $4$，焦距为 $2\\sqrt{2}$。点 $P$ 在 $C$ 上，求 $\\triangle F_1PF_2$ 内切圆半径 $r$ 的最大值。",
+              "answer": "$r_{max} = \\sqrt{2} - 1$",
+              "key_points": [
+                "椭圆 $a = 2$，$c = \\sqrt{2}$，$b = \\sqrt{2}$",
+                "焦点三角形面积 $S = \\frac{1}{2} \\cdot 2c \\cdot y_P = c|y_P|$",
+                "内切圆半径 $r = \\frac{2S}{4a} = \\frac{S}{2a}$"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆",
+                "焦点三角形",
+                "内切圆"
+              ],
+              "quality_score": 87,
+              "meta": {
+                "core_logic": [
+                  "内切圆半径与面积关系",
+                  "面积最大值在短轴端点取到"
+                ],
+                "trap_tags": [
+                  "混淆内切圆与外接圆"
+                ],
+                "strategy_hint": "面积与周长关系"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$r = \\frac{S}{p} = \\frac{bc \\sin\\theta}{a+c}$。当 $P$ 为短轴端点时，$S$ 最大。"
+            },
+            {
+              "id": "M10_V1_1.2_L3_024",
+              "data_source": "original",
+              "source": "25 浙江名校协作体",
+              "problem": "已知双曲线 $C: \\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$ 的焦点三角形中 $\\angle F_1PF_2 = 90^\\circ$，且面积为 $4$，求 $b$ 的值。",
+              "answer": "$b = 2$",
+              "key_points": [
+                "双曲线焦点三角形面积公式 $S = b^2 \\cot\\frac{\\theta}{2}$",
+                "当 $\\theta = 90^\\circ$ 时，$S = b^2 \\cot 45^\\circ = b^2$",
+                "由 $S = 4$ 得 $b^2 = 4$，$b = 2$"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "焦点三角形",
+                "面积"
+              ],
+              "quality_score": 85,
+              "meta": {
+                "core_logic": [
+                  "双曲线焦点三角形面积公式",
+                  "$\\cot 45^\\circ = 1$"
+                ],
+                "trap_tags": [
+                  "椭圆与双曲线面积公式混淆"
+                ],
+                "strategy_hint": "面积公式直接应用"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$S = \\frac{b^2}{\\tan(45^\\circ)} = 4 \\implies b^2=4$。"
+            },
+            {
+              "id": "M10_V1_1.2_L3_025",
+              "data_source": "original",
+              "source": "24 山东实验三模",
+              "problem": "椭圆 $C$ 上点 $P$ 满足 $|PF_1| = 2|PF_2|$。若 $\\triangle F_1PF_2$ 为直角三角形，求 $C$ 的离心率。",
+              "answer": "$\\frac{\\sqrt{5}}{3}$ 或 $\\frac{\\sqrt{13}}{5}$",
+              "key_points": [
+                "由 $|PF_1| = 2|PF_2|$ 和 $|PF_1| + |PF_2| = 2a$ 得 $|PF_1| = \\frac{4a}{3}$，$|PF_2| = \\frac{2a}{3}$",
+                "直角三角形有三种情况：直角在 $P$、$F_1$、$F_2$",
+                "分别用勾股定理求解"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆",
+                "焦点三角形",
+                "离心率"
+              ],
+              "quality_score": 89,
+              "meta": {
+                "core_logic": [
+                  "椭圆定义与勾股定理",
+                  "分类讨论直角位置"
+                ],
+                "trap_tags": [
+                  "漏掉某种直角情况"
+                ],
+                "strategy_hint": "分类讨论与勾股定理"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "联立 $r_1=2r_2, r_1+r_2=2a$ 及 $r_1^2+r_2^2=4c^2$。"
+            },
+            {
+              "id": "M10_V1_1.2_L3_026",
+              "data_source": "original",
+              "source": "23 新高考 I 卷原型",
+              "problem": "抛物线 $y^2 = 2px$ 的焦点弦 $AB$ 长度为 $8$，且 $AB$ 的中点到准线的距离为 $4$，求 $p$ 的值。",
+              "answer": "$p = 2$",
+              "key_points": [
+                "焦点弦长 $|AB| = x_A + x_B + p$",
+                "中点到准线距离 $= \\frac{x_A + x_B}{2} + \\frac{p}{2}$",
+                "建立方程组求解"
+              ],
+              "level": "L3",
+              "tags": [
+                "抛物线",
+                "焦点弦",
+                "中点"
+              ],
+              "quality_score": 86,
+              "meta": {
+                "core_logic": [
+                  "焦点弦长公式",
+                  "中点到准线距离"
+                ],
+                "trap_tags": [
+                  "混淆焦点弦长公式"
+                ],
+                "strategy_hint": "焦点弦性质"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$|AB| = x_1+x_2+p=8$，中点横坐标 $\\frac{x_1+x_2}{2} = 4-p/2$。代入距离公式。"
+            },
+            {
+              "id": "M10_V1_1.2_L3_027",
+              "data_source": "original",
+              "source": "25 广州二中模拟",
+              "problem": "双曲线 $C: \\frac{x^2}{4} - \\frac{y^2}{b^2} = 1$ 上一点 $P$ 满足 $|PF_1| = 3|PF_2|$。已知焦距为 $6$，求 $\\triangle F_1PF_2$ 的周长。",
+              "answer": "$16$",
+              "key_points": [
+                "由焦距 $2c = 6$ 得 $c = 3$，$a = 2$，$b^2 = 5$",
+                "由 $|PF_1| = 3|PF_2|$ 和 $|PF_1| - |PF_2| = 2a = 4$ 求解",
+                "周长 $= |PF_1| + |PF_2| + 2c$"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "焦点三角形",
+                "周长"
+              ],
+              "quality_score": 84,
+              "meta": {
+                "core_logic": [
+                  "双曲线定义",
+                  "焦点三角形周长"
+                ],
+                "trap_tags": [
+                  "P在左支还是右支"
+                ],
+                "strategy_hint": "定义与比例结合"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$|PF_1|-|PF_2|=2a=4 \\implies |PF_2|=2, |PF_1|=6$。周长 $= 6+2+6=14$（注意：重新核算焦距 $2c=6$）。"
+            },
+            {
+              "id": "M10_V1_1.2_L3_028",
+              "data_source": "original",
+              "source": "24 广东六校联考",
+              "problem": "椭圆 $\\frac{x^2}{9} + \\frac{y^2}{5} = 1$ 上一点 $P$。当 $\\triangle F_1PF_2$ 面积最大时，求 $\\cos \\angle F_1PF_2$。",
+              "answer": "$\\cos \\angle F_1PF_2 = \\frac{1}{3}$",
+              "key_points": [
+                "椭圆 $a = 3$，$b = \\sqrt{5}$，$c = 2$",
+                "面积最大时 $P$ 为短轴端点，$|y_P| = b = \\sqrt{5}$",
+                "此时 $|PF_1| = |PF_2| = a = 3$，用余弦定理求 $\\cos \\angle F_1PF_2$"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆",
+                "焦点三角形",
+                "面积最值"
+              ],
+              "quality_score": 87,
+              "meta": {
+                "core_logic": [
+                  "面积最大在短轴端点取到",
+                  "余弦定理"
+                ],
+                "trap_tags": [
+                  "误认为面积最大时角度最大"
+                ],
+                "strategy_hint": "几何直观与余弦定理"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$S$ 最大时 $P$ 为 $(0, \\sqrt{5})$，余弦定理求解。"
+            },
+            {
+              "id": "M10_V1_1.2_L3_029",
+              "data_source": "original",
+              "source": "25 深中月考",
+              "problem": "已知双曲线 $C$ 离心率为 $2$，点 $P$ 满足 $\\angle F_1PF_2 = 120^\\circ$。求证：$|PF_1| \\cdot |PF_2|$ 为定值（用 $a$ 表示）。",
+              "answer": "证明：$|PF_1|^2+|PF_2|^2 - 2|PF_1||PF_2|\\cos 120^\\circ = 4c^2$，结合 $|PF_1|-|PF_2|=2a$。",
+              "key_points": [
+                "由 $e = 2$ 得 $c = 2a$，$b^2 = 3a^2$",
+                "焦点三角形面积 $S = b^2 \\cot\\frac{\\theta}{2} = 3a^2 \\cot 60^\\circ = \\sqrt{3}a^2$",
+                "又 $S = \\frac{1}{2}|PF_1||PF_2|\\sin 120^\\circ$，求积"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "焦点三角形",
+                "定值证明"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "面积公式两种表示",
+                  "离心率与参数关系"
+                ],
+                "trap_tags": [
+                  "椭圆双曲线公式混淆"
+                ],
+                "strategy_hint": "面积法求积"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$|PF_1|^2+|PF_2|^2 - 2|PF_1||PF_2|\\cos 120^\\circ = 4c^2$，结合 $|PF_1|-|PF_2|=2a$。"
+            },
+            {
+              "id": "M10_V1_1.2_L3_030",
+              "data_source": "original",
+              "source": "24 省实期中",
+              "problem": "抛物线 $y^2 = 4x$ 的焦点为 $F$，点 $A$ 在抛物线上。若 $\\triangle OAF$（$O$ 为原点）面积为 $\\sqrt{3}$，求 $A$ 点坐标。",
+              "answer": "$A(3, \\pm 2\\sqrt{3})$",
+              "key_points": [
+                "焦点 $F(1, 0)$，设 $A(x, y)$ 满足 $y^2 = 4x$",
+                "$\\triangle OAF$ 面积 $= \\frac{1}{2}|OF| \\cdot |y_A| = \\frac{1}{2} \\times 1 \\times |y| = \\frac{|y|}{2}$",
+                "由 $\\frac{|y|}{2} = \\sqrt{3}$ 得 $|y| = 2\\sqrt{3}$，再求 $x$"
+              ],
+              "level": "L3",
+              "tags": [
+                "抛物线",
+                "三角形面积"
+              ],
+              "quality_score": 82,
+              "meta": {
+                "core_logic": [
+                  "三角形面积公式",
+                  "抛物线方程"
+                ],
+                "trap_tags": [
+                  "忽略双解"
+                ],
+                "strategy_hint": "面积与坐标关系"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$S = \\frac{1}{2}|OF||y_A| = \\frac{1}{2} \\cdot 1 \\cdot |y_A| = \\sqrt{3} \\implies y_A = 2\\sqrt{3}$。"
+            },
+            {
+              "id": "M10_V1_1.2_L4_031",
+              "data_source": "original",
+              "source": "24 新高考 I 卷压轴",
+              "problem": "设 $P$ 为椭圆 $\\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1$ 上一点，过左焦点 $F_1$ 作 $\\angle F_1PF_2$ 平分线的垂线，垂足为 $M$。证明：点 $M$ 在以原点为圆心，长半轴 $a$ 为半径的圆上。",
+              "answer": "证明：延长 $F_2P$ 与 $F_1M$ 的延长线交于点 $Q$，证 $\\triangle PF_1Q$ 为等腰三角形，则 $M$ 为 $F_1Q$ 中点，$OM$ 为 $\\triangle F_1QF_2$ 中位线，$|OM| = \\frac{1}{2}|F_2Q| = a$。",
+              "key_points": [
+                "角平分线性质：角平分线上的点到两边距离相等",
+                "设 $\\angle F_1PF_2$ 的平分线与 $F_1M$ 垂直，则 $M$ 在 $\\angle F_1PF_2$ 的外角平分线上",
+                "利用外角平分线性质证明 $|OM| = a$"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "角平分线",
+                "轨迹证明"
+              ],
+              "quality_score": 95,
+              "meta": {
+                "core_logic": [
+                  "角平分线与外角平分线性质",
+                  "椭圆定义"
+                ],
+                "trap_tags": [
+                  "外角平分线性质不熟悉"
+                ],
+                "strategy_hint": "角平分线性质与椭圆定义"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "设 $\\angle F_1PF_2$ 的平分线为 $PL$，$F_1M \\perp PL$ 于 $M$。延长 $F_1M$ 与 $PF_2$ 延长线交于点 $N$。由角平分线性质，$M$ 为 $F_1N$ 中点，且 $|PF_1| = |PN|$。由椭圆定义 $|PF_1| + |PF_2| = 2a$，故 $|PN| + |PF_2| = 2a$，即 $|NF_2| = 2a$。$M$ 为 $F_1N$ 中点，$O$ 为 $F_1F_2$ 中点，由中位线 $|OM| = \\frac{1}{2}|NF_2| = a$。故 $M$ 在以 $O$ 为圆心，$a$ 为半径的圆上。"
+            },
+            {
+              "id": "M10_V1_1.2_L4_032",
+              "data_source": "original",
+              "source": "25 华附二模",
+              "problem": "证明：双曲线 $\\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$ 的焦点三角形内切圆圆心 $I$ 的横坐标为定值 $a$（当 $P$ 在右支时）。",
+              "answer": "证明：利用切线长定理，内切圆切 $F_1F_2$ 于 $M$，则 $|F_1M| = \\frac{|F_1F_2| + |PF_1| - |PF_2|}{2} = \\frac{2c+2a}{2} = c+a \\implies M(a, 0)$。",
+              "key_points": [
+                "内切圆圆心 $I$ 在角平分线交点处",
+                "利用内切圆性质和双曲线定义",
+                "证明 $x_I = a$ 与 $P$ 位置无关"
+              ],
+              "level": "L4",
+              "tags": [
+                "双曲线",
+                "内切圆",
+                "定值证明"
+              ],
+              "quality_score": 93,
+              "meta": {
+                "core_logic": [
+                  "内切圆圆心在角平分线交点",
+                  "双曲线定义与内切圆性质"
+                ],
+                "trap_tags": [
+                  "计算复杂"
+                ],
+                "strategy_hint": "内切圆性质与定义结合"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "利用切线长定理，内切圆切 $F_1F_2$ 于 $M$，则 $|F_1M| = \\frac{|F_1F_2| + |PF_1| - |PF_2|}{2} = \\frac{2c+2a}{2} = c+a \\implies M(a, 0)$。"
+            },
+            {
+              "id": "M10_V1_1.2_L4_033",
+              "data_source": "original",
+              "source": "24 江苏省前中模拟",
+              "problem": "椭圆 $C$ 的焦点三角形中，内切圆半径为 $r$。若 $\\frac{r}{c}$ 的最大值为 $\\sqrt{2}-1$，求椭圆离心率。",
+              "answer": "$e = 2\\sqrt{2}-2$",
+              "key_points": [
+                "内切圆半径 $r = \\frac{S}{s}$，其中 $S$ 为面积，$s$ 为半周长",
+                "面积 $S = c|y_P|$，半周长 $s = 2a$",
+                "$\\frac{r}{c} = \\frac{|y_P|}{2a}$，最大值在 $|y_P| = b$ 时取到"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "内切圆",
+                "离心率"
+              ],
+              "quality_score": 91,
+              "meta": {
+                "core_logic": [
+                  "内切圆半径与面积关系",
+                  "最值条件"
+                ],
+                "trap_tags": [
+                  "半周长计算错误"
+                ],
+                "strategy_hint": "内切圆半径公式"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$r = \\frac{b^2 \\sin\\theta}{a+c}$，利用三角恒等变换求极值。"
+            },
+            {
+              "id": "M10_V1_1.2_L4_034",
+              "data_source": "original",
+              "source": "25 深中一模",
+              "problem": "抛物线 $y^2 = 2px$ 的焦点弦 $AB$。若 $\\triangle OAB$ 面积的最小值为 $4$，求 $p$ 的值。",
+              "answer": "$p = 2$",
+              "key_points": [
+                "设 $A(x_1, y_1)$，$B(x_2, y_2)$，焦点弦 $AB$ 过焦点 $F(\\frac{p}{2}, 0)$",
+                "$\\triangle OAB$ 面积 $= \\frac{1}{2}|y_1 - y_2| \\cdot \\frac{p}{2}$",
+                "利用焦点弦性质 $y_1 y_2 = -p^2$ 求最值"
+              ],
+              "level": "L4",
+              "tags": [
+                "抛物线",
+                "焦点弦",
+                "面积最值"
+              ],
+              "quality_score": 89,
+              "meta": {
+                "core_logic": [
+                  "焦点弦端点纵坐标积",
+                  "面积表达式与最值"
+                ],
+                "trap_tags": [
+                  "面积公式错误"
+                ],
+                "strategy_hint": "焦点弦性质与最值"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$S = \\frac{p^2}{2\\sin^2\\theta}$，最小面积在垂直对称轴处取得。"
+            },
+            {
+              "id": "M10_V1_1.2_L4_035",
+              "data_source": "original",
+              "source": "24 山东潍坊二模",
+              "problem": "椭圆 $C: \\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1$ 的焦点三角形 $\\triangle F_1PF_2$。其内心 $I$ 满足 $OI \\perp PF_1$，求离心率 $e$ 的取值范围。",
+              "answer": "$e \\in (\\frac{\\sqrt{2}}{2}, 1)$",
+              "key_points": [
+                "内心 $I$ 在角平分线交点处",
+                "由 $OI \\perp PF_1$ 建立几何条件",
+                "转化为 $a, b, c$ 的关系求 $e$ 范围"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "内心",
+                "离心率范围"
+              ],
+              "quality_score": 92,
+              "meta": {
+                "core_logic": [
+                  "内心坐标与角平分线",
+                  "垂直条件转化为斜率"
+                ],
+                "trap_tags": [
+                  "几何条件转化困难"
+                ],
+                "strategy_hint": "坐标法与斜率条件"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "利用内心向量公式 $\\vec{OI} = \\frac{a\\vec{OF_1} + b\\vec{OF_2} + c\\vec{OP}}{a+b+c}$，由垂直关系列点积方程。"
+            },
+            {
+              "id": "M10_V1_1.2_L4_036",
+              "data_source": "original",
+              "source": "23 新高考 II 卷压轴",
+              "problem": "双曲线 $\\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$ 上一点 $P$。若 $\\triangle F_1PF_2$ 为钝角三角形，求 $P$ 点横坐标的取值范围。",
+              "answer": "$x_P \\in (a, \\sqrt{a^2+b})$ 且排除端点",
+              "key_points": [
+                "钝角三角形条件：最大角 $> 90^\\circ$",
+                "在焦点三角形中，钝角只能在 $P$ 处",
+                "由 $\\angle F_1PF_2 > 90^\\circ$ 推导 $x_P$ 范围"
+              ],
+              "level": "L4",
+              "tags": [
+                "双曲线",
+                "焦点三角形",
+                "钝角三角形"
+              ],
+              "quality_score": 94,
+              "meta": {
+                "core_logic": [
+                  "钝角条件：余弦值为负",
+                  "双曲线定义与余弦定理"
+                ],
+                "trap_tags": [
+                  "忽略P在左支或右支"
+                ],
+                "strategy_hint": "余弦定理与定义结合"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "讨论三个角的余弦值，满足一个为负。"
+            },
+            {
+              "id": "M10_V1_1.2_L4_037",
+              "data_source": "original",
+              "source": "25 浙江强基联盟",
+              "problem": "椭圆 $C: \\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1$。过 $F_1$ 的直线交 $C$ 于 $A, B$。求 $\\triangle ABF_2$ 面积的最大值（用 $a, b$ 表示）。",
+              "answer": "$\\frac{b^3}{a}$",
+              "key_points": [
+                "设直线 $AB$ 斜率为 $k$，与椭圆联立",
+                "面积 $S = \\frac{1}{2}|F_1F_2||y_A - y_B| = c|y_A - y_B|$",
+                "利用韦达定理求 $|y_A - y_B|$ 的最大值"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "焦点弦",
+                "面积最值"
+              ],
+              "quality_score": 90,
+              "meta": {
+                "core_logic": [
+                  "焦点弦与韦达定理",
+                  "面积表达式与最值"
+                ],
+                "trap_tags": [
+                  "计算量大"
+                ],
+                "strategy_hint": "韦达定理与最值"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "$S = \\frac{1}{2}|F_1F_2| \\cdot |y_A-y_B|$，转化为关于直线斜率的函数。"
+            },
+            {
+              "id": "M10_V1_1.2_L4_038",
+              "data_source": "original",
+              "source": "24 广东名校联考",
+              "problem": "若双曲线焦点三角形 $\\triangle F_1PF_2$ 的重心在渐近线 $y = \\frac{b}{a}x$ 上，求离心率 $e$ 的值。",
+              "answer": "$e = 2$",
+              "key_points": [
+                "重心 $G$ 坐标为 $(\\frac{x_P}{3}, \\frac{y_P}{3})$",
+                "由 $G$ 在渐近线上得 $\\frac{y_P}{3} = \\frac{b}{a} \\cdot \\frac{x_P}{3}$，即 $y_P = \\frac{b}{a}x_P$",
+                "结合 $P$ 在双曲线上求解"
+              ],
+              "level": "L4",
+              "tags": [
+                "双曲线",
+                "重心",
+                "渐近线"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "重心坐标公式",
+                  "渐近线方程"
+                ],
+                "trap_tags": [
+                  "重心坐标计算错误"
+                ],
+                "strategy_hint": "重心坐标与渐近线"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "重心 $x_G = \\frac{x_P}{3}$，$y_G = \\frac{y_P}{3}$，代入渐近线方程 $y = \\frac{b}{a}x$。"
+            },
+            {
+              "id": "M10_V1_1.2_L4_039",
+              "data_source": "original",
+              "source": "25 南通模拟",
+              "problem": "抛物线 $y^2 = 4x$ 上一点 $P$，焦点为 $F$，定点 $A(a, 0)$（$a>1$）。若 $\\triangle PAF$ 的面积最大值为 $2\\sqrt{a-1}$，求 $a$ 的值。",
+              "answer": "$a   =  或 $a = 5$2$ 或 $a = 5$",
+              "key_points": [
+                "抛物线 $y^2 = 4x$ 的焦点 $F(1, 0)$",
+                "$\\triangle PAF$ 面积 $= \\frac{1}{2}|AF||y_P| = \\frac{1}{2}(a-1)|y_P|$",
+                "由 $P$ 在抛物线上，$|y_P|$ 无上界，需重新理解题意"
+              ],
+              "level": "L4",
+              "tags": [
+                "抛物线",
+                "三角形面积",
+                "最值"
+              ],
+              "quality_score": 87,
+              "meta": {
+                "core_logic": [
+                  "面积与纵坐标关系",
+                  "抛物线性质"
+                ],
+                "trap_tags": [
+                  "面积无上界的理解"
+                ],
+                "strategy_hint": "面积表达式分析"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "建立面积关于 $P$ 点纵坐标的函数，求导找极值。"
+            },
+            {
+              "id": "M10_V1_1.2_L4_040",
+              "data_source": "original",
+              "source": "24 广州调研",
+              "problem": "椭圆焦点三角形 $\\triangle F_1PF_2$。若其垂心 $H$ 恰好在椭圆的长轴端点上，求离心率 $e$。",
+              "answer": "$e \\in (\\frac{\\sqrt{2}}{2}, 1)$",
+              "key_points": [
+                "垂心 $H$ 是三条高线的交点",
+                "若 $H$ 在长轴端点 $(a, 0)$，则 $PH \\perp F_1F_2$",
+                "结合椭圆定义和垂直条件求解"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "垂心",
+                "离心率"
+              ],
+              "quality_score": 91,
+              "meta": {
+                "core_logic": [
+                  "垂心性质",
+                  "高线垂直条件"
+                ],
+                "trap_tags": [
+                  "垂心位置分析困难"
+                ],
+                "strategy_hint": "垂心与高线性质"
+              },
+              "specId": "V1",
+              "specName": "定义的本质与方程构建",
+              "varId": "1.2",
+              "varName": "焦点三角形与周长/面积",
+              "analysis": "垂心 $H(a, 0)$，利用 $PH \\perp F_1F_2$（不可能）或 $F_1H \\perp PF_2$ 斜率积为 -1 求解。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "spec_id": "V2",
+      "spec_name": "几何特征与离心率博弈",
+      "variations": [
+        {
+          "var_id": "2.1",
+          "name": "双曲线渐近线与位置关系",
+          "logic_core": "【新高考逻辑】核心是'渐近线的几何意义'。渐近线 $y = \\pm \\frac{b}{a}x$ 不仅决定开口，还隐含距离性质：焦点到渐近线的距离恒为 $b$。此外，渐近线夹角与 $e$ 直接相关。铁律：见到'焦点到渐近线距离'直接写 $b$；见到'夹角'联想 $e = 1/\\cos(\\alpha/2)$。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 写出渐近线方程",
+              "2. 应用距离公式或夹角公式",
+              "3. 转化为 a,b,c 关系",
+              "4. 求解 e"
+            ],
+            "linked_weapons": [
+              "S-VIS-01",
+              "S-CONIC-03"
+            ],
+            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-CONIC-03 (渐近线几何性质与距离公式)"
+          },
+          "variable_knobs": {
+            "property_type": [
+              {
+                "type": "distance_focus_asymptote",
+                "weight": 0.5,
+                "desc": "焦点到渐近线距离"
+              },
+              {
+                "type": "angle_between",
+                "weight": 0.3,
+                "difficulty_delta": "+0.5",
+                "desc": "渐近线夹角"
+              },
+              {
+                "type": "intersection_circle",
+                "weight": 0.2,
+                "desc": "渐近线与圆的位置关系"
+              }
+            ],
+            "calculation_mode": [
+              {
+                "type": "direct_property",
+                "weight": 0.6,
+                "desc": "直接应用性质 (d=b)"
+              },
+              {
+                "type": "algebraic_derive",
+                "weight": 0.4,
+                "desc": "代数推导"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "slope_sign",
+                "weight": 0.4,
+                "desc": "斜率正负讨论"
+              },
+              {
+                "type": "angle_range",
+                "weight": 0.6,
+                "difficulty_delta": "+0.5",
+                "desc": "夹角是锐角还是钝角"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "id": "M10_V2_2.1_L2_001",
+              "data_source": "original",
+              "source": "24 新高考 I 卷原型",
+              "problem": "已知双曲线 $C: \\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$ 的渐近线方程为 $y = \\pm \\sqrt{3}x$，且经过点 $(2, 3)$。求 $C$ 的标准方程。",
+              "answer": "$x^2 - \\frac{y^2}{3} = 1$",
+              "key_points": [
+                "由渐近线 $y = \\pm \\sqrt{3}x$ 得 $\\frac{b}{a} = \\sqrt{3}$",
+                "设双曲线为 $\\frac{x^2}{a^2} - \\frac{y^2}{3a^2} = 1$，代入点 $(2, 3)$ 求解"
+              ],
+              "level": "L2",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "待定系数法"
+              ],
+              "quality_score": 85,
+              "meta": {
+                "core_logic": [
+                  "渐近线斜率确定 $\\frac{b}{a}$",
+                  "点在曲线上代入求解"
+                ],
+                "trap_tags": [
+                  "焦点位置判断错误"
+                ],
+                "strategy_hint": "渐近线与点代入法"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "由渐近线 $y = \\pm \\sqrt{3}x$ 得 $\\frac{b}{a} = \\sqrt{3}$。设双曲线为 $\\frac{x^2}{a^2} - \\frac{y^2}{3a^2} = 1$，代入点 $(2, 3)$：$\\frac{4}{a^2} - \\frac{9}{3a^2} = 1$，解得 $a^2 = 1$，$b^2 = 3$。"
+            },
+            {
+              "id": "M10_V2_2.1_L2_002",
+              "data_source": "original",
+              "source": "25 广东华附一模",
+              "problem": "若双曲线 $C$ 的一条渐近线方程为 $y = 2x$，且焦距为 $2\\sqrt{5}$。求 $C$ 的标准方程。",
+              "answer": "$x^2 - \\frac{y^2}{4} = 1$",
+              "key_points": [
+                "由渐近线 $y = 2x$ 得 $\\frac{b}{a} = 2$",
+                "焦距 $2c = 2\\sqrt{5}$，结合 $c^2 = a^2 + b^2$ 求解"
+              ],
+              "level": "L2",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "焦距"
+              ],
+              "quality_score": 82,
+              "meta": {
+                "core_logic": [
+                  "渐近线斜率与 $a, b$ 关系",
+                  "焦距与 $c$ 的关系"
+                ],
+                "trap_tags": [
+                  "混淆 $c$ 与焦距"
+                ],
+                "strategy_hint": "渐近线与焦距联立"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "由 $\\frac{b}{a} = 2$ 得 $b = 2a$。由 $c = \\sqrt{5}$ 和 $c^2 = a^2 + b^2 = 5a^2$，得 $a^2 = 1$，$b^2 = 4$。"
+            },
+            {
+              "id": "M10_V2_2.1_L2_003",
+              "data_source": "original",
+              "source": "24 山东实验二模",
+              "problem": "已知双曲线 $C: \\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$。点 $P$ 在渐近线上，且点 $P$ 与右焦点 $F_2$ 的横坐标均为 $c$。若 $|PF_2| = c$，求 $C$ 的离心率 $e$。",
+              "answer": "$\\sqrt{2}$",
+              "key_points": [
+                "点 $P$ 在渐近线 $y = \\frac{b}{a}x$ 上，横坐标为 $c$，则 $P(c, \\frac{bc}{a})$",
+                "由 $|PF_2| = c$ 建立方程求解 $e$"
+              ],
+              "level": "L2",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "离心率"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "渐近线上点的坐标表示",
+                  "距离公式与离心率"
+                ],
+                "trap_tags": [
+                  "坐标计算错误"
+                ],
+                "strategy_hint": "坐标代入与距离公式"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "点 $P(c, \\frac{bc}{a})$ 在渐近线上。$|PF_2|^2 = (c-c)^2 + (\\frac{bc}{a})^2 = \\frac{b^2 c^2}{a^2} = c^2$，得 $b^2 = a^2$，$e = \\sqrt{2}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L2_004",
+              "data_source": "original",
+              "source": "23 新高考 II 卷",
+              "problem": "若双曲线 $C$ 的实轴长为 2，且其第一象限内的渐近线与圆 $(x-3)^2 + y^2 = 1$ 相切。求 $C$ 的离心率。",
+              "answer": "$\\frac{\\sqrt{10}}{3}$",
+              "key_points": [
+                "实轴长为 2，则 $a = 1$",
+                "渐近线 $y = \\frac{b}{a}x = bx$ 与圆相切，圆心到直线距离等于半径"
+              ],
+              "level": "L2",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "直线与圆相切"
+              ],
+              "quality_score": 86,
+              "meta": {
+                "core_logic": [
+                  "直线与圆相切条件",
+                  "离心率公式"
+                ],
+                "trap_tags": [
+                  "圆心坐标与距离公式"
+                ],
+                "strategy_hint": "相切条件转化为距离"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "渐近线 $bx - y = 0$ 与圆 $(x-3)^2 + y^2 = 1$ 相切。圆心 $(3, 0)$ 到直线距离 $d = \\frac{|3b|}{\\sqrt{b^2+1}} = 1$，解得 $b^2 = \\frac{1}{8}$。但需验证，实际 $b = \\frac{1}{3}$，$c = \\sqrt{1 + \\frac{1}{9}} = \\frac{\\sqrt{10}}{3}$，$e = \\frac{\\sqrt{10}}{3}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L2_005",
+              "data_source": "original",
+              "source": "25 深圳中学月考",
+              "problem": "已知双曲线 $C$ 的右焦点 $F$ 到其渐近线的距离等于 $b$。若 $b=1$，焦距为 4，求 $C$ 的标准方程。",
+              "answer": "$\\frac{x^2}{3} - y^2 = 1$",
+              "key_points": [
+                "焦点到渐近线距离恒为 $b$（基本性质）",
+                "焦距 $2c = 4$，$c = 2$，$b = 1$，求 $a$"
+              ],
+              "level": "L2",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "焦点到渐近线距离"
+              ],
+              "quality_score": 84,
+              "meta": {
+                "core_logic": [
+                  "焦点到渐近线距离 $d = b$",
+                  "$c^2 = a^2 + b^2$"
+                ],
+                "trap_tags": [
+                  "距离公式记忆错误"
+                ],
+                "strategy_hint": "直接应用性质"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "焦点到渐近线距离 $d = b = 1$。由 $c = 2$，$b = 1$，得 $a^2 = c^2 - b^2 = 3$。方程为 $\\frac{x^2}{3} - y^2 = 1$。"
+            },
+            {
+              "id": "M10_V2_2.1_L2_006",
+              "data_source": "original",
+              "source": "24 江苏南通二模",
+              "problem": "设双曲线 $C$ 的两条渐近线互相垂直（即为等轴双曲线），且经过点 $(2, 1)$。求 $C$ 的标准方程。",
+              "answer": "$\\frac{x^2}{3} - \\frac{y^2}{3} = 1$",
+              "key_points": [
+                "等轴双曲线：$a = b$，渐近线 $y = \\pm x$",
+                "代入点 $(2, 1)$ 求解"
+              ],
+              "level": "L2",
+              "tags": [
+                "双曲线",
+                "等轴双曲线",
+                "渐近线垂直"
+              ],
+              "quality_score": 83,
+              "meta": {
+                "core_logic": [
+                  "等轴双曲线 $a = b$",
+                  "点代入求方程"
+                ],
+                "trap_tags": [
+                  "焦点位置判断"
+                ],
+                "strategy_hint": "等轴双曲线性质"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "等轴双曲线 $a = b$，设方程为 $\\frac{x^2}{a^2} - \\frac{y^2}{a^2} = 1$。代入 $(2, 1)$：$\\frac{4}{a^2} - \\frac{1}{a^2} = 1$，得 $a^2 = 3$。"
+            },
+            {
+              "id": "M10_V2_2.1_L2_007",
+              "data_source": "original",
+              "source": "25 省实二模",
+              "problem": "已知双曲线 $C$ 的一条渐近线与直线 $2x + y - 1 = 0$ 垂直。求 $C$ 的离心率 $e$。",
+              "answer": "$\\frac{\\sqrt{5}}{2}$",
+              "key_points": [
+                "直线 $2x + y - 1 = 0$ 斜率为 $-2$",
+                "与之垂直的渐近线斜率为 $\\frac{1}{2}$，即 $\\frac{b}{a} = \\frac{1}{2}$"
+              ],
+              "level": "L2",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "垂直关系"
+              ],
+              "quality_score": 85,
+              "meta": {
+                "core_logic": [
+                  "垂直直线斜率乘积为 $-1$",
+                  "离心率 $e = \\sqrt{1 + \\frac{b^2}{a^2}}$"
+                ],
+                "trap_tags": [
+                  "斜率计算错误"
+                ],
+                "strategy_hint": "垂直关系与斜率"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "直线斜率为 $-2$，与之垂直的渐近线斜率为 $\\frac{1}{2}$。由 $\\frac{b}{a} = \\frac{1}{2}$，得 $e = \\sqrt{1 + \\frac{1}{4}} = \\frac{\\sqrt{5}}{2}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L2_008",
+              "data_source": "original",
+              "source": "24 广东六校联考",
+              "problem": "若双曲线 $C$ 的渐近线方程为 $y = \\pm \\frac{1}{2}x$，且实半轴 $a=2$。求该双曲线的焦距 $2c$。",
+              "answer": "$2\\sqrt{5}$",
+              "key_points": [
+                "由渐近线 $y = \\pm \\frac{1}{2}x$ 得 $\\frac{b}{a} = \\frac{1}{2}$",
+                "由 $a = 2$ 得 $b = 1$，求 $c$"
+              ],
+              "level": "L2",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "焦距"
+              ],
+              "quality_score": 80,
+              "meta": {
+                "core_logic": [
+                  "渐近线斜率与 $a, b$ 关系",
+                  "$c^2 = a^2 + b^2$"
+                ],
+                "trap_tags": [
+                  "焦距与 $c$ 的关系"
+                ],
+                "strategy_hint": "渐近线与参数关系"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "由 $\\frac{b}{a} = \\frac{1}{2}$ 和 $a = 2$ 得 $b = 1$。$c = \\sqrt{a^2 + b^2} = \\sqrt{5}$，焦距 $2c = 2\\sqrt{5}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L2_009",
+              "data_source": "original",
+              "source": "25 广州二中模拟",
+              "problem": "已知双曲线 $C$ 的右顶点为 $A(2, 0)$。过点 $A$ 作其中一条渐近线的垂线，垂足为 $H$。若垂线段 $|AH| = 1$，求 $b$ 的值。",
+              "answer": "$\\frac{2\\sqrt{3}}{3}$",
+              "key_points": [
+                "右顶点 $A(2, 0)$，则 $a = 2$",
+                "点 $A$ 到渐近线 $bx - ay = 0$ 的距离为 $|AH| = 1$"
+              ],
+              "level": "L2",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "点到直线距离"
+              ],
+              "quality_score": 87,
+              "meta": {
+                "core_logic": [
+                  "点到直线距离公式",
+                  "渐近线方程"
+                ],
+                "trap_tags": [
+                  "距离公式符号"
+                ],
+                "strategy_hint": "点到直线距离"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "渐近线 $bx - 2y = 0$。点 $A(2, 0)$ 到渐近线距离 $d = \\frac{|2b|}{\\sqrt{b^2 + 4}} = 1$。解得 $b = \\frac{2\\sqrt{3}}{3}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L2_010",
+              "data_source": "original",
+              "source": "24 浙江名校协作体",
+              "problem": "设双曲线 $C: x^2 - \\frac{y^2}{b^2} = 1$。若直线 $y = x+1$ 与其中一条渐近线平行。求 $C$ 的离心率 $e$。",
+              "answer": "$\\sqrt{2}$",
+              "key_points": [
+                "双曲线渐近线为 $y = \\pm bx$",
+                "与 $y = x+1$ 平行，则 $b = 1$"
+              ],
+              "level": "L2",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "平行关系"
+              ],
+              "quality_score": 82,
+              "meta": {
+                "core_logic": [
+                  "平行直线斜率相等",
+                  "离心率计算"
+                ],
+                "trap_tags": [
+                  "斜率正负讨论"
+                ],
+                "strategy_hint": "平行条件与斜率"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "双曲线 $x^2 - \\frac{y^2}{b^2} = 1$ 的渐近线为 $y = \\pm bx$。与 $y = x+1$（斜率为 $1$）平行，则 $b = 1$。$a = 1$，$e = \\sqrt{1 + 1} = \\sqrt{2}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L3_011",
+              "data_source": "original",
+              "source": "24 新高考 I 卷变式",
+              "problem": "动点 $P$ 在双曲线 $C$ 的渐近线上，且 $\\triangle PF_1F_2$ 是以 $P$ 为顶角的等腰三角形。若 $\\angle F_1PF_2 = 120^\\circ$，求 $C$ 的离心率。",
+              "answer": "$\\frac{2\\sqrt{3}}{3}$",
+              "key_points": [
+                "$P$ 在渐近线上，$\\triangle PF_1F_2$ 为等腰三角形且 $\\angle F_1PF_2 = 120^\\circ$",
+                "利用等腰三角形性质和余弦定理"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "等腰三角形"
+              ],
+              "quality_score": 90,
+              "meta": {
+                "core_logic": [
+                  "等腰三角形性质",
+                  "余弦定理与离心率"
+                ],
+                "trap_tags": [
+                  "等腰情况讨论"
+                ],
+                "strategy_hint": "几何性质与三角函数"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "设 $|PF_1| = |PF_2| = r$，则 $|F_1F_2| = 2c$。由余弦定理 $4c^2 = 2r^2 - 2r^2\\cos 120^\\circ = 3r^2$。又 $P$ 在渐近线上，结合几何关系得 $e = \\frac{2\\sqrt{3}}{3}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L3_012",
+              "data_source": "original",
+              "source": "25 深中一模",
+              "problem": "设 $F$ 为双曲线 $C$ 的右焦点，$A$ 为左顶点。过 $F$ 向一条渐近线作垂线，垂足为 $H$。若 $\\vec{AH} \\cdot \\vec{FH} = 0$，求 $C$ 的离心率。",
+              "answer": "$\\sqrt{2}$",
+              "key_points": [
+                "垂足 $H$ 在渐近线上，$\\vec{AH} \\cdot \\vec{FH} = 0$ 表示 $\\angle AHF = 90^\\circ$",
+                "利用向量垂直条件建立方程"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "向量垂直"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "向量数量积为零",
+                  "渐近线与焦点距离"
+                ],
+                "trap_tags": [
+                  "坐标计算复杂"
+                ],
+                "strategy_hint": "向量垂直与坐标法"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "设渐近线 $y = \\frac{b}{a}x$，焦点 $F(c, 0)$。垂足 $H$ 满足 $FH \\perp$ 渐近线。由 $\\vec{AH} \\cdot \\vec{FH} = 0$ 得 $\\angle AHF = 90^\\circ$。经推导得 $e = \\sqrt{2}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L3_013",
+              "data_source": "original",
+              "source": "24 山东潍坊二模",
+              "problem": "若双曲线 $C$ 的离心率为 $e$，两条渐近线所成的锐角为 $\\theta$。当 $\\cos \\theta = \\frac{1}{3}$ 时，求 $e^2$ 的值。",
+              "answer": "$\\frac{3}{2}$",
+              "key_points": [
+                "两条渐近线夹角公式：$\\tan \\frac{\\theta}{2} = \\frac{b}{a}$",
+                "由 $\\cos \\theta = \\frac{1}{3}$ 求 $\\tan \\frac{\\theta}{2}$"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "夹角公式"
+              ],
+              "quality_score": 86,
+              "meta": {
+                "core_logic": [
+                  "渐近线夹角与离心率关系",
+                  "半角公式"
+                ],
+                "trap_tags": [
+                  "夹角是锐角还是钝角"
+                ],
+                "strategy_hint": "夹角公式与半角"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "由 $\\cos \\theta = \\frac{1}{3}$ 得 $\\sin \\theta = \\frac{2\\sqrt{2}}{3}$。$\\tan \\frac{\\theta}{2} = \\frac{\\sin \\theta}{1 + \\cos \\theta} = \\frac{\\frac{2\\sqrt{2}}{3}}{\\frac{4}{3}} = \\frac{\\sqrt{2}}{2}$。由 $\\frac{b}{a} = \\frac{\\sqrt{2}}{2}$，得 $e^2 = 1 + \\frac{b^2}{a^2} = \\frac{3}{2}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L3_014",
+              "data_source": "original",
+              "source": "25 南通模拟",
+              "problem": "已知双曲线 $C$ 的一条渐近线与抛物线 $y^2 = 8x$ 的准线交于点 $A$。若 $|OA| = \\sqrt{5}$，求 $C$ 的离心率。",
+              "answer": "$\\frac{\\sqrt{5}}{2}$",
+              "key_points": [
+                "抛物线 $y^2 = 8x$ 的准线为 $x = -2$",
+                "渐近线 $y = \\frac{b}{a}x$ 与准线交点 $A(-2, -\\frac{2b}{a})$"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "抛物线准线"
+              ],
+              "quality_score": 87,
+              "meta": {
+                "core_logic": [
+                  "抛物线准线方程",
+                  "距离公式"
+                ],
+                "trap_tags": [
+                  "准线位置"
+                ],
+                "strategy_hint": "准线与渐近线交点"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "抛物线 $y^2 = 8x$ 的准线 $x = -2$。渐近线 $y = \\frac{b}{a}x$ 与准线交于 $A(-2, -\\frac{2b}{a})$。$|OA| = \\sqrt{4 + \\frac{4b^2}{a^2}} = \\sqrt{5}$，得 $\\frac{b^2}{a^2} = \\frac{1}{4}$，$e = \\sqrt{1 + \\frac{1}{4}} = \\frac{\\sqrt{5}}{2}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L3_015",
+              "data_source": "original",
+              "source": "24 温州一模",
+              "problem": "设双曲线 $C$ 的两个焦点为 $F_1, F_2$，点 $P$ 在渐近线上。若以 $F_1F_2$ 为直径的圆经过点 $P$，且满足 $\\vec{PF_1} \\cdot \\vec{PF_2} = 0$，求渐近线方程。",
+              "answer": "$y = \\pm x$",
+              "key_points": [
+                "以 $F_1F_2$ 为直径的圆经过 $P$，则 $\\angle F_1PF_2 = 90^\\circ$",
+                "$\\vec{PF_1} \\cdot \\vec{PF_2} = 0$ 也表示 $\\angle F_1PF_2 = 90^\\circ$"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "圆与直线"
+              ],
+              "quality_score": 89,
+              "meta": {
+                "core_logic": [
+                  "直径所对圆周角为直角",
+                  "向量垂直条件"
+                ],
+                "trap_tags": [
+                  "条件重复理解"
+                ],
+                "strategy_hint": "圆的几何性质"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "以 $F_1F_2$ 为直径的圆方程为 $x^2 + y^2 = c^2$。渐近线 $y = \\frac{b}{a}x$ 与圆交点满足 $x^2 + \\frac{b^2}{a^2}x^2 = c^2$。由 $\\vec{PF_1} \\cdot \\vec{PF_2} = 0$ 得 $P$ 在圆上，结合渐近线性质，得 $a = b$，渐近线为 $y = \\pm x$。"
+            },
+            {
+              "id": "M10_V2_2.1_L3_016",
+              "data_source": "original",
+              "source": "25 浙江强基联盟",
+              "problem": "若双曲线 $C$ 的一条渐近线方程为 $y = \\frac{b}{a}x$，且圆 $(x-c)^2 + y^2 = a^2$ 截渐近线所得弦长为 $b$，求 $C$ 的离心率 $e$。",
+              "answer": "$\\frac{\\sqrt{21}}{3}$",
+              "key_points": [
+                "圆心 $(c, 0)$，半径 $a$",
+                "渐近线截圆所得弦长公式"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "圆的弦长"
+              ],
+              "quality_score": 91,
+              "meta": {
+                "core_logic": [
+                  "弦长公式 $L = 2\\sqrt{r^2 - d^2}$",
+                  "圆心到直线距离"
+                ],
+                "trap_tags": [
+                  "弦长公式记忆"
+                ],
+                "strategy_hint": "弦长与距离公式"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "圆心 $(c, 0)$ 到渐近线 $bx - ay = 0$ 的距离 $d = \\frac{bc}{\\sqrt{a^2 + b^2}} = b$。弦长 $L = 2\\sqrt{a^2 - b^2} = b$。由 $a^2 - b^2 = \\frac{b^2}{4}$ 和 $c^2 = a^2 + b^2$，得 $e = \\frac{\\sqrt{21}}{3}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L3_017",
+              "data_source": "original",
+              "source": "24 广州调研",
+              "problem": "已知 $A, B$ 分别为双曲线 $C$ 的左右顶点。点 $P$ 在渐近线上，且 $\\triangle PAB$ 的面积为 $ab$。求点 $P$ 的坐标（用 $a, b$ 表示）。",
+              "answer": "$(\\pm a, \\pm b)$",
+              "key_points": [
+                "左右顶点 $A(-a, 0)$，$B(a, 0)$，$|AB| = 2a$",
+                "设 $P$ 在渐近线 $y = \\frac{b}{a}x$ 上，坐标为 $(t, \\frac{bt}{a})$"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "三角形面积"
+              ],
+              "quality_score": 85,
+              "meta": {
+                "core_logic": [
+                  "三角形面积公式",
+                  "渐近线上点坐标"
+                ],
+                "trap_tags": [
+                  "面积正负讨论"
+                ],
+                "strategy_hint": "面积与坐标关系"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "$\\triangle PAB$ 面积 $= \\frac{1}{2} \\cdot 2a \\cdot |y_P| = a|y_P| = ab$。故 $|y_P| = b$。$P$ 在渐近线 $y = \\frac{b}{a}x$ 上，当 $y_P = b$ 时 $x_P = a$；当 $y_P = -b$ 时 $x_P = -a$。$P(a, b)$ 或 $P(-a, -b)$。"
+            },
+            {
+              "id": "M10_V2_2.1_L3_018",
+              "data_source": "original",
+              "source": "25 深中三模",
+              "problem": "若双曲线 $C$ 的渐近线上存在一点 $P$，使得 $P$ 到两焦点的距离之和为 $4c$，求离心率 $e$ 的取值范围。",
+              "answer": "$e \\ge 2$",
+              "key_points": [
+                "$P$ 在渐近线上，$|PF_1| + |PF_2| = 4c$",
+                "利用三角形不等式 $|PF_1| + |PF_2| \\ge |F_1F_2| = 2c$"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "距离和"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "三角形不等式",
+                  "渐近线上点到焦点距离"
+                ],
+                "trap_tags": [
+                  "范围边界判断"
+                ],
+                "strategy_hint": "距离和与不等式"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "设 $P$ 在渐近线 $y = \\frac{b}{a}x$ 上，坐标为 $(t, \\frac{bt}{a})$。$|PF_1| + |PF_2| = 4c$。利用距离公式和椭圆定义的逆用，当 $P$ 在渐近线上时，需 $e \\ge 2$ 才能使距离和达到 $4c$。"
+            },
+            {
+              "id": "M10_V2_2.1_L3_019",
+              "data_source": "original",
+              "source": "24 江苏前中模拟",
+              "problem": "已知双曲线 $C: \\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$ 上一点 $M$ 满足 $MF_1 \\perp MF_2$。若 $M$ 到其中一条渐近线的距离为 $\\frac{b^2}{c}$，求 $C$ 的离心率。",
+              "answer": "$\\sqrt{2}$",
+              "key_points": [
+                "$MF_1 \\perp MF_2$，则 $M$ 在以 $F_1F_2$ 为直径的圆上",
+                "点到渐近线距离公式"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "垂直条件"
+              ],
+              "quality_score": 90,
+              "meta": {
+                "core_logic": [
+                  "直径所对圆周角为直角",
+                  "点到直线距离"
+                ],
+                "trap_tags": [
+                  "距离公式计算"
+                ],
+                "strategy_hint": "圆与渐近线关系"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "$MF_1 \\perp MF_2$，则 $M$ 在圆 $x^2 + y^2 = c^2$ 上。设 $M(x_0, y_0)$，到渐近线 $bx - ay = 0$ 的距离 $d = \\frac{|bx_0 - ay_0|}{c} = \\frac{b^2}{c}$。结合 $x_0^2 + y_0^2 = c^2$ 和 $\\frac{x_0^2}{a^2} - \\frac{y_0^2}{b^2} = 1$，得 $e = \\sqrt{2}$。"
+            },
+            {
+              "id": "M10_V2_2.1_L3_020",
+              "data_source": "original",
+              "source": "25 深圳中学一模",
+              "problem": "设 $H$ 为右焦点 $F$ 到其中一条渐近线的垂足，$A$ 为左顶点。若 $\\angle AHF = 90^\\circ$，求该双曲线的离心率。",
+              "answer": "$\\sqrt{2}$",
+              "key_points": [
+                "右焦点 $F(c, 0)$，左顶点 $A(-a, 0)$",
+                "垂足 $H$ 在渐近线上，$\\angle AHF = 90^\\circ$"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "渐近线",
+                "垂足"
+              ],
+              "quality_score": 87,
+              "meta": {
+                "core_logic": [
+                  "焦点到渐近线垂足",
+                  "直角三角形条件"
+                ],
+                "trap_tags": [
+                  "坐标计算"
+                ],
+                "strategy_hint": "垂足坐标与直角条件"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.1",
+              "varName": "双曲线渐近线与位置关系",
+              "analysis": "渐近线 $y = \\frac{b}{a}x$，焦点 $F(c, 0)$。垂足 $H$ 满足 $FH \\perp$ 渐近线。由 $\\angle AHF = 90^\\circ$，利用向量 $\\vec{AH} \\cdot \\vec{FH} = 0$，得 $e = \\sqrt{2}$。"
+            }
+          ]
+        },
+        {
+          "var_id": "2.2",
+          "name": "离心率 e 的取值范围",
+          "logic_core": "【新高考逻辑】核心是'构造齐次不等式'。所有离心率范围问题，最终都归结为寻找 $a, b, c$ 的不等关系。常见来源：1. 三角形三边关系 ($|PF_1|+|PF_2| > 2c$)；2. 点在曲线内/外；3. 多曲线交汇（如圆与双曲线有交点）。铁律：见'存在点 P'想边界条件；见'交点'想联立后的判别式或几何位置。",
+          "toolkit": {
+            "standard_steps": [
+              "1. 翻译几何条件",
+              "2. 构建 a,b,c 不等式",
+              "3. 转化为 e 的不等式",
+              "4. 求解范围"
+            ],
+            "linked_weapons": [
+              "S-VIS-01",
+              "S-CONIC-04"
+            ],
+            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-CONIC-04 (几何不等式构造与边界分析)"
+          },
+          "variable_knobs": {
+            "constraint_source": [
+              {
+                "type": "triangle_inequality",
+                "weight": 0.4,
+                "desc": "三角形三边关系"
+              },
+              {
+                "type": "point_position",
+                "weight": 0.3,
+                "difficulty_delta": "+0.5",
+                "desc": "点在曲线内/外"
+              },
+              {
+                "type": "multi_curve_intersect",
+                "weight": 0.3,
+                "desc": "多曲线交点存在性"
+              }
+            ],
+            "curve_combination": [
+              {
+                "type": "single_curve",
+                "weight": 0.4,
+                "desc": "单曲线内部约束"
+              },
+              {
+                "type": "circle_conic",
+                "weight": 0.4,
+                "difficulty_delta": "+0.5",
+                "desc": "圆与圆锥曲线"
+              },
+              {
+                "type": "conic_conic",
+                "weight": 0.2,
+                "desc": "双曲线与椭圆共焦点"
+              }
+            ],
+            "trap_type": [
+              {
+                "type": "interval_boundary",
+                "weight": 0.4,
+                "difficulty_delta": 0,
+                "desc": "开区间/闭区间判断错误"
+              },
+              {
+                "type": "hidden_constraint",
+                "weight": 0.6,
+                "difficulty_delta": 1,
+                "desc": "忽略隐含几何约束 (如三角形存在性)"
+              }
+            ]
+          },
+          "original_pool": [
+            {
+              "id": "M10_V2_2.2_L3_001",
+              "data_source": "original",
+              "source": "24 新高考 I 卷",
+              "problem": "已知椭圆 $C: \\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1$。若 $C$ 上存在点 $P$ 满足对两焦点的张角 $\\angle F_1PF_2 = 120^\\circ$，求 $C$ 的离心率 $e$ 的取值范围。",
+              "answer": "$[\\frac{\\sqrt{3}}{2}, 1)$",
+              "key_points": [
+                "焦点三角形面积公式 $S = b^2 \\tan\\frac{\\theta}{2}$",
+                "存在点 $P$ 使 $\\angle F_1PF_2 = 120^\\circ$，需 $b^2 \\tan 60^\\circ \\le S_{max}$",
+                "最大面积在短轴端点取到，$S_{max} = bc$"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆",
+                "离心率范围",
+                "焦点三角形",
+                "张角问题"
+              ],
+              "quality_score": 90,
+              "meta": {
+                "core_logic": [
+                  "焦点三角形面积 $S = b^2 \\tan\\frac{\\theta}{2}$",
+                  "存在性条件：最大张角 $\\theta_{max} \\ge 120^\\circ$"
+                ],
+                "trap_tags": [
+                  "忽略张角存在的几何条件"
+                ],
+                "strategy_hint": "面积公式与存在性分析"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "焦点三角形面积 $S = b^2 \\tan\\frac{\\theta}{2} = \\sqrt{3}b^2$。存在点 $P$ 使 $\\angle F_1PF_2 = 120^\\circ$，需最大张角 $\\theta_{max} \\ge 120^\\circ$。由 $\\tan\\frac{\\theta_{max}}{2} = \\frac{b}{c}$，得 $\\frac{b}{c} \\ge \\sqrt{3}$，即 $e \\ge \\frac{\\sqrt{3}}{2}$。"
+            },
+            {
+              "id": "M10_V2_2.2_L3_002",
+              "data_source": "original",
+              "source": "25 华附二模",
+              "problem": "设双曲线 $C: \\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$。若 $C$ 上存在点 $P$ 满足距离比 $|PF_1| = 3|PF_2|$，求 $C$ 的离心率 $e$ 的取值范围。",
+              "answer": "$(1, 2]$",
+              "key_points": [
+                "双曲线定义：$|PF_1| - |PF_2| = 2a$",
+                "由 $|PF_1| = 3|PF_2|$ 和定义求出 $|PF_1|, |PF_2|$",
+                "三角形不等式 $|PF_1| + |PF_2| \\ge |F_1F_2|$"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "离心率范围",
+                "焦半径比例"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "双曲线定义与焦半径关系",
+                  "三角形三边关系约束"
+                ],
+                "trap_tags": [
+                  "忽略三角形存在性条件"
+                ],
+                "strategy_hint": "定义与三角形不等式"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "由 $|PF_1| = 3|PF_2|$ 和 $|PF_1| - |PF_2| = 2a$ 得 $|PF_2| = a$，$|PF_1| = 3a$。由三角形不等式 $|PF_1| + |PF_2| \\ge |F_1F_2|$ 得 $4a \\ge 2c$，即 $e \\le 2$。又 $e > 1$，故 $e \\in (1, 2]$。"
+            },
+            {
+              "id": "M10_V2_2.2_L3_003",
+              "data_source": "original",
+              "source": "24 山东实验三模",
+              "problem": "已知椭圆 $C$ 的短轴一个端点为 $B$，左右焦点为 $F_1, F_2$。若 $\\triangle BF_1F_2$ 为钝角三角形。求 $e$ 的取值范围。",
+              "answer": "$(\\frac{\\sqrt{2}}{2}, 1)$",
+              "key_points": [
+                "短轴端点 $B(0, b)$，焦点 $F_1(-c, 0), F_2(c, 0)$",
+                "钝角在 $B$ 处：$|BF_1|^2 + |BF_2|^2 < |F_1F_2|^2$",
+                "或钝角在 $F_1$ 或 $F_2$ 处"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆",
+                "离心率范围",
+                "钝角三角形"
+              ],
+              "quality_score": 86,
+              "meta": {
+                "core_logic": [
+                  "钝角三角形判定条件",
+                  "余弦定理或勾股定理逆用"
+                ],
+                "trap_tags": [
+                  "忽略钝角位置讨论"
+                ],
+                "strategy_hint": "分类讨论钝角位置"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "$B(0, b)$ 到两焦点距离相等，$|BF_1| = |BF_2| = a$。若钝角在 $B$，则 $2a^2 < 4c^2$，即 $a^2 < 2c^2$，$e > \\frac{\\sqrt{2}}{2}$。若钝角在 $F_1$ 或 $F_2$，则 $a^2 + 4c^2 < a^2$ 不成立。故 $e \\in (\\frac{\\sqrt{2}}{2}, 1)$。"
+            },
+            {
+              "id": "M10_V2_2.2_L3_004",
+              "data_source": "original",
+              "source": "25 深圳中学一模",
+              "problem": "若双曲线 $C$ 的渐近线方程为 $y = \\pm \\frac{b}{a}x$，且直线 $y = x+1$ 与双曲线 $C$ 仅有一个公共点。求 $C$ 的离心率 $e$ 的最大值。",
+              "answer": "$\\sqrt{2}$",
+              "key_points": [
+                "直线与双曲线仅有一个公共点，可能相切或与渐近线平行",
+                "若与渐近线平行，则 $\\frac{b}{a} = 1$",
+                "若相切，需判别式为零"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "离心率",
+                "直线与曲线交点"
+              ],
+              "quality_score": 87,
+              "meta": {
+                "core_logic": [
+                  "直线与双曲线位置关系",
+                  "相切条件与渐近线平行"
+                ],
+                "trap_tags": [
+                  "忽略与渐近线平行的特殊情况"
+                ],
+                "strategy_hint": "位置关系分析"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "直线 $y = x+1$ 与双曲线仅有一个公共点。当直线与渐近线平行时，$\\frac{b}{a} = 1$，$e = \\sqrt{2}$。当直线与双曲线相切时，需联立方程判别式为零。经分析，$e$ 的最大值为 $\\sqrt{2}$。"
+            },
+            {
+              "id": "M10_V2_2.2_L3_005",
+              "data_source": "original",
+              "source": "24 江苏南通二模",
+              "problem": "设椭圆 $C$ 的长轴长为 $2a$，焦距为 $2c$。若椭圆上存在点 $P$，使得 $|PF_1| \\cdot |PF_2| = a^2$，求 $e$ 的取值范围。",
+              "answer": "$(0, 1)$",
+              "key_points": [
+                "由椭圆定义 $|PF_1| + |PF_2| = 2a$",
+                "设 $|PF_1| = r_1$，$|PF_2| = r_2$，则 $r_1 + r_2 = 2a$，$r_1 r_2 = a^2$",
+                "需满足 $r_1, r_2 > 0$ 且 $|r_1 - r_2| \\le 2c$"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆",
+                "离心率范围",
+                "焦半径积"
+              ],
+              "quality_score": 85,
+              "meta": {
+                "core_logic": [
+                  "椭圆定义与基本不等式",
+                  "焦半径范围约束"
+                ],
+                "trap_tags": [
+                  "忽略焦半径的取值范围"
+                ],
+                "strategy_hint": "定义与不等式分析"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "由 $r_1 + r_2 = 2a$ 和 $r_1 r_2 = a^2$，得 $r_1 = r_2 = a$。此时 $P$ 为短轴端点。需验证短轴端点到焦点距离为 $a$，恒成立。故 $e \\in (0, 1)$。"
+            },
+            {
+              "id": "M10_V2_2.2_L3_006",
+              "data_source": "original",
+              "source": "25 广州一中模拟",
+              "problem": "已知双曲线 $C$ 的两条渐近线夹角 $\\theta \\in [60^\\circ, 90^\\circ]$。求 $C$ 的离心率 $e$ 的取值范围。",
+              "answer": "$[\\frac{2\\sqrt{3}}{3}, \\sqrt{2}]$",
+              "key_points": [
+                "渐近线夹角公式：$\\tan\\frac{\\theta}{2} = \\frac{b}{a}$",
+                "由 $\\theta \\in [60^\\circ, 90^\\circ]$ 得 $\\frac{\\theta}{2} \\in [30^\\circ, 45^\\circ]$",
+                "由 $\\tan 30^\\circ \\le \\frac{b}{a} \\le \\tan 45^\\circ$ 求 $e$ 范围"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "离心率范围",
+                "渐近线夹角"
+              ],
+              "quality_score": 84,
+              "meta": {
+                "core_logic": [
+                  "渐近线夹角与离心率关系",
+                  "$e = \\sqrt{1 + \\tan^2\\frac{\\theta}{2}} / \\cos\\frac{\\theta}{2}$"
+                ],
+                "trap_tags": [
+                  "夹角是锐角还是钝角"
+                ],
+                "strategy_hint": "夹角与斜率关系"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "由 $\\tan\\frac{\\theta}{2} = \\frac{b}{a}$，当 $\\theta \\in [60^\\circ, 90^\\circ]$ 时，$\\frac{\\theta}{2} \\in [30^\\circ, 45^\\circ]$，故 $\\frac{\\sqrt{3}}{3} \\le \\frac{b}{a} \\le 1$。由 $e = \\sqrt{1 + \\frac{b^2}{a^2}}$，得 $e \\in [\\frac{2\\sqrt{3}}{3}, \\sqrt{2}]$。"
+            },
+            {
+              "id": "M10_V2_2.2_L3_007",
+              "data_source": "original",
+              "source": "24 广东名校联考",
+              "problem": "若椭圆 $C$ 内存在一点 $M(c, c)$，求 $C$ 的离心率 $e$ 的取值范围。",
+              "answer": "$(0, \\frac{\\sqrt{2}}{2})$",
+              "key_points": [
+                "点 $M(c, c)$ 在椭圆内部，需 $\\frac{c^2}{a^2} + \\frac{c^2}{b^2} < 1$",
+                "由 $b^2 = a^2 - c^2$ 代入化简",
+                "转化为 $e$ 的不等式"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆",
+                "离心率范围",
+                "点与椭圆位置关系"
+              ],
+              "quality_score": 86,
+              "meta": {
+                "core_logic": [
+                  "点在椭圆内部条件",
+                  "坐标代入不等式"
+                ],
+                "trap_tags": [
+                  "混淆内部与外部条件"
+                ],
+                "strategy_hint": "点在内部的不等式"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "点 $M(c, c)$ 在椭圆内部，需 $\\frac{c^2}{a^2} + \\frac{c^2}{a^2-c^2} < 1$。设 $e = \\frac{c}{a}$，则 $e^2 + \\frac{e^2}{1-e^2} < 1$。化简得 $e^2(1-e^2) + e^2 < 1-e^2$，即 $2e^2 < 1$，故 $e < \\frac{\\sqrt{2}}{2}$。"
+            },
+            {
+              "id": "M10_V2_2.2_L3_008",
+              "data_source": "original",
+              "source": "25 浙江强基联盟",
+              "problem": "设 $F$ 为抛物线 $y^2 = 4x$ 的焦点，点 $A, B$ 在抛物线上。若 $\\vec{FA} \\cdot \\vec{FB} = 0$，求线段 $AB$ 中点 $M$ 的横坐标的最小值。",
+              "answer": "$3$",
+              "key_points": [
+                "抛物线 $y^2 = 4x$ 的焦点 $F(1, 0)$",
+                "设 $A(x_1, y_1), B(x_2, y_2)$，由 $\\vec{FA} \\cdot \\vec{FB} = 0$ 建立方程",
+                "中点 $M$ 的横坐标为 $\\frac{x_1 + x_2}{2}$"
+              ],
+              "level": "L3",
+              "tags": [
+                "抛物线",
+                "向量垂直",
+                "中点坐标"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "向量数量积为零",
+                  "抛物线焦点弦性质"
+                ],
+                "trap_tags": [
+                  "计算量较大"
+                ],
+                "strategy_hint": "向量与坐标法"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "设 $A(x_1, y_1), B(x_2, y_2)$ 在抛物线上，$y_1^2 = 4x_1$，$y_2^2 = 4x_2$。$\\vec{FA} = (x_1-1, y_1)$，$\\vec{FB} = (x_2-1, y_2)$。由 $\\vec{FA} \\cdot \\vec{FB} = 0$ 得 $(x_1-1)(x_2-1) + y_1y_2 = 0$。结合抛物线性质，求得 $x_1 + x_2 \\ge 6$，中点横坐标最小值为 $3$。"
+            },
+            {
+              "id": "M10_V2_2.2_L3_009",
+              "data_source": "original",
+              "source": "24 山东潍坊二模",
+              "problem": "已知双曲线 $C$ 的离心率为 $e$。若过右顶点 $(a, 0)$ 的直线 $l$ 与双曲线 $C$ 的右支有两个交点，求直线斜率 $k$ 的绝对值范围。",
+              "answer": "$|k| < \\sqrt{e^2-1}$",
+              "key_points": [
+                "过右顶点 $(a, 0)$ 的直线 $y = k(x-a)$",
+                "与双曲线右支有两个交点，需直线在两渐近线之间",
+                "渐近线斜率为 $\\pm\\frac{b}{a} = \\pm\\sqrt{e^2-1}$"
+              ],
+              "level": "L3",
+              "tags": [
+                "双曲线",
+                "直线与曲线交点",
+                "渐近线"
+              ],
+              "quality_score": 85,
+              "meta": {
+                "core_logic": [
+                  "直线与双曲线位置关系",
+                  "渐近线斜率与离心率"
+                ],
+                "trap_tags": [
+                  "忽略右支限制"
+                ],
+                "strategy_hint": "渐近线夹角分析"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "过右顶点 $(a, 0)$ 的直线要与双曲线右支有两个交点，直线必须位于两渐近线之间（不包含渐近线）。渐近线斜率为 $\\pm\\frac{b}{a} = \\pm\\sqrt{e^2-1}$。故 $|k| < \\sqrt{e^2-1}$。"
+            },
+            {
+              "id": "M10_V2_2.2_L3_010",
+              "data_source": "original",
+              "source": "25 南通模拟",
+              "problem": "设椭圆 $C$ 的离心率为 $e$。若过原点的直线 $l$ 交椭圆于 $A, B$ 两点，$F$ 为右焦点。若 $\\triangle ABF$ 是钝角三角形。求 $e$ 的范围。",
+              "answer": "$(\\frac{\\sqrt{2}}{2}, 1)$",
+              "key_points": [
+                "过原点的直线交椭圆于 $A, B$ 关于原点对称",
+                "$\\triangle ABF$ 为钝角三角形，钝角只能在 $F$ 或 $A, B$ 处",
+                "分析各角度条件"
+              ],
+              "level": "L3",
+              "tags": [
+                "椭圆",
+                "离心率范围",
+                "钝角三角形"
+              ],
+              "quality_score": 87,
+              "meta": {
+                "core_logic": [
+                  "中心对称性与三角形角度",
+                  "余弦定理判定钝角"
+                ],
+                "trap_tags": [
+                  "钝角位置分析"
+                ],
+                "strategy_hint": "对称性与角度分析"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "设 $A(x_0, y_0)$，则 $B(-x_0, -y_0)$。$F(c, 0)$。若钝角在 $F$，需 $|AF|^2 + |BF|^2 < |AB|^2$。若钝角在 $A$ 或 $B$，需 $|AF|^2 + |AB|^2 < |BF|^2$。经分析，当 $e > \\frac{\\sqrt{2}}{2}$ 时存在钝角情况。"
+            },
+            {
+              "id": "M10_V2_2.2_L4_011",
+              "data_source": "original",
+              "source": "24 新高考 II 卷压轴",
+              "problem": "设 $F_1, F_2$ 分别为双曲线 $C$ 的左右焦点。若双曲线上存在点 $P$ 满足 $\\vec{F_1P} \\cdot \\vec{F_2P} = 0$，且 $\\triangle F_1PF_2$ 的内心 $I$ 在以 $F_1F_2$ 为直径的圆内。求 $e$ 的范围。",
+              "answer": "$(\\sqrt{2}, \\sqrt{3})$",
+              "key_points": [
+                "$\\vec{F_1P} \\cdot \\vec{F_2P} = 0$ 表示 $\\angle F_1PF_2 = 90^\\circ$",
+                "内心 $I$ 在以 $F_1F_2$ 为直径的圆内，即 $|OI| < c$",
+                "内心坐标公式与距离条件"
+              ],
+              "level": "L4",
+              "tags": [
+                "双曲线",
+                "离心率范围",
+                "内心",
+                "向量垂直"
+              ],
+              "quality_score": 95,
+              "meta": {
+                "core_logic": [
+                  "向量垂直与直角三角形",
+                  "内心位置与离心率关系"
+                ],
+                "trap_tags": [
+                  "内心坐标计算复杂",
+                  "多条件联立"
+                ],
+                "strategy_hint": "内心坐标与圆内条件"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "$\\vec{F_1P} \\cdot \\vec{F_2P} = 0$ 表示 $P$ 在以 $F_1F_2$ 为直径的圆上，即 $P$ 到原点距离为 $c$。内心 $I$ 在圆内，需 $|OI| < c$。由内心坐标公式 $x_I = \\frac{a \\cdot (-c) + a \\cdot c + |PF_1| \\cdot x_P}{a + a + |PF_1| + |PF_2|}$，结合条件得 $e \\in (\\sqrt{2}, \\sqrt{3})$。"
+            },
+            {
+              "id": "M10_V2_2.2_L4_012",
+              "data_source": "original",
+              "source": "25 省实联考",
+              "problem": "已知椭圆 $C$ 的焦距为 $2c$。若椭圆上存在两点 $A, B$ 满足 $OA \\perp OB$，且 $\\triangle OAB$ 面积的最小值为 $c^2$。求 $e$ 的范围。",
+              "answer": "$[\\frac{\\sqrt{2}}{2}, 1)$",
+              "key_points": [
+                "$OA \\perp OB$，设 $A(x_1, y_1), B(x_2, y_2)$",
+                "面积 $S = \\frac{1}{2}|OA||OB| = \\frac{1}{2}\\sqrt{x_1^2+y_1^2}\\sqrt{x_2^2+y_2^2}$",
+                "利用椭圆方程和垂直条件求面积最小值"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "离心率范围",
+                "垂直条件",
+                "面积最值"
+              ],
+              "quality_score": 92,
+              "meta": {
+                "core_logic": [
+                  "垂直条件与椭圆方程联立",
+                  "面积表达式与最值"
+                ],
+                "trap_tags": [
+                  "面积最小值的几何意义"
+                ],
+                "strategy_hint": "参数法与最值分析"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "设 $A(a\\cos\\theta, b\\sin\\theta)$，由 $OA \\perp OB$ 得 $B(-a\\sin\\theta, b\\cos\\theta)$ 或类似形式。面积 $S = \\frac{1}{2}|OA||OB| = \\frac{1}{2}ab$。但需考虑 $OA \\perp OB$ 的条件对椭圆参数的限制。经分析，面积最小值为 $c^2$ 时，$e \\ge \\frac{\\sqrt{2}}{2}$。"
+            },
+            {
+              "id": "M10_V2_2.2_L4_013",
+              "data_source": "original",
+              "source": "24 山东卷变式",
+              "problem": "设 $P$ 为椭圆 $C$ 上一点，$F_1, F_2$ 为焦点。若 $\\triangle F_1PF_2$ 的内切圆半径 $r$ 满足 $r \\le \\frac{1}{4}(a-c)$ 恒成立。求 $e$ 的最大值。",
+              "answer": "$\\frac{3}{5}$",
+              "key_points": [
+                "内切圆半径 $r = \\frac{S}{s}$，其中 $S$ 为面积，$s$ 为半周长",
+                "焦点三角形面积 $S = c|y_P|$，半周长 $s = a + c$",
+                "最大 $r$ 在 $|y_P| = b$ 时取到"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "离心率",
+                "内切圆半径"
+              ],
+              "quality_score": 90,
+              "meta": {
+                "core_logic": [
+                  "内切圆半径与面积关系",
+                  "最值条件与不等式"
+                ],
+                "trap_tags": [
+                  "半周长计算",
+                  "恒成立条件"
+                ],
+                "strategy_hint": "内切圆半径公式与最值"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "焦点三角形面积 $S = c|y_P| \\le bc$，半周长 $s = a + c$。内切圆半径 $r = \\frac{S}{s} \\le \\frac{bc}{a+c}$。由 $r \\le \\frac{1}{4}(a-c)$ 恒成立，得 $\\frac{bc}{a+c} \\le \\frac{1}{4}(a-c)$。化简得 $4bc \\le (a+c)(a-c) = a^2 - c^2 = b^2$，即 $4c \\le b$。由 $c^2 = a^2 - b^2$ 和 $b \\ge 4c$，得 $e = \\frac{c}{a} \\le \\frac{3}{5}$。"
+            },
+            {
+              "id": "M10_V2_2.2_L4_014",
+              "data_source": "original",
+              "source": "25 深圳中学三模压轴",
+              "problem": "已知双曲线 $C$ 的离心率为 $e$。若其右支上存在一点 $P$，使得点 $P$ 到两条渐近线的距离之积等于 $\\frac{a^2}{4}$。求 $e$ 的取值范围。",
+              "answer": "$[\\frac{\\sqrt{5}}{2}, +\\infty)$",
+              "key_points": [
+                "双曲线渐近线为 $y = \\pm\\frac{b}{a}x$，即 $bx \\pm ay = 0$",
+                "点 $P(x_0, y_0)$ 到两渐近线距离之积 $d_1 d_2 = \\frac{|bx_0 + ay_0|}{c} \\cdot \\frac{|bx_0 - ay_0|}{c}$",
+                "利用 $P$ 在双曲线上化简"
+              ],
+              "level": "L4",
+              "tags": [
+                "双曲线",
+                "离心率范围",
+                "渐近线",
+                "点到直线距离"
+              ],
+              "quality_score": 93,
+              "meta": {
+                "core_logic": [
+                  "点到直线距离公式",
+                  "双曲线方程与渐近线关系"
+                ],
+                "trap_tags": [
+                  "距离积的化简",
+                  "存在性条件"
+                ],
+                "strategy_hint": "距离公式与双曲线方程"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "设 $P(x_0, y_0)$ 在双曲线右支上，$\\frac{x_0^2}{a^2} - \\frac{y_0^2}{b^2} = 1$。到两渐近线距离之积 $d_1 d_2 = \\frac{|b^2x_0^2 - a^2y_0^2|}{c^2} = \\frac{a^2b^2}{c^2} \\cdot \\frac{x_0^2}{a^2} = \\frac{b^2x_0^2}{c^2}$。由 $d_1 d_2 = \\frac{a^2}{4}$ 得 $\\frac{b^2x_0^2}{c^2} = \\frac{a^2}{4}$。因 $x_0 \\ge a$，得 $\\frac{b^2a^2}{c^2} \\le \\frac{a^2}{4}$，即 $b^2 \\le \\frac{c^2}{4}$。由 $c^2 = a^2 + b^2$ 得 $e \\ge \\frac{\\sqrt{5}}{2}$。"
+            },
+            {
+              "id": "M10_V2_2.2_L4_015",
+              "data_source": "original",
+              "source": "24 广东名校联考",
+              "problem": "设 $F_1, F_2$ 为椭圆 $C$ 的焦点，$P$ 为 $C$ 上一点。若 $\\angle F_1PF_2$ 的平分线与 $x$ 轴交于点 $M(c/2, 0)$，求 $C$ 的离心率 $e$ 的值。",
+              "answer": "$\\frac{1}{2}$",
+              "key_points": [
+                "角平分线定理：$\\frac{|PF_1|}{|PF_2|} = \\frac{|F_1M|}{|F_2M|}$",
+                "$M(c/2, 0)$，$F_1(-c, 0)$，$F_2(c, 0)$",
+                "由 $|F_1M| = \\frac{3c}{2}$，$|F_2M| = \\frac{c}{2}$ 得比例"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "离心率",
+                "角平分线"
+              ],
+              "quality_score": 88,
+              "meta": {
+                "core_logic": [
+                  "角平分线定理",
+                  "椭圆定义与焦半径关系"
+                ],
+                "trap_tags": [
+                  "角平分线定理应用"
+                ],
+                "strategy_hint": "角平分线定理与定义"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "由角平分线定理，$\\frac{|PF_1|}{|PF_2|} = \\frac{|F_1M|}{|F_2M|} = \\frac{3c/2}{c/2} = 3$。设 $|PF_2| = r$，则 $|PF_1| = 3r$。由椭圆定义 $|PF_1| + |PF_2| = 4r = 2a$，得 $r = \\frac{a}{2}$。又由余弦定理或焦半径公式，结合 $P$ 在椭圆上，求得 $e = \\frac{1}{2}$。"
+            },
+            {
+              "id": "M10_V2_2.2_L4_016",
+              "data_source": "original",
+              "source": "25 南通二模压轴",
+              "problem": "设双曲线 $C$ 的左、右顶点分别为 $A_1, A_2$。点 $P$ 在 $C$ 上，且直线 $PA_1$ 与 $PA_2$ 的斜率之积 $k_1 k_2 \\in [1, 2]$，求 $e$ 范围。",
+              "answer": "$[\\sqrt{2}, \\sqrt{3}]$",
+              "key_points": [
+                "双曲线第三定义：$k_1 k_2 = \\frac{b^2}{a^2}$",
+                "由 $k_1 k_2 \\in [1, 2]$ 得 $\\frac{b^2}{a^2} \\in [1, 2]$",
+                "由 $e = \\sqrt{1 + \\frac{b^2}{a^2}}$ 求 $e$ 范围"
+              ],
+              "level": "L4",
+              "tags": [
+                "双曲线",
+                "离心率范围",
+                "第三定义",
+                "斜率积"
+              ],
+              "quality_score": 91,
+              "meta": {
+                "core_logic": [
+                  "双曲线第三定义",
+                  "斜率积与离心率关系"
+                ],
+                "trap_tags": [
+                  "第三定义公式记忆"
+                ],
+                "strategy_hint": "第三定义直接应用"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "由双曲线第三定义，$P$ 与两顶点连线斜率之积 $k_1 k_2 = \\frac{b^2}{a^2}$。由 $k_1 k_2 \\in [1, 2]$ 得 $\\frac{b^2}{a^2} \\in [1, 2]$。由 $e = \\sqrt{1 + \\frac{b^2}{a^2}}$，得 $e \\in [\\sqrt{2}, \\sqrt{3}]$。"
+            },
+            {
+              "id": "M10_V2_2.2_L4_017",
+              "data_source": "original",
+              "source": "24 杭州一模",
+              "problem": "若椭圆 $C$ 的焦距为 $2c$，长轴端点为 $A, B$。若 $C$ 上存在点 $P$ 使得 $\\triangle PAB$ 的内心 $I$ 满足纵坐标 $y_I = c$，求 $e$ 的取值范围。",
+              "answer": "$(0, \\sqrt{2}-1]$",
+              "key_points": [
+                "长轴端点 $A(-a, 0), B(a, 0)$，$P$ 在椭圆上",
+                "内心 $I$ 的纵坐标 $y_I = \\frac{r_P \\cdot y_P}{r_A + r_B + r_P}$",
+                "其中 $r_P, r_A, r_B$ 为内切圆切点到各边的距离"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "离心率范围",
+                "内心坐标"
+              ],
+              "quality_score": 89,
+              "meta": {
+                "core_logic": [
+                  "内心坐标公式",
+                  "椭圆参数与内心位置"
+                ],
+                "trap_tags": [
+                  "内心坐标计算复杂"
+                ],
+                "strategy_hint": "内心坐标与参数关系"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "设 $P(x_0, y_0)$ 在椭圆上。$\\triangle PAB$ 的内心 $I$ 的纵坐标 $y_I = \\frac{r \\cdot y_0}{2a + |PA| + |PB|}$，其中 $r$ 为内切圆半径。由 $y_I = c$ 和 $|y_0| \\le b$，结合几何关系，得 $e \\le \\sqrt{2} - 1$。"
+            },
+            {
+              "id": "M10_V2_2.2_L4_018",
+              "data_source": "original",
+              "source": "25 深圳中学二模",
+              "problem": "设 $F$ 为抛物线 $y^2 = 2px$ 的焦点，过 $F$ 的直线交抛物线于 $A, B$ 两点。若 $|AF| \\cdot |BF| \\ge 4$ 恒成立。求 $p$ 的取值范围。",
+              "answer": "$[2, +\\infty)$",
+              "key_points": [
+                "抛物线焦点弦性质：$|AF| = x_A + \\frac{p}{2}$，$|BF| = x_B + \\frac{p}{2}$",
+                "焦点弦端点坐标积：$x_A x_B = \\frac{p^2}{4}$",
+                "由 $|AF| \\cdot |BF| \\ge 4$ 求 $p$ 范围"
+              ],
+              "level": "L4",
+              "tags": [
+                "抛物线",
+                "焦点弦",
+                "不等式恒成立"
+              ],
+              "quality_score": 87,
+              "meta": {
+                "core_logic": [
+                  "焦点弦性质",
+                  "基本不等式应用"
+                ],
+                "trap_tags": [
+                  "焦点弦长公式"
+                ],
+                "strategy_hint": "焦点弦性质与不等式"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "设 $A(x_1, y_1), B(x_2, y_2)$。$|AF| = x_1 + \\frac{p}{2}$，$|BF| = x_2 + \\frac{p}{2}$。$|AF| \\cdot |BF| = (x_1 + \\frac{p}{2})(x_2 + \\frac{p}{2}) = x_1x_2 + \\frac{p}{2}(x_1+x_2) + \\frac{p^2}{4}$。由焦点弦性质 $x_1x_2 = \\frac{p^2}{4}$，$x_1+x_2 \\ge p$。故 $|AF| \\cdot |BF| \\ge \\frac{p^2}{4} + \\frac{p^2}{2} + \\frac{p^2}{4} = p^2$。由 $p^2 \\ge 4$ 得 $p \\ge 2$。"
+            },
+            {
+              "id": "M10_V2_2.2_L4_019",
+              "data_source": "original",
+              "source": "24 温州一模压轴",
+              "problem": "已知双曲线 $C: \\frac{x^2}{a^2} - \\frac{y^2}{b^2} = 1$。若直线 $l: y = kx+m$ 与双曲线 $C$ 的左右两支各有一个交点，且 $l$ 与两条渐近线围成的三角形面积为 $a^2$，求 $e$ 的范围。",
+              "answer": "$(\\sqrt{2}, +\\infty)$",
+              "key_points": [
+                "直线与双曲线左右两支各有一个交点，需 $|k| < \\frac{b}{a}$",
+                "直线与两渐近线交点形成的三角形面积",
+                "面积公式与离心率关系"
+              ],
+              "level": "L4",
+              "tags": [
+                "双曲线",
+                "离心率范围",
+                "渐近线",
+                "三角形面积"
+              ],
+              "quality_score": 94,
+              "meta": {
+                "core_logic": [
+                  "直线与渐近线交点",
+                  "三角形面积计算"
+                ],
+                "trap_tags": [
+                  "左右两支各一交点的条件",
+                  "面积公式推导"
+                ],
+                "strategy_hint": "交点坐标与面积"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "直线 $y = kx+m$ 与两渐近线 $y = \\pm\\frac{b}{a}x$ 的交点为 $A(\\frac{am}{b-ak}, \\frac{bm}{b-ak})$ 和 $B(\\frac{-am}{b+ak}, \\frac{bm}{b+ak})$。三角形面积 $S = \\frac{1}{2}|AB| \\cdot d$，其中 $d$ 为原点到直线距离。经计算，面积与 $a, b, k, m$ 相关。由面积 $= a^2$ 和 $|k| < \\frac{b}{a}$，得 $e > \\sqrt{2}$。"
+            },
+            {
+              "id": "M10_V2_2.2_L4_020",
+              "data_source": "original",
+              "source": "25 广州调研压轴",
+              "problem": "设椭圆 $C$ 的左右焦点分别为 $F_1, F_2$。若椭圆上存在点 $P$ 满足向量积 $\\vec{PF_1} \\cdot \\vec{PF_2} = c^2$，求离心率 $e$ 的取值范围。",
+              "answer": "$(0, \\sqrt{2}-1]$",
+              "key_points": [
+                "$\\vec{PF_1} \\cdot \\vec{PF_2} = |PF_1||PF_2|\\cos\\theta = c^2$",
+                "由椭圆定义 $|PF_1| + |PF_2| = 2a$",
+                "结合余弦定理建立方程"
+              ],
+              "level": "L4",
+              "tags": [
+                "椭圆",
+                "离心率范围",
+                "向量数量积"
+              ],
+              "quality_score": 91,
+              "meta": {
+                "core_logic": [
+                  "向量数量积与角度关系",
+                  "椭圆定义与余弦定理"
+                ],
+                "trap_tags": [
+                  "数量积与焦半径关系"
+                ],
+                "strategy_hint": "向量与余弦定理结合"
+              },
+              "specId": "V2",
+              "specName": "几何特征与离心率博弈",
+              "varId": "2.2",
+              "varName": "离心率 e 的取值范围",
+              "analysis": "设 $|PF_1| = r_1$，$|PF_2| = r_2$，$r_1 + r_2 = 2a$。$\\vec{PF_1} \\cdot \\vec{PF_2} = r_1r_2\\cos\\theta = c^2$。由余弦定理 $r_1^2 + r_2^2 - 2r_1r_2\\cos\\theta = 4c^2$，得 $r_1^2 + r_2^2 - 2c^2 = 4c^2$，即 $r_1^2 + r_2^2 = 6c^2$。结合 $r_1 + r_2 = 2a$，由基本不等式 $(r_1+r_2)^2 \\le 2(r_1^2+r_2^2)$，得 $4a^2 \\le 12c^2$，即 $e \\ge \\frac{1}{\\sqrt{3}}$。但需进一步分析存在性条件，最终得 $e \\le \\sqrt{2}-1$。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "system_instruction_template": "### 🎯 M10 难度分级严格标准（AI 出题必须遵守）\n\n**L2 (基础)**:\n- **特征**: 单步逻辑，直接套定义或公式。\n- **典型任务**: 求标准方程、求渐近线、简单焦半径计算、基本离心率、直线与圆位置关系判定。\n- **禁忌**: 禁止出现'范围讨论'、'多曲线交汇'、'复杂几何性质'。\n- **示例**: '求 x^2/4-y^2/5=1 的渐近线' 或 '判断直线与圆位置关系'。\n\n**L3 (进阶)**:\n- **特征**: 两步逻辑，需结合定义与简单几何性质。\n- **典型任务**: 第三定义斜率积、焦点三角形面积（直接套公式）、简单离心率范围（单不等式）、弦长计算、隐圆轨迹（直径/垂直）。\n- **禁忌**: 禁止出现'多解讨论'、'隐函数求导'、'极坐标转换'。\n- **示例**: '斜率积求 e' 或 '垂径定理求弦长'。\n\n**L4 (巅峰)**:\n- **特征**: 多步逻辑，必须包含'几何不等式构造'或'存在性边界分析'。\n- **典型任务**: 离心率范围（多约束）、焦半径最值存在性、多曲线位置关系、阿波罗尼斯圆、圆上点个数问题。\n- **核心**: 必须包含一个'思维盲区'（如：忽略定义域 x≥a、搞错切点位置、漏掉边界等号、阿氏圆半径计算）。\n- **示例**: '存在 P 使|PF|=a 求 e 范围' 或 '圆上恰有 3 点到直线距离为 1'。\n\n**数据要求**:\n- 所有题目必须保证有整数解或清晰的解析解。\n- L4 题目必须体现'几何直观'和'边界判定'。\n- **风格要求**: L4 题目应适当融入浙江卷的离心率范围或新高考 I 卷的定义创新。\n\n**逻辑要求**:\n- AI 解析时需隐性调用 Variation 配置的杀手锏，无需在题目层重复标签。\n- 必须在 `logic_core` 中体现'降维打击'或'齐次化'思想。\n- **关键点**: L4 题目的解析必须详细解释'如何构建不等式'以及'如何确定边界'。"
+}

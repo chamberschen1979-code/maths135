@@ -4,6 +4,14 @@ import {
   getGradeConfig as getSharedGradeConfig,
   checkTextContainsForbidden 
 } from '../config/syllabusRules.js'
+import {
+  extractQuestionsByLevel,
+  selectQuestionFromPool,
+  extractVariableConstraints,
+  getQuestionVariationInfo as getRAGVariationInfo,
+  getMotifStats
+} from './dataLoader.js'
+import { normalizeQuestion, normalizeQuestionPool } from './dataAdapter.js'
 
 // 复用共享配置
 export const getGradeConfig = getSharedGradeConfig
@@ -82,39 +90,141 @@ export const getDifficultyByElo = (elo) => {
   return getDifficultyConfig(elo)
 }
 
+/**
+ * 🔥 通用函数：从任意母题的 variable_knobs 中提取当前难度的硬性约束
+ * 适用于 M04, M01, M02 等所有遵循相同 JSON 结构的母题
+ */
+export const extractLevelConstraints = (variableKnobs, targetLevel) => {
+  if (!variableKnobs || !variableKnobs.level_constraints) {
+    return { safeParams: {}, forbiddenModels: [], maxSteps: 5, forcedMethod: 'any', requiredTags: [] }
+  }
+
+  // 1. 获取当前难度的具体配置 (如 L2_constraints)
+  // 支持多种命名习惯: "L2_constraints", "level_L2", "L2"
+  const levelConfig =
+    variableKnobs.level_constraints[`${targetLevel}_constraints`] ||
+    variableKnobs.level_constraints[`level_${targetLevel}`] ||
+    variableKnobs.level_constraints[targetLevel] ||
+    {}
+
+  // 2. 提取安全参数池
+  const safeParams = levelConfig.safe_param_pool || {}
+  
+  // 3. 提取禁忌模型
+  let forbiddenModels = []
+  if (Array.isArray(levelConfig.forbidden_models)) {
+    forbiddenModels = levelConfig.forbidden_models.map(item =>
+      typeof item === 'string' ? item : (item.model || item.description || '')
+    )
+  } else if (levelConfig.forbidden_models?.list) {
+    forbiddenModels = levelConfig.forbidden_models.list
+  }
+
+  // 4. 提取其他通用约束
+  const maxSteps = levelConfig.max_steps || 99
+  const forcedMethod = levelConfig.forced_method || 'any'
+  const requiredTags = levelConfig.required_tags || []
+
+  return {
+    safeParams,
+    forbiddenModels,
+    maxSteps,
+    forcedMethod,
+    requiredTags,
+    rawConfig: levelConfig
+  }
+}
+
+/**
+ * 准备生成上下文：动态提取当前母题、当前难度的约束
+ */
+export const prepareGenerationContext = (motifData, targetLevel) => {
+  const variableKnobs = motifData.variable_knobs
+  
+  // 🔥 动态提取当前母题、当前难度的约束
+  const constraints = extractLevelConstraints(variableKnobs, targetLevel)
+  
+  console.log(`[约束提取] 母题 ${motifData.id || motifData.motif_id} | 难度 ${targetLevel} | 提取到 ${constraints.forbiddenModels.length} 个禁忌模型`)
+  
+  return {
+    ...motifData,
+    activeConstraints: constraints
+  }
+}
+
+/**
+ * 通用年级与难度过滤函数 (适用于 ALL 17 个母题)
+ * 核心策略更新：
+ * 1. 大学工具/超纲工具：扫描全文，确保绝对干净。
+ * 2. L2 思维难度：【重大调整】不再因变例名称包含"思维模型关键词"而剔除。
+ *    - 适用对象：M02(函数), M04(指对), M07(三角复合), M08(数列不等式) 等所有涉及高阶思维的母题。
+ *    - 理由：高考 L2 题完全可以考查"指对同构"，只需设计成"观察法"可解即可。
+ *    - 仅当名称明确包含"导数"、"洛必达"等 L2 绝对禁止的"工具"时才剔除。
+ */
 const filterByGradeRestrictions = (item, motifId, targetLevel, grade, gradeConfig) => {
-  const text = [
+  // 1. 提取"元数据文本" (用于思维难度判断)
+  // 包含：变例名、专项名、标题。不包含具体题目描述和题干。
+  const metaDataText = [
     item.varName || '',
     item.specName || '',
-    item.description || item.desc || '',
-    item.problem || '',
-    item.title || ''
-  ].join(' ')
+    item.title || '',
+    item.var_id || '',
+    item.id || ''
+  ].join(' ').toLowerCase()
 
-  if (checkTextContainsForbidden(text, GRADE_RESTRICTIONS.universityForbidden)) {
+  // 2. 提取"全文本" (用于工具红线判断)
+  // 包含：元数据 + 描述 + 题干。确保题目内容里也不出现洛必达等工具。
+  const fullText = [
+    metaDataText,
+    (item.description || item.desc || ''),
+    (item.problem || ''),
+    (item.content || '')
+  ].join(' ').toLowerCase()
+
+  // --- 第一道防线：大学工具红线 (全局禁止，适用于所有母题) ---
+  if (checkTextContainsForbidden(fullText, GRADE_RESTRICTIONS.universityForbidden)) {
     console.log(`[🛡️ 大学工具红线] 剔除 ${motifId}: ${item.varName || item.id} (含大学工具)`)
     return false
   }
 
+  // --- 第二道防线：年级特定工具红线 (全局禁止) ---
   if (gradeConfig.toolForbidden && gradeConfig.toolForbidden.length > 0) {
-    if (checkTextContainsForbidden(text, gradeConfig.toolForbidden)) {
+    if (checkTextContainsForbidden(fullText, gradeConfig.toolForbidden)) {
       console.log(`[🛡️ ${grade} 工具红线] 剔除 ${motifId}: ${item.varName || item.id} (含超纲工具)`)
       return false
     }
   }
 
+  // --- 第三道防线：上下文特定限制 (全局禁止) ---
   if (gradeConfig.contextSpecific && gradeConfig.contextSpecific[motifId]) {
-    if (checkTextContainsForbidden(text, gradeConfig.contextSpecific[motifId])) {
+    if (checkTextContainsForbidden(fullText, gradeConfig.contextSpecific[motifId])) {
       console.log(`[🛡️ 上下文红线] 剔除 ${motifId}: ${item.varName || item.id} (该模块不宜用此工具)`)
       return false
     }
   }
 
-  if (targetLevel === 'L2' && gradeConfig.l2ThoughtForbidden && gradeConfig.l2ThoughtForbidden.length > 0) {
-    if (checkTextContainsForbidden(text, gradeConfig.l2ThoughtForbidden)) {
-      console.log(`[🎯 L2 难度过滤] 剔除 ${motifId}-L2: ${item.varName || item.id} (思维过难)`)
+  // --- 🔥 第四道防线：L2 思维难度过滤 (【已优化】仅拦截超纲工具，放行思维模型) ---
+  if (targetLevel === 'L2') {
+    // ✅ 新策略：只禁止"工具"，不禁止"思维模型"
+    // 即使变例叫"超越方程同构"(M04) 或 "非线性递推"(M08)，只要不用导数，L2 也能出
+    const strictBanKeywords = [
+      "导数", "求导", "f'(x)", "洛必达", "泰勒", "极限定义",
+      "拉格朗日", "中值定理", "级数", "收敛", "空间向量坐标",
+      "微分", "积分", "极坐标", "参数方程"
+    ]
+    
+    // 检查元数据中是否包含这些绝对禁止的工具词
+    const hitTool = strictBanKeywords.find(keyword => metaDataText.includes(keyword.toLowerCase()))
+    
+    if (hitTool) {
+      console.log(`[🎯 L2 难度过滤] 剔除 ${motifId}-L2: ${item.varName || item.id} (变例名称包含 L2 禁止的超纲工具: "${hitTool}")`)
       return false
     }
+
+    // ❌ 旧策略已移除：
+    // 不再因为包含 "超越方程", "同构", "博弈", "最值", "极值点偏移", "双零点" 而直接剔除。
+    // 这些是 M02, M04, M07, M08 等母题的核心思维，L2 应当通过"简化数据"或"观察法"来考查，而不是禁止考查。
+    // 让 AI 根据 Prompt 中的"高考难度锚点"去自动降维。
   }
 
   return true
@@ -263,17 +373,31 @@ const collectAllBenchmarks = (motifData, targetLevel, constraints = {}) => {
  * @param {string} constraints.grade - 年级 ('高一'/'高二'/'高三')，用于年级过滤
  * @returns {Object} benchmark 数据，包含 specName, varName, linkedWeapons
  */
-export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constraints = {}) => {
+export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constraints = {}, userProgress = null) => {
   if (!motifData) return null
 
-  const { weaponId, grade } = constraints
+  const motifId = motifData.id || motifData.motif_id || 'M04'
+
+  const ragQuestion = selectQuestionFromPool(motifData, targetLevel, problemIndex, userProgress)
+  if (ragQuestion) {
+    console.log(`[RAG] selectBenchmark 选中: ${ragQuestion.id}`)
+    const normalizedQ = normalizeQuestion(ragQuestion, motifId)
+    return {
+      ...normalizedQ,
+      problem: normalizedQ.problem || normalizedQ.desc,
+      specName: normalizedQ.specName,
+      varName: normalizedQ.varName,
+      level: normalizedQ.level,
+      linkedWeapons: normalizedQ.linkedWeapons || normalizedQ.weapons || []
+    }
+  }
+
+  const { grade } = constraints
   const { 
     matchedLevelBenchmarks, 
     otherLevelBenchmarks, 
     matchedLevelPool, 
     otherLevelPool,
-    weaponMatchedBenchmarks,
-    weaponMatchedPool,
     gradeBlocked
   } = collectAllBenchmarks(motifData, targetLevel, constraints)
 
@@ -282,27 +406,8 @@ export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constr
     return null
   }
 
-  // 最高优先级：匹配杀手锏的标杆题
-  if (weaponId && weaponMatchedBenchmarks.length > 0) {
-    const matchedLevel = weaponMatchedBenchmarks.filter(b => b.level === targetLevel)
-    if (matchedLevel.length > 0) {
-      return matchedLevel[problemIndex % matchedLevel.length]
-    }
-    return weaponMatchedBenchmarks[problemIndex % weaponMatchedBenchmarks.length]
-  }
-
-  // 次高优先级：匹配杀手锏的题库
-  if (weaponId && weaponMatchedPool.length > 0) {
-    const matchedLevel = weaponMatchedPool.filter(p => p.level === targetLevel)
-    if (matchedLevel.length > 0) {
-      return matchedLevel[problemIndex % matchedLevel.length]
-    }
-    return weaponMatchedPool[problemIndex % weaponMatchedPool.length]
-  }
-
-  // 优先选择匹配难度等级的 master_benchmarks
+  // 优先级1：同难度等级的 master_benchmarks
   if (matchedLevelBenchmarks.length > 0) {
-    // 按 varName 分组，确保选择不同变例的题目
     const groupedByVar = {}
     matchedLevelBenchmarks.forEach(b => {
       const key = b.varName || 'default'
@@ -312,19 +417,16 @@ export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constr
     
     const varNames = Object.keys(groupedByVar)
     if (varNames.length > 1) {
-      // 有多个变例，按 problemIndex 选择不同变例
       const selectedVarName = varNames[problemIndex % varNames.length]
       const benchmarksInVar = groupedByVar[selectedVarName]
       return benchmarksInVar[problemIndex % benchmarksInVar.length]
     }
     
-    // 只有一个变例，直接选择
     return matchedLevelBenchmarks[problemIndex % matchedLevelBenchmarks.length]
   }
 
-  // 其次选择匹配难度等级的 original_pool
+  // 优先级2：同难度等级的 original_pool（随机选择，不区分杀手锏）
   if (matchedLevelPool.length > 0) {
-    // 按 varName 分组
     const groupedByVar = {}
     matchedLevelPool.forEach(b => {
       const key = b.varName || 'default'
@@ -342,7 +444,7 @@ export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constr
     return matchedLevelPool[problemIndex % matchedLevelPool.length]
   }
 
-  // 再次选择其他难度等级的 master_benchmarks
+  // 优先级3：其他难度等级的 master_benchmarks
   if (otherLevelBenchmarks.length > 0) {
     const groupedByVar = {}
     otherLevelBenchmarks.forEach(b => {
@@ -361,7 +463,7 @@ export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constr
     return otherLevelBenchmarks[problemIndex % otherLevelBenchmarks.length]
   }
 
-  // 最后选择其他难度等级的 original_pool
+  // 优先级4：其他难度等级的 original_pool
   if (otherLevelPool.length > 0) {
     return otherLevelPool[problemIndex % otherLevelPool.length]
   }
@@ -464,12 +566,15 @@ export const getVariationInfo = (benchmark) => {
     }
   }
   
+  // 🔥 RAG 模式：优先从 benchmark 中提取
+  const ragInfo = getRAGVariationInfo(benchmark)
+  
   return {
-    specName: benchmark.specName || '',
-    varName: benchmark.varName || '',
+    specName: benchmark.specName || ragInfo.specName || '',
+    varName: benchmark.varName || ragInfo.varName || '',
     linkedWeapons: benchmark.linkedWeapons || [],
-    specId: benchmark.specId || '',
-    varId: benchmark.varId || ''
+    specId: benchmark.specId || ragInfo.specId || '',
+    varId: benchmark.varId || ragInfo.varId || ''
   }
 }
 
@@ -484,18 +589,71 @@ export const getVariationInfo = (benchmark) => {
 export const selectSeedQuestion = (motifData, targetLevel, benchmark, problemIndex = 0) => {
   if (!motifData || !benchmark) return null
   
+  const motifId = motifData.id || motifData.motif_id || 'M04'
+
+  // 🔥 RAG 模式：优先使用新的 JSON 结构
+  const ragQuestion = selectQuestionFromPool(motifData, targetLevel, problemIndex)
+  if (ragQuestion) {
+    console.log(`[RAG] selectSeedQuestion 选中: ${ragQuestion.id}`)
+    // 🔥 使用适配器标准化输出
+    const normalizedQ = normalizeQuestion(ragQuestion, motifId)
+    return {
+      question: normalizedQ,
+      variableKnobs: extractVariableConstraints(normalizedQ),
+      variationName: normalizedQ.varName,
+      specName: normalizedQ.specName,
+      specId: normalizedQ.specId,
+      varId: normalizedQ.varId,
+      ...normalizedQ
+    }
+  }
+  
+  // 降级：使用原有逻辑（简化版）
+  
   const specId = benchmark.specId || ''
   const varId = benchmark.varId || ''
-  const varName = benchmark.varName || ''
   
   const specialties = motifData.specialties || []
-  let originalPool = []
+  let candidatePool = []
+  
+  // 简单逻辑：直接取该变例下的所有题目
+  for (const spec of specialties) {
+    if (spec.spec_id === specId) {
+      for (const v of spec.variations || []) {
+        if (v.var_id === varId) {
+          candidatePool = v.original_pool || []
+          break
+        }
+      }
+      break
+    }
+  }
+
+  // 🔴 简化：不再过滤"高对称性"或"参数不规则性"，直接用
+  if (candidatePool.length === 0) {
+    console.log(`[种子题抽取] 变例 ${specId}/${varId} 无 original_pool，降级使用标杆题`)
+    return null
+  }
+  
+  // 先尝试匹配目标难度
+  let targetPool = candidatePool.filter(q => q.level === targetLevel)
+  if (targetPool.length === 0) {
+    targetPool = candidatePool
+  }
+  
+  // 直接随机选一个
+  const seedQuestion = targetPool[problemIndex % targetPool.length]
+  
+  console.log(`[出题种子] 母题:${motifData.motif_id || motifData.id} | 变例:${specId}/${varId} | 选中种子ID:${seedQuestion.id || 'unknown'}`)
+  
+  // 查找该题目所属的变例配置，提取 variable_knobs
+  let variableKnobs = null
   
   for (const spec of specialties) {
     if (spec.spec_id === specId) {
       for (const v of spec.variations || []) {
         if (v.var_id === varId) {
-          originalPool = v.original_pool || []
+          variableKnobs = v.variable_knobs || null
           break
         }
       }
@@ -503,105 +661,20 @@ export const selectSeedQuestion = (motifData, targetLevel, benchmark, problemInd
     }
   }
   
-  if (originalPool.length === 0) {
-    console.log(`[种子题抽取] 变例 ${specId}/${varId} 无 original_pool，降级使用标杆题`)
-    return null
+  if (!variableKnobs) {
+    console.warn(`[⚠️ 警告] 变例 ${specId}/${varId} 未找到 variable_knobs，难度约束可能丢失`)
+  } else {
+    console.log(`[✅ 约束加载] 已加载 variable_knobs，包含 ${Object.keys(variableKnobs).length} 个约束字段`)
   }
-  
-  const adjacentLevels = ['L1', 'L2', 'L3', 'L4']
-  let candidatePool = originalPool.filter(q => q.level === targetLevel)
-  
-  if (candidatePool.length < 2) {
-    const currentIndex = adjacentLevels.indexOf(targetLevel)
-    const neighbors = []
-    if (currentIndex > 0) neighbors.push(adjacentLevels[currentIndex - 1])
-    if (currentIndex < adjacentLevels.length - 1) neighbors.push(adjacentLevels[currentIndex + 1])
-    
-    const neighborQuestions = originalPool.filter(q => neighbors.includes(q.level))
-    candidatePool = [...candidatePool, ...neighborQuestions]
-    
-    if (candidatePool.length > originalPool.filter(q => q.level === targetLevel).length) {
-      console.log(`[难度适配] 目标 ${targetLevel} 题目不足，已混入相邻难度题目，当前池大小: ${candidatePool.length}`)
-    }
-  }
-  
-  if (candidatePool.length === 0) {
-    console.log(`[种子题抽取] 无符合条件的题目，降级使用标杆题`)
-    return null
-  }
-  
-  // 🔧 新增：种子题安全性过滤 - 避免选择容易导致"退化"的种子
-  // 如果目标是求"范围"，过滤掉高对称性种子
-  if (varName.includes("范围") || varName.includes("最值")) {
-    const safeSeeds = candidatePool.filter(q => {
-      // 检查是否标记为高对称性
-      if (q.tags && q.tags.includes('highly_symmetric')) {
-        return false
-      }
-      
-      // 启发式规则：检查题目是否包含对称性关键词
-      const desc = q.desc || q.problem || ''
-      const symmetricPatterns = [
-        /原点.*圆|圆.*原点/,
-        /对称.*轴|轴.*对称/,
-        /等腰|等边|正三角形/,
-        /A\s*\(\s*-?\d+\s*,\s*0\s*\).*B\s*\(\s*\d+\s*,\s*0\s*\)/,  // A(-a,0), B(a,0) 对称
-        /圆心.*原点|原点.*圆心/
-      ]
-      
-      const isHighlySymmetric = symmetricPatterns.some(p => p.test(desc))
-      return !isHighlySymmetric
-    })
-    
-    if (safeSeeds.length > 0) {
-      candidatePool = safeSeeds
-      console.log(`[种子题安全过滤] 目标含"范围/最值"，已过滤高对称性种子，剩余 ${safeSeeds.length} 题`)
-    } else {
-      console.log(`[种子题安全过滤] 警告：所有种子都具有高对称性，将在 Prompt 中强制添加防退化检查`)
-    }
-  }
-  
-  // 🔧 新增：参数不规则性优先 - 优先选择参数不规则的种子
-  const irregularityScore = (q) => {
-    const desc = q.desc || q.problem || ''
-    let score = 0
-    
-    // 检查是否包含非整数参数（更不容易退化）
-    if (/\d+\.\d+|\d+\/\d+|√\d+/.test(desc)) score += 2
-    
-    // 检查是否包含非对称坐标
-    if (/\(\s*-?\d+\s*,\s*-?\d+\s*\)/.test(desc)) {
-      const coords = desc.match(/\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/g) || []
-      for (const coord of coords) {
-        const match = coord.match(/\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/)
-        if (match && match[1] !== '0' && match[2] !== '0') {
-          score += 1  // 非原点坐标加分
-        }
-      }
-    }
-    
-    // 检查是否包含参数符号（如 a, b, k）
-    if (/[a-z]\s*[=<>∈]/i.test(desc)) score += 1
-    
-    return score
-  }
-  
-  // 按不规则性排序
-  candidatePool.sort((a, b) => irregularityScore(b) - irregularityScore(a))
-  
-  // 从前 50% 的候选中随机选择（平衡随机性和安全性）
-  const topHalf = candidatePool.slice(0, Math.max(1, Math.ceil(candidatePool.length / 2)))
-  const randomIndex = (problemIndex + Math.floor(Math.random() * 1000)) % topHalf.length
-  const seedQuestion = topHalf[randomIndex]
-  
-  console.log(`[出题种子] 母题:${motifData.motif_id || motifData.id} | 变例:${specId}/${varId} | 目标难度:${targetLevel} | 选中种子难度:${seedQuestion.level} | 种子ID:${seedQuestion.id || 'unknown'}`)
   
   return {
-    ...seedQuestion,
+    question: seedQuestion,
+    variableKnobs,
+    variationName: benchmark.varName,
+    specName: benchmark.specName,
     specId,
     varId,
-    specName: benchmark.specName,
-    varName: benchmark.varName
+    ...seedQuestion
   }
 }
 

@@ -1,17 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import ErrorSection from './ErrorSection';
 import CustomSection from './CustomSection';
-import ReinforceSection from './ReinforceSection';
 
 const TopicScopeCard = ({
   errorNotebook,
   tacticalData,
   selectedMotifs,
   onSelectionChange,
-  onImportError,
-  onNavigateToErrorLibrary,
-  isAcademicMode
+  isAcademicMode,
+  onAllSelectedChange
 }) => {
+  const [selectedErrorIds, setSelectedErrorIds] = useState([]);
+
   const allEncounters = tacticalData?.tactical_maps?.flatMap(m => m.encounters) || [];
 
   const errorMotifIds = useMemo(() => {
@@ -22,27 +22,28 @@ const TopicScopeCard = ({
     return ids;
   }, [errorNotebook]);
 
-  const reinforcementMotifs = useMemo(() => {
-    const excludedIds = new Set([
-      ...Array.from(errorMotifIds),
-      ...(selectedMotifs?.map(s => s.motifId) || [])
-    ]);
-    
-    return allEncounters
-      .filter(e => e.elo_score >= 1001 && !excludedIds.has(e.target_id))
-      .sort((a, b) => a.elo_score - b.elo_score)
-      .slice(0, 2);
-  }, [allEncounters, errorMotifIds, selectedMotifs]);
-
   const allSelectedMotifs = useMemo(() => {
     const motifSet = new Set();
     
-    errorMotifIds.forEach(id => motifSet.add(id));
+    selectedErrorIds.forEach(id => motifSet.add(id));
     selectedMotifs?.forEach(s => motifSet.add(s.motifId));
-    reinforcementMotifs.forEach(m => motifSet.add(m.target_id));
     
     return Array.from(motifSet);
-  }, [errorMotifIds, selectedMotifs, reinforcementMotifs]);
+  }, [selectedErrorIds, selectedMotifs]);
+
+  useEffect(() => {
+    if (onAllSelectedChange) {
+      onAllSelectedChange(allSelectedMotifs);
+    }
+  }, [allSelectedMotifs, onAllSelectedChange]);
+
+  const handleErrorSelect = (motifId) => {
+    setSelectedErrorIds(prev => 
+      prev.includes(motifId) 
+        ? prev.filter(id => id !== motifId)
+        : [...prev, motifId]
+    );
+  };
 
   return (
     <div className={`rounded-xl p-4 ${
@@ -58,13 +59,13 @@ const TopicScopeCard = ({
         </span>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <ErrorSection
           errorNotebook={errorNotebook}
           tacticalData={tacticalData}
           isAcademicMode={isAcademicMode}
-          onImportError={onImportError}
-          onNavigateToErrorLibrary={onNavigateToErrorLibrary}
+          selectedErrorIds={selectedErrorIds}
+          onErrorSelect={handleErrorSelect}
         />
 
         <CustomSection
@@ -72,13 +73,6 @@ const TopicScopeCard = ({
           errorMotifs={Array.from(errorMotifIds)}
           selectedMotifs={selectedMotifs}
           onSelectionChange={onSelectionChange}
-          isAcademicMode={isAcademicMode}
-        />
-
-        <ReinforceSection
-          tacticalData={tacticalData}
-          errorMotifs={Array.from(errorMotifIds)}
-          selectedMotifs={selectedMotifs}
           isAcademicMode={isAcademicMode}
         />
       </div>

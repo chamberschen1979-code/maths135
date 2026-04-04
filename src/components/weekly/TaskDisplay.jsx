@@ -70,7 +70,6 @@ const TaskDisplay = ({
 }) => {
   const [expandedTask, setExpandedTask] = useState(null);
   const [showAnswerInput, setShowAnswerInput] = useState(null);
-  const [showPrototypeModal, setShowPrototypeModal] = useState(null);
 
   if (!tasks || tasks.length === 0) {
     return null;
@@ -103,6 +102,40 @@ const TaskDisplay = ({
     return null;
   };
 
+  const getAllLinkedWeapons = (task) => {
+    const weapons = [];
+    
+    const weaponId = task.constraints?.weaponId || task.weaponId;
+    if (weaponId) {
+      const weaponName = getWeaponNameById(weaponId);
+      if (weaponName) {
+        weapons.push({ id: weaponId, name: weaponName });
+      }
+    }
+    
+    const linkedWeapons = task.benchmark?.linked_weapons || task.benchmark?.linkedWeapons || task.linked_weapons || task.linkedWeapons || [];
+    console.log('[TaskDisplay] getAllLinkedWeapons:', {
+      taskId: task.id,
+      benchmarkLinkedWeapons: task.benchmark?.linked_weapons,
+      benchmarkLinkedWeapons2: task.benchmark?.linkedWeapons,
+      linkedWeapons: task.linked_weapons,
+      linkedWeapons2: task.linkedWeapons,
+      extractedLinkedWeapons: linkedWeapons
+    });
+    
+    for (const wId of linkedWeapons) {
+      if (!weapons.find(w => w.id === wId)) {
+        const weaponName = getWeaponNameById(wId);
+        if (weaponName) {
+          weapons.push({ id: wId, name: weaponName });
+        }
+      }
+    }
+    
+    console.log('[TaskDisplay] 最终武器列表:', weapons);
+    return weapons;
+  };
+
   const getErrorSource = (task) => {
     if (task.source !== 'error') return null;
     const errorInfo = errorNotebook?.find(e => 
@@ -131,8 +164,6 @@ const TaskDisplay = ({
           const analysis = normalizeContent(getAnalysis(task));
           const answer = normalizeContent(getAnswer(task));
           const badge = getSourceBadge(task.source);
-          const hasBenchmark = task.benchmark && (task.benchmark.problem || task.benchmark.question || task.benchmark.desc || task.benchmark.analysis);
-          const benchmarkContent = task.benchmark?.problem || task.benchmark?.question || task.benchmark?.desc || '';
           
           return (
             <div
@@ -161,17 +192,6 @@ const TaskDisplay = ({
                     攻克 {task.targetLevel || task.level}
                   </span>
                   <button
-                    onClick={() => hasBenchmark && setShowPrototypeModal(index)}
-                    className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium transition-all ${
-                      hasBenchmark 
-                        ? (isAcademicMode ? 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200' : 'bg-indigo-900/30 text-indigo-400 hover:bg-indigo-900/50')
-                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    }`}
-                    title={hasBenchmark ? "查看母题样题" : "暂无样题数据"}
-                  >
-                    📖 样题参考
-                  </button>
-                  <button
                     onClick={() => setExpandedTask(expandedTask === index ? null : index)}
                     className={`px-2 py-1 rounded text-xs font-medium ${
                       expandedTask === index
@@ -184,7 +204,11 @@ const TaskDisplay = ({
                     {expandedTask === index ? '收起解析' : '查看解析'}
                   </button>
                   <button
-                    onClick={() => setShowAnswerInput(showAnswerInput === index ? null : index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('[Debug] 答案录入按钮点击, index:', index, 'showAnswerInput:', showAnswerInput);
+                      setShowAnswerInput(showAnswerInput === index ? null : index);
+                    }}
                     className={`px-2 py-1 rounded text-xs font-medium ${
                       task.userAnswer
                         ? 'bg-green-100 text-green-700'
@@ -242,31 +266,62 @@ const TaskDisplay = ({
                 📌 本周目标：攻克 {task.targetLevel || task.level} 级别变例，连续 3 次训练正确即可通关
               </div>
 
-              {task.isAIGenerated && (
-                <div className={`p-3 rounded-lg border mb-2 ${
-                  isAcademicMode ? 'bg-white border-emerald-200' : 'bg-zinc-800 border-emerald-700'
-                }`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-sm">✨</span>
-                    <span className={`text-xs font-bold ${isAcademicMode ? 'text-emerald-600' : 'text-emerald-400'}`}>
-                      AI 定制题目
-                    </span>
-                    <span className={`text-xs px-2 py-0.5 rounded ${
-                      isAcademicMode ? 'bg-slate-100 text-slate-600' : 'bg-zinc-700 text-zinc-300'
-                    }`}>
-                      {task.motifName}{task.specName ? ` · ${task.specName}` : ''}{task.varName ? ` · ${task.varName}` : ''}
-                    </span>
-                  </div>
-                  <div className={`text-sm leading-relaxed ${
-                    isAcademicMode ? 'text-slate-700' : 'text-zinc-300'
+              {/* 🔥 修复：无论是否 AI 生成，都显示题目 */}
+              <div className={`p-3 rounded-lg border mb-2 ${
+                isAcademicMode ? 'bg-white border-slate-200' : 'bg-zinc-800 border-zinc-700'
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-sm">{task.isAIGenerated ? '✨' : '📚'}</span>
+                  <span className={`text-xs font-bold ${isAcademicMode ? 'text-slate-600' : 'text-zinc-400'}`}>
+                    {task.isAIGenerated ? 'AI 定制题目' : '真题库原题'}
+                  </span>
+                  <span className={`text-xs px-2 py-0.5 rounded ${
+                    isAcademicMode ? 'bg-slate-100 text-slate-600' : 'bg-zinc-700 text-zinc-300'
                   }`}>
-                    <LatexRenderer content={question} />
-                  </div>
+                    {task.motifName}{task.specName ? ` · ${task.specName}` : ''}{task.varName ? ` · ${task.varName}` : ''}
+                  </span>
                 </div>
-              )}
+                <div className={`text-sm leading-relaxed ${
+                  isAcademicMode ? 'text-slate-700' : 'text-zinc-300'
+                }`}>
+                  <LatexRenderer content={question} />
+                </div>
+              </div>
 
               {expandedTask === index && (
                 <div className="mt-3 space-y-3">
+                  {(() => {
+                    const allWeapons = getAllLinkedWeapons(task);
+                    if (allWeapons.length > 0) {
+                      return (
+                        <div className={`p-3 rounded-lg text-sm ${
+                          isAcademicMode ? 'bg-indigo-50 border border-indigo-200' : 'bg-indigo-900/20 border border-indigo-700'
+                        }`}>
+                          <div className="font-bold text-xs mb-2 flex items-center gap-1">
+                            <span>🔥</span> 适配杀手锏
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {allWeapons.map(weapon => (
+                              <div 
+                                key={weapon.id}
+                                className={`px-2 py-1 rounded text-xs font-medium ${
+                                  isAcademicMode 
+                                    ? 'bg-indigo-100 text-indigo-700 border border-indigo-200' 
+                                    : 'bg-indigo-900/30 text-indigo-300 border border-indigo-600'
+                                }`}
+                              >
+                                <span className="opacity-70">{weapon.id}</span>
+                                <span className="mx-1">·</span>
+                                <span>{weapon.name}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+                  
                   {analysis && (
                     <div className={`p-3 rounded-lg text-sm ${
                       isAcademicMode ? 'bg-amber-50 border border-amber-200' : 'bg-amber-900/20 border border-amber-800/30'
@@ -323,7 +378,7 @@ const TaskDisplay = ({
                         ? (isAcademicMode ? 'text-green-700' : 'text-green-400')
                         : (isAcademicMode ? 'text-red-700' : 'text-red-400')
                     }`}>
-                      {task.evaluationResult?.isAllCorrect ? '全部正确' : '存在错误'}
+                      {task.evaluationResult?.isAllCorrect ? '回答正确' : '回答错误'}
                     </span>
                   </div>
                   
@@ -348,169 +403,25 @@ const TaskDisplay = ({
                     </div>
                   )}
                   
-                  {task.evaluationResult?.details?.map((d, idx) => (
-                    <div key={idx} className={`flex items-center gap-2 text-xs mb-1 ${
-                      d.isCorrect 
-                        ? (isAcademicMode ? 'text-green-600' : 'text-green-400')
-                        : (isAcademicMode ? 'text-red-600' : 'text-red-400')
+                  {task.evaluationResult?.isAllCorrect && task.source === 'error' && (
+                    <div className={`mb-2 p-2 rounded text-xs ${
+                      isAcademicMode ? 'bg-green-50 text-green-700' : 'bg-green-900/30 text-green-300'
                     }`}>
-                      <span>{d.isCorrect ? '✓' : '✗'}</span>
-                      <span>第{idx + 1}问 ({d.level}):</span>
-                      <span className={d.isCorrect ? 'text-green-500' : 'text-red-500'}>
-                        {d.isCorrect ? `+${d.delta}分` : `${d.delta}分`}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <span>✅</span>
+                        <span className="font-bold">恭喜！已自动消灭该变例的错题</span>
+                      </div>
                     </div>
-                  ))}
+                  )}
                   
-                  <div className={`mt-2 pt-2 border-t text-sm font-bold ${
+                  {/* 🔥 单问模式：直接显示得分，不显示"第X问" */}
+                  <div className={`flex items-center gap-2 text-sm font-bold ${
                     task.score >= 0 
-                      ? (isAcademicMode ? 'text-green-700 border-green-200' : 'text-green-400 border-green-700')
-                      : (isAcademicMode ? 'text-red-700 border-red-200' : 'text-red-400 border-red-700')
+                      ? (isAcademicMode ? 'text-green-700' : 'text-green-400')
+                      : (isAcademicMode ? 'text-red-700' : 'text-red-400')
                   }`}>
-                    总得分: {task.score >= 0 ? '+' : ''}{task.score} 分
-                  </div>
-                </div>
-              )}
-
-              {showPrototypeModal === index && task.benchmark && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowPrototypeModal(null)}>
-                  <div 
-                    className={`max-w-3xl mx-4 rounded-lg border p-6 max-h-[85vh] overflow-y-auto ${isAcademicMode ? 'bg-white border-slate-200' : 'bg-zinc-900 border-zinc-700'}`}
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h3 className={`text-lg font-bold ${isAcademicMode ? 'text-slate-800' : 'text-zinc-100'}`}>
-                          📖 参考母题样题
-                        </h3>
-                      </div>
-                      <button
-                        onClick={() => setShowPrototypeModal(null)}
-                        className={`p-1 rounded ${isAcademicMode ? 'hover:bg-slate-100' : 'hover:bg-zinc-800'}`}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                    
-                    <div className={`p-4 rounded-lg mb-4 ${isAcademicMode ? 'bg-slate-50' : 'bg-zinc-800'}`}>
-                      <div className="mb-2">
-                        <span className={`font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>
-                          【题目】
-                        </span>
-                      </div>
-                      <div className={`${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>
-                        <LatexRenderer content={normalizeContent(benchmarkContent || task.benchmark?.problem || task.benchmark?.question)} />
-                      </div>
-                    </div>
-                    
-                    {task.benchmark.analysis?.core_idea && (
-                      <div className={`p-4 rounded-lg mb-4 ${isAcademicMode ? 'bg-blue-50 border border-blue-200' : 'bg-blue-900/20 border border-blue-700'}`}>
-                        <div className="mb-2">
-                          <span className={`font-medium ${isAcademicMode ? 'text-blue-700' : 'text-blue-400'}`}>
-                            💡 核心思路
-                          </span>
-                        </div>
-                        <div className={`${isAcademicMode ? 'text-blue-800' : 'text-blue-300'}`}>
-                          <LatexRenderer content={normalizeContent(task.benchmark.analysis.core_idea)} />
-                        </div>
-                      </div>
-                    )}
-                    
-                    {task.benchmark.analysis?.key_steps && task.benchmark.analysis.key_steps.length > 0 && (
-                      <div className={`p-4 rounded-lg mb-4 ${isAcademicMode ? 'bg-slate-50' : 'bg-zinc-800'}`}>
-                        <div className="mb-2">
-                          <span className={`font-medium ${isAcademicMode ? 'text-slate-700' : 'text-zinc-300'}`}>
-                            📝 解析步骤
-                          </span>
-                        </div>
-                        <ol className={`list-decimal list-inside space-y-2 ${isAcademicMode ? 'text-slate-600' : 'text-zinc-400'}`}>
-                          {task.benchmark.analysis.key_steps.map((step, idx) => (
-                            <li key={idx} className="text-sm">
-                              <LatexRenderer content={normalizeContent(step)} />
-                            </li>
-                          ))}
-                        </ol>
-                      </div>
-                    )}
-                    
-                    {task.benchmark.analysis?.common_pitfalls && task.benchmark.analysis.common_pitfalls.length > 0 && (
-                      <div className={`p-4 rounded-lg mb-4 ${isAcademicMode ? 'bg-amber-50 border border-amber-200' : 'bg-amber-900/20 border border-amber-700'}`}>
-                        <div className="mb-2">
-                          <span className={`font-medium ${isAcademicMode ? 'text-amber-700' : 'text-amber-400'}`}>
-                            ⚠️ 陷阱类型
-                          </span>
-                        </div>
-                        <ul className={`space-y-2 ${isAcademicMode ? 'text-amber-700' : 'text-amber-300'}`}>
-                          {task.benchmark.analysis.common_pitfalls.map((pitfall, idx) => (
-                            <li key={idx} className="text-sm flex items-start gap-2">
-                              <span>⚠️</span>
-                              <LatexRenderer content={normalizeContent(pitfall)} />
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    
-                    {task.variableKnobs && Object.keys(task.variableKnobs).length > 0 && (() => {
-                      const trapKeys = ['trap_type', 'trap_condition'];
-                      const variableFactors = Object.entries(task.variableKnobs).filter(([key]) => !trapKeys.includes(key));
-                      
-                      return (
-                        <>
-                          {variableFactors.length > 0 && (
-                            <div className={`p-4 rounded-lg mb-4 ${isAcademicMode ? 'bg-emerald-50 border border-emerald-200' : 'bg-emerald-900/20 border border-emerald-700'}`}>
-                              <div className="mb-2">
-                                <span className={`font-medium ${isAcademicMode ? 'text-emerald-700' : 'text-emerald-400'}`}>
-                                  🎲 变量因子（本题生成策略）
-                                </span>
-                              </div>
-                              <div className="space-y-2">
-                                {variableFactors.map(([key, knob]) => {
-                                  if (!knob || !knob.desc) return null;
-                                  const dimensionLabels = {
-                                    property_type: '核心考点',
-                                    calculation_mode: '计算要求',
-                                    angle_relation: '角度关系',
-                                    function_type: '函数类型',
-                                    expression_structure: '式子结构',
-                                    solution_strategy: '解题策略'
-                                  };
-                                  return (
-                                    <div key={key} className="flex items-start gap-2">
-                                      <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${
-                                        isAcademicMode ? 'bg-emerald-100 text-emerald-600' : 'bg-emerald-900/30 text-emerald-400'
-                                      }`}>
-                                        {dimensionLabels[key] || key}
-                                      </span>
-                                      <span className={`text-sm ${isAcademicMode ? 'text-emerald-700' : 'text-emerald-300'}`}>
-                                        {knob.desc}
-                                      </span>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-                        </>
-                      );
-                    })()}
-                    
-                    {task.benchmark && task.benchmark.linked_weapons && task.benchmark.linked_weapons.length > 0 && (
-                      <div className={`p-4 rounded-lg ${isAcademicMode ? 'bg-violet-50 border border-violet-200' : 'bg-violet-900/20 border border-violet-700'}`}>
-                        <div className="mb-2">
-                          <span className={`font-medium ${isAcademicMode ? 'text-violet-700' : 'text-violet-400'}`}>
-                            🔧 杀手锏
-                          </span>
-                        </div>
-                        <div className="space-y-1">
-                          {formatWeaponList(task.benchmark.linked_weapons).map((weapon, idx) => (
-                            <div key={idx} className={`text-sm ${isAcademicMode ? 'text-violet-700' : 'text-violet-300'}`}>
-                              {weapon}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    <span>{task.score >= 0 ? '✓' : '✗'}</span>
+                    <span>得分: {task.score >= 0 ? '+' : ''}{task.score} 分</span>
                   </div>
                 </div>
               )}

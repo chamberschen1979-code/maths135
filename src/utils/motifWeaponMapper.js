@@ -1,76 +1,92 @@
-import tacticalMaps from '../data/tacticalMaps.json';
-import strategyLib from '../data/strategy_lib.json';
+import tacticalMaps from '../data/tacticalMaps.json' with { type: 'json' };
+import weaponDetails from '../data/weapon_details.json' with { type: 'json' };
 
-const motifWeaponMap = {
-  'M01': {
-    name: '集合、逻辑与复数',
-    weapons: ['S-SET-01', 'S-SET-02', 'S-SET-03']
-  },
-  'M02': {
-    name: '不等式性质',
-    weapons: ['S-INEQ-02', 'S-INEQ-03', 'S-INEQ-08', 'S-INEQ-09']
-  },
-  'M03': {
-    name: '函数概念与性质',
-    weapons: ['S-FUNC-01', 'S-FUNC-02', 'S-FUNC-03', 'S-FUNC-04', 'S-FUNC-05', 'S-FUNC-06', 'S-FUNC-07']
-  },
-  'M04': {
-    name: '指对数函数与运算',
-    weapons: ['S-LOG-01', 'S-LOG-02', 'S-LOG-03', 'S-LOG-04', 'S-VIS-01']
-  },
-  'M05': {
-    name: '平面向量',
-    weapons: ['S-VEC-01', 'S-VEC-02', 'S-VEC-03', 'S-VEC-04']
-  },
-  'M06': {
-    name: '三角函数基础',
-    weapons: ['S-TRIG-01', 'S-TRIG-02', 'S-TRIG-03']
-  },
-  'M07': {
-    name: '解三角形综合',
-    weapons: ['S-TRI-01', 'S-TRI-02', 'S-TRI-03', 'S-TRI-04']
-  },
-  'M08': {
-    name: '数列',
-    weapons: ['S-SEQ-01', 'S-SEQ-02', 'S-SEQ-03', 'S-SEQ-04', 'S-SEQ-05', 'S-SEQ-06', 'S-SEQ-07']
-  },
-  'M09': {
-    name: '导数基础应用',
-    weapons: ['S-DERIV-01', 'S-DERIV-02', 'S-DERIV-03', 'S-DERIV-04']
-  },
-  'M10': {
-    name: '导数综合应用',
-    weapons: ['S-DERIV-05', 'S-DERIV-06', 'S-DERIV-07', 'S-DERIV-08']
-  },
-  'M11': {
-    name: '导数压轴',
-    weapons: ['S-DERIV-05', 'S-DERIV-06', 'S-DERIV-07', 'S-DERIV-08']
-  },
-  'M12': {
-    name: '立体几何',
-    weapons: ['S-GEO-01', 'S-GEO-02', 'S-GEO-03', 'S-GEO-04']
-  },
-  'M13': {
-    name: '概率统计',
-    weapons: ['S-PROB-01', 'S-PROB-02', 'S-PROB-03', 'S-PROB-04', 'S-PROB-05']
-  },
-  'M14': {
-    name: '直线与圆',
-    weapons: ['S-CIRCLE-01', 'S-CIRCLE-02', 'S-ANALYTIC-01', 'S-ANALYTIC-02']
-  },
-  'M15': {
-    name: '圆锥曲线',
-    weapons: ['S-CONIC-01', 'S-CONIC-02', 'S-CONIC-03', 'S-CONIC-04', 'S-ANALYTIC-01', 'S-ANALYTIC-02', 'S-ANALYTIC-03', 'S-ANALYTIC-04']
-  },
-  'M16': {
-    name: '排列组合',
-    weapons: ['S-COMB-01', 'S-COMB-02', 'S-COMB-03', 'S-COMB-04']
-  },
-  'M17': {
-    name: '创新题',
-    weapons: ['S-INNOV-01', 'S-INNOV-02', 'S-INNOV-03', 'S-INNOV-04']
-  }
+import M01 from '../data/M01.json' with { type: 'json' };
+import M02 from '../data/M02.json' with { type: 'json' };
+import M03 from '../data/M03.json' with { type: 'json' };
+import M04 from '../data/M04.json' with { type: 'json' };
+import M05 from '../data/M05.json' with { type: 'json' };
+import M06 from '../data/M06.json' with { type: 'json' };
+import M07 from '../data/M07.json' with { type: 'json' };
+import M08 from '../data/M08.json' with { type: 'json' };
+import M09 from '../data/M09.json' with { type: 'json' };
+import M10 from '../data/M10.json' with { type: 'json' };
+import M11 from '../data/M11.json' with { type: 'json' };
+import M12 from '../data/M12.json' with { type: 'json' };
+import M13 from '../data/M13.json' with { type: 'json' };
+import M14 from '../data/M14.json' with { type: 'json' };
+import M15 from '../data/M15.json' with { type: 'json' };
+import M16 from '../data/M16.json' with { type: 'json' };
+import M17 from '../data/M17.json' with { type: 'json' };
+
+const motifFiles = {
+  M01, M02, M03, M04, M05, M06, M07, M08, M09, M10,
+  M11, M12, M13, M14, M15, M16, M17
 };
+
+const extractWeaponsFromMotifFile = (motifData, motifId) => {
+  const weapons = new Set();
+  
+  if (motifData?.toolkit?.linked_weapons) {
+    motifData.toolkit.linked_weapons.forEach(w => weapons.add(w));
+  }
+  
+  if (motifData?.specialties) {
+    for (const spec of motifData.specialties) {
+      if (spec.toolkit?.linked_weapons) {
+        spec.toolkit.linked_weapons.forEach(w => weapons.add(w));
+      }
+      if (spec.variations) {
+        for (const variation of spec.variations) {
+          if (variation.toolkit?.linked_weapons) {
+            variation.toolkit.linked_weapons.forEach(w => weapons.add(w));
+          }
+          if (variation.original_pool) {
+            for (const question of variation.original_pool) {
+              if (question.weapons) {
+                question.weapons.forEach(w => weapons.add(w));
+              }
+              if (question.meta?.weapons) {
+                question.meta.weapons.forEach(w => weapons.add(w));
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  return Array.from(weapons);
+};
+
+const buildMotifWeaponMap = () => {
+  const map = {};
+  
+  for (const [motifId, motifData] of Object.entries(motifFiles)) {
+    const motifName = motifData?.name || motifData?.motif_name || motifId;
+    const weapons = extractWeaponsFromMotifFile(motifData, motifId);
+    
+    map[motifId] = {
+      name: motifName,
+      weapons: weapons
+    };
+  }
+  
+  const allWeaponsInDetails = Object.keys(weaponDetails);
+  const usedWeapons = new Set();
+  for (const data of Object.values(map)) {
+    data.weapons.forEach(w => usedWeapons.add(w));
+  }
+  
+  const unusedWeapons = allWeaponsInDetails.filter(w => !usedWeapons.has(w));
+  if (unusedWeapons.length > 0) {
+    console.log('[motifWeaponMapper] 未被任何母题关联的杀手锏:', unusedWeapons);
+  }
+  
+  return map;
+};
+
+export const motifWeaponMap = buildMotifWeaponMap();
 
 export const getLinkedMotifsForWeapon = (weaponId) => {
   const linkedMotifs = [];
@@ -101,15 +117,14 @@ export const getLinkedWeaponsForMotif = (motifId) => {
 };
 
 const getWeaponInfo = (weaponId) => {
-  const categories = strategyLib.categories;
-  
-  for (const category of categories) {
-    const weapon = category.weapons.find(w => w.id === weaponId);
-    if (weapon) {
-      return weapon;
-    }
+  const weapon = weaponDetails[weaponId];
+  if (weapon) {
+    return {
+      id: weaponId,
+      name: weaponId,
+      ...weapon
+    };
   }
-  
   return null;
 };
 
@@ -141,13 +156,11 @@ export const isMotifActivated = (motifId, tacticalData) => {
 }
 
 export const getWeaponStatus = (weapon, tacticalData) => {
-  // 检查是否已认证（从用户数据中获取，而不是硬编码的 _userState）
   const certifiedWeapons = tacticalData?.user_profile?.certifiedWeapons || []
   if (certifiedWeapons.includes(weapon.id)) {
     return 'CERTIFIED'
   }
   
-  // 检查关联母题是否激活
   const linkedMotifs = weapon.linked_motifs || []
   const hasActivatedMotif = linkedMotifs.some(m => 
     isMotifActivated(m.id, tacticalData)
@@ -159,3 +172,5 @@ export const getWeaponStatus = (weapon, tacticalData) => {
   
   return 'LOCKED'
 }
+
+console.log('[motifWeaponMapper] 动态构建的武器映射:', motifWeaponMap);

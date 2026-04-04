@@ -4,7 +4,9 @@ const ReinforceSection = ({
   tacticalData,
   errorMotifs,
   selectedMotifs,
-  isAcademicMode
+  isAcademicMode,
+  selectedReinforceIds = [],
+  onReinforceSelect
 }) => {
   const allEncounters = tacticalData?.tactical_maps?.flatMap(m => m.encounters) || [];
 
@@ -22,7 +24,7 @@ const ReinforceSection = ({
     
     return activeMotifs
       .filter(m => !excludedIds.has(m.target_id))
-      .slice(0, 2);
+      .slice(0, 4);
   }, [activeMotifs, errorMotifs, selectedMotifs]);
 
   return (
@@ -33,11 +35,11 @@ const ReinforceSection = ({
         <div className="flex items-center gap-1.5">
           <span className="text-base">🟠</span>
           <h3 className="font-bold text-xs">强化区</h3>
-          {reinforcementMotifs.length > 0 && (
+          {selectedReinforceIds.length > 0 && (
             <span className={`px-1.5 py-0.5 rounded-full text-xs font-bold ${
               isAcademicMode ? 'bg-orange-100 text-orange-600' : 'bg-orange-900/30 text-orange-400'
             }`}>
-              自动
+              已选 {selectedReinforceIds.length}
             </span>
           )}
         </div>
@@ -48,16 +50,30 @@ const ReinforceSection = ({
           <div className="flex flex-wrap gap-1">
             {reinforcementMotifs.map(m => {
               const level = m.elo_score > 2500 ? 'L4' : m.elo_score > 1800 ? 'L3' : m.elo_score > 1000 ? 'L2' : 'L1';
+              const isSelected = selectedReinforceIds.includes(m.target_id);
+              
               return (
                 <div
                   key={m.target_id}
-                  className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs ${
-                    isAcademicMode 
-                      ? 'bg-white border border-orange-200' 
-                      : 'bg-zinc-800 border border-orange-800/50'
+                  onClick={() => onReinforceSelect && onReinforceSelect(m.target_id)}
+                  className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs cursor-pointer transition-all ${
+                    isSelected
+                      ? (isAcademicMode 
+                          ? 'bg-orange-200 border-2 border-orange-400 ring-2 ring-orange-200' 
+                          : 'bg-orange-900/30 border-2 border-orange-500 ring-2 ring-orange-500/30')
+                      : (isAcademicMode 
+                          ? 'bg-white border border-orange-200 hover:border-orange-400' 
+                          : 'bg-zinc-800 border border-orange-800/50 hover:border-orange-600')
                   }`}
-                  title={`${m.target_name} - Elo: ${m.elo_score}`}
+                  title={`${m.target_name} - Elo: ${m.elo_score}${isSelected ? ' (已选择)' : ' (点击选择)'}`}
                 >
+                  <span className={`w-4 h-4 rounded border flex items-center justify-center text-xs ${
+                    isSelected
+                      ? 'bg-orange-500 border-orange-500 text-white'
+                      : (isAcademicMode ? 'border-slate-300 bg-white' : 'border-zinc-600 bg-zinc-700')
+                  }`}>
+                    {isSelected && '✓'}
+                  </span>
                   <span className="font-medium">{m.target_name}</span>
                   <span className={`px-1 rounded text-xs font-bold ${
                     level === 'L4' 

@@ -1,10 +1,17 @@
-import { useState, useContext, useRef, useCallback } from 'react'
-import { Camera, Upload, X, Scan, AlertTriangle, Target, Sparkles, Lock, MapPin, Crop } from 'lucide-react'
+import { useState, useContext, useRef, useCallback, useEffect } from 'react'
+import { Camera, Upload, X, Scan, AlertTriangle, Target, Sparkles, Lock, MapPin, Crop, FileText, Scissors, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react'
 import { ThemeContext } from '../App'
 import tacticalMapsData from '../data/tacticalMaps.json'
-import strategyLib from '../data/strategy_lib.json'
+import weaponDetails from '../data/weapon_details.json'
 import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
+import * as pdfjsLib from 'pdfjs-dist'
+import mammoth from 'mammoth'
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString()
 
 const CATEGORY_TO_MOTIF = {
   'S-SET': 'M01',
@@ -16,9 +23,9 @@ const CATEGORY_TO_MOTIF = {
   'S-TRIG': 'M06',
   'S-TRI': 'M07',
   'S-SEQ': 'M08',
-  'S-SOLID': 'M09',
-  'S-ANAL': 'M10',
-  'S-DERIV': 'M11',
+  'S-GEO': 'M09',
+  'S-ANA': 'M10',
+  'S-DER': 'M11',
   'S-PROB': 'M12',
   'S-COMB': 'M16',
   'S-INNOV': 'M17',
@@ -34,7 +41,7 @@ const MOTIF_NAMES = {
   'M07': '解三角形综合',
   'M08': '数列基础与求和',
   'M09': '立体几何基础',
-  'M10': '解析几何基础',
+  'M10': '圆锥曲线基础',
   'M11': '导数工具基础',
   'M12': '概率与统计综合',
   'M13': '解析几何综合压轴',
@@ -44,31 +51,137 @@ const MOTIF_NAMES = {
   'M17': '创新思维与情境',
 }
 
+const WEAPON_NAMES = {
+  'S-SET-01': '空集优先讨论',
+  'S-SET-02': '集合运算化简',
+  'S-SET-03': '韦恩图分析',
+  'S-FUNC-01': '定义域优先',
+  'S-FUNC-02': '同增异减法则',
+  'S-FUNC-03': '奇偶性判断',
+  'S-FUNC-04': '零点交点转化',
+  'S-FUNC-05': '数形结合分析',
+  'S-TRIG-01': '恒等变换技巧',
+  'S-TRIG-02': '图象变换铁律',
+  'S-TRIG-03': '五点作图法',
+  'S-TRIG-04': 'ω范围讨论',
+  'S-TRIG-05': '辅助角公式',
+  'S-VEC-01': '基底法',
+  'S-VEC-02': '坐标法',
+  'S-VEC-03': '几何意义',
+  'S-VEC-04': '建系策略',
+  'S-VEC-05': '数量积应用',
+  'S-SEQ-01': '下标和性质',
+  'S-SEQ-02': '错位相减',
+  'S-SEQ-03': '裂项相消',
+  'S-SEQ-04': '分组求和',
+  'S-SEQ-05': '通项公式',
+  'S-GEO-01': '建系坐标法',
+  'S-GEO-02': '几何法',
+  'S-GEO-03': '体积转化',
+  'S-GEO-04': '空间向量',
+  'S-GEO-05': '二面角计算',
+  'S-ANA-01': '设点求参',
+  'S-ANA-02': '韦达定理',
+  'S-ANA-03': '点差法',
+  'S-ANA-04': '切线方程',
+  'S-ANA-05': '轨迹方程',
+  'S-DER-01': '求导法则',
+  'S-DER-02': '切线方程',
+  'S-DER-03': '单调性讨论',
+  'S-DER-04': '极值最值',
+  'S-DER-05': '零点讨论',
+  'S-PROB-01': '古典概型',
+  'S-PROB-02': '条件概率',
+  'S-PROB-03': '期望方差',
+  'S-PROB-04': '分布列',
+  'S-PROB-05': '统计推断'
+}
+
+const WEAPON_KEYWORDS = {
+  'S-SET-01': ['空集', '子集', '包含', 'A⊆B'],
+  'S-SET-02': ['交集', '并集', '补集', '集合运算'],
+  'S-SET-03': ['韦恩图', '集合关系'],
+  'S-FUNC-01': ['定义域', '值域', '有意义'],
+  'S-FUNC-02': ['单调性', '复合函数', '同增异减'],
+  'S-FUNC-03': ['奇函数', '偶函数', '对称'],
+  'S-FUNC-04': ['零点', '交点', '根'],
+  'S-FUNC-05': ['数形结合', '图像'],
+  'S-TRIG-01': ['恒等变换', '诱导公式', '倍角'],
+  'S-TRIG-02': ['图象变换', '平移', '伸缩'],
+  'S-TRIG-03': ['五点作图', '图象'],
+  'S-TRIG-04': ['ω范围', '周期', '单调区间'],
+  'S-TRIG-05': ['辅助角公式', '最值', '振幅'],
+  'S-VEC-01': ['基底', '向量分解'],
+  'S-VEC-02': ['坐标', '向量运算'],
+  'S-VEC-03': ['几何意义', '投影'],
+  'S-VEC-04': ['建系', '坐标系'],
+  'S-VEC-05': ['数量积', '夹角', '垂直'],
+  'S-SEQ-01': ['等差', '等比', '下标'],
+  'S-SEQ-02': ['错位相减', '求和'],
+  'S-SEQ-03': ['裂项', '相消'],
+  'S-SEQ-04': ['分组', '求和'],
+  'S-SEQ-05': ['通项', '递推'],
+  'S-GEO-01': ['建系', '坐标'],
+  'S-GEO-02': ['几何法', '证明'],
+  'S-GEO-03': ['体积', '等体积'],
+  'S-GEO-04': ['空间向量', '法向量'],
+  'S-GEO-05': ['二面角', '夹角'],
+  'S-ANA-01': ['设点', '参数'],
+  'S-ANA-02': ['韦达定理', '根与系数'],
+  'S-ANA-03': ['点差法', '中点'],
+  'S-ANA-04': ['切线', '切点'],
+  'S-ANA-05': ['轨迹', '方程'],
+  'S-DER-01': ['求导', '导数'],
+  'S-DER-02': ['切线', '切点'],
+  'S-DER-03': ['单调性', '增减'],
+  'S-DER-04': ['极值', '最值'],
+  'S-DER-05': ['零点', '根'],
+  'S-PROB-01': ['古典概型', '等可能'],
+  'S-PROB-02': ['条件概率', '贝叶斯'],
+  'S-PROB-03': ['期望', '方差'],
+  'S-PROB-04': ['分布', '随机变量'],
+  'S-PROB-05': ['统计', '样本']
+}
+
 const findMatchingWeapons = (text) => {
   if (!text) return []
   
   const lowerText = text.toLowerCase()
   const matches = []
   
-  for (const category of strategyLib.categories) {
-    for (const weapon of category.weapons) {
-      const keywordMatches = weapon.trigger_keywords.filter(keyword => 
-        lowerText.includes(keyword.toLowerCase())
-      )
-      if (keywordMatches.length > 0) {
-        matches.push({
-          weaponId: weapon.id,
-          weaponName: weapon.name,
-          categoryId: category.id,
-          categoryName: category.name,
-          matchedKeywords: keywordMatches,
-          motifId: CATEGORY_TO_MOTIF[category.id],
-        })
-      }
+  Object.entries(WEAPON_KEYWORDS).forEach(([weaponId, keywords]) => {
+    const keywordMatches = keywords.filter(keyword => 
+      lowerText.includes(keyword.toLowerCase())
+    )
+    if (keywordMatches.length > 0) {
+      const categoryPrefix = weaponId.split('-').slice(0, 2).join('-')
+      matches.push({
+        weaponId,
+        weaponName: WEAPON_NAMES[weaponId] || weaponId,
+        categoryId: categoryPrefix,
+        categoryName: getCategoryName(categoryPrefix),
+        matchedKeywords: keywordMatches,
+        motifId: CATEGORY_TO_MOTIF[categoryPrefix],
+      })
     }
-  }
+  })
   
   return matches.sort((a, b) => b.matchedKeywords.length - a.matchedKeywords.length)
+}
+
+const getCategoryName = (categoryId) => {
+  const names = {
+    'S-SET': '集合与逻辑',
+    'S-FUNC': '函数与性质',
+    'S-TRIG': '三角函数',
+    'S-VEC': '平面向量',
+    'S-SEQ': '数列',
+    'S-GEO': '立体几何',
+    'S-ANA': '解析几何',
+    'S-DER': '导数',
+    'S-PROB': '概率统计'
+  }
+  return names[categoryId] || '其他'
 }
 
 const LEVEL_THRESHOLDS = {
@@ -230,97 +343,180 @@ const calculateDiagnosisResult = (targetId, greenSubIds, savedData, detectedKnow
   }
 }
 
-function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRealDiagnosis }) {
+function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRealDiagnosis, onImageCapture }) {
   const { isAcademicMode: contextMode } = useContext(ThemeContext)
   const academicMode = isAcademicMode ?? contextMode
   
-  const [isScanning, setIsScanning] = useState(false)
-  const [scanProgress, setScanProgress] = useState(0)
-  const [showResult, setShowResult] = useState(false)
-  const [diagnosisResult, setDiagnosisResult] = useState(null)
   const [showScanner, setShowScanner] = useState(false)
   const [capturedImage, setCapturedImage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   
   const [upImg, setUpImg] = useState(null)
-  const [crop, setCrop] = useState({ unit: '%', width: 90, aspect: 0 })
+  const [crop, setCrop] = useState({ unit: '%', x: 5, y: 5, width: 90, height: 90, aspect: 0 })
   const [completedCrop, setCompletedCrop] = useState(null)
   
+  const [documentFile, setDocumentFile] = useState(null)
+  const [documentType, setDocumentType] = useState(null)
+  const [documentPages, setDocumentPages] = useState([])
+  const [currentPage, setCurrentPage] = useState(0)
+  const [documentScale, setDocumentScale] = useState(1.5)
+  const [isDocumentLoading, setIsDocumentLoading] = useState(false)
+  const [isFromCamera, setIsFromCamera] = useState(false)
+  
   const fileInputRef = useRef(null)
+  const cameraInputRef = useRef(null)
   const imgRef = useRef(null)
   const previewCanvasRef = useRef(null)
+  const documentCanvasRef = useRef(null)
 
-  const onLoad = useCallback((img) => {
-    imgRef.current = img
+  const onLoad = useCallback((e) => {
+    imgRef.current = e.currentTarget
   }, [])
 
-  const startScanning = (base64Data) => {
-    setIsScanning(true)
-    setScanProgress(0)
-    setShowResult(false)
-    setDiagnosisResult(null)
-    setErrorMessage(null)
+  const renderPDF = useCallback(async () => {
+    if (!documentFile) return
     
-    const progressInterval = setInterval(() => {
-      setScanProgress(prev => {
-        if (prev >= 90) {
-          return prev
-        }
-        return prev + 10
-      })
-    }, 300)
-
-    if (onRealDiagnosis) {
-      onRealDiagnosis(base64Data)
-        .then(result => {
-          clearInterval(progressInterval)
-          setScanProgress(100)
-          
-          if (result && result.targetId && result.greenSubIds) {
-            const savedData = tacticalData?.tactical_maps?.flatMap(m => m.encounters)
-              .find(e => e.target_id === result.targetId)
-            
-            const diagnosisData = calculateDiagnosisResult(
-              result.targetId,
-              result.greenSubIds,
-              savedData,
-              result.detectedKnowledgeId
-            )
-            
-            if (diagnosisData && result.message) {
-              diagnosisData.message = result.message
-            }
-            
-            setDiagnosisResult(diagnosisData)
-            setShowResult(true)
-          } else {
-            setErrorMessage('AI 诊断未能识别题目，请尝试上传更清晰的图片')
-            setShowResult(true)
-          }
-          setIsScanning(false)
-        })
-        .catch(error => {
-          clearInterval(progressInterval)
-          console.error('诊断失败:', error)
-          setErrorMessage('诊断请求失败，请稍后重试')
-          setShowResult(true)
-          setIsScanning(false)
-        })
-    } else {
-      clearInterval(progressInterval)
-      setScanProgress(100)
-      setErrorMessage('诊断接口未配置')
-      setShowResult(true)
-      setIsScanning(false)
+    setIsDocumentLoading(true)
+    try {
+      const arrayBuffer = await documentFile.arrayBuffer()
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+      const pages = []
+      
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i)
+        const viewport = page.getViewport({ scale: documentScale })
+        const canvas = document.createElement('canvas')
+        const context = canvas.getContext('2d')
+        canvas.width = viewport.width
+        canvas.height = viewport.height
+        
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise
+        
+        pages.push(canvas.toDataURL('image/png'))
+      }
+      
+      setDocumentPages(pages)
+      setCurrentPage(0)
+    } catch (error) {
+      console.error('PDF渲染失败:', error)
+      setErrorMessage('PDF渲染失败，请尝试其他文件')
     }
+    setIsDocumentLoading(false)
+  }, [documentFile, documentScale])
+
+  const renderWord = useCallback(async () => {
+    if (!documentFile) return
+    
+    setIsDocumentLoading(true)
+    try {
+      const arrayBuffer = await documentFile.arrayBuffer()
+      const result = await mammoth.convertToHtml({ arrayBuffer })
+      
+      const container = document.createElement('div')
+      container.innerHTML = result.value
+      container.style.padding = '20px'
+      container.style.maxWidth = '100%'
+      container.style.fontFamily = 'serif'
+      container.style.fontSize = '14px'
+      container.style.lineHeight = '1.6'
+      
+      document.body.appendChild(container)
+      
+      const canvas = document.createElement('canvas')
+      const context = canvas.getContext('2d')
+      
+      const range = document.createRange()
+      range.selectNodeContents(container)
+      const rects = range.getClientRects()
+      
+      const width = container.scrollWidth
+      const height = container.scrollHeight
+      
+      canvas.width = width * 2
+      canvas.height = height * 2
+      context.scale(2, 2)
+      
+      context.fillStyle = 'white'
+      context.fillRect(0, 0, width, height)
+      
+      const svgData = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+        <foreignObject width="100%" height="100%">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="padding: 20px; font-family: serif; font-size: 14px;">
+            ${result.value}
+          </div>
+        </foreignObject>
+      </svg>`
+      
+      const img = new Image()
+      img.onload = () => {
+        context.drawImage(img, 0, 0)
+        setDocumentPages([canvas.toDataURL('image/png')])
+        document.body.removeChild(container)
+      }
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)))
+      
+    } catch (error) {
+      console.error('Word渲染失败:', error)
+      setErrorMessage('Word渲染失败，请尝试其他文件')
+    }
+    setIsDocumentLoading(false)
+  }, [documentFile])
+
+  useEffect(() => {
+    if (documentFile && documentType === 'pdf') {
+      renderPDF()
+    } else if (documentFile && documentType === 'word') {
+      renderWord()
+    }
+  }, [documentFile, documentType, documentScale, renderPDF, renderWord])
+
+  const handleDocumentScreenshot = () => {
+    if (documentPages.length === 0) return
+    
+    setUpImg(documentPages[currentPage])
+    setCrop({ unit: '%', x: 5, y: 5, width: 90, height: 90, aspect: 0 })
+    setCompletedCrop(null)
+    setCapturedImage(null)
+    setErrorMessage(null)
+    setDocumentFile(null)
+    setDocumentType(null)
+    setDocumentPages([])
+    setIsFromCamera(false)
   }
 
   const handleFileUpload = (event) => {
     const file = event.target.files?.[0]
     if (!file) return
     
+    const isPDF = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
+    const isWord = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
+                   file.type === 'application/msword' ||
+                   file.name.toLowerCase().endsWith('.docx') ||
+                   file.name.toLowerCase().endsWith('.doc')
+    
+    if (isPDF) {
+      setDocumentFile(file)
+      setDocumentType('pdf')
+      setDocumentPages([])
+      setCurrentPage(0)
+      setIsFromCamera(false)
+      return
+    }
+    
+    if (isWord) {
+      setDocumentFile(file)
+      setDocumentType('word')
+      setDocumentPages([])
+      setCurrentPage(0)
+      setIsFromCamera(false)
+      return
+    }
+    
     if (!file.type.startsWith('image/')) {
-      setErrorMessage('请上传图片文件')
+      setErrorMessage('请上传图片、PDF 或 Word 文件')
       return
     }
     
@@ -330,10 +526,36 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
       const base64Data = e.target?.result
       if (base64Data) {
         setUpImg(base64Data)
-        setCrop({ unit: '%', width: 90, aspect: 0 })
+        setCrop({ unit: '%', x: 5, y: 5, width: 90, height: 90, aspect: 0 })
         setCompletedCrop(null)
         setCapturedImage(null)
         setErrorMessage(null)
+        setIsFromCamera(false)
+      }
+    }
+    
+    reader.onerror = () => {
+      setErrorMessage('图片读取失败，请重试')
+    }
+    
+    reader.readAsDataURL(file)
+  }
+
+  const handleCameraUpload = (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    
+    const reader = new FileReader()
+    
+    reader.onload = (e) => {
+      const base64Data = e.target?.result
+      if (base64Data) {
+        setUpImg(base64Data)
+        setCrop({ unit: '%', x: 5, y: 5, width: 90, height: 90, aspect: 0 })
+        setCompletedCrop(null)
+        setCapturedImage(null)
+        setErrorMessage(null)
+        setIsFromCamera(true)
       }
     }
     
@@ -345,16 +567,25 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
   }
 
   const handleConfirmCrop = () => {
-    if (!completedCrop || !imgRef.current) {
+    if (!completedCrop || !upImg) {
       if (upImg) {
-        setCapturedImage(upImg)
-        startScanning(upImg)
+        if (onImageCapture) {
+          onImageCapture(upImg)
+        }
+        resetAllState()
       }
       return
     }
     
-    const canvas = document.createElement('canvas')
     const img = imgRef.current
+    if (!img || !(img instanceof HTMLImageElement)) {
+      if (upImg && onImageCapture) {
+        onImageCapture(upImg)
+      }
+      resetAllState()
+      return
+    }
+    
     const scaleX = img.naturalWidth / img.width
     const scaleY = img.naturalHeight / img.height
     
@@ -363,6 +594,15 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
     const cropWidth = completedCrop.width * scaleX
     const cropHeight = completedCrop.height * scaleY
     
+    if (cropWidth <= 0 || cropHeight <= 0) {
+      if (upImg && onImageCapture) {
+        onImageCapture(upImg)
+      }
+      resetAllState()
+      return
+    }
+    
+    const canvas = document.createElement('canvas')
     canvas.width = cropWidth
     canvas.height = cropHeight
     
@@ -381,50 +621,38 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
     )
     
     const croppedBase64 = canvas.toDataURL('image/jpeg', 0.9)
-    setCapturedImage(croppedBase64)
-    setUpImg(null)
-    startScanning(croppedBase64)
+    if (onImageCapture) {
+      onImageCapture(croppedBase64)
+    }
+    resetAllState()
   }
 
   const handleSkipCrop = () => {
-    if (upImg) {
-      setCapturedImage(upImg)
-      setUpImg(null)
-      startScanning(upImg)
+    if (upImg && onImageCapture) {
+      onImageCapture(upImg)
     }
+    resetAllState()
   }
 
   const handleCameraCapture = () => {
-    fileInputRef.current?.click()
+    cameraInputRef.current?.click()
   }
 
-  const handleConfirmDiagnosis = () => {
-    if (diagnosisResult && onDiagnosisComplete) {
-      onDiagnosisComplete({
-        targetId: diagnosisResult.targetId,
-        greenSubIds: diagnosisResult.greenSubIds,
-        eloGain: diagnosisResult.cappedEloGain,
-        hasRedRemaining: diagnosisResult.hasRedRemaining
-      })
-    }
+  const resetAllState = () => {
     setShowScanner(false)
-    setShowResult(false)
-    setDiagnosisResult(null)
     setCapturedImage(null)
     setErrorMessage(null)
     setUpImg(null)
     setCompletedCrop(null)
+    setDocumentFile(null)
+    setDocumentType(null)
+    setDocumentPages([])
+    setCurrentPage(0)
+    setIsFromCamera(false)
   }
 
   const handleCloseScanner = () => {
-    setShowScanner(false)
-    setIsScanning(false)
-    setShowResult(false)
-    setDiagnosisResult(null)
-    setCapturedImage(null)
-    setErrorMessage(null)
-    setUpImg(null)
-    setCompletedCrop(null)
+    resetAllState()
   }
 
   const handleBackToUpload = () => {
@@ -432,6 +660,11 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
     setCompletedCrop(null)
     setCapturedImage(null)
     setErrorMessage(null)
+    setDocumentFile(null)
+    setDocumentType(null)
+    setDocumentPages([])
+    setCurrentPage(0)
+    setIsFromCamera(false)
   }
 
   return (
@@ -453,7 +686,7 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
           <div className={`max-w-lg w-full mx-4 rounded-xl border overflow-hidden ${
             academicMode ? 'bg-white border-slate-200' : 'bg-zinc-900 border-zinc-700'
           }`}>
-            {!isScanning && !showResult && !upImg && (
+            {!upImg && !documentFile && (
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className={`text-lg font-bold ${academicMode ? 'text-slate-900' : 'text-zinc-100'}`}>
@@ -476,10 +709,18 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
 
                 <div className="space-y-3">
                   <input
-                    ref={fileInputRef}
+                    ref={cameraInputRef}
                     type="file"
                     accept="image/*"
                     capture="environment"
+                    onChange={handleCameraUpload}
+                    className="hidden"
+                  />
+                  
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*,.pdf,.doc,.docx"
                     onChange={handleFileUpload}
                     className="hidden"
                   />
@@ -505,24 +746,145 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
                     }`}
                   >
                     <Upload className="w-6 h-6" />
-                    <span className="font-medium">从相册选择</span>
+                    <span className="font-medium">从相册选择 / 上传文档</span>
                   </button>
                 </div>
 
                 <div className={`mt-6 p-3 rounded-lg ${academicMode ? 'bg-amber-50 border border-amber-200' : 'bg-amber-900/20 border border-amber-500/30'}`}>
                   <p className={`text-xs ${academicMode ? 'text-amber-600' : 'text-amber-400'}`}>
-                    💡 提示：上传后可裁剪题目区域，提高 AI 识别精度。
+                    💡 提示：拍照后需截图题目区域。PDF/Word 文件会先打开预览，再截图上传。
                   </p>
                 </div>
               </div>
             )}
 
-            {!isScanning && !showResult && upImg && (
+            {!upImg && documentFile && (
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className={`text-lg font-bold flex items-center gap-2 ${academicMode ? 'text-slate-900' : 'text-zinc-100'}`}>
-                    <Crop className="w-5 h-5 text-blue-500" />
-                    裁剪题目区域
+                    <FileText className="w-5 h-5 text-blue-500" />
+                    {documentType === 'pdf' ? 'PDF 文档' : 'Word 文档'}
+                  </h3>
+                  <button
+                    onClick={handleBackToUpload}
+                    className={`p-1 rounded ${academicMode ? 'hover:bg-slate-100' : 'hover:bg-zinc-800'}`}
+                  >
+                    <X className={`w-5 h-5 ${academicMode ? 'text-slate-500' : 'text-zinc-400'}`} />
+                  </button>
+                </div>
+
+                <div className={`mb-4 p-3 rounded-lg ${academicMode ? 'bg-blue-50 border border-blue-200' : 'bg-blue-900/20 border border-blue-500/30'}`}>
+                  <p className={`text-sm font-medium ${academicMode ? 'text-blue-700' : 'text-blue-300'}`}>
+                    📄 {documentFile.name}
+                  </p>
+                </div>
+
+                <div className={`mb-4 p-3 rounded-lg ${academicMode ? 'bg-amber-50 border border-amber-200' : 'bg-amber-900/20 border border-amber-500/30'}`}>
+                  <p className={`text-sm ${academicMode ? 'text-amber-600' : 'text-amber-400'}`}>
+                    ⚠️ PDF/Word 文件不能直接上传，请找到题目后点击"截图当前页"截取题目区域
+                  </p>
+                </div>
+
+                {isDocumentLoading ? (
+                  <div className={`p-8 text-center ${academicMode ? 'bg-slate-50' : 'bg-zinc-800'} rounded-lg mb-4`}>
+                    <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+                    <p className={`text-sm ${academicMode ? 'text-slate-500' : 'text-zinc-400'}`}>正在渲染文档...</p>
+                  </div>
+                ) : documentPages.length > 0 ? (
+                  <div className="mb-4">
+                    <div className={`rounded-lg overflow-hidden border mb-2 ${academicMode ? 'border-slate-200' : 'border-zinc-700'}`}>
+                      <img 
+                        src={documentPages[currentPage]} 
+                        alt={`第 ${currentPage + 1} 页`}
+                        className="w-full max-h-[60vh] object-contain"
+                      />
+                    </div>
+                    
+                    {documentPages.length > 1 && (
+                      <div className="flex items-center justify-between mb-2">
+                        <button
+                          onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
+                          disabled={currentPage === 0}
+                          className={`p-2 rounded-lg ${
+                            currentPage === 0 
+                              ? 'opacity-50 cursor-not-allowed' 
+                              : academicMode ? 'hover:bg-slate-100' : 'hover:bg-zinc-700'
+                          }`}
+                        >
+                          <ChevronLeft className={`w-5 h-5 ${academicMode ? 'text-slate-600' : 'text-zinc-400'}`} />
+                        </button>
+                        <span className={`text-sm ${academicMode ? 'text-slate-600' : 'text-zinc-400'}`}>
+                          第 {currentPage + 1} / {documentPages.length} 页
+                        </span>
+                        <button
+                          onClick={() => setCurrentPage(Math.min(documentPages.length - 1, currentPage + 1))}
+                          disabled={currentPage === documentPages.length - 1}
+                          className={`p-2 rounded-lg ${
+                            currentPage === documentPages.length - 1 
+                              ? 'opacity-50 cursor-not-allowed' 
+                              : academicMode ? 'hover:bg-slate-100' : 'hover:bg-zinc-700'
+                          }`}
+                        >
+                          <ChevronRight className={`w-5 h-5 ${academicMode ? 'text-slate-600' : 'text-zinc-400'}`} />
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <button
+                        onClick={() => setDocumentScale(Math.max(0.5, documentScale - 0.25))}
+                        className={`p-1.5 rounded ${academicMode ? 'hover:bg-slate-100' : 'hover:bg-zinc-700'}`}
+                      >
+                        <ZoomOut className={`w-4 h-4 ${academicMode ? 'text-slate-500' : 'text-zinc-400'}`} />
+                      </button>
+                      <span className={`text-xs ${academicMode ? 'text-slate-500' : 'text-zinc-500'}`}>
+                        {Math.round(documentScale * 100)}%
+                      </span>
+                      <button
+                        onClick={() => setDocumentScale(Math.min(3, documentScale + 0.25))}
+                        className={`p-1.5 rounded ${academicMode ? 'hover:bg-slate-100' : 'hover:bg-zinc-700'}`}
+                      >
+                        <ZoomIn className={`w-4 h-4 ${academicMode ? 'text-slate-500' : 'text-zinc-400'}`} />
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleBackToUpload}
+                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium ${
+                      academicMode
+                        ? 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200'
+                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-700'
+                    }`}
+                  >
+                    返回
+                  </button>
+                  <button
+                    onClick={handleDocumentScreenshot}
+                    disabled={documentPages.length === 0}
+                    className={`flex-1 py-2.5 rounded-lg text-sm font-bold flex items-center justify-center gap-2 ${
+                      documentPages.length === 0
+                        ? 'opacity-50 cursor-not-allowed bg-gray-400'
+                        : academicMode
+                          ? 'bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/25'
+                          : 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-500/25'
+                    }`}
+                  >
+                    <Scissors className="w-4 h-4" />
+                    截图当前页
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {upImg && (
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className={`text-lg font-bold flex items-center gap-2 ${academicMode ? 'text-slate-900' : 'text-zinc-100'}`}>
+                    <Scissors className="w-5 h-5 text-blue-500" />
+                    {isFromCamera ? '截图题目区域' : '裁剪题目区域'}
                   </h3>
                   <button
                     onClick={handleBackToUpload}
@@ -533,7 +895,10 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
                 </div>
 
                 <p className={`text-sm mb-4 ${academicMode ? 'text-slate-600' : 'text-zinc-400'}`}>
-                  拖动框选题目核心区域，过滤背景噪点以提高识别精度。
+                  {isFromCamera 
+                    ? '框选题目区域，截图保存后开始 AI 诊断。'
+                    : '拖动框选题目核心区域，过滤背景噪点以提高识别精度。'
+                  }
                 </p>
 
                 <div className={`rounded-lg overflow-hidden border mb-4 ${academicMode ? 'border-slate-200' : 'border-zinc-700'}`}>
@@ -547,7 +912,7 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
                       src={upImg}
                       alt="上传的图片"
                       onLoad={onLoad}
-                      style={{ maxHeight: '300px', maxWidth: '100%' }}
+                      style={{ maxHeight: '60vh', maxWidth: '100%' }}
                     />
                   </ReactCrop>
                 </div>
@@ -561,7 +926,7 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
                         : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-700'
                     }`}
                   >
-                    跳过裁剪
+                    {isFromCamera ? '使用原图' : '跳过裁剪'}
                   </button>
                   <button
                     onClick={handleConfirmCrop}
@@ -571,299 +936,8 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
                         : 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-500/25'
                     }`}
                   >
-                    <Crop className="w-4 h-4" />
-                    确认裁剪并开始 AI 诊断
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {isScanning && (
-              <div className="p-8 text-center">
-                <div className="relative w-24 h-24 mx-auto mb-6">
-                  <div className={`absolute inset-0 rounded-full border-4 ${
-                    academicMode ? 'border-blue-200' : 'border-emerald-900'
-                  }`}></div>
-                  <div 
-                    className={`absolute inset-0 rounded-full border-4 border-transparent border-t-current animate-spin ${
-                      academicMode ? 'text-blue-500' : 'text-emerald-500'
-                    }`}
-                    style={{ animationDuration: '1s' }}
-                  ></div>
-                  <Scan className={`absolute inset-0 m-auto w-8 h-8 ${academicMode ? 'text-blue-500' : 'text-emerald-500'}`} />
-                </div>
-                
-                <h4 className={`text-lg font-bold mb-2 ${academicMode ? 'text-slate-900' : 'text-zinc-100'}`}>
-                  AI 深度扫描中...
-                </h4>
-                <p className={`text-sm mb-4 ${academicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
-                  正在分析知识点覆盖情况
-                </p>
-                
-                <div className={`w-full h-2 rounded-full overflow-hidden ${academicMode ? 'bg-slate-200' : 'bg-zinc-800'}`}>
-                  <div 
-                    className={`h-full rounded-full transition-all duration-300 ${
-                      academicMode ? 'bg-gradient-to-r from-blue-500 to-purple-500' : 'bg-gradient-to-r from-emerald-500 to-cyan-500'
-                    }`}
-                    style={{ width: `${Math.min(scanProgress, 100)}%` }}
-                  ></div>
-                </div>
-                <p className={`text-xs mt-2 font-mono ${academicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
-                  {Math.min(Math.round(scanProgress), 100)}%
-                </p>
-                
-                {capturedImage && (
-                  <div className="mt-4">
-                    <img 
-                      src={capturedImage} 
-                      alt="正在分析" 
-                      className="w-full h-24 object-cover rounded-lg border opacity-50"
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-
-            {showResult && errorMessage && (
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className={`text-lg font-bold flex items-center gap-2 ${academicMode ? 'text-slate-900' : 'text-zinc-100'}`}>
-                    <AlertTriangle className="w-5 h-5 text-amber-500" />
-                    诊断结果
-                  </h3>
-                  <button
-                    onClick={handleCloseScanner}
-                    className={`p-1 rounded ${academicMode ? 'hover:bg-slate-100' : 'hover:bg-zinc-800'}`}
-                  >
-                    <X className={`w-5 h-5 ${academicMode ? 'text-slate-500' : 'text-zinc-400'}`} />
-                  </button>
-                </div>
-
-                <div className={`p-4 rounded-lg mb-4 ${academicMode ? 'bg-amber-50 border border-amber-200' : 'bg-amber-900/20 border border-amber-500/30'}`}>
-                  <p className={`text-sm ${academicMode ? 'text-amber-700' : 'text-amber-400'}`}>
-                    {errorMessage}
-                  </p>
-                </div>
-
-                {capturedImage && (
-                  <div className="mb-4">
-                    <img 
-                      src={capturedImage} 
-                      alt="已上传图片" 
-                      className="w-full h-40 object-cover rounded-lg border"
-                    />
-                  </div>
-                )}
-
-                <button
-                  onClick={handleCloseScanner}
-                  className={`w-full py-2.5 rounded-lg text-sm font-medium ${
-                    academicMode
-                      ? 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200'
-                      : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-700'
-                  }`}
-                >
-                  关闭
-                </button>
-              </div>
-            )}
-
-            {showResult && diagnosisResult && !errorMessage && (
-              <div className="p-6 max-h-[80vh] overflow-y-auto">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className={`text-lg font-bold flex items-center gap-2 ${academicMode ? 'text-slate-900' : 'text-zinc-100'}`}>
-                    <Target className="w-5 h-5 text-blue-500" />
-                    逻辑链路诊断报告
-                  </h3>
-                  <button
-                    onClick={handleCloseScanner}
-                    className={`p-1 rounded ${academicMode ? 'hover:bg-slate-100' : 'hover:bg-zinc-800'}`}
-                  >
-                    <X className={`w-5 h-5 ${academicMode ? 'text-slate-500' : 'text-zinc-400'}`} />
-                  </button>
-                </div>
-
-                <div className={`p-4 rounded-lg mb-4 ${academicMode ? 'bg-blue-50 border border-blue-200' : 'bg-blue-900/20 border border-blue-500/30'}`}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Target className={`w-4 h-4 ${academicMode ? 'text-blue-600' : 'text-blue-400'}`} />
-                    <span className={`font-bold ${academicMode ? 'text-blue-700' : 'text-blue-400'}`}>
-                      {diagnosisResult.targetName}
-                    </span>
-                  </div>
-                  <p className={`text-xs ${academicMode ? 'text-blue-600' : 'text-blue-400/80'}`}>
-                    {diagnosisResult.mapName} - 教研权值: {diagnosisResult.motifWeight} (基础分)
-                  </p>
-                </div>
-
-                {diagnosisResult.motifCoordinate && (
-                  <div className={`p-4 rounded-lg mb-4 ${academicMode ? 'bg-purple-50 border border-purple-200' : 'bg-purple-900/20 border border-purple-500/30'}`}>
-                    <div className="flex items-center gap-2 mb-2">
-                      <MapPin className={`w-4 h-4 ${academicMode ? 'text-purple-600' : 'text-purple-400'}`} />
-                      <span className={`font-bold text-sm ${academicMode ? 'text-purple-700' : 'text-purple-400'}`}>
-                        母题坐标定位
-                      </span>
-                    </div>
-                    <div className="space-y-2 text-xs">
-                      <div className="flex items-center justify-between">
-                        <span className={academicMode ? 'text-purple-600' : 'text-purple-400/80'}>所属母题</span>
-                        <span className={`font-bold ${academicMode ? 'text-purple-700' : 'text-purple-300'}`}>
-                          {diagnosisResult.motifCoordinate.motifName}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className={academicMode ? 'text-purple-600' : 'text-purple-400/80'}>当前状态</span>
-                        <span className={`font-mono ${academicMode ? 'text-purple-700' : 'text-purple-300'}`}>
-                          {diagnosisResult.motifCoordinate.currentLevel} · ELO {diagnosisResult.motifCoordinate.currentElo}
-                        </span>
-                      </div>
-                      {diagnosisResult.motifCoordinate.matchedWeapons && diagnosisResult.motifCoordinate.matchedWeapons.length > 0 && (
-                        <div className="mt-2 pt-2 border-t border-purple-200 dark:border-purple-700">
-                          <span className={academicMode ? 'text-purple-600' : 'text-purple-400/80'}>匹配武器：</span>
-                          <div className="mt-1 space-y-1">
-                            {diagnosisResult.motifCoordinate.matchedWeapons.map((w, idx) => (
-                              <div key={idx} className="flex items-center justify-between">
-                                <span className={`font-medium ${academicMode ? 'text-purple-700' : 'text-purple-300'}`}>
-                                  {w.weaponName}
-                                </span>
-                                <div className="flex items-center gap-2">
-                                  <span className={`text-xs ${academicMode ? 'text-purple-500' : 'text-purple-400/70'}`}>
-                                    {w.matchedKeywords.slice(0, 2).join(', ')}
-                                  </span>
-                                  <button
-                                    onClick={() => {
-                                      handleCloseScanner()
-                                      window.location.href = `/strategy?highlight=${w.weaponId}&autoOpen=learn`
-                                    }}
-                                    className={`text-xs px-2 py-0.5 rounded font-medium ${
-                                      academicMode 
-                                        ? 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200' 
-                                        : 'bg-indigo-900/30 text-indigo-400 hover:bg-indigo-900/50'
-                                    }`}
-                                  >
-                                    去学习
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                <div className={`p-4 rounded-lg mb-4 ${academicMode ? 'bg-slate-100' : 'bg-zinc-800'}`}>
-                  <h4 className={`text-sm font-bold mb-3 ${academicMode ? 'text-slate-700' : 'text-zinc-200'}`}>
-                    诊断结果
-                  </h4>
-                  
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className={academicMode ? 'text-slate-600' : 'text-zinc-400'}>检测到逻辑点</span>
-                      <span className={`font-bold ${academicMode ? 'text-slate-800' : 'text-zinc-200'}`}>{diagnosisResult.totalPoints} 个</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className={academicMode ? 'text-slate-600' : 'text-zinc-400'}>攻克逻辑点</span>
-                      <span className="font-bold text-emerald-500">{diagnosisResult.conqueredPoints} 个</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className={academicMode ? 'text-slate-600' : 'text-zinc-400'}>计分规则</span>
-                      <span className={`font-bold ${academicMode ? 'text-slate-800' : 'text-zinc-200'}`}>
-                        按节点难度梯度 (L2:40/L3:60/L4:100)
-                      </span>
-                    </div>
-                    <div className={`border-t pt-2 mt-2 ${academicMode ? 'border-slate-200' : 'border-zinc-700'}`}>
-                      <div className="mb-2">
-                        <span className={`text-xs ${academicMode ? 'text-slate-500' : 'text-zinc-500'}`}>得分明细：</span>
-                        <div className="space-y-1 mt-1">
-                          {diagnosisResult.pointBreakdown?.map((item, idx) => (
-                            <div key={idx} className="flex justify-between text-xs">
-                              <span className={academicMode ? 'text-slate-600' : 'text-zinc-400'}>
-                                {item.level} · {item.name}
-                              </span>
-                              <span className={`font-bold ${item.level === 'L4' ? 'text-amber-500' : item.level === 'L3' ? 'text-purple-500' : 'text-blue-500'}`}>
-                                +{item.value} 分
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      {diagnosisResult.l4Bonus > 0 && (
-                        <div className="flex justify-between mt-1 pt-1 border-t border-dashed">
-                          <span className={academicMode ? 'text-slate-600' : 'text-zinc-400'}>L4 首次突破奖</span>
-                          <span className="font-bold text-amber-500 flex items-center gap-1">
-                            <Sparkles className="w-3 h-3" />+{diagnosisResult.l4Bonus} 分
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex justify-between mt-2 pt-2 border-t border-dashed">
-                        <span className={`font-bold ${academicMode ? 'text-slate-700' : 'text-zinc-300'}`}>本次获得</span>
-                        <span className={`font-bold text-lg ${academicMode ? 'text-blue-600' : 'text-blue-400'}`}>
-                          +{diagnosisResult.cappedEloGain} 分
-                          {diagnosisResult.isCapped && (
-                            <span className="text-xs ml-1 text-amber-500">(已封顶)</span>
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {diagnosisResult.hasRedRemaining && (
-                  <div className={`p-4 rounded-lg mb-4 ${academicMode ? 'bg-red-50 border border-red-200' : 'bg-red-900/20 border border-red-500/30'}`}>
-                    <div className="flex items-start gap-3">
-                      <Lock className={`w-5 h-5 mt-0.5 ${academicMode ? 'text-red-500' : 'text-red-400'}`} />
-                      <div>
-                        <p className={`font-bold ${academicMode ? 'text-red-700' : 'text-red-400'}`}>
-                          等级晋升已锁定
-                        </p>
-                        <p className={`text-sm mt-1 ${academicMode ? 'text-red-600' : 'text-red-400/80'}`}>
-                          {diagnosisResult.message}
-                        </p>
-                        <p className={`text-xs mt-2 ${academicMode ? 'text-red-500' : 'text-red-400/70'}`}>
-                          Elo 可继续上涨，但等级图标和称号保持锁定，直到所有红色变例被攻克。
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {!diagnosisResult.hasRedRemaining && (
-                  <div className={`p-4 rounded-lg mb-4 ${academicMode ? 'bg-emerald-50 border border-emerald-200' : 'bg-emerald-900/20 border border-emerald-500/30'}`}>
-                    <div className="flex items-start gap-3">
-                      <span className={`w-5 h-5 mt-0.5 ${academicMode ? 'text-emerald-500' : 'text-emerald-400'}`}>✓</span>
-                      <div>
-                        <p className={`font-bold ${academicMode ? 'text-emerald-700' : 'text-emerald-400'}`}>
-                          逻辑链路已闭环!
-                        </p>
-                        <p className={`text-sm mt-1 ${academicMode ? 'text-emerald-600' : 'text-emerald-400/80'}`}>
-                          所有变例已攻克，等级晋升通道已解锁!
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex gap-3">
-                  <button
-                    onClick={handleCloseScanner}
-                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium ${
-                      academicMode
-                        ? 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200'
-                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-700'
-                    }`}
-                  >
-                    取消
-                  </button>
-                  <button
-                    onClick={handleConfirmDiagnosis}
-                    className={`flex-1 py-2.5 rounded-lg text-sm font-bold ${
-                      diagnosisResult.hasRedRemaining
-                        ? 'bg-amber-500 text-white hover:bg-amber-600 shadow-lg shadow-amber-500/25'
-                        : 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-lg shadow-emerald-500/25'
-                    }`}
-                  >
-                    {diagnosisResult.hasRedRemaining ? '确认诊断结果' : '确认并领取奖励'}
+                    <Scissors className="w-4 h-4" />
+                    确认截图
                   </button>
                 </div>
               </div>

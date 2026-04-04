@@ -10,7 +10,7 @@
       "encounters": [
         {
           "target_id": "M01",
-          "target_name": "集合、逻辑与复数",
+          "target_name": "集合、逻辑用语与复数",
           "grades": [
             "高一",
             "高二",
@@ -19,7 +19,50 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "集合的运算与关系",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "基本运算与要素识别"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "包含关系与参数求解"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "常用逻辑用语",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "量词及其否定"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "充要条件的判定与应用"
+                }
+              ]
+            },
+            {
+              "spec_id": "V3",
+              "spec_name": "复数基础与几何意义",
+              "variations": [
+                {
+                  "var_id": "3.1",
+                  "name": "复数的四则运算与概念辨析"
+                },
+                {
+                  "var_id": "3.2",
+                  "name": "复数的几何意义（轨迹与最值）"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M02",
@@ -32,7 +75,36 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "二次函数与逻辑最值",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "定轴定区间最值"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "动轴/动区间与逻辑最值"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "经典不等式与代数同构",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "基本不等式与对勾模型"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "超越对勾与切线放缩"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M03",
@@ -45,7 +117,22 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "结构的基石与对称的艺术",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "定义域、值域与解析式构造"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "对称性与周期性"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M04",
@@ -57,8 +144,37 @@
           ],
           "elo_score": 800,
           "gear_level": "L1",
-          "health_status": "unknown",
-          "specialties": []
+          "health_status": "bleeding",
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "幂指对代数韧性",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "复合运算与指对转化"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "指对同构"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "图象特征与性质",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "定点、对称性与反函数"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "复合单调性与值域"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M05",
@@ -71,7 +187,36 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "数量积的核心度量",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "投影向量与夹角范围"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "极化恒等式与模长最值"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "线性运算与建系策略",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "线性运算与基底分解"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "建系策略与坐标运算"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M06",
@@ -84,7 +229,22 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "恒等变换与结构的艺术",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "配角技巧与基本方程"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "齐次式与弦切互化"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -104,7 +264,36 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "边角运算与结构转化",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "定理选择与边角互化"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "面积周长与形状判定"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "多重约束与几何极值",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "几何约束与存在性讨论"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "动态最值与不等式综合"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M08",
@@ -116,7 +305,36 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "等差与等比的性质",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "基本量运算与性质组合"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "数列的函数属性与最值"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "通项构造与求和",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "递推公式求通项"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "复杂结构求和技巧"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M09",
@@ -128,11 +346,40 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "几何体的结构与运算",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "平行垂直证明与空间角计算"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "表面积与体积的度量"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "几何体的度量与组合",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "外接球模型"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "内切球与相切问题"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M10",
-          "target_name": "解析几何基础",
+          "target_name": "圆锥曲线基础",
           "grades": [
             "高二",
             "高三"
@@ -140,7 +387,50 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "定义的本质与方程构建",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "第一/第二定义的深度应用"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "焦点三角形与周长/面积"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "几何特征与离心率博弈",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "双曲线渐近线与位置关系"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "离心率 e 的取值范围"
+                }
+              ]
+            },
+            {
+              "spec_id": "V3",
+              "spec_name": "直线与圆专项",
+              "variations": [
+                {
+                  "var_id": "3.1",
+                  "name": "直线与圆的位置关系及弦长"
+                },
+                {
+                  "var_id": "3.2",
+                  "name": "圆的方程与隐圆轨迹"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M11",
@@ -152,7 +442,36 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "导数切线专项",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "求曲线'过'某点（非切点）的切线"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "公切线与已知切线反求参数"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "单调性与参数讨论专项",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "含参函数单调性讨论"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "已知单调性/最值逆求参数"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M12",
@@ -164,12 +483,41 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "概率模型与决策分析",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "条件概率与全概率模型"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "分布列、期望与风险决策"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "统计推断与数据建模",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "数据特征与图表估算"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "回归分析与独立性检验"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
     {
-      "map_id": "zone_inner",
+      "map_id": "zone_right",
       "map_name": "内圈：高三压轴禁区",
       "description": "冲击 135+ 的思维高地",
       "unlock_status": "unlocked",
@@ -223,51 +571,11 @@
               "variations": [
                 {
                   "var_id": "1.1",
-                  "name": "经典模型与受限排列",
-                  "master_benchmarks": [
-                    {
-                      "level": "L2",
-                      "id": "M16_V1.1_L2",
-                      "is_mastered": false,
-                      "consecutive_correct": 0
-                    },
-                    {
-                      "level": "L3",
-                      "id": "M16_V1.1_L3",
-                      "is_mastered": false,
-                      "consecutive_correct": 0
-                    },
-                    {
-                      "level": "L4",
-                      "id": "M16_V1.1_L4",
-                      "is_mastered": false,
-                      "consecutive_correct": 0
-                    }
-                  ]
+                  "name": "经典模型与受限排列"
                 },
                 {
                   "var_id": "1.2",
-                  "name": "复杂情境与正难则反",
-                  "master_benchmarks": [
-                    {
-                      "level": "L2",
-                      "id": "M16_V1.2_L2",
-                      "is_mastered": false,
-                      "consecutive_correct": 0
-                    },
-                    {
-                      "level": "L3",
-                      "id": "M16_V1.2_L3",
-                      "is_mastered": false,
-                      "consecutive_correct": 0
-                    },
-                    {
-                      "level": "L4",
-                      "id": "M16_V1.2_L4",
-                      "is_mastered": false,
-                      "consecutive_correct": 0
-                    }
-                  ]
+                  "name": "复杂情境与正难则反"
                 }
               ]
             },
@@ -277,39 +585,11 @@
               "variations": [
                 {
                   "var_id": "2.1",
-                  "name": "系数和与特定项",
-                  "master_benchmarks": [
-                    {
-                      "level": "L3",
-                      "id": "M16_V2.1_L3",
-                      "is_mastered": false,
-                      "consecutive_correct": 0
-                    },
-                    {
-                      "level": "L4",
-                      "id": "M16_V2.1_L4",
-                      "is_mastered": false,
-                      "consecutive_correct": 0
-                    }
-                  ]
+                  "name": "系数和与特定项"
                 },
                 {
                   "var_id": "2.2",
-                  "name": "高阶构造与整除证明",
-                  "master_benchmarks": [
-                    {
-                      "level": "L3",
-                      "id": "M16_V2.2_L3",
-                      "is_mastered": false,
-                      "consecutive_correct": 0
-                    },
-                    {
-                      "level": "L4",
-                      "id": "M16_V2.2_L4",
-                      "is_mastered": false,
-                      "consecutive_correct": 0
-                    }
-                  ]
+                  "name": "高阶构造与整除证明"
                 }
               ]
             }

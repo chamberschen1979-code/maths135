@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react'
 import { ChevronDown, Lock, CheckCircle, PenTool, Target, BookOpen, Eye } from 'lucide-react'
 import { getLinkedMotifsForWeapon, getWeaponStatus } from '../utils/motifWeaponMapper'
 import { isLearned } from '../utils/weaponProgress'
-import strategyLib from '../data/strategy_lib.json'
+import weaponDetails from '../data/weapon_details.json'
 import CertificationExam from './strategy/CertificationExam'
 import InsightModal from './strategy/InsightModal'
 
@@ -17,6 +17,121 @@ const RANK_COLORS = {
   advanced: 'bg-purple-100 text-purple-700 border-purple-200',
   basic: 'bg-blue-100 text-blue-700 border-blue-200'
 }
+
+const WEAPON_NAMES = {
+  'S-SET-01': '空集陷阱自动检测',
+  'S-FUNC-02': '同增异减',
+  'S-FUNC-04': '零点个数=交点个数',
+  'S-TRIG-02': '图象变换铁律',
+  'S-VEC-04': '建系策略',
+  'S-VEC-01': '投影向量',
+  'S-VEC-05': '极化恒等式',
+  'S-SEQ-01': '下标和性质',
+  'S-SEQ-02': 'Sn最值(二次函数)',
+  'S-SEQ-04': '求和三法',
+  'S-SEQ-08': '特征根法',
+  'S-SEQ-09': '不动点法',
+  'S-SEQ-10': '切线放缩',
+  'S-GEO-02': '建系秒杀',
+  'S-GEO-03': '等体积法',
+  'S-PROB-01': '概率树/全概率',
+  'S-CONIC-02': '焦点三角形面积',
+  'S-CONIC-05': '仿射变换',
+  'S-CONIC-06': '齐次化联立',
+  'S-CONIC-07': '参数方程',
+  'S-DERIV-03': '含参讨论通法',
+  'S-DERIV-04': '端点效应',
+  'S-DERIV-09': '洛必达法则',
+  'S-DERIV-10': '极值点偏移(比值代换)',
+  'S-DERIV-11': '对数平均不等式',
+  'S-INEQ-02': '乘1法',
+  'S-INEQ-05': '琴生不等式',
+  'S-INEQ-06': '柯西不等式',
+  'S-INEQ-07': '权方和不等式',
+  'S-INEQ-08': '赫尔德不等式',
+  'S-INEQ-09': '切比雪夫不等式',
+  'S-INEQ-10': '均值不等式链',
+  'S-TRIG-01': '配角公式',
+  'S-TRIG-03': '化边为角',
+  'S-TRI-04': '中线/角平分线',
+  'S-FUNC-05': '双对称推周期',
+  'S-FUNC-06': '脱壳法',
+  'S-FUNC-08': '复合零点(剥洋葱)',
+  'S-LOG-02': '指对同构',
+  'S-LOG-05': '对数平均不等式',
+}
+
+const WEAPON_CATEGORIES = {
+  'S-SET': { id: 'S-SET', name: '集合与逻辑思维' },
+  'S-FUNC': { id: 'S-FUNC', name: '函数思维' },
+  'S-TRIG': { id: 'S-TRIG', name: '三角函数思维' },
+  'S-VEC': { id: 'S-VEC', name: '平面向量思维' },
+  'S-SEQ': { id: 'S-SEQ', name: '数列思维' },
+  'S-GEO': { id: 'S-GEO', name: '立体几何思维' },
+  'S-PROB': { id: 'S-PROB', name: '概率统计思维' },
+  'S-CONIC': { id: 'S-CONIC', name: '圆锥曲线思维' },
+  'S-DERIV': { id: 'S-DERIV', name: '导数思维' },
+  'S-INEQ': { id: 'S-INEQ', name: '不等式思维' },
+  'S-TRI': { id: 'S-TRI', name: '解三角形思维' },
+  'S-LOG': { id: 'S-LOG', name: '指对数函数思维' },
+}
+
+const WEAPON_RANKS = {
+  'S-DERIV-09': 'killer', 'S-DERIV-10': 'killer', 'S-DERIV-11': 'killer',
+  'S-CONIC-05': 'killer', 'S-CONIC-06': 'killer', 'S-SEQ-08': 'killer',
+  'S-SEQ-09': 'killer', 'S-SEQ-10': 'killer', 'S-INEQ-05': 'killer',
+  'S-INEQ-06': 'killer', 'S-INEQ-07': 'killer', 'S-INEQ-08': 'killer',
+  'S-INEQ-09': 'killer', 'S-LOG-05': 'killer',
+  'S-FUNC-04': 'advanced', 'S-VEC-05': 'advanced', 'S-CONIC-02': 'advanced',
+  'S-CONIC-07': 'advanced', 'S-DERIV-04': 'advanced', 'S-TRIG-03': 'advanced',
+  'S-FUNC-05': 'advanced', 'S-FUNC-06': 'advanced', 'S-FUNC-08': 'advanced',
+  'S-INEQ-10': 'advanced', 'S-LOG-02': 'advanced',
+}
+
+const TRIGGER_KEYWORDS = {
+  'S-SET-01': ['子集', '包含', 'A⊆B', '空集', '分类讨论'],
+  'S-FUNC-02': ['复合函数', '单调性', '单调区间', '同增异减'],
+  'S-FUNC-04': ['零点', '根的个数', '交点', 'f(x)=g(x)'],
+  'S-TRIG-02': ['平移', '图象变换', '左加右减', '伸缩'],
+  'S-VEC-04': ['建系', '坐标系', '坐标法', '最值'],
+  'S-VEC-01': ['投影向量', '投影', '在...上的投影'],
+  'S-VEC-05': ['极化恒等式', 'PA·PB', '数量积最值'],
+  'S-SEQ-01': ['等差数列', '等比数列', '下标和', '片段和'],
+  'S-SEQ-02': ['Sn最值', '前n项和最值'],
+  'S-SEQ-04': ['裂项', '错位相减', '并项', '求和'],
+  'S-SEQ-08': ['特征根', '递推', '二阶线性'],
+  'S-SEQ-09': ['不动点', 'f(x)=x', '收敛'],
+  'S-SEQ-10': ['切线放缩', 'e^x≥x+1', 'ln x≤x-1'],
+  'S-GEO-02': ['线面角', '二面角', '法向量', '立体几何'],
+  'S-GEO-03': ['等体积', '点面距', '体积法'],
+  'S-PROB-01': ['条件概率', '全概率', '贝叶斯', '概率树'],
+  'S-CONIC-02': ['焦点三角形', 'PF1', 'PF2', 'tan(θ/2)'],
+  'S-CONIC-05': ['仿射', '椭圆变圆', '面积比'],
+  'S-CONIC-06': ['齐次化', '斜率关系', 'k1+k2'],
+  'S-CONIC-07': ['参数方程', 'acosθ', 'bsinθ'],
+  'S-DERIV-03': ['含参', '参数讨论', '分类讨论', '单调区间'],
+  'S-DERIV-04': ['恒成立', '端点', '探路'],
+  'S-DERIV-09': ['洛必达', '极限', '0/0'],
+  'S-DERIV-10': ['极值点偏移', '双变量', 'x1+x2'],
+  'S-DERIV-11': ['对数平均', 'L(a,b)', '√(ab)'],
+  'S-INEQ-02': ['乘1法', '常数代换', 'x+y=1'],
+  'S-INEQ-05': ['琴生', '凸函数', '凹函数'],
+  'S-INEQ-06': ['柯西', '(a²+b²)(c²+d²)'],
+  'S-INEQ-07': ['权方和', 'a²/x+b²/y'],
+  'S-INEQ-08': ['赫尔德', 'Holder'],
+  'S-INEQ-09': ['切比雪夫', '同序和', '乱序和'],
+  'S-INEQ-10': ['均值不等式', '调和平均', '平方平均'],
+  'S-TRIG-01': ['辅助角', 'asinx+bcosx', '配角'],
+  'S-TRIG-03': ['化边为角', '周长最值', '面积最值'],
+  'S-TRI-04': ['中线', '角平分线', '面积法'],
+  'S-FUNC-05': ['双对称', '周期', '对称轴'],
+  'S-FUNC-06': ['脱壳', 'f(A)>f(B)', '抽象不等式'],
+  'S-FUNC-08': ['f(f(x))', '复合零点', '剥洋葱'],
+  'S-LOG-02': ['同构', 'xe^x', 'ye^y'],
+  'S-LOG-05': ['对数平均', '极值点偏移', '双变量'],
+}
+
+const LINKED_MOTIFS = {}
 
 const StrategyHub = ({ 
   isAcademicMode = true, 
@@ -45,13 +160,19 @@ const StrategyHub = ({
 
   const allWeapons = useMemo(() => {
     const weapons = []
-    strategyLib.categories?.forEach(category => {
-      category.weapons?.forEach(weapon => {
-        weapons.push({
-          ...weapon,
-          categoryId: category.id,
-          categoryName: category.name
-        })
+    Object.entries(weaponDetails).forEach(([weaponId, detail]) => {
+      const prefix = weaponId.split('-').slice(0, 2).join('-')
+      const category = WEAPON_CATEGORIES[prefix] || { id: prefix, name: '其他' }
+      weapons.push({
+        id: weaponId,
+        name: WEAPON_NAMES[weaponId] || weaponId,
+        rank: WEAPON_RANKS[weaponId] || 'basic',
+        description: detail.coreLogic?.slice(0, 100) || '',
+        trigger_keywords: TRIGGER_KEYWORDS[weaponId] || [],
+        linked_motifs: LINKED_MOTIFS[weaponId] || [],
+        categoryId: category.id,
+        categoryName: category.name,
+        ...detail
       })
     })
     return weapons
@@ -60,18 +181,30 @@ const StrategyHub = ({
   const groupedWeapons = useMemo(() => {
     const groups = {}
     
-    console.log('[StrategyHub] 加载数据', strategyLib)
-    
-    strategyLib.categories?.forEach(category => {
-      groups[category.name] = category.weapons?.map(weapon => ({
-        ...weapon,
+    Object.entries(weaponDetails).forEach(([weaponId, detail]) => {
+      const prefix = weaponId.split('-').slice(0, 2).join('-')
+      const category = WEAPON_CATEGORIES[prefix] || { id: prefix, name: '其他' }
+      
+      if (!groups[category.name]) {
+        groups[category.name] = []
+      }
+      
+      groups[category.name].push({
+        id: weaponId,
+        name: WEAPON_NAMES[weaponId] || weaponId,
+        rank: WEAPON_RANKS[weaponId] || 'basic',
+        description: detail.coreLogic?.slice(0, 100) || '',
+        trigger_keywords: TRIGGER_KEYWORDS[weaponId] || [],
+        linked_motifs: getLinkedMotifsForWeapon(weaponId).map(m => ({
+          id: m.id,
+          title: m.name
+        })),
         categoryId: category.id,
         categoryName: category.name,
-        _userState: weapon._userState || { status: 'LOCKED', progress: 0 }
-      })) || []
+        _userState: { status: 'LOCKED', progress: 0 },
+        ...detail
+      })
     })
-    
-    console.log('[StrategyHub] groupedWeapons:', groups)
     
     return groups
   }, [])
@@ -100,8 +233,8 @@ const StrategyHub = ({
   }, [groupedWeapons, searchTerm, selectedCategory])
 
   const categories = useMemo(() => {
-    return strategyLib.categories?.map(c => c.name) || []
-  }, [])
+    return Object.keys(groupedWeapons)
+  }, [groupedWeapons])
 
   const getCategoryColor = (categoryName) => {
     const colors = {

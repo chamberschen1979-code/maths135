@@ -5,10 +5,101 @@ import ReactMarkdown from 'react-markdown'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
-import strategyLib from '../data/strategy_lib.json'
+import weaponDetails from '../data/weapon_details.json'
 import { addLegacyIdsToMotifData } from '../utils/migrateDataStructure'
 
 const motifModules = import.meta.glob('/src/data/M*.json', { eager: false })
+
+const WEAPON_NAMES = {
+  'S-SET-01': '空集陷阱自动检测',
+  'S-FUNC-02': '同增异减',
+  'S-FUNC-04': '零点个数=交点个数',
+  'S-FUNC-05': '双对称推周期',
+  'S-FUNC-06': '脱壳法',
+  'S-FUNC-08': '复合零点(剥洋葱)',
+  'S-TRIG-01': '配角公式',
+  'S-TRIG-02': '图象变换铁律',
+  'S-TRIG-03': '化边为角',
+  'S-TRIG-05': '图象识别铁律',
+  'S-VEC-01': '投影向量',
+  'S-VEC-02': '极化恒等式',
+  'S-VEC-03': '三点共线定理',
+  'S-VEC-04': '建系策略',
+  'S-VEC-05': '极化恒等式',
+  'S-VEC-06': '奔驰定理',
+  'S-SEQ-01': '对称轴定位法',
+  'S-SEQ-02': '变号点分析法',
+  'S-SEQ-03': '构造等比',
+  'S-SEQ-04': '裂项相消·母函数法',
+  'S-SEQ-05': '错位相减·万能公式法',
+  'S-SEQ-06': '奇偶并项·状态机法',
+  'S-SEQ-07': '放缩法·靶向截断术',
+  'S-SEQ-08': '特征根法',
+  'S-SEQ-09': '不动点法',
+  'S-SEQ-10': '切线放缩',
+  'S-VIS-01': '动态图像分析与临界态捕捉',
+  'S-GEO-02': '建系秒杀',
+  'S-GEO-03': '等体积法',
+  'S-PROB-01': '概率树/全概率',
+  'S-CONIC-02': '焦点三角形面积',
+  'S-CONIC-05': '仿射变换',
+  'S-CONIC-06': '齐次化联立',
+  'S-CONIC-07': '参数方程',
+  'S-DERIV-03': '含参讨论通法',
+  'S-DERIV-04': '端点效应',
+  'S-DERIV-09': '洛必达法则',
+  'S-DERIV-10': '极值点偏移(比值代换)',
+  'S-DERIV-11': '对数平均不等式',
+  'S-INEQ-02': '乘1法',
+  'S-INEQ-05': '琴生不等式',
+  'S-INEQ-06': '柯西不等式',
+  'S-INEQ-07': '权方和不等式',
+  'S-INEQ-08': '赫尔德不等式',
+  'S-INEQ-09': '切比雪夫不等式',
+  'S-INEQ-10': '均值不等式链',
+  'S-TRI-04': '中线/角平分线',
+  'S-TRI-05': '角平分线长公式',
+  'S-TRI-06': '中线长向量公式',
+  'S-TRI-07': '射影定理逆用',
+  'S-TRI-08': '边化角统一法',
+  'S-TRI-09': '余弦定理结构识别',
+  'S-TRI-10': '切化弦万能公式',
+  'S-LOG-02': '指对同构',
+  'S-LOG-05': '对数平均不等式',
+  'S-COMPLEX-01': '单位根周期性',
+  'S-COMPLEX-02': '平行四边形恒等式',
+}
+
+const WEAPON_CATEGORIES = {
+  'S-SET': '集合与逻辑思维',
+  'S-FUNC': '函数思维',
+  'S-TRIG': '三角函数思维',
+  'S-VEC': '平面向量思维',
+  'S-SEQ': '数列思维',
+  'S-GEO': '立体几何思维',
+  'S-PROB': '概率统计思维',
+  'S-CONIC': '圆锥曲线思维',
+  'S-DERIV': '导数思维',
+  'S-INEQ': '不等式思维',
+  'S-TRI': '解三角形思维',
+  'S-LOG': '指对数函数思维',
+  'S-COMPLEX': '复数思维',
+  'S-VIS': '可视化思维',
+}
+
+const WEAPON_RANKS = {
+  'S-DERIV-09': 'killer', 'S-DERIV-10': 'killer', 'S-DERIV-11': 'killer',
+  'S-CONIC-05': 'killer', 'S-CONIC-06': 'killer', 'S-SEQ-08': 'killer',
+  'S-SEQ-09': 'killer', 'S-SEQ-10': 'killer', 'S-INEQ-05': 'killer',
+  'S-INEQ-06': 'killer', 'S-INEQ-07': 'killer', 'S-INEQ-08': 'killer',
+  'S-INEQ-09': 'killer', 'S-LOG-05': 'killer',
+  'S-SEQ-06': 'killer', 'S-SEQ-07': 'killer', 'S-VIS-01': 'killer',
+  'S-FUNC-04': 'advanced', 'S-VEC-05': 'advanced', 'S-CONIC-02': 'advanced',
+  'S-CONIC-07': 'advanced', 'S-DERIV-04': 'advanced', 'S-TRIG-03': 'advanced',
+  'S-FUNC-05': 'advanced', 'S-FUNC-06': 'advanced', 'S-FUNC-08': 'advanced',
+  'S-INEQ-10': 'advanced', 'S-LOG-02': 'advanced',
+  'S-SEQ-01': 'advanced', 'S-SEQ-02': 'advanced', 'S-SEQ-04': 'advanced', 'S-SEQ-05': 'advanced',
+}
 
 const gearLevelColorsDark = {
   L4: '#f59e0b',
@@ -58,25 +149,25 @@ const VARIATION_LEVEL_CONFIG = {
     '1.1': ['L2', 'L3'],
     '1.2': ['L3', 'L4'],
     '2.1': ['L2', 'L3'],
-    '2.2': ['L2', 'L3', 'L4'],
+    '2.2': ['L3', 'L4'],
     '3.1': ['L2', 'L3'],
-    '3.2': ['L2', 'L3'],
+    '3.2': ['L3'],
   },
   M02: {
     '1.1': ['L2', 'L3'],
     '1.2': ['L2', 'L3', 'L4'],
-    '2.1': ['L2', 'L3', 'L4'],
+    '2.1': ['L2', 'L3'],
     '2.2': ['L2', 'L3', 'L4'],
   },
   M03: {
     '1.1': ['L2', 'L3', 'L4'],
-    '1.2': ['L3', 'L4'],
+    '1.2': ['L2', 'L3', 'L4'],
     '2.1': ['L2', 'L3', 'L4'],
     '2.2': ['L2', 'L3', 'L4'],
   },
   M04: {
-    '1.1': ['L2', 'L3'],
-    '1.2': ['L2', 'L3', 'L4'],
+    '1.1': ['L2', 'L3', 'L4'],
+    '1.2': ['L3', 'L4'],
     '2.1': ['L2', 'L3', 'L4'],
     '2.2': ['L2', 'L3', 'L4'],
   },
@@ -94,15 +185,15 @@ const VARIATION_LEVEL_CONFIG = {
   },
   M07: {
     '1.1': ['L2', 'L3', 'L4'],
-    '1.2': ['L3', 'L4'],
+    '1.2': ['L2', 'L3', 'L4'],
     '2.1': ['L3', 'L4'],
     '2.2': ['L3', 'L4'],
   },
   M08: {
     '1.1': ['L2', 'L3', 'L4'],
-    '1.2': ['L3', 'L4'],
-    '2.1': ['L3', 'L4'],
-    '2.2': ['L3', 'L4'],
+    '1.2': ['L2', 'L3', 'L4'],
+    '2.1': ['L2', 'L3', 'L4'],
+    '2.2': ['L2', 'L3', 'L4'],
   },
   M09: {
     '1.1': ['L2', 'L3', 'L4'],
@@ -130,7 +221,7 @@ const VARIATION_LEVEL_CONFIG = {
     '2.1': ['L3', 'L4'],
     '2.2': ['L2', 'L3'],
     '3.1': ['L2', 'L3', 'L4'],
-    '3.2': ['L3', 'L4'],
+    '3.2': ['L3'],
   },
   M13: {
     '1.1': ['L2', 'L3', 'L4'],
@@ -219,25 +310,22 @@ const getDecayStatus = (specialties) => {
   }
 }
 
-const getWeaponFromStrategyLib = (weaponId) => {
-  if (!strategyLib || !strategyLib.categories) return null
+const getWeaponFromWeaponDetails = (weaponId) => {
+  if (!weaponDetails || !weaponDetails[weaponId]) return null
   
-  for (const category of strategyLib.categories) {
-    const weapon = category.weapons?.find(w => w.id === weaponId)
-    if (weapon) {
-      return {
-        id: weapon.id,
-        name: weapon.name,
-        rank: weapon.rank,
-        logicFlow: weapon.logic_flow,
-        description: weapon.description,
-        triggerKeywords: weapon.trigger_keywords,
-        categoryName: category.name
-      }
-    }
+  const detail = weaponDetails[weaponId]
+  const prefix = weaponId.split('-').slice(0, 2).join('-')
+  const categoryName = WEAPON_CATEGORIES[prefix] || '其他'
+  
+  return {
+    id: weaponId,
+    name: WEAPON_NAMES[weaponId] || weaponId,
+    rank: WEAPON_RANKS[weaponId] || 'basic',
+    logicFlow: detail.coreLogic || '',
+    description: detail.coreLogic?.slice(0, 100) || '',
+    triggerKeywords: detail.scenarios || [],
+    categoryName: categoryName
   }
-  
-  return null
 }
 
 const getWeaponsForMotif = (motifData) => {
@@ -246,6 +334,7 @@ const getWeaponsForMotif = (motifData) => {
   const weaponIds = []
   motifData.specialties.forEach(spec => {
     spec.variations?.forEach(v => {
+      // 1. 先从变例级别的 toolkit.linked_weapons 提取
       if (v.toolkit?.linked_weapons) {
         v.toolkit.linked_weapons.forEach(wId => {
           if (!weaponIds.includes(wId)) {
@@ -253,10 +342,22 @@ const getWeaponsForMotif = (motifData) => {
           }
         })
       }
+      
+      // 2. 从题目级别的 meta.weapons 提取（与M01-M06一致）
+      const pool = v.original_pool || []
+      pool.forEach(q => {
+        if (q.meta?.weapons && Array.isArray(q.meta.weapons)) {
+          q.meta.weapons.forEach(wId => {
+            if (!weaponIds.includes(wId)) {
+              weaponIds.push(wId)
+            }
+          })
+        }
+      })
     })
   })
   
-  return weaponIds.map(id => getWeaponFromStrategyLib(id)).filter(w => w !== null)
+  return weaponIds.map(id => getWeaponFromWeaponDetails(id)).filter(w => w !== null)
 }
 
 function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculateElo, calibrateTargetId, onCalibrationComplete }) {
@@ -598,11 +699,24 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
       specialties.forEach(spec => {
         spec.variations?.forEach(v => {
           if (v.var_id === varId) {
-            v.master_benchmarks?.forEach(b => {
+            // 🔥 兼容新旧结构
+            const benchmarks = v.master_benchmarks || []
+            const pool = v.original_pool || []
+            
+            benchmarks.forEach(b => {
               if (b.level === lvl) {
                 benchmarksForLevel.push(b)
               }
             })
+            
+            // 从 original_pool 补充
+            if (benchmarksForLevel.length === 0) {
+              pool.forEach(q => {
+                if (q.level === lvl) {
+                  benchmarksForLevel.push(q)
+                }
+              })
+            }
           }
         })
       })
@@ -637,11 +751,17 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
       
       specialties.forEach(spec => {
         spec.variations?.forEach(variation => {
+          // 🔥 兼容新旧结构
           const benchmarks = variation.master_benchmarks || []
+          const pool = variation.original_pool || []
           
-          if (benchmarks.length === 0) return
+          if (benchmarks.length === 0 && pool.length === 0) return
           
-          const levels = [...new Set(benchmarks.map(b => b.level))]
+          // 🔥 从 benchmarks 或 pool 中提取难度级别
+          const levels = [...new Set([
+            ...benchmarks.map(b => b.level),
+            ...pool.map(q => q.level)
+          ])]
           
           if (levels.length === 0) return
           
@@ -649,7 +769,13 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
           
           const allLevelsMastered = levels.every(lvl => {
             const levelBenchmarks = benchmarks.filter(b => b.level === lvl)
-            return levelBenchmarks.length > 0 && levelBenchmarks.every(b => b.is_mastered === true)
+            const levelPool = pool.filter(q => q.level === lvl)
+            // 🔥 优先检查 benchmarks 的掌握状态，如果没有则从 pool 中检查
+            if (levelBenchmarks.length > 0) {
+              return levelBenchmarks.every(b => b.is_mastered === true)
+            }
+            // pool 中的题目默认未掌握（因为没有 is_mastered 字段）
+            return levelPool.length > 0 && levelPool.every(q => q.is_mastered === true)
           })
           
           if (allLevelsMastered) {
@@ -808,7 +934,7 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
             </div>
             
             <div className={`mt-3 text-[10px] text-center ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
-              数据来源：strategy_lib.json
+              数据来源：weapon_details.json
             </div>
           </div>
         )}

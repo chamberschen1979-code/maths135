@@ -1,76 +1,23 @@
-import strategyLib from '../data/strategy_lib.json'
-
-let weaponNameCache = null
-
-const buildWeaponNameCache = () => {
-  if (weaponNameCache) return weaponNameCache
-  
-  weaponNameCache = new Map()
-  
-  if (!strategyLib?.categories) return weaponNameCache
-  
-  strategyLib.categories.forEach(category => {
-    if (!category.weapons) return
-    
-    category.weapons.forEach(weapon => {
-      if (weapon.id) {
-        weaponNameCache.set(weapon.id, {
-          name: weapon.name,
-          category: category.name,
-          logicFlow: weapon.logic_flow || '',
-          description: weapon.description || '',
-          triggerKeywords: weapon.trigger_keywords || []
-        })
-      }
-    })
-  })
-  
-  console.log(`[WeaponUtils] 构建了 ${weaponNameCache.size} 个杀手锏名称映射`)
-  return weaponNameCache
-}
+import weaponDetailsAdapter from './weaponDetailsAdapter'
 
 export const getWeaponNameById = (weaponId) => {
-  if (!weaponId) return null
-  
-  const cache = buildWeaponNameCache()
-  const weapon = cache.get(weaponId)
-  
-  return weapon?.name || null
+  return weaponDetailsAdapter.getWeaponNameById(weaponId)
 }
 
 export const getWeaponById = (weaponId) => {
-  if (!weaponId) return null
-  
-  const cache = buildWeaponNameCache()
-  return cache.get(weaponId) || null
+  return weaponDetailsAdapter.getWeaponById(weaponId)
 }
 
 export const getWeaponLogicFlow = (weaponId) => {
-  const weapon = getWeaponById(weaponId)
-  return weapon?.logicFlow || null
+  return weaponDetailsAdapter.getWeaponLogicFlow(weaponId)
 }
 
 export const getWeaponTriggerKeywords = (weaponId) => {
-  const weapon = getWeaponById(weaponId)
-  return weapon?.triggerKeywords || []
+  return weaponDetailsAdapter.getWeaponTriggerKeywords(weaponId)
 }
 
 export const getWeaponInfo = (weaponId) => {
-  if (!weaponId) return null
-  
-  const cache = buildWeaponNameCache()
-  const weapon = cache.get(weaponId)
-  
-  if (!weapon) return null
-  
-  return {
-    id: weaponId,
-    name: weapon.name,
-    category: weapon.category,
-    logicFlow: weapon.logicFlow,
-    description: weapon.description,
-    triggerKeywords: weapon.triggerKeywords
-  }
+  return weaponDetailsAdapter.getWeaponById(weaponId)
 }
 
 export const checkLowProficiencyWarning = (tacticalData) => {
@@ -100,28 +47,11 @@ export const checkLowProficiencyWarning = (tacticalData) => {
 }
 
 export const getAllWeapons = () => {
-  const cache = buildWeaponNameCache()
-  const weapons = []
-  
-  cache.forEach((value, key) => {
-    weapons.push({
-      id: key,
-      ...value
-    })
-  })
-  
-  return weapons
+  return weaponDetailsAdapter.getAllWeapons()
 }
 
 export const findWeaponsByMotif = (motifId) => {
-  const allWeapons = getAllWeapons()
-  
-  return allWeapons.filter(weapon => {
-    return weapon.triggerKeywords.some(keyword => {
-      const motif = findMotifByKeyword(keyword)
-      return motif?.id === motifId
-    })
-  })
+  return weaponDetailsAdapter.findWeaponsByMotif(motifId)
 }
 
 const MOTIF_KEYWORDS = {
@@ -167,7 +97,7 @@ const getMotifName = (motifId) => {
     'M07': '解三角形综合',
     'M08': '数列基础与求和',
     'M09': '立体几何基础',
-    'M10': '解析几何基础',
+    'M10': '圆锥曲线基础',
     'M11': '导数工具基础',
     'M12': '概率与统计综合',
     'M13': '解析几何综合压轴',
