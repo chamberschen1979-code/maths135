@@ -20,7 +20,11 @@
               "2. 判断对称轴与区间的关系",
               "3. 比较端点值与顶点值",
               "4. 确定最值"
-            ]
+            ],
+            "linked_weapons": [
+              "S-INEQ-02"
+            ],
+            "weapon_guidance": "乘1法：将约束条件乘入目标式，实现系数自动匹配"
           },
           "variable_knobs": {
             "axis_position": [
@@ -78,8 +82,6 @@
                 "轴在区间内，最小值为顶点值",
                 "高考真题，送分题，必须拿满"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：轴在区间内，最小值为顶点",
               "meta": {},
               "level": "L2"
             },
@@ -94,8 +96,6 @@
                 "轴在区间内，需比较端点值与顶点值",
                 "值域不是单调区间"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：轴在区间内，比较端点与顶点",
               "meta": {},
               "level": "L2"
             },
@@ -110,8 +110,6 @@
                 "值域为闭区间，端点值可达",
                 "集合元素个数等于值域中整数的个数"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：值域分析，确定集合元素",
               "meta": {},
               "level": "L2"
             },
@@ -126,8 +124,6 @@
                 "开口向下，最大值在轴处取得",
                 "轴在区间端点，需验证"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：开口向下，轴在区间端点",
               "meta": {},
               "level": "L2"
             },
@@ -142,8 +138,6 @@
                 "轴在区间内，最小值为顶点值",
                 "取值范围是闭区间"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：轴在区间内，比较端点与顶点",
               "meta": {},
               "level": "L2"
             },
@@ -158,8 +152,6 @@
                 "配方后直接看出最小值",
                 "轴在区间内，顶点值即为最小值"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：配方法求最值",
               "meta": {},
               "level": "L2"
             },
@@ -174,8 +166,6 @@
                 "开口向下，最大值在轴处",
                 "配方验证最值"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：开口向下，轴在区间内",
               "meta": {},
               "level": "L2"
             },
@@ -190,8 +180,6 @@
                 "轴在区间端点，函数单调",
                 "最小值在端点取得"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：轴在区间端点，函数单调",
               "meta": {},
               "level": "L2"
             },
@@ -206,8 +194,6 @@
                 "开口向下，轴在区间端点",
                 "函数单调，最大值在端点"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：开口向下，轴在区间端点",
               "meta": {},
               "level": "L2"
             },
@@ -222,8 +208,6 @@
                 "轴在区间端点，函数单调",
                 "值域为闭区间"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：轴在区间端点，函数单调",
               "meta": {},
               "level": "L2"
             },
@@ -238,10 +222,6 @@
                 "含参讨论轴与区间的位置关系",
                 "综合比较各情况的最值"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：含参讨论，轴与区间位置关系",
               "level": "L3"
             },
             {
@@ -255,10 +235,6 @@
                 "动区间讨论轴与区间位置关系",
                 "分段函数表达最值"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：动区间讨论，轴与区间位置关系",
               "level": "L3"
             },
             {
@@ -272,10 +248,6 @@
                 "最大值在端点取得",
                 "求最值的最值需要讨论参数"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：最大值在端点，求最值的最值",
               "level": "L3"
             },
             {
@@ -289,10 +261,6 @@
                 "开口向下，最小值在端点",
                 "解方程求参数"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：开口向下，最小值在端点",
               "level": "L3"
             },
             {
@@ -306,10 +274,6 @@
                 "动区间讨论轴与区间位置关系",
                 "分段函数分析最值"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：动区间讨论，轴与区间位置关系",
               "level": "L3"
             },
             {
@@ -323,10 +287,6 @@
                 "动区间端点讨论",
                 "分段函数表达最值"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：动区间讨论，轴与区间位置关系",
               "level": "L3"
             },
             {
@@ -340,10 +300,6 @@
                 "含参讨论轴与区间位置关系",
                 "分段函数的最值分析"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：含参讨论，轴与区间位置关系",
               "level": "L3"
             },
             {
@@ -357,10 +313,6 @@
                 "开口向下，最小值在端点",
                 "分类讨论求参数"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：开口向下，最小值在端点",
               "level": "L3"
             },
             {
@@ -374,10 +326,6 @@
                 "动区间讨论轴与区间位置关系",
                 "分段函数分析最值"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：动区间讨论，轴与区间位置关系",
               "level": "L3"
             },
             {
@@ -391,10 +339,6 @@
                 "含参讨论轴与区间位置关系",
                 "解方程验证解的存在性"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：含参讨论，轴与区间位置关系",
               "level": "L3"
             }
           ]
@@ -409,7 +353,11 @@
               "2. 确定讨论变量（轴的位置/区间端点）",
               "3. 分类讨论各种情况",
               "4. 综合得出最值"
-            ]
+            ],
+            "linked_weapons": [
+              "S-INEQ-04"
+            ],
+            "weapon_guidance": "同构构造：将复杂不等式转化为f(x)>f(a)，利用单调性去壳"
           },
           "variable_knobs": {
             "parameter_type": [
@@ -461,8 +409,6 @@
               "key_points": [
                 "定轴动区间基础"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：定轴动区间基础",
               "meta": {},
               "level": "L2"
             },
@@ -476,8 +422,6 @@
               "key_points": [
                 "开口向下模型"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：开口向下模型",
               "meta": {},
               "level": "L2"
             },
@@ -491,8 +435,6 @@
               "key_points": [
                 "偶函数分段"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：偶函数分段",
               "meta": {},
               "level": "L2"
             },
@@ -506,8 +448,6 @@
               "key_points": [
                 "对勾函数动区间"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：对勾函数动区间",
               "meta": {},
               "level": "L2"
             },
@@ -521,8 +461,6 @@
               "key_points": [
                 "分段函数最值"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：分段函数最值",
               "meta": {},
               "level": "L2"
             },
@@ -536,8 +474,6 @@
               "key_points": [
                 "顶点式直观判定"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：顶点式直观判定",
               "meta": {},
               "level": "L2"
             },
@@ -551,8 +487,6 @@
               "key_points": [
                 "轴随区间动"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：轴随区间动",
               "meta": {},
               "level": "L2"
             },
@@ -566,8 +500,6 @@
               "key_points": [
                 "非单位系数最值"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：非单位系数最值",
               "meta": {},
               "level": "L2"
             },
@@ -581,8 +513,6 @@
               "key_points": [
                 "定轴定区间母题"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：定轴定区间母题",
               "meta": {},
               "level": "L2"
             },
@@ -596,8 +526,6 @@
               "key_points": [
                 "倒数复合最值"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：倒数复合最值",
               "meta": {},
               "level": "L2"
             },
@@ -611,10 +539,6 @@
               "key_points": [
                 "振幅函数构造"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：振幅函数构造",
               "level": "L3"
             },
             {
@@ -627,10 +551,6 @@
               "key_points": [
                 "绝对值翻折卡位"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：绝对值翻折卡位",
               "level": "L3"
             },
             {
@@ -643,10 +563,6 @@
               "key_points": [
                 "三角换元复合"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：三角换元复合",
               "level": "L3"
             },
             {
@@ -659,10 +575,6 @@
               "key_points": [
                 "指数换元复合"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：指数换元复合",
               "level": "L3"
             },
             {
@@ -675,10 +587,6 @@
               "key_points": [
                 "对数换元复合"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：对数换元复合",
               "level": "L3"
             },
             {
@@ -691,10 +599,6 @@
               "key_points": [
                 "分式分离常数"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：分式分离常数",
               "level": "L3"
             },
             {
@@ -707,10 +611,6 @@
               "key_points": [
                 "定区间卡位"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：定区间卡位",
               "level": "L3"
             },
             {
@@ -723,10 +623,6 @@
               "key_points": [
                 "参数双重身份讨论"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：参数双重身份讨论",
               "level": "L3"
             },
             {
@@ -739,10 +635,6 @@
               "key_points": [
                 "对称轴锁定"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：对称轴锁定",
               "level": "L3"
             },
             {
@@ -755,10 +647,6 @@
               "key_points": [
                 "根式复合最值"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：根式复合最值",
               "level": "L3"
             },
             {
@@ -771,10 +659,6 @@
               "key_points": [
                 "逻辑非+指数放缩"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：逻辑非+指数放缩",
               "level": "L4"
             },
             {
@@ -787,10 +671,6 @@
               "key_points": [
                 "双函数最值包含"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：双函数最值包含",
               "level": "L4"
             },
             {
@@ -803,10 +683,6 @@
               "key_points": [
                 "三角最大值逻辑"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：三角最大值逻辑",
               "level": "L4"
             },
             {
@@ -819,10 +695,6 @@
               "key_points": [
                 "和式逻辑嵌套"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：和式逻辑嵌套",
               "level": "L4"
             },
             {
@@ -835,10 +707,6 @@
               "key_points": [
                 "振幅恒成立控制"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：振幅恒成立控制",
               "level": "L4"
             },
             {
@@ -851,10 +719,6 @@
               "key_points": [
                 "绝对值零点存在性"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：绝对值零点存在性",
               "level": "L4"
             },
             {
@@ -867,10 +731,6 @@
               "key_points": [
                 "开放性判断逻辑"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：开放性判断逻辑",
               "level": "L4"
             },
             {
@@ -883,10 +743,6 @@
               "key_points": [
                 "指数能成立讨论"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：指数能成立讨论",
               "level": "L4"
             },
             {
@@ -899,10 +755,6 @@
               "key_points": [
                 "双函数值域包含"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：双函数值域包含",
               "level": "L4"
             },
             {
@@ -915,10 +767,6 @@
               "key_points": [
                 "定值配对与对称中心"
               ],
-              "weapons": [
-                "S-QUAD-01"
-              ],
-              "strategy_hint": "模型：定值配对与对称中心",
               "level": "L4"
             }
           ]
@@ -939,7 +787,11 @@
               "2. 构造'二定'：通过变形使和或积为常数",
               "3. 验证'三相等'：等号成立条件是否存在",
               "4. 写出最值"
-            ]
+            ],
+            "linked_weapons": [
+              "S-INEQ-07"
+            ],
+            "weapon_guidance": "权方和不等式：分式求和秒杀，比普通柯西更直接"
           },
           "variable_knobs": {
             "technique_type": [
@@ -986,10 +838,6 @@
               "key_points": [
                 "分子配凑法"
               ],
-              "weapons": [
-                "S-INEQ-01"
-              ],
-              "strategy_hint": "模型：分子配凑法",
               "meta": {},
               "level": "L2"
             },
@@ -1003,10 +851,6 @@
               "key_points": [
                 "隐性偏移配凑"
               ],
-              "weapons": [
-                "S-INEQ-01"
-              ],
-              "strategy_hint": "模型：隐性偏移配凑",
               "meta": {},
               "level": "L2"
             },
@@ -1020,10 +864,6 @@
               "key_points": [
                 "逻辑前提判定"
               ],
-              "weapons": [
-                "S-INEQ-01"
-              ],
-              "strategy_hint": "模型：逻辑前提判定",
               "meta": {},
               "level": "L2"
             },
@@ -1037,10 +877,6 @@
               "key_points": [
                 "分离常数求值域"
               ],
-              "weapons": [
-                "S-INEQ-01"
-              ],
-              "strategy_hint": "模型：分离常数求值域",
               "meta": {},
               "level": "L2"
             },
@@ -1054,10 +890,6 @@
               "key_points": [
                 "系数配凑转换"
               ],
-              "weapons": [
-                "S-INEQ-01"
-              ],
-              "strategy_hint": "模型：系数配凑转换",
               "meta": {},
               "level": "L2"
             },
@@ -1071,10 +903,6 @@
               "key_points": [
                 "负数域变号处理"
               ],
-              "weapons": [
-                "S-INEQ-01"
-              ],
-              "strategy_hint": "模型：负数域变号处理",
               "meta": {},
               "level": "L2"
             },
@@ -1088,10 +916,6 @@
               "key_points": [
                 "局部配凑法"
               ],
-              "weapons": [
-                "S-INEQ-01"
-              ],
-              "strategy_hint": "模型：局部配凑法",
               "meta": {},
               "level": "L2"
             },
@@ -1105,10 +929,6 @@
               "key_points": [
                 "取等条件分析"
               ],
-              "weapons": [
-                "S-INEQ-01"
-              ],
-              "strategy_hint": "模型：取等条件分析",
               "meta": {},
               "level": "L2"
             },
@@ -1122,10 +942,6 @@
               "key_points": [
                 "动态单调性卡位"
               ],
-              "weapons": [
-                "S-INEQ-01"
-              ],
-              "strategy_hint": "模型：对勾函数区间扫描",
               "meta": {},
               "level": "L2"
             },
@@ -1139,10 +955,6 @@
               "key_points": [
                 "整体构造不等式"
               ],
-              "weapons": [
-                "S-INEQ-01"
-              ],
-              "strategy_hint": "模型：整体构造不等式",
               "meta": {},
               "level": "L2"
             },
@@ -1156,10 +968,6 @@
               "key_points": [
                 "乘1法标准件"
               ],
-              "weapons": [
-                "S-INEQ-02"
-              ],
-              "strategy_hint": "模型：乘1法标准件",
               "level": "L3"
             },
             {
@@ -1172,8 +980,6 @@
               "key_points": [
                 "错位配凑代换"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：错位配凑代换",
               "level": "L3"
             },
             {
@@ -1186,8 +992,6 @@
               "key_points": [
                 "对勾函数区间扫描"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：对勾函数区间扫描",
               "level": "L3"
             },
             {
@@ -1200,8 +1004,6 @@
               "key_points": [
                 "隐函数消元法"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：隐函数消元法",
               "level": "L3"
             },
             {
@@ -1214,10 +1016,6 @@
               "key_points": [
                 "高次幂齐次化"
               ],
-              "weapons": [
-                "S-INEQ-02"
-              ],
-              "strategy_hint": "模型：高次幂齐次化",
               "level": "L3"
             },
             {
@@ -1230,11 +1028,6 @@
               "key_points": [
                 "恒成立中的最值卡位"
               ],
-              "weapons": [
-                "S-INEQ-03",
-                "S-LOG-03"
-              ],
-              "strategy_hint": "模型：恒成立中的最值卡位",
               "level": "L3"
             },
             {
@@ -1247,8 +1040,6 @@
               "key_points": [
                 "单调性逆向求参"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：单调性逆向求参",
               "level": "L3"
             },
             {
@@ -1261,10 +1052,6 @@
               "key_points": [
                 "几何意义/权方和"
               ],
-              "weapons": [
-                "S-INEQ-06"
-              ],
-              "strategy_hint": "模型：几何意义/权方和",
               "level": "L3"
             },
             {
@@ -1277,8 +1064,6 @@
               "key_points": [
                 "嵌套对勾模型"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：嵌套对勾模型",
               "level": "L3"
             },
             {
@@ -1291,8 +1076,6 @@
               "key_points": [
                 "多项式除法变形"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：多项式除法变形",
               "level": "L3"
             }
           ]
@@ -1307,7 +1090,11 @@
               "2. 找拐点：x_0 = √k",
               "3. 判断区间：给定区间与拐点的关系",
               "4. 利用单调性求最值"
-            ]
+            ],
+            "linked_weapons": [
+              "S-INEQ-04"
+            ],
+            "weapon_guidance": "同构构造：超越对勾切线放缩问题，转化为f(x)≥f(a)形式，利用单调性秒杀"
           },
           "variable_knobs": {
             "function_type": [
@@ -1355,8 +1142,6 @@
               "key_points": [
                 "经典链条判定"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：经典链条判定",
               "meta": {},
               "level": "L2"
             },
@@ -1370,8 +1155,6 @@
               "key_points": [
                 "指对数估值"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：指对数估值",
               "meta": {},
               "level": "L2"
             },
@@ -1385,8 +1168,6 @@
               "key_points": [
                 "恒成立整数解"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：恒成立整数解",
               "meta": {},
               "level": "L2"
             },
@@ -1400,8 +1181,6 @@
               "key_points": [
                 "基础分式最值"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：基础分式最值",
               "meta": {},
               "level": "L2"
             },
@@ -1415,8 +1194,6 @@
               "key_points": [
                 "基础偏移证明"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：基础偏移证明",
               "meta": {},
               "level": "L2"
             },
@@ -1430,8 +1207,6 @@
               "key_points": [
                 "隐零点基础"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：隐零点基础",
               "meta": {},
               "level": "L2"
             },
@@ -1445,8 +1220,6 @@
               "key_points": [
                 "二阶估值技巧"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：二阶估值技巧",
               "meta": {},
               "level": "L2"
             },
@@ -1460,8 +1233,6 @@
               "key_points": [
                 "对数左放缩"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：对数左放缩",
               "meta": {},
               "level": "L2"
             },
@@ -1475,8 +1246,6 @@
               "key_points": [
                 "结构变式最值"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：结构变式最值",
               "meta": {},
               "level": "L2"
             },
@@ -1490,8 +1259,6 @@
               "key_points": [
                 "根式泰勒估值"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：根式泰勒估值",
               "meta": {},
               "level": "L2"
             },
@@ -1506,10 +1273,6 @@
                 "结构同构识别",
                 "利用函数单调性确定唯一解"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：结构同构识别",
               "level": "L3"
             },
             {
@@ -1522,10 +1285,6 @@
               "key_points": [
                 "二阶切线放缩"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：二阶切线放缩",
               "level": "L3"
             },
             {
@@ -1538,10 +1297,6 @@
               "key_points": [
                 "隐函数位移同构"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：隐函数位移同构",
               "level": "L3"
             },
             {
@@ -1554,10 +1309,6 @@
               "key_points": [
                 "幂指结构转化"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：幂指结构转化",
               "level": "L3"
             },
             {
@@ -1570,10 +1321,6 @@
               "key_points": [
                 "极值点偏移前哨"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：极值点偏移前哨",
               "level": "L3"
             },
             {
@@ -1586,10 +1333,6 @@
               "key_points": [
                 "倒数结构放缩"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：倒数结构放缩",
               "level": "L3"
             },
             {
@@ -1602,10 +1345,6 @@
               "key_points": [
                 "复杂结构比大小"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：复杂结构比大小",
               "level": "L3"
             },
             {
@@ -1618,10 +1357,6 @@
               "key_points": [
                 "线性斜率判定"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：线性斜率判定",
               "level": "L3"
             },
             {
@@ -1634,10 +1369,6 @@
               "key_points": [
                 "根式递进放缩"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：根式递进放缩",
               "level": "L3"
             },
             {
@@ -1650,10 +1381,6 @@
               "key_points": [
                 "动态切线零点"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：动态切线零点",
               "level": "L3"
             },
             {
@@ -1666,10 +1393,6 @@
               "key_points": [
                 "二阶切线压轴"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：二阶切线压轴",
               "level": "L4"
             },
             {
@@ -1682,10 +1405,6 @@
               "key_points": [
                 "对数平均链条"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：对数平均链条",
               "level": "L4"
             },
             {
@@ -1698,10 +1417,6 @@
               "key_points": [
                 "同构中心对称"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：同构中心对称",
               "level": "L4"
             },
             {
@@ -1714,10 +1429,6 @@
               "key_points": [
                 "复合对数同构"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：复合对数同构",
               "level": "L4"
             },
             {
@@ -1730,10 +1441,6 @@
               "key_points": [
                 "泰勒三阶放缩"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：泰勒三阶放缩",
               "level": "L4"
             },
             {
@@ -1746,10 +1453,6 @@
               "key_points": [
                 "极值点偏移切线法"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：极值点偏移切线法",
               "level": "L4"
             },
             {
@@ -1762,10 +1465,6 @@
               "key_points": [
                 "积分型不等式证明"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：积分型不等式证明",
               "level": "L4"
             },
             {
@@ -1778,10 +1477,6 @@
               "key_points": [
                 "公切线逻辑还原"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：公切线逻辑还原",
               "level": "L4"
             },
             {
@@ -1794,8 +1489,6 @@
               "key_points": [
                 "数列极限边界"
               ],
-              "weapons": [],
-              "strategy_hint": "模型：数列极限边界",
               "level": "L4"
             },
             {
@@ -1808,10 +1501,6 @@
               "key_points": [
                 "端点效应放缩"
               ],
-              "weapons": [
-                "S-LOG-02"
-              ],
-              "strategy_hint": "模型：端点效应放缩",
               "level": "L4"
             }
           ]

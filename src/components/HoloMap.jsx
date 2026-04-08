@@ -202,18 +202,16 @@ const VARIATION_LEVEL_CONFIG = {
     '2.2': ['L3', 'L4'],
   },
   M10: {
-    '1.1': ['L2', 'L3', 'L4'],
+    '1.1': ['L3', 'L4'],
+    '1.2': ['L3', 'L4'],
+    '2.1': ['L2', 'L3'],
+    '2.2': ['L3', 'L4'],
+  },
+  M11: {
+    '1.1': ['L2', 'L3'],
     '1.2': ['L3', 'L4'],
     '2.1': ['L2', 'L3', 'L4'],
     '2.2': ['L3', 'L4'],
-    '3.1': ['L2', 'L3', 'L4'],
-    '3.2': ['L2', 'L3', 'L4'],
-  },
-  M11: {
-    '1.1': ['L2', 'L3', 'L4'],
-    '1.2': ['L2', 'L3', 'L4'],
-    '2.1': ['L2', 'L3', 'L4'],
-    '2.2': ['L2', 'L3', 'L4'],
   },
   M12: {
     '1.1': ['L3', 'L4'],
@@ -871,73 +869,7 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
           </div>
         </div>
 
-        {weapons.length > 0 && (
-          <div className={`mt-6 p-5 rounded-2xl border ${
-            isAcademicMode 
-              ? 'bg-gradient-to-br from-slate-50 to-indigo-50 border-indigo-200' 
-              : 'bg-gradient-to-br from-zinc-800/80 to-indigo-900/20 border-indigo-500/30'
-          }`}>
-            <h3 className="flex items-center gap-2 font-bold mb-4 text-slate-700 dark:text-zinc-200 text-sm">
-              <BookOpen size={18} className="text-indigo-500" /> 
-              核心武器库
-            </h3>
 
-            <div className="space-y-3">
-              {weapons.map((weapon) => (
-                <div 
-                  key={weapon.id} 
-                  className={`group relative p-3 rounded-xl border transition-all duration-300 ${
-                    isAcademicMode 
-                      ? 'bg-white border-slate-200 shadow-sm hover:shadow-md' 
-                      : 'bg-zinc-800 border-zinc-700 hover:border-indigo-500/50'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className={`text-xs font-black px-1.5 py-0.5 rounded ${
-                          isAcademicMode
-                            ? 'bg-indigo-100 text-indigo-700'
-                            : 'bg-indigo-900/40 text-indigo-300'
-                        }`}>
-                          {weapon.id}
-                        </span>
-                        <h4 className={`font-bold text-sm ${isAcademicMode ? 'text-slate-800' : 'text-zinc-100'}`}>
-                          {weapon.name}
-                        </h4>
-                      </div>
-                      
-                      <p className={`text-xs leading-relaxed ${isAcademicMode ? 'text-slate-600' : 'text-zinc-400'}`}>
-                        {weapon.description}
-                      </p>
-
-                      {weapon.triggerKeywords && weapon.triggerKeywords.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {weapon.triggerKeywords.slice(0, 5).map((kw, idx) => (
-                            <span
-                              key={idx}
-                              className={`px-1.5 py-0.5 rounded text-[10px] ${
-                                isAcademicMode 
-                                  ? 'bg-slate-200 text-slate-600'
-                                  : 'bg-zinc-700 text-zinc-300'
-                              }`}
-                            >
-                              {kw}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className={`mt-3 text-[10px] text-center ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
-              数据来源：weapon_details.json
-            </div>
-          </div>
-        )}
       </div>
     )
   }

@@ -173,6 +173,14 @@ const TRIGGER_KEYWORDS = {
   'S-PROB-05': ['统计', '样本']
 }
 
+const extractFormula = (coreLogic) => {
+  if (!coreLogic) return '核心解题步骤'
+  const match = coreLogic.match(/['"「」『』]([^'"「」『』]+)['"「」『』]/)
+  if (match) return match[1]
+  const parts = coreLogic.split(/[。：:]/)
+  return parts[0]?.slice(0, 50) || '核心解题步骤'
+}
+
 const buildWeaponCache = () => {
   if (weaponCache) return weaponCache
   
@@ -182,18 +190,29 @@ const buildWeaponCache = () => {
     const categoryPrefix = weaponId.split('-').slice(0, 2).join('-')
     const category = WEAPON_CATEGORIES[categoryPrefix] || { id: 'other', name: '其他' }
     
+    const scenarios = details.scenarios || []
+    const pitfalls = details.pitfalls || []
+    const scenarioTags = scenarios.filter(s => !s.match(/^M\d{2}/))
+    
     weaponCache.set(weaponId, {
       id: weaponId,
       name: WEAPON_NAMES[weaponId] || weaponId,
       category: category.name,
       categoryId: category.id,
       logicFlow: details.coreLogic || '',
+      logic_flow: details.coreLogic || '',
       description: details.coreLogic || '',
       triggerKeywords: TRIGGER_KEYWORDS[weaponId] || [],
-      scenarios: details.scenarios || [],
-      pitfalls: details.pitfalls || [],
+      trigger_keywords: TRIGGER_KEYWORDS[weaponId] || [],
+      scenarios: scenarios,
+      pitfalls: pitfalls,
       example: details.example || null,
-      linkedMotifs: (MOTIF_LINKS[weaponId] || []).map(id => ({ id }))
+      linkedMotifs: (MOTIF_LINKS[weaponId] || []).map(id => ({ id })),
+      certification: {
+        focusLogic: extractFormula(details.coreLogic),
+        antiPattern: pitfalls[0] || '跳步或逻辑跳跃',
+        scenarioTags: scenarioTags
+      }
     })
   })
   

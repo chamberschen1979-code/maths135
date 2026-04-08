@@ -22,10 +22,9 @@
               "4. 快速求解"
             ],
             "linked_weapons": [
-              "S-VIS-01",
               "S-CONIC-01"
             ],
-            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-CONIC-01 (定义降维与第三定义)"
+            "weapon_guidance": "定义降维与第三定义：|PF₁|+|PF₂|=2a或k₁k₂=e²-1秒杀轨迹题"
           },
           "variable_knobs": {
             "definition_type": [
@@ -102,8 +101,7 @@
                 ],
                 "trap_tags": [
                   "忽略P在第一象限的条件"
-                ],
-                "strategy_hint": "定义联立与面积法"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -136,8 +134,7 @@
                 ],
                 "trap_tags": [
                   "混淆焦半径公式中的p/2"
-                ],
-                "strategy_hint": "焦半径公式与坐标关系"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -170,8 +167,7 @@
                 ],
                 "trap_tags": [
                   "混淆左右支的焦半径最值"
-                ],
-                "strategy_hint": "几何最值与渐近线性质"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -203,8 +199,7 @@
                 ],
                 "trap_tags": [
                   "混淆焦点位置"
-                ],
-                "strategy_hint": "抛物线定义直接应用"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -237,8 +232,7 @@
                 ],
                 "trap_tags": [
                   "混淆左右准线"
-                ],
-                "strategy_hint": "第二定义与准线方程"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -270,8 +264,7 @@
                 ],
                 "trap_tags": [
                   "忽略双曲线只分布在两支"
-                ],
-                "strategy_hint": "双曲线定义直接应用"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -303,8 +296,7 @@
                 ],
                 "trap_tags": [
                   "忽略定义转化"
-                ],
-                "strategy_hint": "定义转化与几何最值"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -337,8 +329,7 @@
                 ],
                 "trap_tags": [
                   "焦点位置判断错误"
-                ],
-                "strategy_hint": "渐近线与点代入法"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -371,8 +362,7 @@
                 ],
                 "trap_tags": [
                   "混淆内外切条件"
-                ],
-                "strategy_hint": "圆的位置关系转化为距离和"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -405,8 +395,7 @@
                 ],
                 "trap_tags": [
                   "混淆三角形周长与椭圆周长"
-                ],
-                "strategy_hint": "定义转化求参数"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -439,8 +428,7 @@
                 ],
                 "trap_tags": [
                   "混淆焦点与准线对应关系"
-                ],
-                "strategy_hint": "第二定义逆用"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -473,8 +461,7 @@
                 ],
                 "trap_tags": [
                   "忽略P在右支的条件"
-                ],
-                "strategy_hint": "定义与中点坐标结合"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -507,8 +494,7 @@
                 ],
                 "trap_tags": [
                   "计算量较大"
-                ],
-                "strategy_hint": "设斜率消参法"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -541,8 +527,7 @@
                 ],
                 "trap_tags": [
                   "焦半径公式符号"
-                ],
-                "strategy_hint": "焦半径公式与韦达定理"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -575,8 +560,7 @@
                 ],
                 "trap_tags": [
                   "忽略圆的半径"
-                ],
-                "strategy_hint": "椭圆定义与几何最值"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -608,8 +592,7 @@
                 ],
                 "trap_tags": [
                   "忽略绝对值讨论"
-                ],
-                "strategy_hint": "距离公式直接列式"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -642,8 +625,7 @@
                 ],
                 "trap_tags": [
                   "忽略双解"
-                ],
-                "strategy_hint": "坐标代入法"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -675,8 +657,7 @@
                 ],
                 "trap_tags": [
                   "转化方向错误"
-                ],
-                "strategy_hint": "定义转化与几何最值"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -709,8 +690,7 @@
                 ],
                 "trap_tags": [
                   "忽略挖去焦点"
-                ],
-                "strategy_hint": "第三定义直接应用"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -743,8 +723,7 @@
                 ],
                 "trap_tags": [
                   "斜率不存在的情况需单独讨论"
-                ],
-                "strategy_hint": "设直线方程与韦达定理"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -766,10 +745,9 @@
               "4. 验证结果"
             ],
             "linked_weapons": [
-              "S-VIS-01",
               "S-CONIC-02"
             ],
-            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-CONIC-02 (焦点三角形面积与周长公式)"
+            "weapon_guidance": "焦点三角形面积公式：S=b²tan(θ/2)直接计算面积"
           },
           "variable_knobs": {
             "triangle_property": [
@@ -847,8 +825,7 @@
                 ],
                 "trap_tags": [
                   "公式记忆错误"
-                ],
-                "strategy_hint": "面积公式直接应用"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -881,8 +858,7 @@
                 ],
                 "trap_tags": [
                   "漏掉某种等腰情况"
-                ],
-                "strategy_hint": "分类讨论与定义结合"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -915,8 +891,7 @@
                 ],
                 "trap_tags": [
                   "混淆内切圆与外接圆"
-                ],
-                "strategy_hint": "面积与周长关系"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -949,8 +924,7 @@
                 ],
                 "trap_tags": [
                   "椭圆与双曲线面积公式混淆"
-                ],
-                "strategy_hint": "面积公式直接应用"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -983,8 +957,7 @@
                 ],
                 "trap_tags": [
                   "漏掉某种直角情况"
-                ],
-                "strategy_hint": "分类讨论与勾股定理"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1017,8 +990,7 @@
                 ],
                 "trap_tags": [
                   "混淆焦点弦长公式"
-                ],
-                "strategy_hint": "焦点弦性质"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1051,8 +1023,7 @@
                 ],
                 "trap_tags": [
                   "P在左支还是右支"
-                ],
-                "strategy_hint": "定义与比例结合"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1085,8 +1056,7 @@
                 ],
                 "trap_tags": [
                   "误认为面积最大时角度最大"
-                ],
-                "strategy_hint": "几何直观与余弦定理"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1119,8 +1089,7 @@
                 ],
                 "trap_tags": [
                   "椭圆双曲线公式混淆"
-                ],
-                "strategy_hint": "面积法求积"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1152,8 +1121,7 @@
                 ],
                 "trap_tags": [
                   "忽略双解"
-                ],
-                "strategy_hint": "面积与坐标关系"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1186,8 +1154,7 @@
                 ],
                 "trap_tags": [
                   "外角平分线性质不熟悉"
-                ],
-                "strategy_hint": "角平分线性质与椭圆定义"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1220,8 +1187,7 @@
                 ],
                 "trap_tags": [
                   "计算复杂"
-                ],
-                "strategy_hint": "内切圆性质与定义结合"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1254,8 +1220,7 @@
                 ],
                 "trap_tags": [
                   "半周长计算错误"
-                ],
-                "strategy_hint": "内切圆半径公式"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1288,8 +1253,7 @@
                 ],
                 "trap_tags": [
                   "面积公式错误"
-                ],
-                "strategy_hint": "焦点弦性质与最值"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1322,8 +1286,7 @@
                 ],
                 "trap_tags": [
                   "几何条件转化困难"
-                ],
-                "strategy_hint": "坐标法与斜率条件"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1356,8 +1319,7 @@
                 ],
                 "trap_tags": [
                   "忽略P在左支或右支"
-                ],
-                "strategy_hint": "余弦定理与定义结合"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1390,8 +1352,7 @@
                 ],
                 "trap_tags": [
                   "计算量大"
-                ],
-                "strategy_hint": "韦达定理与最值"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1424,8 +1385,7 @@
                 ],
                 "trap_tags": [
                   "重心坐标计算错误"
-                ],
-                "strategy_hint": "重心坐标与渐近线"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1458,8 +1418,7 @@
                 ],
                 "trap_tags": [
                   "面积无上界的理解"
-                ],
-                "strategy_hint": "面积表达式分析"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1492,8 +1451,7 @@
                 ],
                 "trap_tags": [
                   "垂心位置分析困难"
-                ],
-                "strategy_hint": "垂心与高线性质"
+                ]
               },
               "specId": "V1",
               "specName": "定义的本质与方程构建",
@@ -1521,10 +1479,9 @@
               "4. 求解 e"
             ],
             "linked_weapons": [
-              "S-VIS-01",
               "S-CONIC-03"
             ],
-            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-CONIC-03 (渐近线几何性质与距离公式)"
+            "weapon_guidance": "渐近线几何性质：焦点到渐近线距离=b，tan(θ/2)=b/a"
           },
           "variable_knobs": {
             "property_type": [
@@ -1596,8 +1553,7 @@
                 ],
                 "trap_tags": [
                   "焦点位置判断错误"
-                ],
-                "strategy_hint": "渐近线与点代入法"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1629,8 +1585,7 @@
                 ],
                 "trap_tags": [
                   "混淆 $c$ 与焦距"
-                ],
-                "strategy_hint": "渐近线与焦距联立"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1662,8 +1617,7 @@
                 ],
                 "trap_tags": [
                   "坐标计算错误"
-                ],
-                "strategy_hint": "坐标代入与距离公式"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1695,8 +1649,7 @@
                 ],
                 "trap_tags": [
                   "圆心坐标与距离公式"
-                ],
-                "strategy_hint": "相切条件转化为距离"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1728,8 +1681,7 @@
                 ],
                 "trap_tags": [
                   "距离公式记忆错误"
-                ],
-                "strategy_hint": "直接应用性质"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1761,8 +1713,7 @@
                 ],
                 "trap_tags": [
                   "焦点位置判断"
-                ],
-                "strategy_hint": "等轴双曲线性质"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1794,8 +1745,7 @@
                 ],
                 "trap_tags": [
                   "斜率计算错误"
-                ],
-                "strategy_hint": "垂直关系与斜率"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1827,8 +1777,7 @@
                 ],
                 "trap_tags": [
                   "焦距与 $c$ 的关系"
-                ],
-                "strategy_hint": "渐近线与参数关系"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1860,8 +1809,7 @@
                 ],
                 "trap_tags": [
                   "距离公式符号"
-                ],
-                "strategy_hint": "点到直线距离"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1893,8 +1841,7 @@
                 ],
                 "trap_tags": [
                   "斜率正负讨论"
-                ],
-                "strategy_hint": "平行条件与斜率"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1926,8 +1873,7 @@
                 ],
                 "trap_tags": [
                   "等腰情况讨论"
-                ],
-                "strategy_hint": "几何性质与三角函数"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1959,8 +1905,7 @@
                 ],
                 "trap_tags": [
                   "坐标计算复杂"
-                ],
-                "strategy_hint": "向量垂直与坐标法"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -1992,8 +1937,7 @@
                 ],
                 "trap_tags": [
                   "夹角是锐角还是钝角"
-                ],
-                "strategy_hint": "夹角公式与半角"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2025,8 +1969,7 @@
                 ],
                 "trap_tags": [
                   "准线位置"
-                ],
-                "strategy_hint": "准线与渐近线交点"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2058,8 +2001,7 @@
                 ],
                 "trap_tags": [
                   "条件重复理解"
-                ],
-                "strategy_hint": "圆的几何性质"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2091,8 +2033,7 @@
                 ],
                 "trap_tags": [
                   "弦长公式记忆"
-                ],
-                "strategy_hint": "弦长与距离公式"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2124,8 +2065,7 @@
                 ],
                 "trap_tags": [
                   "面积正负讨论"
-                ],
-                "strategy_hint": "面积与坐标关系"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2157,8 +2097,7 @@
                 ],
                 "trap_tags": [
                   "范围边界判断"
-                ],
-                "strategy_hint": "距离和与不等式"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2190,8 +2129,7 @@
                 ],
                 "trap_tags": [
                   "距离公式计算"
-                ],
-                "strategy_hint": "圆与渐近线关系"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2223,8 +2161,7 @@
                 ],
                 "trap_tags": [
                   "坐标计算"
-                ],
-                "strategy_hint": "垂足坐标与直角条件"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2246,10 +2183,11 @@
               "4. 求解范围"
             ],
             "linked_weapons": [
-              "S-VIS-01",
-              "S-CONIC-04"
+              "S-CONIC-04",
+              "S-CONIC-08",
+              "S-CONIC-07"
             ],
-            "weapon_map_note": "S-VIS-01 (动态图像分析与临界态捕捉), S-CONIC-04 (几何不等式构造与边界分析)"
+            "weapon_guidance": "几何不等式构造+阿氏圆+参数方程：建立不等式求e范围，距离比用阿氏圆，最值问题用参数方程秒杀"
           },
           "variable_knobs": {
             "constraint_source": [
@@ -2330,8 +2268,7 @@
                 ],
                 "trap_tags": [
                   "忽略张角存在的几何条件"
-                ],
-                "strategy_hint": "面积公式与存在性分析"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2364,8 +2301,7 @@
                 ],
                 "trap_tags": [
                   "忽略三角形存在性条件"
-                ],
-                "strategy_hint": "定义与三角形不等式"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2398,8 +2334,7 @@
                 ],
                 "trap_tags": [
                   "忽略钝角位置讨论"
-                ],
-                "strategy_hint": "分类讨论钝角位置"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2432,8 +2367,7 @@
                 ],
                 "trap_tags": [
                   "忽略与渐近线平行的特殊情况"
-                ],
-                "strategy_hint": "位置关系分析"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2466,8 +2400,7 @@
                 ],
                 "trap_tags": [
                   "忽略焦半径的取值范围"
-                ],
-                "strategy_hint": "定义与不等式分析"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2500,8 +2433,7 @@
                 ],
                 "trap_tags": [
                   "夹角是锐角还是钝角"
-                ],
-                "strategy_hint": "夹角与斜率关系"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2534,8 +2466,7 @@
                 ],
                 "trap_tags": [
                   "混淆内部与外部条件"
-                ],
-                "strategy_hint": "点在内部的不等式"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2568,8 +2499,7 @@
                 ],
                 "trap_tags": [
                   "计算量较大"
-                ],
-                "strategy_hint": "向量与坐标法"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2602,8 +2532,7 @@
                 ],
                 "trap_tags": [
                   "忽略右支限制"
-                ],
-                "strategy_hint": "渐近线夹角分析"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2636,8 +2565,7 @@
                 ],
                 "trap_tags": [
                   "钝角位置分析"
-                ],
-                "strategy_hint": "对称性与角度分析"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2672,8 +2600,7 @@
                 "trap_tags": [
                   "内心坐标计算复杂",
                   "多条件联立"
-                ],
-                "strategy_hint": "内心坐标与圆内条件"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2707,8 +2634,7 @@
                 ],
                 "trap_tags": [
                   "面积最小值的几何意义"
-                ],
-                "strategy_hint": "参数法与最值分析"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2742,8 +2668,7 @@
                 "trap_tags": [
                   "半周长计算",
                   "恒成立条件"
-                ],
-                "strategy_hint": "内切圆半径公式与最值"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2778,8 +2703,7 @@
                 "trap_tags": [
                   "距离积的化简",
                   "存在性条件"
-                ],
-                "strategy_hint": "距离公式与双曲线方程"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2812,8 +2736,7 @@
                 ],
                 "trap_tags": [
                   "角平分线定理应用"
-                ],
-                "strategy_hint": "角平分线定理与定义"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2847,8 +2770,7 @@
                 ],
                 "trap_tags": [
                   "第三定义公式记忆"
-                ],
-                "strategy_hint": "第三定义直接应用"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2881,8 +2803,7 @@
                 ],
                 "trap_tags": [
                   "内心坐标计算复杂"
-                ],
-                "strategy_hint": "内心坐标与参数关系"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2915,8 +2836,7 @@
                 ],
                 "trap_tags": [
                   "焦点弦长公式"
-                ],
-                "strategy_hint": "焦点弦性质与不等式"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2951,8 +2871,7 @@
                 "trap_tags": [
                   "左右两支各一交点的条件",
                   "面积公式推导"
-                ],
-                "strategy_hint": "交点坐标与面积"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",
@@ -2985,8 +2904,7 @@
                 ],
                 "trap_tags": [
                   "数量积与焦半径关系"
-                ],
-                "strategy_hint": "向量与余弦定理结合"
+                ]
               },
               "specId": "V2",
               "specName": "几何特征与离心率博弈",

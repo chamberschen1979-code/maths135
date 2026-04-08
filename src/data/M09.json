@@ -20,7 +20,11 @@
               "2. 寻找辅助线 (中点/垂足)",
               "3. 应用判定定理",
               "4. 书写逻辑链条"
-            ]
+            ],
+            "linked_weapons": [
+              "S-GEO-01"
+            ],
+            "weapon_guidance": "补形模型：将不规则几何体补成正方体或长方体"
           },
           "variable_knobs": {
             "proof_target": [
@@ -101,8 +105,7 @@
                 ],
                 "trap_tags": [
                   "忘记证明两条相交直线"
-                ],
-                "strategy_hint": "利用正方体对角线垂直性质"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -135,8 +138,7 @@
                 ],
                 "trap_tags": [
                   "忽略线在面内条件"
-                ],
-                "strategy_hint": "先证线面垂直，再推面面垂直"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -170,8 +172,7 @@
                 ],
                 "trap_tags": [
                   "忘记说明线在面外"
-                ],
-                "strategy_hint": "找中点连中位线"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -205,8 +206,7 @@
                 ],
                 "trap_tags": [
                   "不会利用面面垂直性质"
-                ],
-                "strategy_hint": "利用面面垂直性质找垂线"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -239,8 +239,7 @@
                 ],
                 "trap_tags": [
                   "平移方向错误"
-                ],
-                "strategy_hint": "平移构造法：平移一线构成三角形，用余弦定理求角"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -274,8 +273,7 @@
                 ],
                 "trap_tags": [
                   "忽略翻折前后关系变化"
-                ],
-                "strategy_hint": "翻折前后垂直关系保持"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -308,8 +306,7 @@
                 ],
                 "trap_tags": [
                   "中心到顶点距离算错"
-                ],
-                "strategy_hint": "找射影构造直角三角形"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -340,8 +337,7 @@
                 ],
                 "trap_tags": [
                   "底面积计算错误"
-                ],
-                "strategy_hint": "直接套用体积公式"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -373,8 +369,7 @@
                 ],
                 "trap_tags": [
                   "中心位置计算错误"
-                ],
-                "strategy_hint": "利用勾股定理求高"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -406,8 +401,7 @@
                 ],
                 "trap_tags": [
                   "公式记错为1/3"
-                ],
-                "strategy_hint": "墙角模型体积公式V=(1/6)abc"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -440,16 +434,12 @@
                 ],
                 "trap_tags": [
                   "建系原点选错"
-                ],
-                "strategy_hint": "定义法/三垂线法：找棱的垂线，构造二面角的平面角"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L3_012",
@@ -477,16 +467,12 @@
                 ],
                 "trap_tags": [
                   "梯形坐标写错"
-                ],
-                "strategy_hint": "利用直角边建系"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L3_013",
@@ -513,16 +499,12 @@
                 ],
                 "trap_tags": [
                   "建系方向错误"
-                ],
-                "strategy_hint": "平移构造法：平移一线构成三角形，用余弦定理求角"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L3_014",
@@ -549,16 +531,12 @@
                 ],
                 "trap_tags": [
                   "斜切面面积算错"
-                ],
-                "strategy_hint": "等体积法转化"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L3_015",
@@ -586,16 +564,12 @@
                 ],
                 "trap_tags": [
                   "钝角判断错误"
-                ],
-                "strategy_hint": "根据图形直观判断锐钝"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L3_016",
@@ -623,16 +597,12 @@
                 ],
                 "trap_tags": [
                   "外心位置确定错误"
-                ],
-                "strategy_hint": "侧棱相等则射影为外心"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L3_017",
@@ -659,16 +629,12 @@
                 ],
                 "trap_tags": [
                   "不会分析动点规律"
-                ],
-                "strategy_hint": "分析动点坐标变化规律"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L3_018",
@@ -695,16 +661,12 @@
                 ],
                 "trap_tags": [
                   "截面形状判断错误"
-                ],
-                "strategy_hint": "三点确定截面"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L3_019",
@@ -731,16 +693,12 @@
                 ],
                 "trap_tags": [
                   "基底选择不当"
-                ],
-                "strategy_hint": "无垂直关系时用基底法"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L3_020",
@@ -767,16 +725,12 @@
                 ],
                 "trap_tags": [
                   "漏算新增侧面"
-                ],
-                "strategy_hint": "表面积=原表面积-挖掉+新增"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L4_021",
@@ -804,16 +758,12 @@
                 ],
                 "trap_tags": [
                   "方程解不存在的情况"
-                ],
-                "strategy_hint": "设参数列方程"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L4_022",
@@ -841,16 +791,12 @@
                 ],
                 "trap_tags": [
                   "方程无解的情况"
-                ],
-                "strategy_hint": "面面垂直转化为法向量点积为0"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L4_023",
@@ -877,16 +823,12 @@
                 ],
                 "trap_tags": [
                   "最小值条件判断错误"
-                ],
-                "strategy_hint": "两平面垂直时距离最小"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L4_024",
@@ -913,16 +855,12 @@
                 ],
                 "trap_tags": [
                   "轨迹范围确定错误"
-                ],
-                "strategy_hint": "利用抛物线定义"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L4_025",
@@ -949,16 +887,12 @@
                 ],
                 "trap_tags": [
                   "最高点判断错误"
-                ],
-                "strategy_hint": "体积最大即高最大"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L4_026",
@@ -985,16 +919,12 @@
                 ],
                 "trap_tags": [
                   "函数建立错误"
-                ],
-                "strategy_hint": "建立函数求导"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L4_027",
@@ -1022,16 +952,12 @@
                 ],
                 "trap_tags": [
                   "垂足位置计算错误"
-                ],
-                "strategy_hint": "用余弦定理强行建系"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L4_028",
@@ -1058,16 +984,12 @@
                 ],
                 "trap_tags": [
                   "公垂线位置找错"
-                ],
-                "strategy_hint": "异面直线距离=公垂线段长度"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L4_029",
@@ -1094,16 +1016,12 @@
                 ],
                 "trap_tags": [
                   "最值条件判断错误"
-                ],
-                "strategy_hint": "分析截面形状变化规律"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             },
             {
               "id": "M09_V1_1.1_L4_030",
@@ -1130,16 +1048,12 @@
                 ],
                 "trap_tags": [
                   "面积计算遗漏"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.1",
-              "varName": "平行垂直证明与空间角计算",
-              "weapons": [
-                "S-GEO-08"
-              ]
+              "varName": "平行垂直证明与空间角计算"
             }
           ]
         },
@@ -1153,7 +1067,11 @@
               "2. 写出点坐标与法向量",
               "3. 计算夹角余弦值",
               "4. 结合图形判定二面角"
-            ]
+            ],
+            "linked_weapons": [
+              "S-GEO-07"
+            ],
+            "weapon_guidance": "切片等积术：利用等体积法转换顶点，求高或距离"
           },
           "variable_knobs": {
             "angle_type": [
@@ -1227,16 +1145,12 @@
                 "trap_tags": [
                   "公式记错",
                   "半径代入顺序错误"
-                ],
-                "strategy_hint": "直接套用圆台体积公式"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             },
             {
               "id": "M09_V1_1.2_L2_002",
@@ -1264,8 +1178,7 @@
                 "trap_tags": [
                   "忘记乘2（两个底面）",
                   "正三角形面积公式记错"
-                ],
-                "strategy_hint": "表面积=侧面积+2×底面积"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -1298,8 +1211,7 @@
                 "trap_tags": [
                   "体积公式漏乘1/3",
                   "高识别错误"
-                ],
-                "strategy_hint": "垂直侧棱即为高"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -1331,8 +1243,7 @@
                 ],
                 "trap_tags": [
                   "展开图边长对应关系错误"
-                ],
-                "strategy_hint": "展开图一边=高，另一边=底面周长"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -1364,8 +1275,7 @@
                 ],
                 "trap_tags": [
                   "半圆柱漏乘1/2"
-                ],
-                "strategy_hint": "分割后分别计算再求和"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -1397,8 +1307,7 @@
                 ],
                 "trap_tags": [
                   "面积比公式记错"
-                ],
-                "strategy_hint": "原图面积=直观图面积×2√2"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -1431,8 +1340,7 @@
                 ],
                 "trap_tags": [
                   "未识别为正四面体"
-                ],
-                "strategy_hint": "六条棱相等即为正四面体"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -1464,8 +1372,7 @@
                 ],
                 "trap_tags": [
                   "公式记错为1/3"
-                ],
-                "strategy_hint": "墙角模型体积V=(1/6)abc"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -1498,8 +1405,7 @@
                 ],
                 "trap_tags": [
                   "圆心角弧度转换错误"
-                ],
-                "strategy_hint": "扇形弧长=圆锥底面周长"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -1531,8 +1437,7 @@
                 ],
                 "trap_tags": [
                   "球表面积公式记错"
-                ],
-                "strategy_hint": "R²=r²+d²（勾股定理）"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
@@ -1565,16 +1470,12 @@
                 "trap_tags": [
                   "母线计算错误",
                   "侧面积公式记错"
-                ],
-                "strategy_hint": "直角梯形旋转→圆台"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             },
             {
               "id": "M09_V1_1.2_L3_012",
@@ -1603,16 +1504,12 @@
                 "trap_tags": [
                   "补形法不熟练",
                   "方程组解错"
-                ],
-                "strategy_hint": "对棱相等→补形长方体"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             },
             {
               "id": "M09_V1_1.2_L3_013",
@@ -1640,16 +1537,12 @@
                 ],
                 "trap_tags": [
                   "三棱锥体积公式漏1/6"
-                ],
-                "strategy_hint": "截去部分是三棱锥"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             },
             {
               "id": "M09_V1_1.2_L3_014",
@@ -1676,16 +1569,12 @@
                 ],
                 "trap_tags": [
                   "展开图顶点对应关系错误"
-                ],
-                "strategy_hint": "展开图三个角折叠后重合"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             },
             {
               "id": "M09_V1_1.2_L3_015",
@@ -1713,16 +1602,12 @@
                 ],
                 "trap_tags": [
                   "体对角线与边长关系错误"
-                ],
-                "strategy_hint": "内接正方体体对角线=球直径"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             },
             {
               "id": "M09_V1_1.2_L3_016",
@@ -1750,16 +1635,12 @@
                 ],
                 "trap_tags": [
                   "旋转体形状判断错误"
-                ],
-                "strategy_hint": "正方形绕对角线旋转→双圆锥"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             },
             {
               "id": "M09_V1_1.2_L3_017",
@@ -1787,16 +1668,12 @@
                 ],
                 "trap_tags": [
                   "顶角与母线夹角关系错误"
-                ],
-                "strategy_hint": "轴截面顶角→母线与底面夹角"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             },
             {
               "id": "M09_V1_1.2_L3_018",
@@ -1824,16 +1701,12 @@
                 ],
                 "trap_tags": [
                   "圆锥高度计算错误"
-                ],
-                "strategy_hint": "圆柱体积-两个圆锥体积"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             },
             {
               "id": "M09_V1_1.2_L3_019",
@@ -1860,16 +1733,12 @@
                 ],
                 "trap_tags": [
                   "未识别底面积不变"
-                ],
-                "strategy_hint": "P在上底面边界→到下底面距离恒定"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             },
             {
               "id": "M09_V1_1.2_L3_020",
@@ -1897,16 +1766,12 @@
                 ],
                 "trap_tags": [
                   "平均高度法不熟练"
-                ],
-                "strategy_hint": "斜截圆柱体积=底面积×平均高度"
+                ]
               },
               "specId": "V1",
               "specName": "几何体的结构与运算",
               "varId": "1.2",
-              "varName": "表面积与体积的度量",
-              "weapons": [
-                ""
-              ]
+              "varName": "表面积与体积的度量"
             }
           ]
         }
@@ -1926,7 +1791,11 @@
               "2. 选择公式或方法 (等体积/割补)",
               "3. 计算关键量 (高/面积)",
               "4. 代入求解"
-            ]
+            ],
+            "linked_weapons": [
+              "S-GEO-06"
+            ],
+            "weapon_guidance": "双外心模型：解决面面垂直的几何体外接球半径计算"
           },
           "variable_knobs": {
             "metric_type": [
@@ -2010,16 +1879,12 @@
                 ],
                 "trap_tags": [
                   "球心位置判断错误"
-                ],
-                "strategy_hint": "正三棱锥球心在高线上"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L3_002",
@@ -2046,16 +1911,12 @@
                 ],
                 "trap_tags": [
                   "体对角线公式记错"
-                ],
-                "strategy_hint": "长方体体对角线=球直径"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L3_003",
@@ -2083,16 +1944,12 @@
                 ],
                 "trap_tags": [
                   "未识别直角三角形"
-                ],
-                "strategy_hint": "直角三角形+垂直侧棱→补形长方体"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L3_004",
@@ -2120,16 +1977,12 @@
                 ],
                 "trap_tags": [
                   "侧棱与底面夹角关系错误"
-                ],
-                "strategy_hint": "正棱锥球心在轴线上"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L3_005",
@@ -2157,16 +2010,12 @@
                 ],
                 "trap_tags": [
                   "外接圆半径算错"
-                ],
-                "strategy_hint": "侧棱相等则顶点射影为底面外心"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L3_006",
@@ -2194,16 +2043,12 @@
                 ],
                 "trap_tags": [
                   "翻折后几何关系不清"
-                ],
-                "strategy_hint": "直角顶点在球面上→球心在斜边中点"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-06"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L3_007",
@@ -2231,16 +2076,12 @@
                 ],
                 "trap_tags": [
                   "底面外接圆半径算错"
-                ],
-                "strategy_hint": "直棱柱外接球R²=r²+(h/2)²"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L3_008",
@@ -2267,16 +2108,12 @@
                 ],
                 "trap_tags": [
                   "轴截面对角线公式错误"
-                ],
-                "strategy_hint": "圆柱外接球直径=轴截面对角线"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L3_009",
@@ -2304,16 +2141,12 @@
                 ],
                 "trap_tags": [
                   "墙角模型公式记错"
-                ],
-                "strategy_hint": "墙角模型：2R=√(a²+b²+c²)"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L3_010",
@@ -2340,16 +2173,12 @@
                 ],
                 "trap_tags": [
                   "轴截面形状判断错误"
-                ],
-                "strategy_hint": "圆锥外接球看轴截面"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-04"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L4_011",
@@ -2377,16 +2206,12 @@
                 ],
                 "trap_tags": [
                   "二面角与球心位置关系不清"
-                ],
-                "strategy_hint": "翻折后找两个面的外心垂线交点"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-06"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L4_012",
@@ -2414,16 +2239,12 @@
                 ],
                 "trap_tags": [
                   "两个面的外心位置判断错误"
-                ],
-                "strategy_hint": "面面垂直时，分别找两个面的外心垂线"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L4_013",
@@ -2451,16 +2272,12 @@
                 ],
                 "trap_tags": [
                   "轨迹方程建立错误"
-                ],
-                "strategy_hint": "利用中线长公式建立轨迹方程"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L4_014",
@@ -2488,16 +2305,12 @@
                 ],
                 "trap_tags": [
                   "截面是否过球心判断错误"
-                ],
-                "strategy_hint": "利用对称性分析截面位置"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L4_015",
@@ -2525,16 +2338,12 @@
                 ],
                 "trap_tags": [
                   "球心坐标求错"
-                ],
-                "strategy_hint": "建系法求球心坐标"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L4_016",
@@ -2562,16 +2371,12 @@
                 ],
                 "trap_tags": [
                   "最值条件判断错误"
-                ],
-                "strategy_hint": "两两垂直时，等长时面积最大"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L4_017",
@@ -2599,16 +2404,12 @@
                 ],
                 "trap_tags": [
                   "旋转体形状判断错误"
-                ],
-                "strategy_hint": "旋转体外接球看轴截面"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L4_018",
@@ -2636,16 +2437,12 @@
                 ],
                 "trap_tags": [
                   "补形法不熟练"
-                ],
-                "strategy_hint": "对棱相等→补形长方体"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L4_019",
@@ -2673,16 +2470,12 @@
                 ],
                 "trap_tags": [
                   "高计算错误"
-                ],
-                "strategy_hint": "球心到截面的距离用勾股定理"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             },
             {
               "id": "M09_V2_2.1_L4_020",
@@ -2709,16 +2502,12 @@
                 ],
                 "trap_tags": [
                   "函数建立错误"
-                ],
-                "strategy_hint": "建立体积函数求导"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.1",
-              "varName": "外接球模型",
-              "weapons": [
-                "S-GEO-01"
-              ]
+              "varName": "外接球模型"
             }
           ]
         },
@@ -2732,7 +2521,11 @@
               "2. 匹配球体模型",
               "3. 确定球心位置",
               "4. 构建直角三角形求 R"
-            ]
+            ],
+            "linked_weapons": [
+              "S-GEO-04"
+            ],
+            "weapon_guidance": "轴截面模型：将立体问题转化为平面圆与三角形相切问题"
           },
           "variable_knobs": {
             "model_type": [
@@ -2815,8 +2608,7 @@
                 ],
                 "trap_tags": [
                   "直径与半径混淆"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
@@ -2849,8 +2641,7 @@
                 ],
                 "trap_tags": [
                   "公式记错"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
@@ -2882,8 +2673,7 @@
                 ],
                 "trap_tags": [
                   "表面积计算遗漏面"
-                ],
-                "strategy_hint": "墙角模型秒杀：补形为长方体，体对角线=球直径，R=√(a²+b²+c²)/2"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
@@ -2915,8 +2705,7 @@
                 ],
                 "trap_tags": [
                   "直径与高比较取小"
-                ],
-                "strategy_hint": "圆柱内最大球直径=min(底面直径,高)"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
@@ -2948,8 +2737,7 @@
                 ],
                 "trap_tags": [
                   "轴截面三角形边长算错"
-                ],
-                "strategy_hint": "轴截面降维：圆锥变三角形，圆台变梯形，内切圆半径=内切球半径"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
@@ -2981,8 +2769,7 @@
                 ],
                 "trap_tags": [
                   "直径取最长边"
-                ],
-                "strategy_hint": "长方体内最大球直径=最短边"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
@@ -3015,8 +2802,7 @@
                 ],
                 "trap_tags": [
                   "斜高计算错误"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
@@ -3048,8 +2834,7 @@
                 ],
                 "trap_tags": [
                   "正三棱柱内切球条件：高≥底面内切圆直径"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
@@ -3082,8 +2867,7 @@
                 ],
                 "trap_tags": [
                   "正八面体体积公式不熟"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
@@ -3115,8 +2899,7 @@
                 ],
                 "trap_tags": [
                   "半径与直径混淆"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
@@ -3149,16 +2932,12 @@
                 ],
                 "trap_tags": [
                   "圆台内切球条件不熟"
-                ],
-                "strategy_hint": "轴截面降维：圆锥变三角形，圆台变梯形，内切圆半径=内切球半径"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.2",
-              "varName": "内切球与相切问题",
-              "weapons": [
-                "S-GEO-07"
-              ]
+              "varName": "内切球与相切问题"
             },
             {
               "id": "M09_V2_2.2_L3_012",
@@ -3186,16 +2965,12 @@
                 ],
                 "trap_tags": [
                   "等边三角形内切圆半径公式"
-                ],
-                "strategy_hint": "轴截面降维：圆锥变三角形，圆台变梯形，内切圆半径=内切球半径"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.2",
-              "varName": "内切球与相切问题",
-              "weapons": [
-                "S-GEO-07"
-              ]
+              "varName": "内切球与相切问题"
             },
             {
               "id": "M09_V2_2.2_L3_013",
@@ -3222,16 +2997,12 @@
                 ],
                 "trap_tags": [
                   "面积计算错误"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.2",
-              "varName": "内切球与相切问题",
-              "weapons": [
-                "S-GEO-07"
-              ]
+              "varName": "内切球与相切问题"
             },
             {
               "id": "M09_V2_2.2_L3_014",
@@ -3259,16 +3030,12 @@
                 ],
                 "trap_tags": [
                   "角度与高关系错误"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.2",
-              "varName": "内切球与相切问题",
-              "weapons": [
-                "S-GEO-07"
-              ]
+              "varName": "内切球与相切问题"
             },
             {
               "id": "M09_V2_2.2_L3_015",
@@ -3296,16 +3063,12 @@
                 ],
                 "trap_tags": [
                   "展开图与圆锥参数对应错误"
-                ],
-                "strategy_hint": "轴截面降维：圆锥变三角形，圆台变梯形，内切圆半径=内切球半径"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.2",
-              "varName": "内切球与相切问题",
-              "weapons": [
-                "S-GEO-07"
-              ]
+              "varName": "内切球与相切问题"
             },
             {
               "id": "M09_V2_2.2_L3_016",
@@ -3333,16 +3096,12 @@
                 ],
                 "trap_tags": [
                   "高计算错误"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.2",
-              "varName": "内切球与相切问题",
-              "weapons": [
-                "S-GEO-07"
-              ]
+              "varName": "内切球与相切问题"
             },
             {
               "id": "M09_V2_2.2_L3_017",
@@ -3369,16 +3128,12 @@
                 ],
                 "trap_tags": [
                   "内切球条件不熟"
-                ],
-                "strategy_hint": "轴截面降维：圆锥变三角形，圆台变梯形，内切圆半径=内切球半径"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.2",
-              "varName": "内切球与相切问题",
-              "weapons": [
-                "S-GEO-07"
-              ]
+              "varName": "内切球与相切问题"
             },
             {
               "id": "M09_V2_2.2_L3_018",
@@ -3405,16 +3160,12 @@
                 ],
                 "trap_tags": [
                   "忽略球的半径"
-                ],
-                "strategy_hint": "多球堆叠→球心构成多面体"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.2",
-              "varName": "内切球与相切问题",
-              "weapons": [
-                "S-GEO-07"
-              ]
+              "varName": "内切球与相切问题"
             },
             {
               "id": "M09_V2_2.2_L3_019",
@@ -3442,16 +3193,12 @@
                 ],
                 "trap_tags": [
                   "斜高计算错误"
-                ],
-                "strategy_hint": "等体积法通杀：r=3V/S（V为体积，S为表面积）"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.2",
-              "varName": "内切球与相切问题",
-              "weapons": [
-                "S-GEO-07"
-              ]
+              "varName": "内切球与相切问题"
             },
             {
               "id": "M09_V2_2.2_L3_020",
@@ -3479,16 +3226,12 @@
                 ],
                 "trap_tags": [
                   "轨迹形状判断错误"
-                ],
-                "strategy_hint": "球心到相切面距离等于半径"
+                ]
               },
               "specId": "V2",
               "specName": "几何体的度量与组合",
               "varId": "2.2",
-              "varName": "内切球与相切问题",
-              "weapons": [
-                "S-GEO-07"
-              ]
+              "varName": "内切球与相切问题"
             }
           ]
         }

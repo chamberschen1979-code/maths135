@@ -19,7 +19,11 @@
               "3. 识别射影定理结构直接消元",
               "4. 三角恒等变换或代数化简"
             ],
-            "weapon_map_note": ""
+            "weapon_map_note": "",
+            "linked_weapons": [
+              "S-TRI-10"
+            ],
+            "weapon_guidance": "边角互化术：齐次式直接化简，非齐次式利用正弦定理统一变量"
           },
           "original_pool": [
             {
@@ -41,7 +45,6 @@
                 "直接计算"
               ],
               "quality_score": 92,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -61,7 +64,6 @@
                 "角度计算"
               ],
               "quality_score": 90,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -81,7 +83,6 @@
                 "钝角三角函数"
               ],
               "quality_score": 88,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -102,7 +103,6 @@
                 "特殊角"
               ],
               "quality_score": 90,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -124,7 +124,6 @@
                 "比例问题"
               ],
               "quality_score": 92,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -144,7 +143,6 @@
                 "外接圆"
               ],
               "quality_score": 88,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -165,7 +163,6 @@
                 "钝角"
               ],
               "quality_score": 86,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -187,7 +184,6 @@
                 "SSA多解"
               ],
               "quality_score": 90,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -208,7 +204,6 @@
                 "角度计算"
               ],
               "quality_score": 88,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -229,7 +224,6 @@
                 "SSA分类讨论"
               ],
               "quality_score": 92,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -251,10 +245,7 @@
                 "边角互化",
                 "三角恒等变换"
               ],
-              "quality_score": 95,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 95
             },
             {
               "id": "M07_V1_1.1_L3_012",
@@ -282,12 +273,8 @@
                 ],
                 "trap_tags": [
                   "直接约分忽略sin可能为0"
-                ],
-                "strategy_hint": "切化弦避免逻辑漏洞"
-              },
-              "weapons": [
-                "S-TRI-10"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V1_1.1_L3_013",
@@ -307,10 +294,7 @@
                 "正弦定理",
                 "形状判断"
               ],
-              "quality_score": 88,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 88
             },
             {
               "id": "M07_V1_1.1_L3_014",
@@ -337,12 +321,8 @@
                 ],
                 "trap_tags": [
                   "直接约分忽略sin可能为0"
-                ],
-                "strategy_hint": "切化弦避免逻辑漏洞"
-              },
-              "weapons": [
-                "S-TRI-10"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V1_1.1_L3_015",
@@ -361,10 +341,7 @@
                 "射影定理",
                 "边角关系"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.1_L3_016",
@@ -384,10 +361,7 @@
                 "余弦定理",
                 "平方差"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.1_L3_017",
@@ -410,10 +384,7 @@
                 "正弦定理",
                 "面积公式"
               ],
-              "quality_score": 88,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 88
             },
             {
               "id": "M07_V1_1.1_L3_018",
@@ -432,10 +403,7 @@
                 "辅助角公式",
                 "正弦定理"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.1_L3_019",
@@ -456,10 +424,7 @@
                 "面积公式",
                 "正切"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.1_L3_020",
@@ -479,10 +444,7 @@
                 "形状判断",
                 "和差化积"
               ],
-              "quality_score": 88,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 88
             },
             {
               "id": "M07_V1_1.1_L4_021",
@@ -502,8 +464,7 @@
                 "向量点积",
                 "面积"
               ],
-              "quality_score": 95,
-              "weapons": []
+              "quality_score": 95
             },
             {
               "id": "M07_V1_1.1_L4_022",
@@ -523,8 +484,7 @@
                 "余弦定理",
                 "最值"
               ],
-              "quality_score": 92,
-              "weapons": []
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.1_L4_023",
@@ -543,8 +503,7 @@
                 "正弦定理",
                 "差角公式"
               ],
-              "quality_score": 90,
-              "weapons": []
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.1_L4_024",
@@ -564,8 +523,7 @@
                 "余弦定理",
                 "范围问题"
               ],
-              "quality_score": 95,
-              "weapons": []
+              "quality_score": 95
             },
             {
               "id": "M07_V1_1.1_L4_025",
@@ -584,8 +542,7 @@
                 "正弦定理",
                 "范围问题"
               ],
-              "quality_score": 92,
-              "weapons": []
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.1_L4_026",
@@ -605,8 +562,7 @@
                 "余弦定理",
                 "形状判断"
               ],
-              "quality_score": 88,
-              "weapons": []
+              "quality_score": 88
             },
             {
               "id": "M07_V1_1.1_L4_027",
@@ -626,8 +582,7 @@
                 "和差化积",
                 "形状判断"
               ],
-              "quality_score": 90,
-              "weapons": []
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.1_L4_028",
@@ -647,8 +602,7 @@
                 "余弦定理",
                 "最值"
               ],
-              "quality_score": 92,
-              "weapons": []
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.1_L4_029",
@@ -667,8 +621,7 @@
                 "正弦定理",
                 "倍角公式"
               ],
-              "quality_score": 90,
-              "weapons": []
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.1_L4_030",
@@ -688,8 +641,7 @@
                 "范围问题",
                 "三角函数有界性"
               ],
-              "quality_score": 95,
-              "weapons": []
+              "quality_score": 95
             }
           ]
         },
@@ -703,7 +655,11 @@
               "3. 形状判定：等腰(边等/角等)、直角(勾股逆定理)、等边(三边相等)",
               "4. 范围问题：化边为角，利用三角函数有界性"
             ],
-            "weapon_map_note": ""
+            "weapon_map_note": "",
+            "linked_weapons": [
+              "S-TRI-09"
+            ],
+            "weapon_guidance": "基本不等式模型：利用a+b≥2√ab或余弦定理配合不等式求最值"
           },
           "original_pool": [
             {
@@ -723,7 +679,6 @@
                 "直接计算"
               ],
               "quality_score": 92,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -743,7 +698,6 @@
                 "特殊角"
               ],
               "quality_score": 90,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -764,7 +718,6 @@
                 "多解"
               ],
               "quality_score": 88,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -785,7 +738,6 @@
                 "周长"
               ],
               "quality_score": 88,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -806,7 +758,6 @@
                 "面积公式"
               ],
               "quality_score": 90,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -828,7 +779,6 @@
                 "周长"
               ],
               "quality_score": 88,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -848,7 +798,6 @@
                 "同角三角函数"
               ],
               "quality_score": 90,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -869,7 +818,6 @@
                 "勾股定理"
               ],
               "quality_score": 88,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -891,7 +839,6 @@
                 "余弦定理"
               ],
               "quality_score": 92,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -912,7 +859,6 @@
                 "余弦定理"
               ],
               "quality_score": 88,
-              "weapons": [],
               "meta": {}
             },
             {
@@ -932,10 +878,7 @@
                 "余弦定理",
                 "形状判断"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.2_L3_012",
@@ -954,10 +897,7 @@
                 "形状判断",
                 "直角三角形"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.2_L3_013",
@@ -978,10 +918,7 @@
                 "形状判断",
                 "倍角公式"
               ],
-              "quality_score": 95,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 95
             },
             {
               "id": "M07_V1_1.2_L3_014",
@@ -1002,10 +939,7 @@
                 "正切",
                 "形状判断"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.2_L3_015",
@@ -1027,10 +961,7 @@
                 "形状判断",
                 "等腰三角形"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.2_L3_016",
@@ -1051,10 +982,7 @@
                 "形状判断",
                 "等腰三角形"
               ],
-              "quality_score": 88,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 88
             },
             {
               "id": "M07_V1_1.2_L3_017",
@@ -1074,10 +1002,7 @@
                 "形状判断",
                 "等腰三角形"
               ],
-              "quality_score": 86,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 86
             },
             {
               "id": "M07_V1_1.2_L3_018",
@@ -1098,10 +1023,7 @@
                 "形状判断",
                 "等边三角形"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.2_L3_019",
@@ -1123,10 +1045,7 @@
                 "形状判断",
                 "等腰三角形"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.2_L3_020",
@@ -1148,10 +1067,7 @@
                 "形状判断",
                 "直角三角形"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-10"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.2_L4_021",
@@ -1178,10 +1094,8 @@
                 ],
                 "trap_tags": [
                   "死记硬背忽略钝角情况"
-                ],
-                "strategy_hint": "边化角后转化为三角函数单调性问题"
-              },
-              "weapons": []
+                ]
+              }
             },
             {
               "id": "M07_V1_1.2_L4_022",
@@ -1202,8 +1116,7 @@
                 "范围问题",
                 "正弦定理"
               ],
-              "quality_score": 92,
-              "weapons": []
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.2_L4_023",
@@ -1224,8 +1137,7 @@
                 "角的关系",
                 "倍角"
               ],
-              "quality_score": 95,
-              "weapons": []
+              "quality_score": 95
             },
             {
               "id": "M07_V1_1.2_L4_024",
@@ -1254,10 +1166,8 @@
                 ],
                 "trap_tags": [
                   "忽略A+B为定值这一隐含条件"
-                ],
-                "strategy_hint": "sinA+sinB在A=B时取最大值"
-              },
-              "weapons": []
+                ]
+              }
             },
             {
               "id": "M07_V1_1.2_L4_025",
@@ -1278,8 +1188,7 @@
                 "面积公式",
                 "形状判断"
               ],
-              "quality_score": 90,
-              "weapons": []
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.2_L4_026",
@@ -1300,8 +1209,7 @@
                 "周长最值",
                 "基本不等式"
               ],
-              "quality_score": 92,
-              "weapons": []
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.2_L4_027",
@@ -1322,8 +1230,7 @@
                 "范围问题",
                 "和差化积"
               ],
-              "quality_score": 95,
-              "weapons": []
+              "quality_score": 95
             },
             {
               "id": "M07_V1_1.2_L4_028",
@@ -1344,8 +1251,7 @@
                 "范围问题",
                 "锐角三角形"
               ],
-              "quality_score": 92,
-              "weapons": []
+              "quality_score": 92
             },
             {
               "id": "M07_V1_1.2_L4_029",
@@ -1365,8 +1271,7 @@
                 "最值问题",
                 "三角函数有界性"
               ],
-              "quality_score": 90,
-              "weapons": []
+              "quality_score": 90
             },
             {
               "id": "M07_V1_1.2_L4_030",
@@ -1387,8 +1292,7 @@
                 "面积公式",
                 "形状判断"
               ],
-              "quality_score": 88,
-              "weapons": []
+              "quality_score": 88
             }
           ]
         }
@@ -1408,7 +1312,11 @@
               "3. 范围求解：锐角/钝角三角形约束 + 三角函数有界性",
               "4. 验证边界条件是否满足三角形存在性"
             ],
-            "weapon_map_note": ""
+            "weapon_map_note": "",
+            "linked_weapons": [
+              "S-TRI-04"
+            ],
+            "weapon_guidance": "中线/角平分线公式：直接套公式计算特殊线段长度"
           },
           "original_pool": [
             {
@@ -1439,10 +1347,8 @@
                 "trap_tags": [
                   "向量夹角搞错",
                   "忘记开方取正值"
-                ],
-                "strategy_hint": "向量法直接出结果，跳过求BC中间步骤"
-              },
-              "weapons": []
+                ]
+              }
             },
             {
               "id": "M07_V2_2.1_L3_002",
@@ -1471,12 +1377,8 @@
                 "trap_tags": [
                   "公式记错",
                   "忘记半角公式转换"
-                ],
-                "strategy_hint": "角平分线长公式直接锁定半角余弦"
-              },
-              "weapons": [
-                "S-TRI-05"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V2_2.1_L3_003",
@@ -1497,8 +1399,7 @@
                 "余弦定理",
                 "面积公式"
               ],
-              "quality_score": 90,
-              "weapons": []
+              "quality_score": 90
             },
             {
               "id": "M07_V2_2.1_L3_004",
@@ -1519,8 +1420,7 @@
                 "勾股定理",
                 "比例分点"
               ],
-              "quality_score": 92,
-              "weapons": []
+              "quality_score": 92
             },
             {
               "id": "M07_V2_2.1_L3_005",
@@ -1539,8 +1439,7 @@
                 "锐角三角形",
                 "范围问题"
               ],
-              "quality_score": 92,
-              "weapons": []
+              "quality_score": 92
             },
             {
               "id": "M07_V2_2.1_L3_006",
@@ -1560,8 +1459,7 @@
                 "正弦定理",
                 "存在性讨论"
               ],
-              "quality_score": 90,
-              "weapons": []
+              "quality_score": 90
             },
             {
               "id": "M07_V2_2.1_L3_007",
@@ -1590,10 +1488,8 @@
                 "trap_tags": [
                   "向量夹角搞错",
                   "忘记开方取正值"
-                ],
-                "strategy_hint": "向量法直接出结果，跳过求BC中间步骤"
-              },
-              "weapons": []
+                ]
+              }
             },
             {
               "id": "M07_V2_2.1_L3_008",
@@ -1622,12 +1518,8 @@
                 "trap_tags": [
                   "公式记错",
                   "忘记半角公式转换"
-                ],
-                "strategy_hint": "角平分线长公式直接锁定半角余弦"
-              },
-              "weapons": [
-                "S-TRI-05"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V2_2.1_L3_009",
@@ -1646,8 +1538,7 @@
                 "外心",
                 "直角三角形"
               ],
-              "quality_score": 88,
-              "weapons": []
+              "quality_score": 88
             },
             {
               "id": "M07_V2_2.1_L3_010",
@@ -1668,8 +1559,7 @@
                 "外接圆",
                 "存在性讨论"
               ],
-              "quality_score": 92,
-              "weapons": []
+              "quality_score": 92
             },
             {
               "id": "M07_V2_2.1_L4_011",
@@ -1690,10 +1580,7 @@
                 "面积公式",
                 "三角函数有界性"
               ],
-              "quality_score": 95,
-              "weapons": [
-                "S-TRI-11"
-              ]
+              "quality_score": 95
             },
             {
               "id": "M07_V2_2.1_L4_012",
@@ -1713,10 +1600,7 @@
                 "范围问题",
                 "基本不等式"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-11"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V2_2.1_L4_013",
@@ -1744,12 +1628,8 @@
                 ],
                 "trap_tags": [
                   "忘记三角形不等式约束"
-                ],
-                "strategy_hint": "中线长公式结合三角形不等式"
-              },
-              "weapons": [
-                "S-TRI-11"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V2_2.1_L4_014",
@@ -1772,10 +1652,7 @@
                 "最值",
                 "三角形不等式"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-11"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V2_2.1_L4_015",
@@ -1795,10 +1672,7 @@
                 "余弦定理",
                 "范围问题"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-11"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V2_2.1_L4_016",
@@ -1831,12 +1705,8 @@
                 ],
                 "trap_tags": [
                   "重心与外心位置关系搞混"
-                ],
-                "strategy_hint": "将动点距离和转化为到重心的距离"
-              },
-              "weapons": [
-                "S-TRI-11"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V2_2.1_L4_017",
@@ -1866,12 +1736,8 @@
                 "trap_tags": [
                   "公式记错",
                   "忘记半角公式转换"
-                ],
-                "strategy_hint": "角平分线长公式直接锁定半角余弦范围"
-              },
-              "weapons": [
-                "S-TRI-11"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V2_2.1_L4_018",
@@ -1891,10 +1757,7 @@
                 "余弦定理",
                 "范围问题"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-11"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V2_2.1_L4_019",
@@ -1914,10 +1777,7 @@
                 "重心",
                 "距离最值"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-11"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V2_2.1_L4_020",
@@ -1945,12 +1805,8 @@
                 ],
                 "trap_tags": [
                   "死记硬背忽略钝角情况"
-                ],
-                "strategy_hint": "边化角后转化为三角函数单调性问题"
-              },
-              "weapons": [
-                "S-TRI-11"
-              ]
+                ]
+              }
             }
           ]
         },
@@ -1964,7 +1820,11 @@
               "3. 确定变量范围：三角形不等式 + 锐角/钝角约束",
               "4. 验证取等条件是否在定义域内可达到"
             ],
-            "weapon_map_note": ""
+            "weapon_map_note": "",
+            "linked_weapons": [
+              "S-TRI-08"
+            ],
+            "weapon_guidance": "三角换元：将代数最值转化为三角函数求值域"
           },
           "original_pool": [
             {
@@ -1994,12 +1854,8 @@
                 ],
                 "trap_tags": [
                   "忽略A+B为定值这一隐含条件"
-                ],
-                "strategy_hint": "sinA+sinB在A=B时取最大值"
-              },
-              "weapons": [
-                "S-TRI-09"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V2_2.2_L3_002",
@@ -2020,10 +1876,7 @@
                 "正弦定理",
                 "基本不等式"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V2_2.2_L3_003",
@@ -2044,10 +1897,7 @@
                 "正弦定理",
                 "和差化积"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V2_2.2_L3_004",
@@ -2069,10 +1919,7 @@
                 "面积最值",
                 "基本不等式"
               ],
-              "quality_score": 88,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 88
             },
             {
               "id": "M07_V2_2.2_L3_005",
@@ -2093,10 +1940,7 @@
                 "余弦定理",
                 "基本不等式"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V2_2.2_L3_006",
@@ -2115,10 +1959,7 @@
                 "面积最值",
                 "正弦有界性"
               ],
-              "quality_score": 88,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 88
             },
             {
               "id": "M07_V2_2.2_L3_007",
@@ -2139,10 +1980,7 @@
                 "余弦定理",
                 "基本不等式"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V2_2.2_L3_008",
@@ -2163,10 +2001,7 @@
                 "余弦定理",
                 "不等式"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V2_2.2_L3_009",
@@ -2185,10 +2020,7 @@
                 "面积最值",
                 "正弦有界性"
               ],
-              "quality_score": 86,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 86
             },
             {
               "id": "M07_V2_2.2_L3_010",
@@ -2209,10 +2041,7 @@
                 "余弦定理",
                 "特殊角"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V2_2.2_L4_011",
@@ -2241,12 +2070,8 @@
                 ],
                 "trap_tags": [
                   "忽略A+B为定值这一隐含条件"
-                ],
-                "strategy_hint": "sinA+sinB在A=B时取最大值"
-              },
-              "weapons": [
-                "S-TRI-08"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V2_2.2_L4_012",
@@ -2267,10 +2092,7 @@
                 "正弦定理",
                 "辅助角公式"
               ],
-              "quality_score": 95,
-              "weapons": [
-                "S-TRI-08"
-              ]
+              "quality_score": 95
             },
             {
               "id": "M07_V2_2.2_L4_013",
@@ -2291,10 +2113,7 @@
                 "余弦定理",
                 "三角恒等变换"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-08"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V2_2.2_L4_014",
@@ -2315,10 +2134,7 @@
                 "正弦定理",
                 "外接圆"
               ],
-              "quality_score": 90,
-              "weapons": [
-                "S-TRI-08"
-              ]
+              "quality_score": 90
             },
             {
               "id": "M07_V2_2.2_L4_015",
@@ -2347,12 +2163,8 @@
                 ],
                 "trap_tags": [
                   "忘记三角形约束"
-                ],
-                "strategy_hint": "权方和不等式秒杀分式最值"
-              },
-              "weapons": [
-                "S-TRI-09"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V2_2.2_L4_016",
@@ -2381,12 +2193,8 @@
                 ],
                 "trap_tags": [
                   "射影定理方向搞反"
-                ],
-                "strategy_hint": "射影定理将向量点积和瞬间转化为单边平方"
-              },
-              "weapons": [
-                "S-TRI-07"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V2_2.2_L4_017",
@@ -2407,10 +2215,7 @@
                 "面积公式",
                 "最值"
               ],
-              "quality_score": 92,
-              "weapons": [
-                "S-TRI-08"
-              ]
+              "quality_score": 92
             },
             {
               "id": "M07_V2_2.2_L3_018",
@@ -2430,10 +2235,7 @@
                 "直角三角形",
                 "恒等式"
               ],
-              "quality_score": 88,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 88
             },
             {
               "id": "M07_V2_2.2_L4_019",
@@ -2462,12 +2264,8 @@
                 ],
                 "trap_tags": [
                   "忘记三角形约束"
-                ],
-                "strategy_hint": "权方和不等式秒杀分式最值"
-              },
-              "weapons": [
-                "S-INEQ-07"
-              ]
+                ]
+              }
             },
             {
               "id": "M07_V2_2.2_L4_020",
@@ -2488,10 +2286,7 @@
                 "锐角三角形",
                 "余弦定理"
               ],
-              "quality_score": 95,
-              "weapons": [
-                "S-TRI-09"
-              ]
+              "quality_score": 95
             }
           ]
         }

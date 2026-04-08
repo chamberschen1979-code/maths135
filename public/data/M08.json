@@ -20,7 +20,11 @@
               "2. 观察下标/片段和结构",
               "3. 应用整体性质代换",
               "4. 验证特殊情形 (q=1, 符号)"
-            ]
+            ],
+            "linked_weapons": [
+              "S-SEQ-01"
+            ],
+            "weapon_guidance": "性质互化术：利用下标和性质快速计算"
           },
           "variable_knobs": {
             "property_type": [
@@ -100,8 +104,7 @@
                 "trap_tags": [
                   "方程列错",
                   "计算失误"
-                ],
-                "strategy_hint": "联立方程组求解a1和d"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -133,8 +136,7 @@
                 ],
                 "trap_tags": [
                   "忽略q可能为负"
-                ],
-                "strategy_hint": "由通项公式求公比"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -167,8 +169,7 @@
                 "trap_tags": [
                   "公式记错",
                   "计算失误"
-                ],
-                "strategy_hint": "先求d和a1，再用求和公式"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -200,8 +201,7 @@
                 ],
                 "trap_tags": [
                   "忽略各项为正的条件"
-                ],
-                "strategy_hint": "利用等比中项性质直接求解"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -234,8 +234,7 @@
                 ],
                 "trap_tags": [
                   "忘记片段和性质"
-                ],
-                "strategy_hint": "利用片段和性质避免求a1和d"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -268,8 +267,7 @@
                 ],
                 "trap_tags": [
                   "漏掉q为负的情况"
-                ],
-                "strategy_hint": "整体消去a1(1+q)"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -302,8 +300,7 @@
                 "trap_tags": [
                   "裂项公式记错",
                   "消元方向错误"
-                ],
-                "strategy_hint": "裂项相消求和"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -334,8 +331,7 @@
                 ],
                 "trap_tags": [
                   "性质记错"
-                ],
-                "strategy_hint": "利用下标和性质直接求解"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -367,8 +363,7 @@
                 ],
                 "trap_tags": [
                   "计算失误"
-                ],
-                "strategy_hint": "分组求和：等比部分和常数部分"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -401,8 +396,7 @@
                 ],
                 "trap_tags": [
                   "漏解"
-                ],
-                "strategy_hint": "将等差中项条件转化为方程"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -436,16 +430,12 @@
                 "trap_tags": [
                   "忘记验证n=1",
                   "递推方向错误"
-                ],
-                "strategy_hint": "利用Sn-Sn-1=an建立递推"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L3_012",
@@ -474,16 +464,12 @@
                 ],
                 "trap_tags": [
                   "忽略a1<0的条件"
-                ],
-                "strategy_hint": "利用Sn的对称性确定最值点"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L3_013",
@@ -513,16 +499,12 @@
                 "trap_tags": [
                   "忽略q=1情况",
                   "计算复杂出错"
-                ],
-                "strategy_hint": "代入等比求和公式建立方程"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L3_014",
@@ -550,16 +532,12 @@
                 ],
                 "trap_tags": [
                   "累加范围错误"
-                ],
-                "strategy_hint": "累加法求通项"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L3_015",
@@ -588,16 +566,12 @@
                 ],
                 "trap_tags": [
                   "忽略公差不为0的条件"
-                ],
-                "strategy_hint": "由等比中项条件确定公比"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L3_016",
@@ -625,16 +599,12 @@
                 ],
                 "trap_tags": [
                   "构造方向错误"
-                ],
-                "strategy_hint": "待定系数法构造等比"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L3_017",
@@ -664,16 +634,12 @@
                 ],
                 "trap_tags": [
                   "变号点判断错误"
-                ],
-                "strategy_hint": "先确定变号点，再分段求和"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L3_018",
@@ -700,16 +666,12 @@
                 ],
                 "trap_tags": [
                   "累乘范围错误"
-                ],
-                "strategy_hint": "累乘法求通项"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L3_019",
@@ -738,16 +700,12 @@
                 ],
                 "trap_tags": [
                   "计算失误"
-                ],
-                "strategy_hint": "利用性质简化计算"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L3_020",
@@ -774,16 +732,12 @@
                 ],
                 "trap_tags": [
                   "累加范围错误"
-                ],
-                "strategy_hint": "累加法求特定项"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L4_021",
@@ -813,14 +767,12 @@
                 "trap_tags": [
                   "忽略q=1情况",
                   "计算复杂出错"
-                ],
-                "strategy_hint": "代入等比求和公式建立高次方程"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": []
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L4_022",
@@ -849,14 +801,12 @@
                 ],
                 "trap_tags": [
                   "变号点判断错误"
-                ],
-                "strategy_hint": "由Sn的符号变化确定变号点"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": []
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L4_023",
@@ -884,14 +834,12 @@
                 ],
                 "trap_tags": [
                   "取整方向错误"
-                ],
-                "strategy_hint": "分析an的范围确定取整值"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": []
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L4_024",
@@ -922,14 +870,12 @@
                 ],
                 "trap_tags": [
                   "不等式方向错误"
-                ],
-                "strategy_hint": "由Sn最值条件确定变号点"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": []
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L4_025",
@@ -958,14 +904,12 @@
                 ],
                 "trap_tags": [
                   "忽略对所有n成立"
-                ],
-                "strategy_hint": "将新定义条件转化为不等式"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": []
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L4_026",
@@ -995,14 +939,12 @@
                 ],
                 "trap_tags": [
                   "放缩方向错误"
-                ],
-                "strategy_hint": "平方后放缩求下界"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": []
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L4_027",
@@ -1030,14 +972,12 @@
                 ],
                 "trap_tags": [
                   "忽略d=0的情况"
-                ],
-                "strategy_hint": "将条件转化为方程求解"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": []
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L4_028",
@@ -1065,14 +1005,12 @@
                 ],
                 "trap_tags": [
                   "忽略复数解"
-                ],
-                "strategy_hint": "利用前n项积与中项的关系"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": []
+              "varName": "基本量运算与性质组合"
             },
             {
               "id": "M08_V1_1.1_L4_030",
@@ -1101,14 +1039,12 @@
                 ],
                 "trap_tags": [
                   "忽略对称性"
-                ],
-                "strategy_hint": "利用等差数列的对称性"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.1",
-              "varName": "基本量运算与性质组合",
-              "weapons": []
+              "varName": "基本量运算与性质组合"
             }
           ]
         },
@@ -1122,7 +1058,11 @@
               "2. 求对称轴或 $a_n$ 变号点",
               "3. 寻找最近整数 $n$",
               "4. 验证单调性转折"
-            ]
+            ],
+            "linked_weapons": [
+              "S-SEQ-02"
+            ],
+            "weapon_guidance": "变号点分析法：通过aₙ≥0确定前n项和的最值位置"
           },
           "variable_knobs": {
             "optimization_target": [
@@ -1200,8 +1140,7 @@
                 ],
                 "trap_tags": [
                   "斜率正负判断错误"
-                ],
-                "strategy_hint": "一次函数斜率决定单调性"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -1232,8 +1171,7 @@
                 ],
                 "trap_tags": [
                   "忘记减去Sn-1"
-                ],
-                "strategy_hint": "an = Sn - Sn-1"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -1265,8 +1203,7 @@
                 ],
                 "trap_tags": [
                   "误认为有对称轴"
-                ],
-                "strategy_hint": "一次函数斜率为负时首项最大"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -1298,8 +1235,7 @@
                 ],
                 "trap_tags": [
                   "开口方向判断错误"
-                ],
-                "strategy_hint": "二次函数开口向上时轴处最小"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -1332,8 +1268,7 @@
                 ],
                 "trap_tags": [
                   "边界判断错误"
-                ],
-                "strategy_hint": "解不等式后取整数解"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -1365,8 +1300,7 @@
                 ],
                 "trap_tags": [
                   "系数关系记错"
-                ],
-                "strategy_hint": "Sn的n^2系数等于d/2"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -1398,8 +1332,7 @@
                 ],
                 "trap_tags": [
                   "单调性方向错误"
-                ],
-                "strategy_hint": "反比例函数在正半轴递减"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -1431,8 +1364,7 @@
                 ],
                 "trap_tags": [
                   "忽略末项为0的情况"
-                ],
-                "strategy_hint": "an变号点决定Sn最值"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -1465,8 +1397,7 @@
                 ],
                 "trap_tags": [
                   "忽略n=1是最苛刻条件"
-                ],
-                "strategy_hint": "差分后取n=1确定最苛刻条件"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -1499,8 +1430,7 @@
                 ],
                 "trap_tags": [
                   "忘记比较轴两侧整数"
-                ],
-                "strategy_hint": "对称轴两侧最近整数比较"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
@@ -1534,16 +1464,12 @@
                 "trap_tags": [
                   "忘记n为正整数",
                   "对称轴计算错误"
-                ],
-                "strategy_hint": "将Sn视为二次函数，利用对称轴定位"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L3_012",
@@ -1572,16 +1498,12 @@
                 "trap_tags": [
                   "忽略a1>0的条件",
                   "对称轴公式记错"
-                ],
-                "strategy_hint": "利用Sm=Sn的对称性直接确定对称轴"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L3_013",
@@ -1610,16 +1532,12 @@
                 ],
                 "trap_tags": [
                   "忘记比较轴两侧的整数点"
-                ],
-                "strategy_hint": "对称轴两侧最近的整数点需比较"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L3_014",
@@ -1647,16 +1565,12 @@
                 ],
                 "trap_tags": [
                   "变号点判断错误"
-                ],
-                "strategy_hint": "an变号点决定Sn最值位置"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L3_015",
@@ -1685,16 +1599,12 @@
                 ],
                 "trap_tags": [
                   "均值不等式取等条件"
-                ],
-                "strategy_hint": "利用对勾函数性质求分式最值"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L3_016",
@@ -1723,16 +1633,12 @@
                 ],
                 "trap_tags": [
                   "忽略符号交替"
-                ],
-                "strategy_hint": "分析等比数列的符号规律和绝对值变化"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L3_017",
@@ -1761,16 +1667,12 @@
                 ],
                 "trap_tags": [
                   "对称轴确定错误"
-                ],
-                "strategy_hint": "利用Sn的性质确定对称轴和最值"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L3_018",
@@ -1797,16 +1699,12 @@
                 ],
                 "trap_tags": [
                   "分式化简方向错误"
-                ],
-                "strategy_hint": "将分式化简为常数加反比例形式"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L3_019",
@@ -1833,16 +1731,12 @@
                 ],
                 "trap_tags": [
                   "误认为Tn有最小值点"
-                ],
-                "strategy_hint": "绝对值和恒正且递增，首项最小"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L3_020",
@@ -1870,16 +1764,12 @@
                 ],
                 "trap_tags": [
                   "Sn-Sn-1计算错误"
-                ],
-                "strategy_hint": "利用Sn-Sn-1=an求通项"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": [
-                "S-SEQ-01"
-              ]
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L4_021",
@@ -1908,14 +1798,12 @@
                 ],
                 "trap_tags": [
                   "忽略n=1是最苛刻条件"
-                ],
-                "strategy_hint": "利用差分an+1-an分析单调性"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": []
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L4_022",
@@ -1945,14 +1833,12 @@
                 ],
                 "trap_tags": [
                   "不等式方向错误"
-                ],
-                "strategy_hint": "由Sn最值条件确定变号点"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": []
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L4_023",
@@ -1983,14 +1869,12 @@
                 ],
                 "trap_tags": [
                   "忽略前几项的比较"
-                ],
-                "strategy_hint": "利用比值法分析单调性变化"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": []
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L4_024",
@@ -2019,14 +1903,12 @@
                 ],
                 "trap_tags": [
                   "忽略d≠0的条件"
-                ],
-                "strategy_hint": "由Sn最值条件确定an的符号"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": []
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L4_025",
@@ -2055,14 +1937,12 @@
                 ],
                 "trap_tags": [
                   "展开化简错误"
-                ],
-                "strategy_hint": "利用差分法分析单调性条件"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": []
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L4_026",
@@ -2091,14 +1971,12 @@
                 ],
                 "trap_tags": [
                   "忽略n可无限增大"
-                ],
-                "strategy_hint": "分析比值随n增大的变化趋势"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": []
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L4_027",
@@ -2127,14 +2005,12 @@
                 ],
                 "trap_tags": [
                   "忽略离散性"
-                ],
-                "strategy_hint": "分析对称轴与整数点的关系"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": []
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L4_028",
@@ -2163,14 +2039,12 @@
                 ],
                 "trap_tags": [
                   "边界判断错误"
-                ],
-                "strategy_hint": "利用对称轴到整数点的距离判断"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": []
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L4_029",
@@ -2200,14 +2074,12 @@
                 ],
                 "trap_tags": [
                   "忘记取最近整数"
-                ],
-                "strategy_hint": "利用对勾函数性质求分式最值"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": []
+              "varName": "数列的函数属性与最值"
             },
             {
               "id": "M08_V1_1.2_L4_030",
@@ -2236,14 +2108,12 @@
                 ],
                 "trap_tags": [
                   "忽略绝对值非负性"
-                ],
-                "strategy_hint": "寻找函数零点确定绝对值最小值"
+                ]
               },
               "specId": "V1",
               "specName": "等差与等比的性质",
               "varId": "1.2",
-              "varName": "数列的函数属性与最值",
-              "weapons": []
+              "varName": "数列的函数属性与最值"
             }
           ]
         }
@@ -2263,7 +2133,11 @@
               "2. 选择构造策略 (配凑/待定/取对数)",
               "3. 转化为等差/等比",
               "4. 还原通项并验证 n=1"
-            ]
+            ],
+            "linked_weapons": [
+              "S-SEQ-09"
+            ],
+            "weapon_guidance": "待定系数构造法：解决aₙ₊₁=paₙ+q类问题的通法"
           },
           "variable_knobs": {
             "recurrence_type": [
@@ -2348,8 +2222,7 @@
                 "trap_tags": [
                   "方程列错",
                   "计算失误"
-                ],
-                "strategy_hint": "联立方程组求解a1和d"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -2381,8 +2254,7 @@
                 ],
                 "trap_tags": [
                   "忽略q可能为负"
-                ],
-                "strategy_hint": "由通项公式求公比"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -2415,8 +2287,7 @@
                 "trap_tags": [
                   "公式记错",
                   "计算失误"
-                ],
-                "strategy_hint": "先求d和a1，再用求和公式"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -2448,8 +2319,7 @@
                 ],
                 "trap_tags": [
                   "忽略各项为正的条件"
-                ],
-                "strategy_hint": "利用等比中项性质直接求解"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -2482,8 +2352,7 @@
                 ],
                 "trap_tags": [
                   "忘记片段和性质"
-                ],
-                "strategy_hint": "利用片段和性质避免求a1和d"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -2516,8 +2385,7 @@
                 ],
                 "trap_tags": [
                   "漏掉q为负的情况"
-                ],
-                "strategy_hint": "整体消去a1(1+q)"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -2550,8 +2418,7 @@
                 "trap_tags": [
                   "裂项公式记错",
                   "消元方向错误"
-                ],
-                "strategy_hint": "裂项相消求和"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -2582,8 +2449,7 @@
                 ],
                 "trap_tags": [
                   "性质记错"
-                ],
-                "strategy_hint": "利用下标和性质直接求解"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -2615,8 +2481,7 @@
                 ],
                 "trap_tags": [
                   "计算失误"
-                ],
-                "strategy_hint": "分组求和：等比部分和常数部分"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -2649,8 +2514,7 @@
                 ],
                 "trap_tags": [
                   "漏解"
-                ],
-                "strategy_hint": "将等差中项条件转化为方程"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -2684,14 +2548,12 @@
                 "trap_tags": [
                   "忘记验证n=1",
                   "递推方向错误"
-                ],
-                "strategy_hint": "利用Sn-Sn-1=an建立递推"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": []
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L3_012",
@@ -2720,14 +2582,12 @@
                 ],
                 "trap_tags": [
                   "忽略a1<0的条件"
-                ],
-                "strategy_hint": "利用Sn的对称性确定最值点"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": []
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L3_013",
@@ -2757,14 +2617,12 @@
                 "trap_tags": [
                   "忽略q=1情况",
                   "计算复杂出错"
-                ],
-                "strategy_hint": "代入等比求和公式建立方程"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": []
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L3_014",
@@ -2792,14 +2650,12 @@
                 ],
                 "trap_tags": [
                   "累加范围错误"
-                ],
-                "strategy_hint": "累加法求通项"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": []
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L3_015",
@@ -2828,14 +2684,12 @@
                 ],
                 "trap_tags": [
                   "忽略公差不为0的条件"
-                ],
-                "strategy_hint": "由等比中项条件确定公差与首项关系"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": []
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L3_016",
@@ -2863,14 +2717,12 @@
                 ],
                 "trap_tags": [
                   "构造方向错误"
-                ],
-                "strategy_hint": "待定系数法构造等比"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": []
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L3_017",
@@ -2900,14 +2752,12 @@
                 ],
                 "trap_tags": [
                   "变号点判断错误"
-                ],
-                "strategy_hint": "先确定变号点，再分段求和"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": []
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L3_018",
@@ -2934,14 +2784,12 @@
                 ],
                 "trap_tags": [
                   "累乘范围错误"
-                ],
-                "strategy_hint": "累乘法求通项"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": []
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L3_019",
@@ -2969,14 +2817,12 @@
                 ],
                 "trap_tags": [
                   "计算失误"
-                ],
-                "strategy_hint": "利用性质简化计算"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": []
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L3_020",
@@ -3003,14 +2849,12 @@
                 ],
                 "trap_tags": [
                   "累加范围错误"
-                ],
-                "strategy_hint": "累加法求特定项"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": []
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L4_021",
@@ -3040,16 +2884,12 @@
                 "trap_tags": [
                   "忽略q=1情况",
                   "计算复杂出错"
-                ],
-                "strategy_hint": "代入等比求和公式建立高次方程"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": [
-                "S-SEQ-09"
-              ]
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L4_022",
@@ -3078,16 +2918,12 @@
                 ],
                 "trap_tags": [
                   "变号点判断错误"
-                ],
-                "strategy_hint": "由Sn的符号变化确定变号点"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": [
-                "S-SEQ-09"
-              ]
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L4_023",
@@ -3115,16 +2951,12 @@
                 ],
                 "trap_tags": [
                   "取整方向错误"
-                ],
-                "strategy_hint": "分析an的范围确定取整值"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": [
-                "S-SEQ-09"
-              ]
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L4_024",
@@ -3154,16 +2986,12 @@
                 ],
                 "trap_tags": [
                   "不等式方向错误"
-                ],
-                "strategy_hint": "由Sn最值条件确定变号点"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": [
-                "S-SEQ-09"
-              ]
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L4_025",
@@ -3192,16 +3020,12 @@
                 ],
                 "trap_tags": [
                   "忽略对所有n成立"
-                ],
-                "strategy_hint": "将新定义条件转化为不等式"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": [
-                "S-SEQ-09"
-              ]
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L4_026",
@@ -3231,16 +3055,12 @@
                 ],
                 "trap_tags": [
                   "放缩方向错误"
-                ],
-                "strategy_hint": "平方后放缩求下界"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": [
-                "S-SEQ-09"
-              ]
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L4_027",
@@ -3268,16 +3088,12 @@
                 ],
                 "trap_tags": [
                   "忽略d=0的情况"
-                ],
-                "strategy_hint": "将条件转化为方程求解"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": [
-                "S-SEQ-09"
-              ]
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L4_028",
@@ -3305,16 +3121,12 @@
                 ],
                 "trap_tags": [
                   "忽略复数解"
-                ],
-                "strategy_hint": "利用前n项积与中项的关系"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": [
-                "S-SEQ-09"
-              ]
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L4_029",
@@ -3343,16 +3155,12 @@
                 ],
                 "trap_tags": [
                   "求和方向错误"
-                ],
-                "strategy_hint": "利用递推关系相间求和"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": [
-                "S-SEQ-09"
-              ]
+              "varName": "递推公式求通项"
             },
             {
               "id": "M08_V2_2.1_L4_030",
@@ -3381,16 +3189,12 @@
                 ],
                 "trap_tags": [
                   "忽略对称性"
-                ],
-                "strategy_hint": "利用等差数列的对称性"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.1",
-              "varName": "递推公式求通项",
-              "weapons": [
-                "S-SEQ-09"
-              ]
+              "varName": "递推公式求通项"
             }
           ]
         },
@@ -3404,7 +3208,11 @@
               "2. 选择求和方法 (裂项/错位/并项)",
               "3. 执行消去操作",
               "4. 检查剩余项 (首尾/中间)"
-            ]
+            ],
+            "linked_weapons": [
+              "S-SEQ-04"
+            ],
+            "weapon_guidance": "裂项相消法：分式数列求和的首选，注意留头去尾"
           },
           "variable_knobs": {
             "summation_type": [
@@ -3488,8 +3296,7 @@
                 ],
                 "trap_tags": [
                   "裂项公式记错"
-                ],
-                "strategy_hint": "标准裂项：1/k(k+1) = 1/k - 1/(k+1)"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -3522,8 +3329,7 @@
                 "trap_tags": [
                   "错位位置错误",
                   "计算失误"
-                ],
-                "strategy_hint": "错位相减法求等差乘等比数列和"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -3555,8 +3361,7 @@
                 ],
                 "trap_tags": [
                   "分组错误"
-                ],
-                "strategy_hint": "分组求和：等比部分和等差部分分开"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -3587,8 +3392,7 @@
                 ],
                 "trap_tags": [
                   "裂项系数错误"
-                ],
-                "strategy_hint": "裂项：1/((2n-1)(2n+1)) = 1/2(1/(2n-1) - 1/(2n+1))"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -3620,8 +3424,7 @@
                 ],
                 "trap_tags": [
                   "计算复杂出错"
-                ],
-                "strategy_hint": "错位相减法处理n乘3^n型"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -3652,8 +3455,7 @@
                 ],
                 "trap_tags": [
                   "有理化方向错误"
-                ],
-                "strategy_hint": "根式裂项：分母有理化后裂项"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -3685,8 +3487,7 @@
                 ],
                 "trap_tags": [
                   "计算失误"
-                ],
-                "strategy_hint": "错位相减法处理n乘(1/2)^n型"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -3718,8 +3519,7 @@
                 ],
                 "trap_tags": [
                   "裂项公式记错"
-                ],
-                "strategy_hint": "标准裂项：1/(n(n+1)) = 1/n - 1/(n+1)"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -3751,8 +3551,7 @@
                 ],
                 "trap_tags": [
                   "计算失误"
-                ],
-                "strategy_hint": "分组求和：n的部分和2^n的部分"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -3784,8 +3583,7 @@
                 ],
                 "trap_tags": [
                   "裂项系数错误"
-                ],
-                "strategy_hint": "等差数列裂项"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
@@ -3818,14 +3616,12 @@
                 ],
                 "trap_tags": [
                   "变号点判断错误"
-                ],
-                "strategy_hint": "先确定变号点，再分段求和"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": []
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L3_012",
@@ -3852,14 +3648,12 @@
                 ],
                 "trap_tags": [
                   "裂项后剩余项数错"
-                ],
-                "strategy_hint": "隔项裂项：1/(n(n+2)) = 1/2(1/n - 1/(n+2))"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": []
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L3_013",
@@ -3886,16 +3680,12 @@
                 ],
                 "trap_tags": [
                   "拆分错误"
-                ],
-                "strategy_hint": "先裂项再错位相减"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-04"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L3_014",
@@ -3923,14 +3713,12 @@
                 ],
                 "trap_tags": [
                   "配对方向错误"
-                ],
-                "strategy_hint": "并项求和：相邻两项配对"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": []
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L3_015",
@@ -3957,14 +3745,12 @@
                 ],
                 "trap_tags": [
                   "化简错误"
-                ],
-                "strategy_hint": "根式裂项：有理化后裂项"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": []
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L3_016",
@@ -3992,14 +3778,12 @@
                 ],
                 "trap_tags": [
                   "分段错误"
-                ],
-                "strategy_hint": "按奇偶分段求和"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": []
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L3_017",
@@ -4025,14 +3809,12 @@
                 ],
                 "trap_tags": [
                   "对数运算错误"
-                ],
-                "strategy_hint": "对数裂项：log2((n+1)/n)"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": []
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L3_018",
@@ -4059,14 +3841,12 @@
                 ],
                 "trap_tags": [
                   "拆分错误"
-                ],
-                "strategy_hint": "平方差裂项：1/n^2 - 1/(n+1)^2"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": []
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L3_019",
@@ -4094,14 +3874,12 @@
                 ],
                 "trap_tags": [
                   "周期判断错误"
-                ],
-                "strategy_hint": "识别周期，求和"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": []
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L3_020",
@@ -4128,14 +3906,12 @@
                 ],
                 "trap_tags": [
                   "因式分解错误"
-                ],
-                "strategy_hint": "裂项：1/((k+1)(k+2))"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": []
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_021",
@@ -4162,16 +3938,12 @@
                 ],
                 "trap_tags": [
                   "放缩方向错误"
-                ],
-                "strategy_hint": "利用a_k ≤ 1/2^(k-1)放缩"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-07"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_022",
@@ -4199,16 +3971,12 @@
                 ],
                 "trap_tags": [
                   "放缩不够紧"
-                ],
-                "strategy_hint": "利用1/k^2 < 1/(k(k-1))裂项放缩"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-07"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_024",
@@ -4236,16 +4004,12 @@
                 ],
                 "trap_tags": [
                   "化简复杂出错"
-                ],
-                "strategy_hint": "两步裂项：先求a_n，再求b_n，最后求和"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-07"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_025",
@@ -4273,16 +4037,12 @@
                 ],
                 "trap_tags": [
                   "分段点判断错误"
-                ],
-                "strategy_hint": "先确定a_k-1的符号变化点"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-07"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_026",
@@ -4311,16 +4071,12 @@
                 ],
                 "trap_tags": [
                   "极限求错"
-                ],
-                "strategy_hint": "对数裂项后求极限"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-07"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_027",
@@ -4348,16 +4104,12 @@
                 ],
                 "trap_tags": [
                   "数量级判断错误"
-                ],
-                "strategy_hint": "裂项后识别调和级数"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-07"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_029",
@@ -4385,16 +4137,12 @@
                 ],
                 "trap_tags": [
                   "推导复杂出错"
-                ],
-                "strategy_hint": "利用递推关系进行估计"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-07"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_030",
@@ -4422,16 +4170,12 @@
                 ],
                 "trap_tags": [
                   "放缩方向错误"
-                ],
-                "strategy_hint": "利用n·2^n ≥ 2^n放缩"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-07"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_031",
@@ -4459,16 +4203,12 @@
                 ],
                 "trap_tags": [
                   "项数计算错误"
-                ],
-                "strategy_hint": "利用S-SEQ-06奇偶并项法"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-08"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_032",
@@ -4495,16 +4235,12 @@
                 ],
                 "trap_tags": [
                   "裂项方向错误"
-                ],
-                "strategy_hint": "利用S-SEQ-04裂项后直接得结论"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-07"
-              ]
+              "varName": "复杂结构求和技巧"
             },
             {
               "id": "M08_V2_2.2_L4_033",
@@ -4533,16 +4269,12 @@
                 ],
                 "trap_tags": [
                   "有理化方向错误"
-                ],
-                "strategy_hint": "根式裂项需要特殊处理"
+                ]
               },
               "specId": "V2",
               "specName": "通项构造与求和",
               "varId": "2.2",
-              "varName": "复杂结构求和技巧",
-              "weapons": [
-                "S-SEQ-07"
-              ]
+              "varName": "复杂结构求和技巧"
             }
           ]
         }

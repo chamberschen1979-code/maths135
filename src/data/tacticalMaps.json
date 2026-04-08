@@ -431,29 +431,29 @@
           "specialties": [
             {
               "spec_id": "V1",
-              "spec_name": "导数切线专项",
+              "spec_name": "导数的几何意义",
               "variations": [
                 {
                   "var_id": "1.1",
-                  "name": "求曲线'过'某点（非切点）的切线"
+                  "name": "导数的几何意义与切线方程"
                 },
                 {
                   "var_id": "1.2",
-                  "name": "公切线与已知切线反求参数"
+                  "name": "公切线问题与切线综合"
                 }
               ]
             },
             {
               "spec_id": "V2",
-              "spec_name": "单调性与参数讨论专项",
+              "spec_name": "导数与单调性/最值",
               "variations": [
                 {
                   "var_id": "2.1",
-                  "name": "含参函数单调性讨论"
+                  "name": "含参函数的单调性讨论"
                 },
                 {
                   "var_id": "2.2",
-                  "name": "已知单调性/最值逆求参数"
+                  "name": "恒成立与存在性问题（参数范围）"
                 }
               ]
             }
@@ -510,14 +510,43 @@
       "encounters": [
         {
           "target_id": "M13",
-          "target_name": "解析几何综合压轴",
+          "target_name": "解析几何综合",
           "grades": [
             "高三"
           ],
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "联立的艺术与结构化消元",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "直线与圆锥曲线的联立基石"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "几何关系的代数翻译"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "定点定值与动态最值",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "定点、定值与动态平衡"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "最值、范围与存在性讨论"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M14",
@@ -528,7 +557,50 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "极值点偏移与双变量",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "极值点偏移与对称化构造"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "双变量不等式与齐次化/比值代换"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "隐零点代换与估值",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "隐零点存在性与整体代换"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "隐零点区间夹逼与整数估算"
+                }
+              ]
+            },
+            {
+              "spec_id": "V3",
+              "spec_name": "同构法与指对跨阶",
+              "variations": [
+                {
+                  "var_id": "3.1",
+                  "name": "指对同构与函数构造"
+                },
+                {
+                  "var_id": "3.2",
+                  "name": "切线放缩与经典不等式链"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M15",
@@ -539,7 +611,36 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "离散函数的深层性状",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "递推数列的函数特性与不动点"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "周期、对称与离散结构不变性"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "数列不等式的放缩艺术",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "求和不等式的放缩与证明"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "数学归纳法与逻辑闭环"
+                }
+              ]
+            }
+          ]
         },
         {
           "target_id": "M16",
@@ -561,7 +662,7 @@
                 },
                 {
                   "var_id": "1.2",
-                  "name": "复杂情境与正难则反"
+                  "name": "复杂情境与逻辑构造"
                 }
               ]
             },
@@ -575,7 +676,7 @@
                 },
                 {
                   "var_id": "2.2",
-                  "name": "高阶构造与整除证明"
+                  "name": "高阶构造与组合恒等式"
                 }
               ]
             }
@@ -590,7 +691,36 @@
           "elo_score": 800,
           "gear_level": "L1",
           "health_status": "unknown",
-          "specialties": []
+          "specialties": [
+            {
+              "spec_id": "V1",
+              "spec_name": "新定义与结构迁移",
+              "variations": [
+                {
+                  "var_id": "1.1",
+                  "name": "集合与代数类新定义"
+                },
+                {
+                  "var_id": "1.2",
+                  "name": "函数与几何类新定义"
+                }
+              ]
+            },
+            {
+              "spec_id": "V2",
+              "spec_name": "数学文化与逻辑建模",
+              "variations": [
+                {
+                  "var_id": "2.1",
+                  "name": "古典名著情境与模型重构"
+                },
+                {
+                  "var_id": "2.2",
+                  "name": "离散决策与逻辑推理"
+                }
+              ]
+            }
+          ]
         }
       ]
     }

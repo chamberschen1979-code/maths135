@@ -6,132 +6,66 @@ import weaponDetails from '../data/weapon_details.json'
 import CertificationExam from './strategy/CertificationExam'
 import InsightModal from './strategy/InsightModal'
 
-const RANK_LABELS = {
-  killer: '杀手锏',
-  advanced: '进阶',
-  basic: '基础'
+const MOTIF_CATEGORIES = {
+  'M01': { id: 'M01', name: '集合逻辑...', fullName: 'M01-集合、逻辑用语与复数' },
+  'M02': { id: 'M02', name: '不等式...', fullName: 'M02-不等式性质' },
+  'M03': { id: 'M03', name: '函数概念...', fullName: 'M03-函数概念与性质' },
+  'M04': { id: 'M04', name: '指数对数...', fullName: 'M04-指数与对数' },
+  'M05': { id: 'M05', name: '平面向量...', fullName: 'M05-平面向量' },
+  'M06': { id: 'M06', name: '三角函数...', fullName: 'M06-三角函数' },
+  'M07': { id: 'M07', name: '解三角形...', fullName: 'M07-解三角形' },
+  'M08': { id: 'M08', name: '数列基础...', fullName: 'M08-数列基础' },
+  'M09': { id: 'M09', name: '立体几何...', fullName: 'M09-立体几何' },
+  'M10': { id: 'M10', name: '圆锥曲线...', fullName: 'M10-圆锥曲线' },
+  'M11': { id: 'M11', name: '导数基础...', fullName: 'M11-导数基础' },
+  'M12': { id: 'M12', name: '概率统计...', fullName: 'M12-概率与统计' },
+  'M13': { id: 'M13', name: '解析几何...', fullName: 'M13-解析几何' },
+  'M14': { id: 'M14', name: '导数综合...', fullName: 'M14-导数综合压轴' },
+  'M15': { id: 'M15', name: '数列综合...', fullName: 'M15-数列综合压轴' },
+  'M16': { id: 'M16', name: '排列组合...', fullName: 'M16-排列组合与概率' },
+  'M17': { id: 'M17', name: '创新思维...', fullName: 'M17-创新思维与情境' },
 }
 
-const RANK_COLORS = {
-  killer: 'bg-amber-100 text-amber-700 border-amber-200',
-  advanced: 'bg-purple-100 text-purple-700 border-purple-200',
-  basic: 'bg-blue-100 text-blue-700 border-blue-200'
+const extractWeaponName = (weaponId, detail) => {
+  const coreLogic = detail.coreLogic || ''
+  const match = coreLogic.match(/^([^：：]+)/)
+  if (match) {
+    return match[1].trim()
+  }
+  return weaponId
 }
 
-const WEAPON_NAMES = {
-  'S-SET-01': '空集陷阱自动检测',
-  'S-FUNC-02': '同增异减',
-  'S-FUNC-04': '零点个数=交点个数',
-  'S-TRIG-02': '图象变换铁律',
-  'S-VEC-04': '建系策略',
-  'S-VEC-01': '投影向量',
-  'S-VEC-05': '极化恒等式',
-  'S-SEQ-01': '下标和性质',
-  'S-SEQ-02': 'Sn最值(二次函数)',
-  'S-SEQ-04': '求和三法',
-  'S-SEQ-08': '特征根法',
-  'S-SEQ-09': '不动点法',
-  'S-SEQ-10': '切线放缩',
-  'S-GEO-02': '建系秒杀',
-  'S-GEO-03': '等体积法',
-  'S-PROB-01': '概率树/全概率',
-  'S-CONIC-02': '焦点三角形面积',
-  'S-CONIC-05': '仿射变换',
-  'S-CONIC-06': '齐次化联立',
-  'S-CONIC-07': '参数方程',
-  'S-DERIV-03': '含参讨论通法',
-  'S-DERIV-04': '端点效应',
-  'S-DERIV-09': '洛必达法则',
-  'S-DERIV-10': '极值点偏移(比值代换)',
-  'S-DERIV-11': '对数平均不等式',
-  'S-INEQ-02': '乘1法',
-  'S-INEQ-05': '琴生不等式',
-  'S-INEQ-06': '柯西不等式',
-  'S-INEQ-07': '权方和不等式',
-  'S-INEQ-08': '赫尔德不等式',
-  'S-INEQ-09': '切比雪夫不等式',
-  'S-INEQ-10': '均值不等式链',
-  'S-TRIG-01': '配角公式',
-  'S-TRIG-03': '化边为角',
-  'S-TRI-04': '中线/角平分线',
-  'S-FUNC-05': '双对称推周期',
-  'S-FUNC-06': '脱壳法',
-  'S-FUNC-08': '复合零点(剥洋葱)',
-  'S-LOG-02': '指对同构',
-  'S-LOG-05': '对数平均不等式',
+const extractWeaponDescription = (detail) => {
+  const coreLogic = detail.coreLogic || ''
+  const colonIndex = coreLogic.indexOf('：')
+  if (colonIndex !== -1) {
+    return coreLogic.slice(colonIndex + 1).slice(0, 100)
+  }
+  return coreLogic.slice(0, 100)
 }
 
-const WEAPON_CATEGORIES = {
-  'S-SET': { id: 'S-SET', name: '集合与逻辑思维' },
-  'S-FUNC': { id: 'S-FUNC', name: '函数思维' },
-  'S-TRIG': { id: 'S-TRIG', name: '三角函数思维' },
-  'S-VEC': { id: 'S-VEC', name: '平面向量思维' },
-  'S-SEQ': { id: 'S-SEQ', name: '数列思维' },
-  'S-GEO': { id: 'S-GEO', name: '立体几何思维' },
-  'S-PROB': { id: 'S-PROB', name: '概率统计思维' },
-  'S-CONIC': { id: 'S-CONIC', name: '圆锥曲线思维' },
-  'S-DERIV': { id: 'S-DERIV', name: '导数思维' },
-  'S-INEQ': { id: 'S-INEQ', name: '不等式思维' },
-  'S-TRI': { id: 'S-TRI', name: '解三角形思维' },
-  'S-LOG': { id: 'S-LOG', name: '指对数函数思维' },
+const getCategoryColor = (motifId) => {
+  const colors = {
+    'M01': { bg: 'bg-blue-100', text: 'text-blue-700', active: 'bg-blue-600' },
+    'M02': { bg: 'bg-purple-100', text: 'text-purple-700', active: 'bg-purple-600' },
+    'M03': { bg: 'bg-indigo-100', text: 'text-indigo-700', active: 'bg-indigo-600' },
+    'M04': { bg: 'bg-orange-100', text: 'text-orange-700', active: 'bg-orange-600' },
+    'M05': { bg: 'bg-teal-100', text: 'text-teal-700', active: 'bg-teal-600' },
+    'M06': { bg: 'bg-pink-100', text: 'text-pink-700', active: 'bg-pink-600' },
+    'M07': { bg: 'bg-rose-100', text: 'text-rose-700', active: 'bg-rose-600' },
+    'M08': { bg: 'bg-amber-100', text: 'text-amber-700', active: 'bg-amber-600' },
+    'M09': { bg: 'bg-slate-100', text: 'text-slate-700', active: 'bg-slate-600' },
+    'M10': { bg: 'bg-violet-100', text: 'text-violet-700', active: 'bg-violet-600' },
+    'M11': { bg: 'bg-red-100', text: 'text-red-700', active: 'bg-red-600' },
+    'M12': { bg: 'bg-sky-100', text: 'text-sky-700', active: 'bg-sky-600' },
+    'M13': { bg: 'bg-lime-100', text: 'text-lime-700', active: 'bg-lime-600' },
+    'M14': { bg: 'bg-red-100', text: 'text-red-700', active: 'bg-red-600' },
+    'M15': { bg: 'bg-amber-100', text: 'text-amber-700', active: 'bg-amber-600' },
+    'M16': { bg: 'bg-yellow-100', text: 'text-yellow-700', active: 'bg-yellow-600' },
+    'M17': { bg: 'bg-green-100', text: 'text-green-700', active: 'bg-green-600' },
+  }
+  return colors[motifId] || { bg: 'bg-gray-100', text: 'text-gray-700', active: 'bg-gray-600' }
 }
-
-const WEAPON_RANKS = {
-  'S-DERIV-09': 'killer', 'S-DERIV-10': 'killer', 'S-DERIV-11': 'killer',
-  'S-CONIC-05': 'killer', 'S-CONIC-06': 'killer', 'S-SEQ-08': 'killer',
-  'S-SEQ-09': 'killer', 'S-SEQ-10': 'killer', 'S-INEQ-05': 'killer',
-  'S-INEQ-06': 'killer', 'S-INEQ-07': 'killer', 'S-INEQ-08': 'killer',
-  'S-INEQ-09': 'killer', 'S-LOG-05': 'killer',
-  'S-FUNC-04': 'advanced', 'S-VEC-05': 'advanced', 'S-CONIC-02': 'advanced',
-  'S-CONIC-07': 'advanced', 'S-DERIV-04': 'advanced', 'S-TRIG-03': 'advanced',
-  'S-FUNC-05': 'advanced', 'S-FUNC-06': 'advanced', 'S-FUNC-08': 'advanced',
-  'S-INEQ-10': 'advanced', 'S-LOG-02': 'advanced',
-}
-
-const TRIGGER_KEYWORDS = {
-  'S-SET-01': ['子集', '包含', 'A⊆B', '空集', '分类讨论'],
-  'S-FUNC-02': ['复合函数', '单调性', '单调区间', '同增异减'],
-  'S-FUNC-04': ['零点', '根的个数', '交点', 'f(x)=g(x)'],
-  'S-TRIG-02': ['平移', '图象变换', '左加右减', '伸缩'],
-  'S-VEC-04': ['建系', '坐标系', '坐标法', '最值'],
-  'S-VEC-01': ['投影向量', '投影', '在...上的投影'],
-  'S-VEC-05': ['极化恒等式', 'PA·PB', '数量积最值'],
-  'S-SEQ-01': ['等差数列', '等比数列', '下标和', '片段和'],
-  'S-SEQ-02': ['Sn最值', '前n项和最值'],
-  'S-SEQ-04': ['裂项', '错位相减', '并项', '求和'],
-  'S-SEQ-08': ['特征根', '递推', '二阶线性'],
-  'S-SEQ-09': ['不动点', 'f(x)=x', '收敛'],
-  'S-SEQ-10': ['切线放缩', 'e^x≥x+1', 'ln x≤x-1'],
-  'S-GEO-02': ['线面角', '二面角', '法向量', '立体几何'],
-  'S-GEO-03': ['等体积', '点面距', '体积法'],
-  'S-PROB-01': ['条件概率', '全概率', '贝叶斯', '概率树'],
-  'S-CONIC-02': ['焦点三角形', 'PF1', 'PF2', 'tan(θ/2)'],
-  'S-CONIC-05': ['仿射', '椭圆变圆', '面积比'],
-  'S-CONIC-06': ['齐次化', '斜率关系', 'k1+k2'],
-  'S-CONIC-07': ['参数方程', 'acosθ', 'bsinθ'],
-  'S-DERIV-03': ['含参', '参数讨论', '分类讨论', '单调区间'],
-  'S-DERIV-04': ['恒成立', '端点', '探路'],
-  'S-DERIV-09': ['洛必达', '极限', '0/0'],
-  'S-DERIV-10': ['极值点偏移', '双变量', 'x1+x2'],
-  'S-DERIV-11': ['对数平均', 'L(a,b)', '√(ab)'],
-  'S-INEQ-02': ['乘1法', '常数代换', 'x+y=1'],
-  'S-INEQ-05': ['琴生', '凸函数', '凹函数'],
-  'S-INEQ-06': ['柯西', '(a²+b²)(c²+d²)'],
-  'S-INEQ-07': ['权方和', 'a²/x+b²/y'],
-  'S-INEQ-08': ['赫尔德', 'Holder'],
-  'S-INEQ-09': ['切比雪夫', '同序和', '乱序和'],
-  'S-INEQ-10': ['均值不等式', '调和平均', '平方平均'],
-  'S-TRIG-01': ['辅助角', 'asinx+bcosx', '配角'],
-  'S-TRIG-03': ['化边为角', '周长最值', '面积最值'],
-  'S-TRI-04': ['中线', '角平分线', '面积法'],
-  'S-FUNC-05': ['双对称', '周期', '对称轴'],
-  'S-FUNC-06': ['脱壳', 'f(A)>f(B)', '抽象不等式'],
-  'S-FUNC-08': ['f(f(x))', '复合零点', '剥洋葱'],
-  'S-LOG-02': ['同构', 'xe^x', 'ye^y'],
-  'S-LOG-05': ['对数平均', '极值点偏移', '双变量'],
-}
-
-const LINKED_MOTIFS = {}
 
 const StrategyHub = ({ 
   isAcademicMode = true, 
@@ -161,53 +95,51 @@ const StrategyHub = ({
   const allWeapons = useMemo(() => {
     const weapons = []
     Object.entries(weaponDetails).forEach(([weaponId, detail]) => {
-      const prefix = weaponId.split('-').slice(0, 2).join('-')
-      const category = WEAPON_CATEGORIES[prefix] || { id: prefix, name: '其他' }
+      const linkedMotifs = getLinkedMotifsForWeapon(weaponId)
       weapons.push({
         id: weaponId,
-        name: WEAPON_NAMES[weaponId] || weaponId,
-        rank: WEAPON_RANKS[weaponId] || 'basic',
-        description: detail.coreLogic?.slice(0, 100) || '',
-        trigger_keywords: TRIGGER_KEYWORDS[weaponId] || [],
-        linked_motifs: LINKED_MOTIFS[weaponId] || [],
-        categoryId: category.id,
-        categoryName: category.name,
+        name: extractWeaponName(weaponId, detail),
+        description: extractWeaponDescription(detail),
+        linked_motifs: linkedMotifs.map(m => ({
+          id: m.id,
+          title: MOTIF_CATEGORIES[m.id]?.fullName || m.name || m.id
+        })),
         ...detail
       })
     })
     return weapons
-  }, [])
+  }, [weaponDetails])
 
   const groupedWeapons = useMemo(() => {
     const groups = {}
     
+    Object.keys(MOTIF_CATEGORIES).forEach(motifId => {
+      groups[motifId] = []
+    })
+    
     Object.entries(weaponDetails).forEach(([weaponId, detail]) => {
-      const prefix = weaponId.split('-').slice(0, 2).join('-')
-      const category = WEAPON_CATEGORIES[prefix] || { id: prefix, name: '其他' }
+      const linkedMotifs = getLinkedMotifsForWeapon(weaponId)
       
-      if (!groups[category.name]) {
-        groups[category.name] = []
-      }
-      
-      groups[category.name].push({
-        id: weaponId,
-        name: WEAPON_NAMES[weaponId] || weaponId,
-        rank: WEAPON_RANKS[weaponId] || 'basic',
-        description: detail.coreLogic?.slice(0, 100) || '',
-        trigger_keywords: TRIGGER_KEYWORDS[weaponId] || [],
-        linked_motifs: getLinkedMotifsForWeapon(weaponId).map(m => ({
-          id: m.id,
-          title: m.name
-        })),
-        categoryId: category.id,
-        categoryName: category.name,
-        _userState: { status: 'LOCKED', progress: 0 },
-        ...detail
+      linkedMotifs.forEach(motif => {
+        const motifId = motif.id
+        if (groups[motifId]) {
+          groups[motifId].push({
+            id: weaponId,
+            name: extractWeaponName(weaponId, detail),
+            description: extractWeaponDescription(detail),
+            linked_motifs: linkedMotifs.map(m => ({
+              id: m.id,
+              title: MOTIF_CATEGORIES[m.id]?.fullName || m.name || m.id
+            })),
+            _userState: { status: 'LOCKED', progress: 0 },
+            ...detail
+          })
+        }
       })
     })
     
     return groups
-  }, [])
+  }, [weaponDetails])
 
   const filteredGroups = useMemo(() => {
     let groups = groupedWeapons
@@ -219,57 +151,31 @@ const StrategyHub = ({
     if (!searchTerm) return groups
     
     const filtered = {}
-    Object.entries(groups).forEach(([category, weapons]) => {
+    Object.entries(groups).forEach(([motifId, weapons]) => {
       const matched = weapons.filter(w => 
         w.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         w.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        w.trigger_keywords?.some(k => k.toLowerCase().includes(searchTerm.toLowerCase()))
+        w.coreLogic?.toLowerCase().includes(searchTerm.toLowerCase())
       )
       if (matched.length > 0) {
-        filtered[category] = matched
+        filtered[motifId] = matched
       }
     })
     return filtered
   }, [groupedWeapons, searchTerm, selectedCategory])
 
   const categories = useMemo(() => {
-    return Object.keys(groupedWeapons)
-  }, [groupedWeapons])
-
-  const getCategoryColor = (categoryName) => {
-    const colors = {
-      '集合与逻辑思维': { bg: 'bg-blue-100', text: 'text-blue-700', active: 'bg-blue-600' },
-      '复数几何思维': { bg: 'bg-cyan-100', text: 'text-cyan-700', active: 'bg-cyan-600' },
-      '不等式思维': { bg: 'bg-purple-100', text: 'text-purple-700', active: 'bg-purple-600' },
-      '函数思维': { bg: 'bg-indigo-100', text: 'text-indigo-700', active: 'bg-indigo-600' },
-      '数形结合与动态分析': { bg: 'bg-emerald-100', text: 'text-emerald-700', active: 'bg-emerald-600' },
-      '指对数函数思维': { bg: 'bg-orange-100', text: 'text-orange-700', active: 'bg-orange-600' },
-      '平面向量思维': { bg: 'bg-teal-100', text: 'text-teal-700', active: 'bg-teal-600' },
-      '三角与解三角形思维': { bg: 'bg-pink-100', text: 'text-pink-700', active: 'bg-pink-600' },
-      '解三角形核心技法': { bg: 'bg-rose-100', text: 'text-rose-700', active: 'bg-rose-600' },
-      '数列思维': { bg: 'bg-amber-100', text: 'text-amber-700', active: 'bg-amber-600' },
-      '立体几何思维': { bg: 'bg-slate-100', text: 'text-slate-700', active: 'bg-slate-600' },
-      '圆锥曲线思维': { bg: 'bg-violet-100', text: 'text-violet-700', active: 'bg-violet-600' },
-      '圆相关技法': { bg: 'bg-lime-100', text: 'text-lime-700', active: 'bg-lime-600' },
-      '解析几何大题技法': { bg: 'bg-fuchsia-100', text: 'text-fuchsia-700', active: 'bg-fuchsia-600' },
-      '导数思维': { bg: 'bg-red-100', text: 'text-red-700', active: 'bg-red-600' },
-      '概率统计思维': { bg: 'bg-sky-100', text: 'text-sky-700', active: 'bg-sky-600' },
-      '排列组合与二项式思维': { bg: 'bg-yellow-100', text: 'text-yellow-700', active: 'bg-yellow-600' },
-      '创新思维与逻辑建模': { bg: 'bg-green-100', text: 'text-green-700', active: 'bg-green-600' },
-    }
-    return colors[categoryName] || { bg: 'bg-gray-100', text: 'text-gray-700', active: 'bg-gray-600' }
-  }
+    return Object.keys(MOTIF_CATEGORIES)
+  }, [])
 
   const renderWeaponCard = (weapon) => {
     const isHighlighted = highlightWeaponId === weapon.id
     
-    // 基于母题激活状态动态计算杀手锏状态
     const status = getWeaponStatus(weapon, tacticalData)
     const isLocked = status === 'LOCKED'
     const isCertified = status === 'CERTIFIED'
     const isTraining = status === 'UNLOCKED'
     
-    // 获取关联母题
     const linkedMotifs = weapon.linked_motifs || []
     
     return (
@@ -284,7 +190,6 @@ const StrategyHub = ({
               : 'bg-zinc-800 border-zinc-700 hover:border-zinc-600'
         } ${isLocked ? 'opacity-60' : ''}`}
       >
-        {/* 顶部：ID 与状态徽章 */}
         <div className="flex items-start justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className={`text-xs font-mono ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
@@ -303,12 +208,11 @@ const StrategyHub = ({
               </span>
             )}
           </div>
-          <span className={`px-2 py-0.5 rounded text-xs font-medium border ${RANK_COLORS[weapon.rank] || RANK_COLORS.basic}`}>
-            {RANK_LABELS[weapon.rank] || '基础'}
+          <span className="px-2 py-0.5 rounded text-xs font-medium border bg-amber-100 text-amber-700 border-amber-200">
+            杀手锏
           </span>
         </div>
 
-        {/* 中部：核心内容 */}
         <div className="flex-grow">
           <h3 className={`font-bold mb-1.5 leading-tight ${isAcademicMode ? 'text-slate-800' : 'text-zinc-100'}`}>
             {weapon.name}
@@ -318,9 +222,7 @@ const StrategyHub = ({
           </p>
         </div>
 
-        {/* 底部：母题场景 + 双按钮（同一行） */}
         <div className="flex justify-between items-center pt-2 border-t border-slate-100 mt-auto gap-2">
-          {/* 左侧：适用母题场景 */}
           <div className="flex items-center gap-1 flex-1 min-w-0">
             {linkedMotifs.length > 0 ? (
               linkedMotifs.slice(0, 2).map(motif => (
@@ -338,9 +240,7 @@ const StrategyHub = ({
             )}
           </div>
 
-          {/* 右侧：双按钮组 */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
-            {/* 按钮 1: 要点解析 */}
             <button 
               onClick={(e) => {
                 e.stopPropagation()
@@ -356,7 +256,6 @@ const StrategyHub = ({
               {isLearned(weapon.id) ? '👁 已读' : '📖 要点'}
             </button>
 
-            {/* 按钮 2: 去认证 */}
             {!isLocked && (
               isCertified ? (
                 <div className="flex items-center justify-center gap-1 px-2 py-1.5 bg-green-100 text-green-700 text-[11px] font-bold rounded-md border border-green-200 whitespace-nowrap">
@@ -405,7 +304,7 @@ const StrategyHub = ({
         <div className="mb-6">
           <input
             type="text"
-            placeholder="搜索杀手锏名称、描述或触发关键词..."
+            placeholder="搜索杀手锏名称或描述..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={`w-full max-w-md px-4 py-2 rounded-lg border text-sm ${
@@ -429,36 +328,38 @@ const StrategyHub = ({
           >
             全部 ({allWeapons.length})
           </button>
-          {categories.map(category => {
-            const color = getCategoryColor(category)
-            const count = groupedWeapons[category]?.length || 0
+          {categories.map(motifId => {
+            const color = getCategoryColor(motifId)
+            const category = MOTIF_CATEGORIES[motifId]
+            const count = groupedWeapons[motifId]?.length || 0
             return (
               <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
+                key={motifId}
+                onClick={() => setSelectedCategory(motifId)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all min-w-[80px] text-center ${
-                  selectedCategory === category
+                  selectedCategory === motifId
                     ? `${color.active} text-white`
                     : isAcademicMode
                       ? `${color.bg} ${color.text} hover:opacity-80`
                       : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
                 }`}
               >
-                {category.replace('思维', '').replace('核心技法', '').replace('技法', '')} ({count})
+                {category.name} ({count})
               </button>
             )
           })}
         </div>
 
         <div className="space-y-8">
-          {Object.entries(filteredGroups).map(([category, weapons]) => {
-            const color = getCategoryColor(category)
+          {Object.entries(filteredGroups).map(([motifId, weapons]) => {
+            const color = getCategoryColor(motifId)
+            const category = MOTIF_CATEGORIES[motifId]
             
             return (
-              <div key={category}>
+              <div key={motifId}>
                 <h2 className={`text-lg font-bold mb-4 ${isAcademicMode ? 'text-slate-700' : 'text-zinc-200'}`}>
                   <span className={`px-3 py-1 rounded-lg ${color.bg} ${color.text}`}>
-                    {category}
+                    {category.fullName}
                   </span>
                 </h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -471,7 +372,7 @@ const StrategyHub = ({
 
         {Object.keys(filteredGroups).length === 0 && (
           <div className={`text-center py-20 ${isAcademicMode ? 'text-slate-400' : 'text-zinc-500'}`}>
-            <p className="text-lg">未找到匹配的武器</p>
+            <p className="text-lg">未找到匹配的杀手锏</p>
           </div>
         )}
       </div>
@@ -500,7 +401,6 @@ const StrategyHub = ({
         </div>
       )}
 
-      {/* 要点解析弹窗 */}
       <InsightModal 
         weapon={insightWeapon}
         isOpen={!!insightWeapon}
