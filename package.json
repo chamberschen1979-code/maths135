@@ -4,9 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm run copy:data && vite --host",
-    "build": "npm run copy:data && vite build",
-    "copy:data": "mkdir -p public/data && cp src/data/*.json public/data/",
+    "dev": "vite --host",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

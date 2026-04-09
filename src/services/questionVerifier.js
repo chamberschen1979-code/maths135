@@ -1,103 +1,51 @@
-/**
- * questionVerifier.js - 真题一致性校验器 (V3.1)
- * 
- * 核心理念：源头即真理 (Source of Truth)
- * 既然 M 系列文件是人工精校的真题，RAG 只是搬运，那么验证器的任务不是"验算"，而是"防损坏"。
- * 验证逻辑：检查 AI 吐出的题干是否与 M 库中的标准题干一致，防止在 JSON 解析或 RAG 注入过程中出现数据篡改。
- */
+import M04 from '../data/M04.json' with { type: 'json' };
+import M05 from '../data/M05.json' with { type: 'json' };
 
-// 缓存 M 库数据
-let masterQuestionPool = null;
+const masterQuestionPool = {};
 
-/**
- * 初始化 M 库数据（从 public/data 加载）
- */
-async function initMasterPool() {
-  if (masterQuestionPool) return masterQuestionPool;
+function initMasterPool() {
+  if (Object.keys(masterQuestionPool).length > 0) return masterQuestionPool;
   
-  try {
-    // 尝试从已加载的数据中获取
-    if (typeof window !== 'undefined' && window.__MASTER_QUESTION_POOL__) {
-      masterQuestionPool = window.__MASTER_QUESTION_POOL__;
-      return masterQuestionPool;
-    }
-    
-    // 如果没有预加载，尝试动态加载
-    const modules = ['M04', 'M05'];
-    masterQuestionPool = {};
-    
-    for (const moduleId of modules) {
-      try {
-        const response = await fetch(`/data/${moduleId}.json`);
-        if (response.ok) {
-          const data = await response.json();
-          // 展平所有题目到 pool 中
-          if (data.specialties) {
-            for (const spec of data.specialties) {
-              for (const variation of spec.variations) {
-                for (const q of variation.original_pool || []) {
-                  if (q.id) {
-                    masterQuestionPool[q.id] = q;
-                  }
-                }
-              }
+  const modules = [M04, M05];
+  
+  for (const data of modules) {
+    if (data.specialties) {
+      for (const spec of data.specialties) {
+        for (const variation of spec.variations || []) {
+          for (const q of variation.original_pool || []) {
+            if (q.id) {
+              masterQuestionPool[q.id] = q;
             }
           }
         }
-      } catch (e) {
-        console.warn(`[Verifier] 加载 ${moduleId}.json 失败:`, e);
       }
     }
-    
-    // 缓存到 window
-    if (typeof window !== 'undefined') {
-      window.__MASTER_QUESTION_POOL__ = masterQuestionPool;
-    }
-    
-    return masterQuestionPool;
-  } catch (error) {
-    console.error('[Verifier] 初始化 M 库失败:', error);
-    return {};
   }
+  
+  return masterQuestionPool;
 }
 
-/**
- * 从 M 库获取题目
- */
+initMasterPool();
+
 function getQuestionFromMasterPool(questionId) {
   if (!masterQuestionPool || Object.keys(masterQuestionPool).length === 0) {
-    // M 库未初始化，返回 null（验证时会降级通过）
     return null;
   }
   return masterQuestionPool[questionId] || null;
 }
 
-/**
- * 主验证函数
- * @param {Object} questionPackage - 包含 AI 输出的题目和元数据
- * @param {string} targetLevel - 目标难度
- * @param {string} motifId - 母题 ID
- * @returns {Object} - 验证结果
- */
 export async function verifyQuestion(questionPackage, targetLevel, motifId) {
     const { id, content: aiContent, answer: aiAnswer, analysis: aiAnalysis, 
             problem: aiProblem, variant } = questionPackage;
 
     try {
-        // 初始化 M 库（异步）
-        await initMasterPool();
-        
-        // 获取实际内容（兼容不同字段名）
         const actualContent = aiContent || aiProblem || (variant && (variant.problem || variant.question)) || '';
         const actualAnswer = aiAnswer || (variant && variant.answer) || '';
         const actualAnalysis = aiAnalysis || (variant && variant.analysis) || '';
         
-        // 1. 【源头取经】尝试从 M 库获取标准数据
         const masterRecord = getQuestionFromMasterPool(id || motifId);
         
-        // 🔥 RAG 模式简化：如果 M 库中没有找到，直接通过（信任种子题）
         if (!masterRecord) {
-            // 检查基本结构完整性
             if (!actualContent || !actualAnswer) {
                 return {
                     pass: false,
@@ -106,7 +54,6 @@ export async function verifyQuestion(questionPackage, targetLevel, motifId) {
                 };
             }
             
-            // 结构完整即通过
             return {
                 pass: true,
                 message: '✅ 验证通过：题目结构完整（RAG 模式）',
@@ -118,17 +65,14 @@ export async function verifyQuestion(questionPackage, targetLevel, motifId) {
             };
         }
 
-        // 2. 【一致性核对】如果找到了标准数据，进行比对
         const masterContent = masterRecord.problem || masterRecord.content || '';
         const masterAnswer = masterRecord.answer || '';
         
-        // 简单清洗函数
         const normalize = (str) => str ? str.trim().replace(/\s+/g, ' ') : '';
 
         const isContentMatch = normalize(actualContent) === normalize(masterContent);
         const isAnswerMatch = normalize(actualAnswer) === normalize(masterAnswer);
 
-        // 3. 【最终裁定】
         if (isContentMatch && isAnswerMatch) {
             return {
                 pass: true,
@@ -140,7 +84,6 @@ export async function verifyQuestion(questionPackage, targetLevel, motifId) {
                 }
             };
         } else {
-            // 内容不匹配，但结构完整，仍然通过（降级模式）
             console.warn(`[Verifier] 内容不完全匹配，但结构完整，降级通过: ${id || motifId}`);
             return {
                 pass: true,
@@ -155,7 +98,6 @@ export async function verifyQuestion(questionPackage, targetLevel, motifId) {
 
     } catch (error) {
         console.error('[Verifier] 验证过程发生异常:', error);
-        // 异常情况下，只要结构完整就通过
         const actualContent = questionPackage.content || questionPackage.problem || 
                              (questionPackage.variant && questionPackage.variant.problem);
         const actualAnswer = questionPackage.answer || 
@@ -181,10 +123,6 @@ export async function verifyQuestion(questionPackage, targetLevel, motifId) {
     }
 }
 
-/**
- * 带重试机制的验证函数 (RAG 模式专用)
- * 注意：这里的重试不是为了"算对数学"，而是为了"格式正确"和"ID匹配"。
- */
 export const verifyQuestionWithRetry = async (
   generateFn,
   motifId,
