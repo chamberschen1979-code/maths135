@@ -114,7 +114,6 @@ const ManualEntryModal = ({
           });
         }
         
-        console.log('[AI补全RAG字段] 成功:', result);
       } else {
         alert('AI补全失败，请手动填写');
       }

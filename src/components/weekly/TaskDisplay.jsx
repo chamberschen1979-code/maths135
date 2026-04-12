@@ -114,7 +114,6 @@ const TaskDisplay = ({
     }
     
     const linkedWeapons = task.benchmark?.linked_weapons || task.benchmark?.linkedWeapons || task.linked_weapons || task.linkedWeapons || [];
-    console.log('[TaskDisplay] getAllLinkedWeapons:', {
       taskId: task.id,
       benchmarkLinkedWeapons: task.benchmark?.linked_weapons,
       benchmarkLinkedWeapons2: task.benchmark?.linkedWeapons,
@@ -132,7 +131,6 @@ const TaskDisplay = ({
       }
     }
     
-    console.log('[TaskDisplay] 最终武器列表:', weapons);
     return weapons;
   };
 
@@ -206,7 +204,6 @@ const TaskDisplay = ({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log('[Debug] 答案录入按钮点击, index:', index, 'showAnswerInput:', showAnswerInput);
                       setShowAnswerInput(showAnswerInput === index ? null : index);
                     }}
                     className={`px-2 py-1 rounded text-xs font-medium ${
@@ -415,6 +412,7 @@ const TaskDisplay = ({
                   )}
                   
                   {/* 🔥 单问模式：直接显示得分，不显示"第X问" */}
+                  {task.source !== 'assessment' && (
                   <div className={`flex items-center gap-2 text-sm font-bold ${
                     task.score >= 0 
                       ? (isAcademicMode ? 'text-green-700' : 'text-green-400')
@@ -423,6 +421,7 @@ const TaskDisplay = ({
                     <span>{task.score >= 0 ? '✓' : '✗'}</span>
                     <span>得分: {task.score >= 0 ? '+' : ''}{task.score} 分</span>
                   </div>
+                  )}
                 </div>
               )}
             </div>

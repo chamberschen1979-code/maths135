@@ -77,8 +77,10 @@ const StrategyHub = ({
   onNavigate,
   onWeaponCertified
 }) => {
+  const certifiedWeapons = tacticalData?.user_profile?.certifiedWeapons || []
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState(null)
+  const [showCertifiedOnly, setShowCertifiedOnly] = useState(false)
   const [examWeapon, setExamWeapon] = useState(null)
   const [insightWeapon, setInsightWeapon] = useState(null)
   const highlightRef = useRef(null)
@@ -143,26 +145,33 @@ const StrategyHub = ({
 
   const filteredGroups = useMemo(() => {
     let groups = groupedWeapons
-    
+
     if (selectedCategory) {
       groups = { [selectedCategory]: groupedWeapons[selectedCategory] || [] }
     }
-    
+
+    if (showCertifiedOnly) {
+      const filtered = {}
+      Object.entries(groups).forEach(([motifId, weapons]) => {
+        const matched = weapons.filter(w => certifiedWeapons.includes(w.id))
+        if (matched.length > 0) filtered[motifId] = matched
+      })
+      groups = filtered
+    }
+
     if (!searchTerm) return groups
-    
+
     const filtered = {}
     Object.entries(groups).forEach(([motifId, weapons]) => {
-      const matched = weapons.filter(w => 
+      const matched = weapons.filter(w =>
         w.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         w.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         w.coreLogic?.toLowerCase().includes(searchTerm.toLowerCase())
       )
-      if (matched.length > 0) {
-        filtered[motifId] = matched
-      }
+      if (matched.length > 0) filtered[motifId] = matched
     })
     return filtered
-  }, [groupedWeapons, searchTerm, selectedCategory])
+  }, [groupedWeapons, searchTerm, selectedCategory, showCertifiedOnly, certifiedWeapons])
 
   const categories = useMemo(() => {
     return Object.keys(MOTIF_CATEGORIES)
@@ -284,15 +293,6 @@ const StrategyHub = ({
     <div className={`h-full overflow-auto p-6 ${isAcademicMode ? 'bg-slate-50' : 'bg-zinc-900'}`}>
       <div className="max-w-6xl mx-auto">
         <header className="mb-6">
-          <button
-            onClick={() => onNavigate && onNavigate('dashboard')}
-            className={`flex items-center gap-1 text-sm mb-3 ${
-              isAcademicMode ? 'text-blue-600 hover:text-blue-700' : 'text-emerald-400 hover:text-emerald-300'
-            }`}
-          >
-            <ChevronDown className="w-4 h-4 rotate-90" />
-            返回知识图谱
-          </button>
           <h1 className={`text-2xl font-bold ${isAcademicMode ? 'text-slate-800' : 'text-zinc-100'}`}>
             📚 方法工具
           </h1>
@@ -317,16 +317,28 @@ const StrategyHub = ({
 
         <div className="mb-6 flex flex-wrap gap-2">
           <button
-            onClick={() => setSelectedCategory(null)}
+            onClick={() => { setSelectedCategory(null); setShowCertifiedOnly(false); }}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all min-w-[80px] text-center ${
-              selectedCategory === null
+              selectedCategory === null && !showCertifiedOnly
                 ? 'bg-slate-700 text-white'
                 : isAcademicMode
                   ? 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
             }`}
           >
-            全部 ({allWeapons.length})
+            全部 ({showCertifiedOnly ? certifiedWeapons.length : allWeapons.length})
+          </button>
+          <button
+            onClick={() => { setSelectedCategory(null); setShowCertifiedOnly(!showCertifiedOnly); }}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all min-w-[80px] text-center ${
+              showCertifiedOnly
+                ? 'bg-green-600 text-white'
+                : isAcademicMode
+                  ? 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-200'
+                  : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+            }`}
+          >
+            已认证 ({certifiedWeapons.length})
           </button>
           {categories.map(motifId => {
             const color = getCategoryColor(motifId)
@@ -389,7 +401,6 @@ const StrategyHub = ({
             <CertificationExam 
               weapon={examWeapon} 
               onComplete={(result) => {
-                console.log('认证完成:', result)
                 if (onWeaponCertified && examWeapon) {
                   onWeaponCertified(examWeapon.id)
                 }

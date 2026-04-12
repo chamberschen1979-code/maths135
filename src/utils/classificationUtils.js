@@ -25,7 +25,6 @@ export const buildWeaponKeywordMap = () => {
     })
   })
   
-  console.log(`[WeaponKeywords] 构建了 ${keywordMap.size} 个关键词映射`)
   return keywordMap
 }
 

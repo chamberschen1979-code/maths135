@@ -331,17 +331,14 @@ ${strategyInstructions.map(s => `- ${s}`).join('\n')}
     // 优先尝试新格式: level_constraints -> L2
     if (variableKnobs.level_constraints && variableKnobs.level_constraints[level]) {
       levelConstraints = variableKnobs.level_constraints[level]
-      console.log(`[PromptBuilder] ✅ 读取到新格式约束: level_constraints.${level}`)
     }
     // 降级尝试旧格式: L2_constraints
     else if (variableKnobs[`${level}_constraints`]) {
       levelConstraints = variableKnobs[`${level}_constraints`]
-      console.log(`[PromptBuilder] ⚠️ 读取到旧格式约束: ${level}_constraints`)
     }
     // 兜底: 直接读 level (如果存在)
     else if (variableKnobs[level]) {
       levelConstraints = variableKnobs[level]
-      console.log(`[PromptBuilder] ⚠️ 读取到简写格式约束: ${level}`)
     }
     // 🔥 RAG 格式：从 keyPoints / key_points 提取约束
     else if (variableKnobs.keyPoints || variableKnobs.key_points) {
@@ -350,7 +347,6 @@ ${strategyInstructions.map(s => `- ${s}`).join('\n')}
         key_points: Array.isArray(keyPoints) ? keyPoints : [keyPoints],
         context: 'rag_extraction'
       }
-      console.log(`[PromptBuilder] ✅ 读取到 RAG 格式约束: key_points`)
     }
   }
 

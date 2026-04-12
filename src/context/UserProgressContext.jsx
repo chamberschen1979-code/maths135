@@ -40,7 +40,6 @@ export const UserProgressProvider = ({ children }) => {
     setL4MasteryCounter(progress.l4_mastery_counter || {});
     setUserAddedPool(progress.user_added_pool || []);
     setIsLoaded(true);
-    console.log('[UserProgressContext] 进度已加载:', {
       masteredCount: progress.mastered_pool?.length || 0,
       weakCount: Object.keys(progress.weak_point_buffer || {}).length,
       userAddedCount: progress.user_added_pool?.length || 0
@@ -84,7 +83,6 @@ export const UserProgressProvider = ({ children }) => {
     setMasteredPool([]);
     setWeakPointBuffer({});
     setL4MasteryCounter({});
-    console.log('[UserProgressContext] 所有进度已重置');
   }, []);
 
   const handleFilterAvailableSeeds = useCallback((originalPool) => {

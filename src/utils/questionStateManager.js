@@ -56,7 +56,6 @@ export const addToMasteredPool = (questionId) => {
   if (!progress.mastered_pool.includes(questionId)) {
     progress.mastered_pool.push(questionId);
     saveUserProgress(progress);
-    console.log(`[Mastery Freeze] 题目 ${questionId} 已加入已掌握池`);
     return true;
   }
   
@@ -73,7 +72,6 @@ export const removeFromMasteredPool = (questionId) => {
   if (index > -1) {
     progress.mastered_pool.splice(index, 1);
     saveUserProgress(progress);
-    console.log(`[Mastery Unfreeze] 题目 ${questionId} 已从已掌握池移除`);
     return true;
   }
   
@@ -102,7 +100,6 @@ export const addToWeakPointBuffer = (questionId, level, motifId, cooldownDays = 
   };
   
   saveUserProgress(progress);
-  console.log(`[Error Loop] 题目 ${questionId} 已进入冷却循环 (${cooldownDays}天)`);
   return true;
 };
 
@@ -115,7 +112,6 @@ export const removeFromWeakPointBuffer = (questionId) => {
   if (progress.weak_point_buffer[questionId]) {
     delete progress.weak_point_buffer[questionId];
     saveUserProgress(progress);
-    console.log(`[Error Resolved] 题目 ${questionId} 已从错题缓冲区移除`);
     return true;
   }
   
@@ -187,10 +183,8 @@ export const incrementL4Mastery = (questionId) => {
   saveUserProgress(progress);
   
   if (newCount >= L4_MASTERY_THRESHOLD) {
-    console.log(`[L4 Mastered] 题目 ${questionId} 累计做对 ${newCount} 次，达到冻结阈值`);
     return true;
   } else {
-    console.log(`[L4 Progress] 题目 ${questionId} 做对 ${newCount} 次，还需 ${L4_MASTERY_THRESHOLD - newCount} 次`);
     return false;
   }
 };
@@ -295,7 +289,6 @@ export const markAsWeak = (questionId, level, motifId) => {
 export const resetAllProgress = () => {
   try {
     localStorage.removeItem(STORAGE_KEY);
-    console.log('[Progress Reset] 所有进度已重置');
     return true;
   } catch (e) {
     console.error('[Progress Reset] 重置失败:', e);
@@ -354,7 +347,6 @@ export const addToUserPool = (question) => {
   progress.user_added_pool.push(question);
   saveUserProgress(progress);
   
-  console.log(`[User Pool] 题目 ${question.id} 已添加到用户题库`);
   return true;
 };
 
@@ -368,7 +360,6 @@ export const removeFromUserPool = (questionId) => {
   if (index > -1) {
     progress.user_added_pool.splice(index, 1);
     saveUserProgress(progress);
-    console.log(`[User Pool] 题目 ${questionId} 已从用户题库移除`);
     return true;
   }
   

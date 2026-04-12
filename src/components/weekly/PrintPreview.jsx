@@ -5,7 +5,8 @@ const PrintPreview = ({
   tasks,
   isOpen,
   onClose,
-  isAcademicMode
+  isAcademicMode,
+  title = '周度任务'
 }) => {
   const printRef = useRef();
 
@@ -24,9 +25,6 @@ const PrintPreview = ({
     const tasksHtml = tasks.map((task, index) => {
       let question = task.variant?.question || task.problem || task.question || '';
       
-      console.log('[PrintPreview] 题目', index + 1, '原始内容:', question.substring(0, 100));
-      console.log('[PrintPreview] 题目', index + 1, '转义下划线:', question.match(/\\_+/g));
-      console.log('[PrintPreview] 题目', index + 1, '普通下划线:', question.match(/_+/g));
       
       const parts = question.split(/(\$[^$]+\$)/g);
       question = parts.map(part => {
@@ -66,7 +64,7 @@ const PrintPreview = ({
       <html>
         <head>
           <meta charset="UTF-8">
-          <title>周度任务 - 打印版</title>
+          <title>${title} - 打印版</title>
           <script>
             window.MathJax = {
               tex: {
@@ -162,7 +160,7 @@ const PrintPreview = ({
         </head>
         <body>
           <div class="header">
-            <h1>每周使命 - 训练任务</h1>
+            <h1>${title}</h1>
             <div class="info">
               生成时间: ${new Date().toLocaleDateString('zh-CN')} | 
               题目数量: ${tasks.length} 道
@@ -204,7 +202,7 @@ const PrintPreview = ({
         <div ref={printRef} className="p-6 pt-0">
           <div className="sticky top-0 z-10 -mx-6 px-6 py-4 bg-inherit" style={{ background: isAcademicMode ? '#fff' : '#27272a' }}>
             <div className="text-center pb-4 border-b-2 border-slate-300">
-              <h1 className="text-xl font-bold">每周任务 - 训练任务</h1>
+              <h1 className="text-xl font-bold">{title}</h1>
               <p className={`text-sm mt-2 ${isAcademicMode ? 'text-slate-500' : 'text-zinc-400'}`}>
                 生成时间: {new Date().toLocaleDateString('zh-CN')} | 题目数量: {tasks.length} 道
               </p>

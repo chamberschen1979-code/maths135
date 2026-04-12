@@ -491,20 +491,24 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
         throw new Error(`Module not found: ${moduleKey}`)
       }
 
+      const latestEncounter = tacticalData?.tactical_maps
+        ?.find(m => m.encounters.some(e => e.target_id === motifId))
+        ?.encounters?.find(e => e.target_id === motifId)
+      const savedSpecialties = latestEncounter?.specialties || target.specialties || []
+
       const module = await motifModules[moduleKey]()
       const rawMotifData = module.default
       const motifData = addLegacyIdsToMotifData(rawMotifData)
 
-      const savedSpecialties = target.specialties || []
       const savedBenchmarkMap = new Map()
-      savedSpecialties.forEach(spec => {
-        spec.variations?.forEach(v => {
-          v.master_benchmarks?.forEach(b => {
-            savedBenchmarkMap.set(b.id || `${spec.spec_id}_${v.var_id}_${b.level}`, {
-              is_mastered: b.is_mastered,
-              consecutive_correct: b.consecutive_correct
+      savedSpecialties.forEach((spec, si) => {
+        spec.variations?.forEach((v, vi) => {
+          if (v.master_benchmarks && v.master_benchmarks.length > 0) {
+            v.master_benchmarks.forEach(b => {
+              const key = b.id || `${spec.spec_id}_${v.var_id}_${b.level}`
+              savedBenchmarkMap.set(key, { is_mastered: b.is_mastered, consecutive_correct: b.consecutive_correct, l2_status: b.l2_status })
             })
-          })
+          }
         })
       })
 
@@ -519,7 +523,8 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
               return {
                 ...b,
                 is_mastered: saved.is_mastered,
-                consecutive_correct: saved.consecutive_correct
+                consecutive_correct: saved.consecutive_correct,
+                l2_status: saved.l2_status
               }
             }
             return b
@@ -566,7 +571,7 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
                 ...v,
                 master_benchmarks: (v.master_benchmarks || []).map(b => {
                   if (b.level === level) {
-                    return { ...b, is_mastered: newStatus, consecutive_correct: newStatus ? 3 : 0 }
+                    return { ...b, is_mastered: newStatus, consecutive_correct: newStatus ? 3 : 0, l2_status: newStatus ? 'GREEN' : 'RED' }
                   }
                   return b
                 })
@@ -692,90 +697,49 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
       }
       
       const specialties = previewSpecialties || selectedTarget?.specialties || []
-      let benchmarksForLevel = []
-      
-      specialties.forEach(spec => {
-        spec.variations?.forEach(v => {
-          if (v.var_id === varId) {
-            // 🔥 兼容新旧结构
-            const benchmarks = v.master_benchmarks || []
-            const pool = v.original_pool || []
-            
-            benchmarks.forEach(b => {
-              if (b.level === lvl) {
-                benchmarksForLevel.push(b)
-              }
-            })
-            
-            // 从 original_pool 补充
-            if (benchmarksForLevel.length === 0) {
-              pool.forEach(q => {
-                if (q.level === lvl) {
-                  benchmarksForLevel.push(q)
-                }
-              })
-            }
-          }
-        })
-      })
-      
-      if (benchmarksForLevel.length === 0) {
+
+      const l2Status = currentElo < 1001 ? 'GRAY' : (currentElo >= 1800 ? 'GREEN' : 'RED')
+      const l3Status = currentElo < 1801 ? 'GRAY' : (currentElo >= 2500 ? 'GREEN' : 'RED')
+      const l4Status = currentElo < 2501 ? 'GRAY' : (currentElo >= 3000 ? 'GREEN' : 'RED')
+
+      const statusForLevel = lvl === 'L2' ? l2Status : lvl === 'L3' ? l3Status : l4Status
+
+      if (statusForLevel === 'GRAY') {
         return 'bg-slate-100 text-slate-400 border-slate-200 dark:bg-zinc-800/50 dark:text-zinc-600 dark:border-zinc-700'
       }
-      
-      const allGreen = benchmarksForLevel.every(b => b.is_mastered === true)
-      const hasRed = benchmarksForLevel.some(b => b.is_mastered === false)
-      const hasGray = benchmarksForLevel.some(b => b.is_mastered === null || b.is_mastered === undefined)
-      
-      if (allGreen) {
+      if (statusForLevel === 'GREEN') {
         return 'bg-emerald-500 text-white border-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.3)]'
       }
-      if (hasRed) {
-        return 'bg-red-500 text-white border-red-600 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
-      }
-      if (hasGray) {
-        return 'bg-slate-100 text-slate-400 border-slate-200 dark:bg-zinc-800/50 dark:text-zinc-600 dark:border-zinc-700'
-      }
-      return 'bg-slate-100 text-slate-400 border-slate-200 dark:bg-zinc-800/50 dark:text-zinc-600 dark:border-zinc-700'
+      return 'bg-red-500 text-white border-red-600 shadow-[0_0_8px_rgba(239,68,68,0.3)]'
     }
 
     const calculatePromotionProgress = () => {
       if (!hasSpecialties) return null
       
+      const l2Green = currentElo >= 1800
+      const l3Green = currentElo >= 2500
+      const l4Green = currentElo >= 3000
+
       let totalVariations = 0
       let masteredVariations = 0
-      
+
       const specialties = detailData.specialties || []
-      
+
       specialties.forEach(spec => {
         spec.variations?.forEach(variation => {
-          // 🔥 兼容新旧结构
-          const benchmarks = variation.master_benchmarks || []
           const pool = variation.original_pool || []
-          
-          if (benchmarks.length === 0 && pool.length === 0) return
-          
-          // 🔥 从 benchmarks 或 pool 中提取难度级别
-          const levels = [...new Set([
-            ...benchmarks.map(b => b.level),
-            ...pool.map(q => q.level)
-          ])]
-          
-          if (levels.length === 0) return
-          
+          if (!pool || pool.length === 0) return
+
           totalVariations++
-          
+
+          const levels = [...new Set(pool.map(q => q.level))]
           const allLevelsMastered = levels.every(lvl => {
-            const levelBenchmarks = benchmarks.filter(b => b.level === lvl)
-            const levelPool = pool.filter(q => q.level === lvl)
-            // 🔥 优先检查 benchmarks 的掌握状态，如果没有则从 pool 中检查
-            if (levelBenchmarks.length > 0) {
-              return levelBenchmarks.every(b => b.is_mastered === true)
-            }
-            // pool 中的题目默认未掌握（因为没有 is_mastered 字段）
-            return levelPool.length > 0 && levelPool.every(q => q.is_mastered === true)
+            if (lvl === 'L2') return l2Green
+            if (lvl === 'L3') return l3Green
+            if (lvl === 'L4') return l4Green
+            return false
           })
-          
+
           if (allLevelsMastered) {
             masteredVariations++
           }

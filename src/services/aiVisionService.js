@@ -220,7 +220,6 @@ export const sendTextChat = async (systemPrompt, userPrompt) => {
     throw new Error('API Key 未配置，请检查 .env 文件中的 VITE_QWEN_API_KEY')
   }
 
-  console.log('[AI Text Service] 发送文本请求...')
 
   const requestBody = {
     model: TEXT_MODEL_NAME,
@@ -255,7 +254,6 @@ export const sendTextChat = async (systemPrompt, userPrompt) => {
     const data = await response.json()
     const resultText = data.choices?.[0]?.message?.content || ''
 
-    console.log('[AI Text Service] 响应成功:', resultText.substring(0, 100))
 
     return cleanJsonResponse(resultText)
   } catch (error) {
@@ -345,7 +343,6 @@ export const processImageWithAI = async (base64Image, options = {}) => {
     }
   }
 
-  console.log(`[AI Vision Service] 模式: ${mode}, 图片长度: ${base64Image?.length}`)
 
   const requestBody = {
     model: VISION_MODEL_NAME,
@@ -385,7 +382,6 @@ export const processImageWithAI = async (base64Image, options = {}) => {
     const data = await response.json()
     const resultText = data.choices?.[0]?.message?.content || ''
 
-    console.log('[AI Vision Service] 响应成功:', resultText.substring(0, 100))
 
     return cleanJsonResponse(resultText)
   } catch (error) {
@@ -397,7 +393,6 @@ export const processImageWithAI = async (base64Image, options = {}) => {
 export const diagnoseError = async (base64Image) => {
     const result = await processImageWithAI(base64Image, { mode: 'DIAGNOSIS' })
     
-    console.log('[AI Vision Service] AI 返回结果:', result)
     
     const motifId = result.motifId || 'M01'
     let specId = result.specId || 'V1'
@@ -434,7 +429,6 @@ export const diagnoseError = async (base64Image) => {
           } else {
             const firstVariation = specialty.variations?.[0]
             if (firstVariation) {
-              console.log(`[AI Vision Service] AI返回变例 ${varId} 无效，自动修正为 ${firstVariation.var_id}`)
               varId = firstVariation.var_id
               varName = firstVariation.name || varId
               if (firstVariation.toolkit?.linked_weapons) {
@@ -445,7 +439,6 @@ export const diagnoseError = async (base64Image) => {
         } else {
           const firstSpecialty = motifData.specialties?.[0]
           if (firstSpecialty) {
-            console.log(`[AI Vision Service] AI返回专项 ${specId} 无效，自动修正为 ${firstSpecialty.spec_id}`)
             specId = firstSpecialty.spec_id
             specName = firstSpecialty.spec_name || specId
             
@@ -486,7 +479,6 @@ export const diagnoseError = async (base64Image) => {
       message: result.message || ''
     }
     
-    console.log('[AI Vision Service] 标准化诊断结果:', normalizedResult)
     return normalizedResult
   }
 
@@ -529,7 +521,6 @@ ${textAnswer}
 
 请评判该答案是否正确掌握了「${strategy?.name}」方法。`
 
-  console.log('[AI Text Grading] 发送文本评分请求...')
 
   const requestBody = {
     model: TEXT_MODEL_NAME,
@@ -558,7 +549,6 @@ ${textAnswer}
     const data = await response.json()
     const resultText = data.choices?.[0]?.message?.content || ''
 
-    console.log('[AI Text Grading] 响应成功')
     return cleanJsonResponse(resultText)
   } catch (error) {
     console.error('[AI Text Grading] 调用失败:', error)

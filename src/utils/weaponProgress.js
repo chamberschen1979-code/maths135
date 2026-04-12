@@ -47,7 +47,6 @@ export const markAsLearned = (weaponId) => {
   data[weaponId].learnedAt = new Date().toISOString()
   
   saveProgressData(data)
-  console.log(`[weaponProgress] ${weaponId} 已标记为已学习`)
 }
 
 export const markAsCertified = (weaponId) => {
@@ -69,7 +68,6 @@ export const markAsCertified = (weaponId) => {
   data[weaponId].certifiedAt = new Date().toISOString()
   
   saveProgressData(data)
-  console.log(`[weaponProgress] ${weaponId} 已标记为已认证`)
 }
 
 export const incrementPracticeCount = (weaponId) => {

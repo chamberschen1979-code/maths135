@@ -216,7 +216,6 @@ const buildWeaponCache = () => {
     })
   })
   
-  console.log(`[WeaponDetailsAdapter] 构建了 ${weaponCache.size} 个杀手锏映射`)
   return weaponCache
 }
 

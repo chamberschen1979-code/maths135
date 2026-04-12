@@ -144,7 +144,6 @@ export const prepareGenerationContext = (motifData, targetLevel) => {
   // 🔥 动态提取当前母题、当前难度的约束
   const constraints = extractLevelConstraints(variableKnobs, targetLevel)
   
-  console.log(`[约束提取] 母题 ${motifData.id || motifData.motif_id} | 难度 ${targetLevel} | 提取到 ${constraints.forbiddenModels.length} 个禁忌模型`)
   
   return {
     ...motifData,
@@ -183,14 +182,12 @@ const filterByGradeRestrictions = (item, motifId, targetLevel, grade, gradeConfi
 
   // --- 第一道防线：大学工具红线 (全局禁止，适用于所有母题) ---
   if (checkTextContainsForbidden(fullText, GRADE_RESTRICTIONS.universityForbidden)) {
-    console.log(`[🛡️ 大学工具红线] 剔除 ${motifId}: ${item.varName || item.id} (含大学工具)`)
     return false
   }
 
   // --- 第二道防线：年级特定工具红线 (全局禁止) ---
   if (gradeConfig.toolForbidden && gradeConfig.toolForbidden.length > 0) {
     if (checkTextContainsForbidden(fullText, gradeConfig.toolForbidden)) {
-      console.log(`[🛡️ ${grade} 工具红线] 剔除 ${motifId}: ${item.varName || item.id} (含超纲工具)`)
       return false
     }
   }
@@ -198,7 +195,6 @@ const filterByGradeRestrictions = (item, motifId, targetLevel, grade, gradeConfi
   // --- 第三道防线：上下文特定限制 (全局禁止) ---
   if (gradeConfig.contextSpecific && gradeConfig.contextSpecific[motifId]) {
     if (checkTextContainsForbidden(fullText, gradeConfig.contextSpecific[motifId])) {
-      console.log(`[🛡️ 上下文红线] 剔除 ${motifId}: ${item.varName || item.id} (该模块不宜用此工具)`)
       return false
     }
   }
@@ -217,7 +213,6 @@ const filterByGradeRestrictions = (item, motifId, targetLevel, grade, gradeConfi
     const hitTool = strictBanKeywords.find(keyword => metaDataText.includes(keyword.toLowerCase()))
     
     if (hitTool) {
-      console.log(`[🎯 L2 难度过滤] 剔除 ${motifId}-L2: ${item.varName || item.id} (变例名称包含 L2 禁止的超纲工具: "${hitTool}")`)
       return false
     }
 
@@ -380,7 +375,6 @@ export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constr
 
   const ragQuestion = selectQuestionFromPool(motifData, targetLevel, problemIndex, userProgress)
   if (ragQuestion) {
-    console.log(`[RAG] selectBenchmark 选中: ${ragQuestion.id}`)
     const normalizedQ = normalizeQuestion(ragQuestion, motifId)
     return {
       ...normalizedQ,
@@ -594,7 +588,6 @@ export const selectSeedQuestion = (motifData, targetLevel, benchmark, problemInd
   // 🔥 RAG 模式：优先使用新的 JSON 结构
   const ragQuestion = selectQuestionFromPool(motifData, targetLevel, problemIndex)
   if (ragQuestion) {
-    console.log(`[RAG] selectSeedQuestion 选中: ${ragQuestion.id}`)
     // 🔥 使用适配器标准化输出
     const normalizedQ = normalizeQuestion(ragQuestion, motifId)
     return {
@@ -631,7 +624,6 @@ export const selectSeedQuestion = (motifData, targetLevel, benchmark, problemInd
 
   // 🔴 简化：不再过滤"高对称性"或"参数不规则性"，直接用
   if (candidatePool.length === 0) {
-    console.log(`[种子题抽取] 变例 ${specId}/${varId} 无 original_pool，降级使用标杆题`)
     return null
   }
   
@@ -644,7 +636,6 @@ export const selectSeedQuestion = (motifData, targetLevel, benchmark, problemInd
   // 直接随机选一个
   const seedQuestion = targetPool[problemIndex % targetPool.length]
   
-  console.log(`[出题种子] 母题:${motifData.motif_id || motifData.id} | 变例:${specId}/${varId} | 选中种子ID:${seedQuestion.id || 'unknown'}`)
   
   // 查找该题目所属的变例配置，提取 variable_knobs
   let variableKnobs = null
@@ -664,7 +655,6 @@ export const selectSeedQuestion = (motifData, targetLevel, benchmark, problemInd
   if (!variableKnobs) {
     console.warn(`[⚠️ 警告] 变例 ${specId}/${varId} 未找到 variable_knobs，难度约束可能丢失`)
   } else {
-    console.log(`[✅ 约束加载] 已加载 variable_knobs，包含 ${Object.keys(variableKnobs).length} 个约束字段`)
   }
   
   return {

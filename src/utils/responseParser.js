@@ -47,7 +47,6 @@ const fixJsonEscaping = (jsonString) => {
     JSON.parse(fixed)
     return fixed
   } catch (e) {
-    console.log('[JSON修复] 检测到非法JSON，启动深度修复...', e.message)
   }
 
   fixed = fixed.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim()
@@ -75,7 +74,6 @@ const extractJsonString = (rawText) => {
   if (jsonBlockMatch) {
     const content = jsonBlockMatch[1].trim()
     if (content.startsWith('{') && content.endsWith('}')) {
-      console.log('[JSON提取] 从 markdown 代码块中提取成功')
       return content
     }
   }
@@ -89,7 +87,6 @@ const extractJsonString = (rawText) => {
     if (lastBrace > 0) {
       const potentialJson = content.substring(0, lastBrace + 1)
       if (potentialJson.startsWith('{')) {
-        console.log('[JSON提取] 从未闭合的代码块中提取成功')
         return potentialJson
       }
     }
@@ -141,7 +138,6 @@ const extractJsonString = (rawText) => {
     throw new Error("未找到完整的 JSON 结构")
   }
   
-  console.log('[JSON提取] 从原始文本中提取成功')
   return rawText.substring(firstBrace, endPos + 1)
 }
 
@@ -150,7 +146,6 @@ const extractJsonString = (rawText) => {
  * 当 JSON 解析彻底失败时，使用正则表达式直接提取关键字段
  */
 const fallbackExtractFields = (rawText) => {
-  console.log('[JSON提取] 🚨 启用 Fallback 模式：正则提取')
   
   const result = {
     question: null,
@@ -174,7 +169,6 @@ const fallbackExtractFields = (rawText) => {
   for (const pattern of aggressivePatterns) {
     const match = rawText.match(pattern)
     if (match && match[1]) {
-      console.log(`[JSON 修复] 🟢 激进策略命中`)
       // 如果匹配到 content
       if (match[1].includes('content') || match[1].length > 20) {
         let content = match[1]
@@ -285,7 +279,6 @@ const fallbackExtractFields = (rawText) => {
     // 🔥 最后的尝试：直接提取所有中文内容
     const lastResortMatch = rawText.match(/[\u4e00-\u9fa5]+[\s\S]*?[\u4e00-\u9fa5]+/g)
     if (lastResortMatch && lastResortMatch.length > 0) {
-      console.log('[JSON 修复] 🟡 最后手段：提取所有中文内容')
       result.question = { content: lastResortMatch.slice(0, 3).join('\n') }
       result.analysis = { core_idea: '自动提取' }
       result.answer = { l1: null, l2: null }
@@ -295,7 +288,6 @@ const fallbackExtractFields = (rawText) => {
     }
   }
   
-  console.log('[JSON提取] ✅ Fallback 模式提取成功')
   return result
 }
 
@@ -404,7 +396,6 @@ export const parseAIResponse = (rawText) => {
       try {
         const fallbackResult = fallbackExtractFields(rawText)
         if (fallbackResult) {
-          console.log("[JSON 修复] ✅ Fallback 模式成功提取字段")
           parsedObj = fallbackResult
         } else {
           throw new Error("Fallback 模式也失败")
@@ -421,7 +412,6 @@ export const parseAIResponse = (rawText) => {
 
     // --- 调试：打印处理前的 answer.l1 ---
     if (parsedObj.answer && parsedObj.answer.l1) {
-       console.log("🔴 [处理前] answer.l1:", parsedObj.answer.l1.substring(0, 100))
     }
 
     // 1. 处理 Question (保留换行，因为题干可能有多行)
@@ -481,9 +471,7 @@ export const parseAIResponse = (rawText) => {
           
           const after = parsedObj.answer[key]
           if (before !== after) {
-            console.log(`🟢 [已修复] answer.${key}:`, before.substring(0, 50), "->", after.substring(0, 50))
           } else {
-            console.log(`⚪ [无变化] answer.${key}:`, before.substring(0, 50))
           }
         })
       }

@@ -328,7 +328,6 @@ const WeeklyMission = ({
     const varName = variationInfo.varName;
     const linkedWeapons = variationInfo.linkedWeapons;
 
-    console.log('[Debug] variationInfo:', {
       specName,
       varName,
       linkedWeapons,
@@ -337,10 +336,8 @@ const WeeklyMission = ({
     });
 
     // 🚀 【核心重构】纯 RAG 模式：直接返回库里的原始数据，不经过 AI
-    console.log(`[RAG 模式] 直接提取题目: ${seedQuestion?.id || benchmark?.id}`);
     
     // 🔥 【调试】打印原始数据结构
-    console.log('[Debug] seedQuestion 原始数据:', {
       id: seedQuestion?.id,
       hasProblem: !!seedQuestion?.problem,
       problemPreview: seedQuestion?.problem?.substring(0, 50),
@@ -348,7 +345,6 @@ const WeeklyMission = ({
       hasKeyPoints: !!(seedQuestion?.key_points?.length > 0),
       keyPointsLength: seedQuestion?.key_points?.length || 0
     });
-    console.log('[Debug] benchmark 原始数据:', {
       id: benchmark?.id,
       hasProblem: !!benchmark?.problem,
       problemPreview: benchmark?.problem?.substring(0, 50),
@@ -390,7 +386,6 @@ const WeeklyMission = ({
       return null;
     }
 
-    console.log('[Debug] RAG 直接返回:', {
       id: seedQuestion?.id || benchmark?.id,
       questionLength: rawQuestion.length,
       hasAnalysis: !!rawAnalysis,
@@ -445,7 +440,6 @@ const WeeklyMission = ({
       }
     }
     
-    console.log('[Debug] RAG 封装结果:', {
       id: taskResult.id,
       questionLength: taskResult.variant.question?.length || 0,
       analysisLength: taskResult.variant.analysis?.length || 0,
@@ -720,7 +714,6 @@ const WeeklyMission = ({
       }
     }
     
-    console.log('[parseMultiQuestionAnswer] 解析结果:', { expectedCount, answers, rawInput: rawInput.substring(0, 100) });
     
     return { status: 'OK', answers: answers.slice(0, expectedCount) };
   }, []);
@@ -729,7 +722,6 @@ const WeeklyMission = ({
     const userNorm = normalizeMathSymbols(userAnswer);
     const correctNorm = normalizeMathSymbols(correctAnswer);
 
-    console.log('[strictCompare] 比较:', { userNorm, correctNorm, userAnswer, correctAnswer });
 
     if (!userNorm) return false;
     if (!correctNorm) return false;
@@ -746,21 +738,17 @@ const WeeklyMission = ({
     const userNums = extractNumbers(userAnswer);
     const correctNums = extractNumbers(correctAnswer);
 
-    console.log('[strictCompare] 数字提取:', { userNums, correctNums });
 
     if (correctNums.length > 0 && userNums.length > 0) {
       if (correctNums.length !== userNums.length) {
-        console.log('[strictCompare] 数字数量不匹配');
         return false;
       }
       
       for (let i = 0; i < correctNums.length; i++) {
         if (Math.abs(userNums[i] - correctNums[i]) >= 0.001) {
-          console.log('[strictCompare] 数字值不匹配:', userNums[i], correctNums[i]);
           return false;
         }
       }
-      console.log('[strictCompare] 数字匹配成功');
       return true;
     }
 
@@ -779,7 +767,6 @@ const WeeklyMission = ({
       const correctIneqNorm = correctIneqs.map(i => normalizeMathSymbols(i)).sort().join(',');
       
       if (userIneqNorm === correctIneqNorm) {
-        console.log('[strictCompare] 不等式匹配成功');
         return true;
       }
     }
@@ -800,7 +787,6 @@ const WeeklyMission = ({
     const correctChineseNorm = normalizeChineseText(correctNorm);
 
     if (userChineseNorm === correctChineseNorm) {
-      console.log('[strictCompare] 中文模糊匹配成功');
       return true;
     }
 
@@ -808,7 +794,6 @@ const WeeklyMission = ({
       const shorter = Math.min(userChineseNorm.length, correctChineseNorm.length);
       const longer = Math.max(userChineseNorm.length, correctChineseNorm.length);
       if (shorter / longer >= 0.8) {
-        console.log('[strictCompare] 包含关系匹配成功');
         return true;
       }
     }
@@ -825,11 +810,9 @@ const WeeklyMission = ({
     const correctMathExpr = extractMathExpr(correctNorm);
 
     if (userMathExpr && correctMathExpr && userMathExpr === correctMathExpr) {
-      console.log('[strictCompare] 数学表达式匹配成功');
       return true;
     }
 
-    console.log('[strictCompare] 匹配失败');
     return false;
   }, []);
 
@@ -920,7 +903,6 @@ const WeeklyMission = ({
     const details = [];
     let totalDelta = 0;
 
-    console.log(`[开始评价] 共 ${expectedCount} 问`, { userAnswers, correctAnswersArray });
 
     for (let i = 0; i < expectedCount; i++) {
       const userQ = userAnswers[i] || '';
@@ -931,7 +913,6 @@ const WeeklyMission = ({
       const scores = ELO_SCORES[level] || ELO_SCORES.L2;
       const delta = isCorrect ? scores.correct : scores.wrong;
 
-      console.log(`  - 第${i + 1}问 [${level}]: ${isCorrect ? '✅' : '❌'} (${delta >= 0 ? '+' : ''}${delta})`, { userQ, correctQ });
 
       details.push({
         index: i,
@@ -961,7 +942,6 @@ const WeeklyMission = ({
     try {
       const task = weeklyTasks[taskIndex];
       if (!task || task.isSubmitted) {
-        console.log('[handleSubmitAnswer] 任务不存在或已提交');
         setWeeklyTasks(prev => prev.map((t, idx) => 
           idx === taskIndex ? { ...t, isSubmitting: false } : t
         ));
@@ -972,7 +952,6 @@ const WeeklyMission = ({
       const correctAnswer = task.variant?.answer || task.answer || '';
       const level = task.targetLevel || 'L2';
 
-      console.log('[handleSubmitAnswer] 开始 AI 判题...', { 
         motifId: task.motifId,
         question: question.substring(0, 50) + '...',
         level,
@@ -981,7 +960,6 @@ const WeeklyMission = ({
 
       const questionMeta = task.questionMeta || { questions: [{ level }] };
 
-      console.log('[handleSubmitAnswer] 判题参数:', {
         motifId: task.motifId,
         motifName: task.motifName,
         level,
@@ -1003,7 +981,6 @@ const WeeklyMission = ({
         answerType
       );
 
-      console.log('[handleSubmitAnswer] AI 判题结果:', {
         isCorrect: aiResult.isCorrect,
         delta: aiResult.delta,
         reason: aiResult.reason,
@@ -1050,7 +1027,6 @@ const WeeklyMission = ({
 
       if (aiResult.isCorrect) {
         const result = markAsMastered(questionId, questionLevel);
-        console.log(`[Mastery] ${result.message}`);
         
         if (setQuestionHistory && task.questionId) {
           const grade = aiResult.delta >= 30 ? 'S' : aiResult.delta >= 15 ? 'A' : 'B';
@@ -1083,7 +1059,6 @@ const WeeklyMission = ({
               const resolvedCount = beforeCount - afterCount;
               
               if (resolvedCount > 0) {
-                console.log(`[错题消灭] 自动消灭了 ${resolvedCount} 道相同变例的错题`);
               }
               return updated;
             });
@@ -1091,7 +1066,6 @@ const WeeklyMission = ({
         }
       } else {
         markAsWeak(questionId, questionLevel, task.motifId);
-        console.log(`[Error Loop] 题目 ${questionId} 已进入冷却循环`);
         
         if (setQuestionHistory && task.questionId) {
           setQuestionHistory(prev => updateHistoryOnAnswer(
@@ -1129,7 +1103,6 @@ const WeeklyMission = ({
         
         setErrorNotebook(prev => {
           const newNotebook = [...prev, errorEntry];
-          console.log('[错题本] 添加错题:', errorEntry);
           
           aiFillAnswerAndKeyPoints(question, task.motifName).then(result => {
             if (result) {
@@ -1138,7 +1111,6 @@ const WeeklyMission = ({
                   ? { ...e, correctAnswer: result.answer, keyPoints: result.keyPoints }
                   : e
               ));
-              console.log('[错题本] AI自动补全答案和解析');
             }
           });
           

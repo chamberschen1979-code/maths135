@@ -35,7 +35,7 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
   return useMemo(() => {
     if (!tacticalData?.tactical_maps) {
       return {
-        stats: { totalElo: 0, level: 'L1', meltdownCount: 0, nearCompleteCount: 0, masteredCount: 0, totalCount: 0 },
+        stats: { totalElo: 0, level: 'L1', meltdownCount: 0, masteredCount: 0, totalCount: 0 },
         progressTree: [],
         hasMeltdown: false
       };
@@ -44,18 +44,17 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
     const allEncounters = tacticalData.tactical_maps.flatMap(map => map.encounters || []);
     
     let meltdownCount = 0;
-    let nearCompleteCount = 0;
     let masteredCount = 0;
     let totalCount = 0;
     const topicsMap = new Map();
 
     allEncounters.forEach(encounter => {
       const motifId = encounter.target_id;
-      const elo = encounter.elo_score || LEVEL_INITIAL_ELO.L1;
+      const elo = encounter.elo_score || 800
       const level = getLevelByElo(elo);
 
       const topicInfo = MOTIF_TO_TOPIC[motifId] || { topicId: 'T00', topicName: '其他' };
-      
+
       if (!topicsMap.has(topicInfo.topicId)) {
         topicsMap.set(topicInfo.topicId, {
           topicId: topicInfo.topicId,
@@ -68,14 +67,14 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
       const topic = topicsMap.get(topicInfo.topicId);
 
       const detailedMotif = getMotifData(motifId);
-      
+
       if (!detailedMotif?.specialties) {
         console.warn(`[ProgressTree] 母题 ${motifId} 暂无新结构数据 (specialties)，已跳过`);
         return
       }
 
       const motifName = detailedMotif.motif_name || encounter.target_name || motifId;
-      
+
       const savedSpecialties = encounter.specialties || []
       const savedBenchmarkMap = new Map()
       savedSpecialties.forEach(spec => {
@@ -83,12 +82,20 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
           v.master_benchmarks?.forEach(b => {
             savedBenchmarkMap.set(b.id || `${spec.spec_id}_${v.var_id}_${b.level}`, {
               is_mastered: b.is_mastered,
-              consecutive_correct: b.consecutive_correct
+              consecutive_correct: b.consecutive_correct,
+              l2_status: b.l2_status
             })
           })
         })
       })
-      
+
+      const l2Green = elo >= 1800
+      const l3Green = elo >= 2500
+      const l4Green = elo >= 3000
+      const l2Red = elo >= 1001 && elo < 1800
+      const l3Red = elo >= 1801 && elo < 2500
+      const l4Red = elo >= 2501 && elo < 3000
+
       let motifTotalBenchmarks = 0;
       let motifMasteredBenchmarks = 0;
       const renderedSpecialties = [];
@@ -99,69 +106,31 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
         const renderedVariants = [];
 
         spec.variations.forEach(variation => {
-          // 🔥 兼容新旧结构：优先使用 master_benchmarks，备选使用 original_pool
-          const benchmarks = variation.master_benchmarks || [];
           const pool = variation.original_pool || [];
-          
-          // 从 original_pool 中提取各难度的题目
-          const levelBenchmarks = {
-            L2: benchmarks.filter(b => b.level === 'L2')[0] || pool.filter(q => q.level === 'L2')[0] || null,
-            L3: benchmarks.filter(b => b.level === 'L3')[0] || pool.filter(q => q.level === 'L3')[0] || null,
-            L4: benchmarks.filter(b => b.level === 'L4')[0] || pool.filter(q => q.level === 'L4')[0] || null
+
+          const levelStatuses = {
+            L2: { exists: pool.some(q => q.level === 'L2'), isMastered: l2Green, isLocked: l2Red },
+            L3: { exists: pool.some(q => q.level === 'L3'), isMastered: l3Green, isLocked: l3Red },
+            L4: { exists: pool.some(q => q.level === 'L4'), isMastered: l4Green, isLocked: l4Red }
           };
 
-          let variantMastered = 0;
-          let variantTotal = 0;
-          const levelStatuses = {};
+          const variantTotal = Object.values(levelStatuses).filter(s => s.exists).length;
+          const variantMastered = Object.values(levelStatuses).filter(s => s.exists && s.isMastered).length;
 
-          ['L2', 'L3', 'L4'].forEach(lvl => {
-            const b = levelBenchmarks[lvl];
-            if (b) {
-              const saved = savedBenchmarkMap.get(b.id)
-              
-              const isMastered = saved?.is_mastered !== undefined && saved?.is_mastered !== null ? saved.is_mastered : (b.is_mastered ?? null)
-              const streak = saved?.consecutive_correct !== undefined && saved?.consecutive_correct !== null ? saved.consecutive_correct : (b.consecutive_correct ?? 0)
-              
-              variantTotal++;
-              motifTotalBenchmarks++;
-              totalCount++;
-              
-              if (isMastered === true) {
-                variantMastered++;
-                motifMasteredBenchmarks++;
-                masteredCount++;
-              }
-              
-              const isLocked = b.is_locked || b.l2_status === 'RED';
-              
-              levelStatuses[lvl] = {
-                exists: true,
-                isMastered,
-                streak,
-                isLocked
-              };
-              
-              if (isLocked) {
-                meltdownCount++;
-              }
-              
-              if (streak >= 1 && streak < 3 && !isLocked) {
-                nearCompleteCount++;
-              }
-            } else {
-              levelStatuses[lvl] = { exists: false };
-            }
+          motifTotalBenchmarks += variantTotal;
+          motifMasteredBenchmarks += variantMastered;
+          totalCount += variantTotal;
+          masteredCount += variantMastered;
+
+          if (l2Red || l3Red || l4Red) meltdownCount++;
+
+          renderedVariants.push({
+            varId: `${spec.spec_id}_${variation.var_id}`,
+            varName: variation.name,
+            levelStatuses,
+            variantTotal,
+            variantMastered
           });
-
-          if (variantTotal > 0) {
-            renderedVariants.push({
-              varId: `${spec.spec_id}_${variation.var_id}`,
-              varName: variation.name,
-              levelStatuses,
-              variantTotal,
-              variantMastered
-            });
-          }
         });
 
         if (renderedVariants.length > 0) {
@@ -211,14 +180,25 @@ export const useTrainingCenterData = (tacticalData, errorNotebook = []) => {
       : LEVEL_INITIAL_ELO.L1;
     const userLevel = getLevelByElo(avgElo);
 
+    let variationPassCount = 0;
+    topicsMap.forEach(topic => {
+      topic.motifs.forEach(motif => {
+        const allVariants = motif.variants || [];
+        if (allVariants.length > 0 && allVariants.every(v => v.variantMastered === v.variantTotal)) {
+          variationPassCount++;
+        }
+      });
+    });
+
     return {
       stats: {
         totalElo: avgElo,
         level: userLevel,
         meltdownCount,
-        nearCompleteCount,
         masteredCount,
-        totalCount
+        totalCount,
+        variationPassCount,
+        variationTotalCount: [...topicsMap.values()].reduce((sum, t) => sum + t.motifs.reduce((s, m) => s + (m.variants?.length || 0), 0), 0)
       },
       progressTree,
       hasMeltdown: meltdownCount > 0

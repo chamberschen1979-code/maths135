@@ -8,11 +8,15 @@ import TrainingCenter from './components/training/TrainingCenter'
 import StrategyHub from './components/StrategyHub'
 import WeeklyMissionNew from './components/WeeklyMissionNew'
 import DiagnosisView from './components/DiagnosisView'
-import InitModal from './components/InitModal'
+import AssessmentModal from './components/assessment/AssessmentModal'
 import Navigation from './components/Navigation'
 import { migrateTacticalData, SCHEMA_VERSION } from './utils/migrateDataStructure'
 import * as userManager from './utils/userManager'
 import { UserProgressProvider } from './context/UserProgressContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import LoginPage from './pages/LoginPage'
+import AdminLoginModal from './components/admin/AdminLoginModal'
+import AdminPanel from './components/admin/AdminPanel'
 
 import { 
   API_KEY, 
@@ -88,23 +92,9 @@ function App() {
   const [initGradeFilter, setInitGradeFilter] = useState('高三')
   const [initStates, setInitStates] = useState({})
   
-  const [currentUser, setCurrentUser] = useState(() => userManager.init())
-  const [showUserInit, setShowUserInit] = useState(false)
-  const [newUserName, setNewUserName] = useState('')
-  
-  useEffect(() => {
-    if (!currentUser) {
-      setShowUserInit(true)
-    }
-  }, [currentUser])
-  
-  const handleCreateUser = () => {
-    const user = userManager.createUser(newUserName || '默认用户')
-    setCurrentUser(user)
-    setShowUserInit(false)
-    setNewUserName('')
-  }
-  
+  const [showAdminLogin, setShowAdminLogin] = useState(false)
+  const [showAdminPanel, setShowAdminPanel] = useState(false)
+
   useEffect(() => {
     if (isAcademicMode) {
       document.documentElement.classList.remove('dark')
@@ -115,34 +105,31 @@ function App() {
 
   const [tacticalData, setTacticalData] = useState(() => {
     if (!userManager.isLoggedIn()) return initialTacticalData
+    userManager.migrateToUserData('tactical_data')
+    userManager.migrateToUserData('tactical_data_version')
     try {
-      const key = userManager.getStorageKey('tactical_data')
-      const savedVersion = localStorage.getItem(userManager.getStorageKey('tactical_data_version'))
+      const savedVersion = localStorage.getItem(userManager.getDataKey('tactical_data_version'))
       if (savedVersion !== DATA_VERSION) {
-        localStorage.removeItem(key)
-        localStorage.setItem(userManager.getStorageKey('tactical_data_version'), DATA_VERSION)
+        localStorage.removeItem(userManager.getDataKey('tactical_data'))
+        localStorage.setItem(userManager.getDataKey('tactical_data_version'), DATA_VERSION)
         const migrated = migrateTacticalData(initialTacticalData, {})
-        console.log('[迁移] 初始化数据完成, schemaVersion:', migrated.data.schemaVersion)
         if (migrated.warnings.length > 0) {
           console.warn('[迁移] 警告:', migrated.warnings)
         }
         return migrated.data
       }
-      const saved = localStorage.getItem(key)
+      const saved = userManager.getData('tactical_data', null)
       if (saved) {
-        const parsed = JSON.parse(saved)
-        if (!parsed.schemaVersion || parsed.schemaVersion < SCHEMA_VERSION) {
-          console.log('[迁移] 检测到旧版本数据，执行迁移...')
-          const migrated = migrateTacticalData(parsed, {})
+        if (!saved.schemaVersion || saved.schemaVersion < SCHEMA_VERSION) {
+          const migrated = migrateTacticalData(saved, {})
           if (migrated.migrated) {
-            console.log('[迁移] 迁移完成, schemaVersion:', migrated.data.schemaVersion)
             if (migrated.warnings.length > 0) {
               console.warn('[迁移] 警告:', migrated.warnings)
             }
             return migrated.data
           }
         }
-        return parsed
+        return saved
       }
     } catch (e) {
       console.warn('[App] 读取 tacticalData 失败:', e)
@@ -150,10 +137,50 @@ function App() {
     return initialTacticalData
   })
   
+  const userIdRef = useRef(null);
+  const loadTacticalDataForUser = useCallback((user) => {
+    if (!user) return;
+    userManager.migrateToUserData('tactical_data');
+    userManager.migrateToUserData('tactical_data_version');
+    try {
+      const savedVersion = localStorage.getItem(userManager.getDataKey('tactical_data_version'));
+      if (savedVersion !== DATA_VERSION) {
+        localStorage.removeItem(userManager.getDataKey('tactical_data'));
+        localStorage.setItem(userManager.getDataKey('tactical_data_version'), DATA_VERSION);
+        const migrated = migrateTacticalData(initialTacticalData, {});
+        setTacticalData(migrated.data);
+        return;
+      }
+      const saved = userManager.getData('tactical_data', null);
+      if (saved) {
+        if (!saved.schemaVersion || saved.schemaVersion < SCHEMA_VERSION) {
+          const migrated = migrateTacticalData(saved, {});
+          setTacticalData(migrated.data);
+          return;
+        }
+        setTacticalData(saved);
+        return;
+      }
+    } catch (e) {
+      console.warn('[App] 读取 tacticalData 失败:', e);
+    }
+    setTacticalData(initialTacticalData);
+  }, []);
+
+  useEffect(() => {
+    const currentUser = userManager.getCurrentUser();
+    if (currentUser && currentUser !== userIdRef.current) {
+      userIdRef.current = currentUser;
+      loadTacticalDataForUser(currentUser);
+    }
+    if (!currentUser) {
+      userIdRef.current = null;
+    }
+  });
+
   useEffect(() => {
     if (!userManager.isLoggedIn()) return
-    const key = userManager.getStorageKey('tactical_data')
-    localStorage.setItem(key, JSON.stringify(tacticalData))
+    userManager.setData('tactical_data', tacticalData)
   }, [tacticalData])
 
   const eloUpdateRef = useRef({ lastTargetId: null, lastDelta: 0, lastTime: 0 });
@@ -165,13 +192,11 @@ function App() {
     if (lastUpdate.lastTargetId === targetId && 
         lastUpdate.lastDelta === delta && 
         now - lastUpdate.lastTime < 1000) {
-      console.log(`[Elo 更新] 检测到重复请求，跳过: ${targetId} (${delta})`);
       return;
     }
     
     eloUpdateRef.current = { lastTargetId: targetId, lastDelta: delta, lastTime: now };
 
-    console.log(`[Elo 更新] 母题 ${targetId} 分数变动: ${delta >= 0 ? '+' : ''}${delta}`);
 
     setTacticalData(prevData => {
       if (!prevData) return prevData;
@@ -194,7 +219,6 @@ function App() {
           else encounter.gear_level = 'L1';
 
           found = true;
-          console.log(`[Elo 更新成功] ${targetId}: ${oldElo} -> ${newElo} (${delta >= 0 ? '+' : ''}${delta}), 等级: ${oldGearLevel} -> ${encounter.gear_level}`);
           break;
         }
       }
@@ -219,13 +243,8 @@ function App() {
 
   const [errorNotebook, setErrorNotebook] = useState(() => {
     if (!userManager.isLoggedIn()) return []
-    try {
-      const key = userManager.getStorageKey('error_notebook')
-      const saved = localStorage.getItem(key)
-      return saved ? JSON.parse(saved) : []
-    } catch {
-      return []
-    }
+    userManager.migrateToUserData('error_notebook')
+    return userManager.getData('error_notebook', [])
   })
 
   const [weeklyPlan, setWeeklyPlan] = useState(() => {
@@ -237,70 +256,57 @@ function App() {
         weekEnd: null
       }
     }
-    try {
-      const key = userManager.getStorageKey('weekly_plan')
-      const saved = localStorage.getItem(key)
-      return saved ? JSON.parse(saved) : {
-        activeMotifs: [],
-        pendingErrors: [],
-        weekStart: null,
-        weekEnd: null
-      }
-    } catch {
-      return {
-        activeMotifs: [],
-        pendingErrors: [],
-        weekStart: null,
-        weekEnd: null
-      }
-    }
+    userManager.migrateToUserData('weekly_plan')
+    return userManager.getData('weekly_plan', {
+      activeMotifs: [],
+      pendingErrors: [],
+      weekStart: null,
+      weekEnd: null
+    })
   })
 
   const [weeklyTasks, setWeeklyTasks] = useState(() => {
     if (!userManager.isLoggedIn()) return []
-    try {
-      const key = userManager.getStorageKey('weekly_tasks')
-      const saved = localStorage.getItem(key)
-      return saved ? JSON.parse(saved) : []
-    } catch {
-      return []
-    }
+    userManager.migrateToUserData('weekly_tasks')
+    return userManager.getData('weekly_tasks', [])
   })
 
   const [questionHistory, setQuestionHistory] = useState(() => {
     if (!userManager.isLoggedIn()) return {}
-    try {
-      const key = userManager.getStorageKey('question_history')
-      const saved = localStorage.getItem(key)
-      return saved ? JSON.parse(saved) : {}
-    } catch {
-      return {}
-    }
+    userManager.migrateToUserData('question_history')
+    return userManager.getData('question_history', {})
+  })
+
+  const [assessmentHistory, setAssessmentHistory] = useState(() => {
+    if (!userManager.isLoggedIn()) return []
+    userManager.migrateToUserData('assessment_history')
+    return userManager.getData('assessment_history', [])
   })
 
   useEffect(() => {
     if (!userManager.isLoggedIn()) return
-    const key = userManager.getStorageKey('error_notebook')
-    localStorage.setItem(key, JSON.stringify(errorNotebook))
+    userManager.setData('error_notebook', errorNotebook)
   }, [errorNotebook])
 
   useEffect(() => {
     if (!userManager.isLoggedIn()) return
-    const key = userManager.getStorageKey('weekly_plan')
-    localStorage.setItem(key, JSON.stringify(weeklyPlan))
+    userManager.setData('weekly_plan', weeklyPlan)
   }, [weeklyPlan])
 
   useEffect(() => {
     if (!userManager.isLoggedIn()) return
-    const key = userManager.getStorageKey('weekly_tasks')
-    localStorage.setItem(key, JSON.stringify(weeklyTasks))
+    userManager.setData('weekly_tasks', weeklyTasks)
   }, [weeklyTasks])
 
   useEffect(() => {
     if (!userManager.isLoggedIn()) return
-    const key = userManager.getStorageKey('question_history')
-    localStorage.setItem(key, JSON.stringify(questionHistory))
+    userManager.setData('question_history', questionHistory)
   }, [questionHistory])
+
+  useEffect(() => {
+    if (!userManager.isLoggedIn()) return
+    userManager.setData('assessment_history', assessmentHistory)
+  }, [assessmentHistory])
 
   const generateWeeklyBundle = () => {
     const selectedMotifs = [];
@@ -424,7 +430,6 @@ function App() {
         imageData: additionalData.imageData || null
       }
       
-      console.log('[错题本] 添加新错题:', newError)
       return [...prev, newError]
     })
   }
@@ -470,9 +475,20 @@ function App() {
   }
 
   const resolveError = (errorId) => {
+    const error = errorNotebook.find(e => e.id === errorId)
     setErrorNotebook(prev => 
       prev.map(e => e.id === errorId ? { ...e, resolved: true, resolvedAt: new Date().toISOString() } : e)
     )
+    if (error) {
+      const currentUser = userManager.getCurrentUser()
+      if (currentUser) {
+        userManager.addActivityLog(currentUser, {
+          type: 'error_resolved',
+          motifId: error.motifId,
+          description: `解决错题 ${error.motifId || ''} - ${error.type || ''}`
+        })
+      }
+    }
   }
 
   const setActiveMotifs = (motifIds) => {
@@ -670,6 +686,16 @@ function App() {
     }
     
     updateTargetData(targetId, grade, eloChange, masteredSubIds, isDiminished)
+    const currentUser = userManager.getCurrentUser()
+    if (currentUser) {
+      userManager.addActivityLog(currentUser, {
+        type: 'battle',
+        motifId: targetId,
+        grade,
+        eloDelta: eloChange,
+        description: `完成 ${targetId}，评级 ${grade}，ELO ${eloChange > 0 ? '+' : ''}${eloChange}`
+      })
+    }
   }
 
   const handleCalibrate = (targetId, level) => {
@@ -752,14 +778,11 @@ function App() {
   }
 
   const handleRealDiagnosis = async (base64Data) => {
-    console.log('[App] 开始视觉诊断请求...')
     
     try {
       const result = await diagnoseError(base64Data)
-      console.log('[App] 诊断结果:', result)
       
       if (result && result.classification) {
-        console.log('[App] AI 正在补全答案和解析...')
         
         let fillResult = null
         try {
@@ -767,7 +790,6 @@ function App() {
             result.questionText,
             result.classification.motifName
           )
-          console.log('[App] AI 补全结果:', fillResult)
         } catch (fillError) {
           console.error('[App] AI 补全失败，使用默认值:', fillError)
         }
@@ -800,7 +822,6 @@ function App() {
         
         setErrorNotebook(prev => {
           const newNotebook = [...(prev || []), errorEntry]
-          console.log('[App] 已添加到错题库:', errorEntry.id)
           return newNotebook
         })
         
@@ -817,7 +838,6 @@ function App() {
   }
 
   const handleWeaponCertified = (weaponId) => {
-    console.log(`[认证完成] 武器 ${weaponId} 已通过认证！`)
     
     setTacticalData((prevData) => {
       const newData = JSON.parse(JSON.stringify(prevData))
@@ -827,7 +847,14 @@ function App() {
       
       if (!newData.user_profile.certifiedWeapons.includes(weaponId)) {
         newData.user_profile.certifiedWeapons.push(weaponId)
-        console.log(`[状态更新] 已添加 ${weaponId} 到认证列表`)
+        const currentUser = userManager.getCurrentUser()
+        if (currentUser) {
+          userManager.addActivityLog(currentUser, {
+            type: 'certification',
+            weaponId,
+            description: `杀手锏 ${weaponId} 认证通过`
+          })
+        }
       }
       
       return newData
@@ -835,7 +862,6 @@ function App() {
   }
 
   const handleImageCapture = async (base64Data) => {
-    console.log('[App] 收到截图，开始诊断...')
     
     setSelectedImage(null)
     
@@ -854,10 +880,8 @@ function App() {
     setActiveTab('diagnosis')
     
     try {
-      console.log('[App] 开始图片诊断...')
       const diagnosisResult = await handleRealDiagnosis(base64Data)
       
-      console.log('[App] 诊断结果:', diagnosisResult)
       
       if (diagnosisResult && diagnosisResult.classification) {
         const { classification, diagnosis, questionText } = diagnosisResult
@@ -950,7 +974,7 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
       return newData
     })
     
-    setActiveView('tactical')
+    setActiveTab('dashboard')
   }
 
   const handleGlobalReset = () => {
@@ -1091,10 +1115,8 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
 
     if (hasImage) {
       try {
-        console.log('[App] 开始图片诊断...')
         const diagnosisResult = await handleRealDiagnosis(imageBase64)
         
-        console.log('[App] 诊断结果:', diagnosisResult)
         
         if (diagnosisResult && diagnosisResult.classification) {
           const { classification, diagnosis, questionText } = diagnosisResult
@@ -1167,6 +1189,20 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
     }
   }
 
+  const { isLoggedIn, checkAssessmentAccess, isAdmin } = useAuth();
+
+  if (!isLoggedIn) {
+    return (
+      <UserProgressProvider>
+        <ThemeContext.Provider value={{ isAcademicMode, setIsAcademicMode }}>
+          <GradeContext.Provider value={{ currentGrade, setCurrentGrade }}>
+            <LoginPage />
+          </GradeContext.Provider>
+        </ThemeContext.Provider>
+      </UserProgressProvider>
+    );
+  }
+
   return (
     <UserProgressProvider>
       <ThemeContext.Provider value={{ isAcademicMode, setIsAcademicMode }}>
@@ -1186,14 +1222,26 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
 
           <main className="flex-1 flex flex-col h-full overflow-y-auto pb-16 md:pb-0 relative">
             {activeTab === 'dashboard' && (
-            <button
-              onClick={() => setInitModalOpen(true)}
-              className="flex absolute top-4 right-4 z-40 items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700 transition-all shadow-sm"
-            >
-              <Settings className="w-5 h-5" />
-              <span>初始化</span>
-            </button>
-          )}
+            <div className="flex absolute top-4 right-4 z-40 gap-2">
+              {isAdmin && (
+                <button
+                  onClick={() => setShowAdminPanel(true)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 border border-indigo-600 transition-all shadow-sm"
+                >
+                  <span>管理</span>
+                </button>
+              )}
+              {(checkAssessmentAccess() || isAdmin) && (
+                <button
+                  onClick={() => setInitModalOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700 border border-slate-200 dark:border-zinc-700 transition-all shadow-sm"
+                >
+                  <Settings className="w-5 h-5" />
+                  <span>学情评估</span>
+                </button>
+              )}
+            </div>
+            )}
           {activeTab === 'dashboard' && (
             <TacticalDashboard 
               tacticalData={tacticalData} 
@@ -1217,10 +1265,8 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
               isAcademicMode={isAcademicMode}
               onNavigate={(tab) => setActiveTab(tab)}
               onStartTraining={(params) => {
-                console.log('开始训练:', params);
               }}
               onStartRemediation={(params) => {
-                console.log('开始修复:', params);
               }}
             />
           )}
@@ -1278,7 +1324,6 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
               onUpdateMotifElo={handleUpdateMotifElo}
               onNavigateToErrorLibrary={() => {
                 setActiveTab('diagnosis')
-                setShowErrorLibrary(true)
               }}
             />
           )}
@@ -1286,7 +1331,7 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
       </div>
       
       {initModalOpen && (
-        <InitModal
+        <AssessmentModal
           isOpen={initModalOpen}
           onClose={() => setInitModalOpen(false)}
           isAcademicMode={isAcademicMode}
@@ -1294,34 +1339,21 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
           setTacticalData={setTacticalData}
           initGradeFilter={initGradeFilter}
           setInitGradeFilter={setInitGradeFilter}
+          assessmentHistory={assessmentHistory}
+          setAssessmentHistory={setAssessmentHistory}
         />
       )}
-      
-      {showUserInit && (
-        <div className="fixed inset-0 z-[100] bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <UserPlus className="w-8 h-8 text-blue-600" />
-            </div>
-            <h2 className="text-2xl font-bold text-slate-800 mb-2">欢迎使用数学无忧</h2>
-            <p className="text-slate-500 mb-6">请创建您的学习账户，开始您的数学之旅</p>
-            <input
-              type="text"
-              value={newUserName}
-              onChange={(e) => setNewUserName(e.target.value)}
-              placeholder="输入您的名字（可选）"
-              className="w-full px-4 py-3 border border-slate-200 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              onKeyDown={(e) => e.key === 'Enter' && handleCreateUser()}
-            />
-            <button
-              onClick={handleCreateUser}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
-              开始学习
-            </button>
-          </div>
-        </div>
+
+      <AdminLoginModal
+        isOpen={showAdminLogin}
+        onClose={() => setShowAdminLogin(false)}
+        onSuccess={() => setShowAdminPanel(true)}
+      />
+
+      {showAdminPanel && (
+        <AdminPanel onClose={() => setShowAdminPanel(false)} />
       )}
+
       </GradeContext.Provider>
     </ThemeContext.Provider>
     </UserProgressProvider>

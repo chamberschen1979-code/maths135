@@ -1,7 +1,7 @@
 import { TrendingUp, AlertTriangle, Zap, CheckCircle } from 'lucide-react';
 
 const MiniStatsBar = ({ stats, isAcademicMode }) => {
-  const { totalElo, level, meltdownCount, nearCompleteCount, masteredCount, totalCount } = stats;
+  const { totalElo, level, meltdownCount, masteredCount, totalCount } = stats;
 
   const levelColors = {
     L1: 'bg-slate-500',
@@ -44,18 +44,7 @@ const MiniStatsBar = ({ stats, isAcademicMode }) => {
               {masteredCount}/{totalCount} 通关
             </span>
           </div>
-          
-          {nearCompleteCount > 0 && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${
-              isAcademicMode ? 'bg-amber-50 text-amber-600' : 'bg-amber-900/20 text-amber-400'
-            }">
-              <Zap className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                {nearCompleteCount} 即将通关
-              </span>
-            </div>
-          )}
-        </div>
+      </div>
       </div>
     </div>
   );

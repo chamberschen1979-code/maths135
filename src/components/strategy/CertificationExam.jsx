@@ -288,7 +288,6 @@ const CertificationExam = ({ weapon, onComplete, onExit }) => {
       const scenarioTag = getScenarioForStep(step)
       const difficulty = dimension.difficulty
       
-      console.log(`[出题] Q${step + 1}: 维度=${dimension.name}, 场景=${scenarioTag}, 难度=${difficulty}`)
       
       const questionData = await generateCertificationQuestion(weapon, scenarioTag, difficulty)
       

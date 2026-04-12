@@ -32,15 +32,7 @@ const DiagnosisView = ({
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-zinc-950">
       <header className="h-14 flex items-center justify-between px-4 bg-white dark:bg-zinc-900 border-b border-slate-200 dark:border-blue-500/30 z-10">
-        <button
-          onClick={onNavigateBack}
-          className={`flex items-center gap-1 text-sm ${
-            isAcademicMode ? 'text-blue-600 hover:text-blue-700' : 'text-emerald-400 hover:text-emerald-300'
-          }`}
-        >
-          <ChevronDown className="w-4 h-4 rotate-90" />
-          返回
-        </button>
+        <div className="w-8"></div>
         <h1 className="text-lg font-semibold text-slate-800 dark:text-zinc-200">
           {isAcademicMode ? '教研组长' : '联络人 · 老乔'}
         </h1>

@@ -52,7 +52,6 @@ export const loadMotifData = async (motifId) => {
       const module = await MOTIF_FILES[motifId]()
       const data = module.default || module
       motifDataCache[motifId] = data
-      console.log(`【动态加载】${motifId} 数据加载成功`)
       return data
     } catch (error) {
       console.error(`【加载失败】${motifId}:`, error)
@@ -102,7 +101,6 @@ export const buildCrossFileIndex = (loadedData = {}) => {
     }
     
     index[motifId] = [entry]
-    console.log(`【索引构建】${entry.name}(${motifId}): 共提取 ${allProblems.length} 道试题`)
   })
   
   return index
@@ -181,7 +179,6 @@ export const extractQuestionsByLevel = (motifData, targetLevel) => {
       }
     })
     if (questions.length > 0) {
-      console.log(`[RAG] 从扁平结构提取到 ${questions.length} 道 ${targetLevel} 题目`)
       return questions
     }
   }
@@ -252,7 +249,6 @@ export const selectQuestionFromPool = (motifData, targetLevel, problemIndex = 0,
     availableQuestions = filterAvailableSeeds(allQuestions, userProgress)
     
     if (availableQuestions.length === 0) {
-      console.log(`[RAG] 当前难度 ${targetLevel} 题目已耗尽，尝试横向迁移...`)
       
       const cooledQuestions = getCooledQuestions(userProgress.weakPointBuffer)
       if (cooledQuestions.length > 0) {
@@ -260,7 +256,6 @@ export const selectQuestionFromPool = (motifData, targetLevel, problemIndex = 0,
         if (cooledInLevel.length > 0) {
           const selected = allQuestions.find(q => q.id === cooledInLevel[0].id)
           if (selected) {
-            console.log(`[RAG 复练模式] 选取冷却期结束的错题: ${selected.id}`)
             return selected
           }
         }
@@ -272,7 +267,6 @@ export const selectQuestionFromPool = (motifData, targetLevel, problemIndex = 0,
   }
   
   const selected = availableQuestions[problemIndex % availableQuestions.length]
-  console.log(`[RAG] 选中题目: ${selected.id} | 来源: ${selected.source} | 难度: ${selected.level}`)
   
   return selected
 }

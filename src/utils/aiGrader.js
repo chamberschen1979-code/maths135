@@ -128,7 +128,6 @@ export const judgeAnswerWithAI = async (question, standardAnswer, userAnswer, le
 
     const isAllCorrect = processedDetails.every(d => d.isCorrect);
 
-    console.log('[AI判题] 结果:', { 
       isCorrect: isAllCorrect, 
       reason: result.reason, 
       totalDelta,
@@ -254,7 +253,6 @@ export const judgeImageWithAI = async (question, standardAnswer, imageBase64, le
 
     const isAllCorrect = processedDetails.every(d => d.isCorrect);
 
-    console.log('[AI图片判题] 结果:', { 
       isCorrect: isAllCorrect, 
       reason: result.reason, 
       totalDelta,

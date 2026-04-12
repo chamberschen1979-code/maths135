@@ -80,7 +80,6 @@ const buildMotifWeaponMap = () => {
   
   const unusedWeapons = allWeaponsInDetails.filter(w => !usedWeapons.has(w));
   if (unusedWeapons.length > 0) {
-    console.log('[motifWeaponMapper] 未被任何母题关联的杀手锏:', unusedWeapons);
   }
   
   return map;
@@ -173,4 +172,3 @@ export const getWeaponStatus = (weapon, tacticalData) => {
   return 'LOCKED'
 }
 
-console.log('[motifWeaponMapper] 动态构建的武器映射:', motifWeaponMap);
