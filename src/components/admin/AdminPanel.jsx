@@ -201,6 +201,7 @@ const AdminPanel = ({ onClose }) => {
             <div className="flex-1 flex overflow-hidden">
               <div className="w-48 border-r border-gray-100 overflow-y-auto p-3 space-y-1 flex-shrink-0">
                 <div className="text-xs font-semibold text-gray-400 uppercase px-2 py-1">选择用户</div>
+                {console.log('[DEBUG] visibleUsers usernames:', visibleUsers.map(u => u.username))}
                 {visibleUsers.map(user => (
                   <button
                     key={user.username}

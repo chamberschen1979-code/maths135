@@ -128,12 +128,6 @@ export const judgeAnswerWithAI = async (question, standardAnswer, userAnswer, le
 
     const isAllCorrect = processedDetails.every(d => d.isCorrect);
 
-      isCorrect: isAllCorrect, 
-      reason: result.reason, 
-      totalDelta,
-      details: processedDetails
-    });
-
     return {
       isCorrect: isAllCorrect,
       reason: result.reason || (isAllCorrect ? '回答正确' : '存在错误'),
@@ -252,12 +246,6 @@ export const judgeImageWithAI = async (question, standardAnswer, imageBase64, le
     }
 
     const isAllCorrect = processedDetails.every(d => d.isCorrect);
-
-      isCorrect: isAllCorrect, 
-      reason: result.reason, 
-      totalDelta,
-      details: processedDetails
-    });
 
     return {
       isCorrect: isAllCorrect,

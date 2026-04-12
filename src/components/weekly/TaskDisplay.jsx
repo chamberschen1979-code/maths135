@@ -114,14 +114,7 @@ const TaskDisplay = ({
     }
     
     const linkedWeapons = task.benchmark?.linked_weapons || task.benchmark?.linkedWeapons || task.linked_weapons || task.linkedWeapons || [];
-      taskId: task.id,
-      benchmarkLinkedWeapons: task.benchmark?.linked_weapons,
-      benchmarkLinkedWeapons2: task.benchmark?.linkedWeapons,
-      linkedWeapons: task.linked_weapons,
-      linkedWeapons2: task.linkedWeapons,
-      extractedLinkedWeapons: linkedWeapons
-    });
-    
+
     for (const wId of linkedWeapons) {
       if (!weapons.find(w => w.id === wId)) {
         const weaponName = getWeaponNameById(wId);

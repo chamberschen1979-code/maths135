@@ -328,30 +328,12 @@ const WeeklyMission = ({
     const varName = variationInfo.varName;
     const linkedWeapons = variationInfo.linkedWeapons;
 
-      specName,
-      varName,
-      linkedWeapons,
-      benchmarkLinkedWeapons: benchmark?.linkedWeapons,
-      benchmarkWeapons: benchmark?.weapons
-    });
+    console.log('[变体信息]', { specName, varName, linkedWeapons, benchmarkLinkedWeapons: benchmark?.linkedWeapons, benchmarkWeapons: benchmark?.weapons });
 
     // 🚀 【核心重构】纯 RAG 模式：直接返回库里的原始数据，不经过 AI
-    
-    // 🔥 【调试】打印原始数据结构
-      id: seedQuestion?.id,
-      hasProblem: !!seedQuestion?.problem,
-      problemPreview: seedQuestion?.problem?.substring(0, 50),
-      hasAnalysis: !!seedQuestion?.analysis,
-      hasKeyPoints: !!(seedQuestion?.key_points?.length > 0),
-      keyPointsLength: seedQuestion?.key_points?.length || 0
-    });
-      id: benchmark?.id,
-      hasProblem: !!benchmark?.problem,
-      problemPreview: benchmark?.problem?.substring(0, 50),
-      hasAnalysis: !!benchmark?.analysis,
-      hasKeyPoints: !!(benchmark?.key_points?.length > 0),
-      keyPointsLength: benchmark?.key_points?.length || 0
-    });
+
+    console.log('[调试] seedQuestion:', { id: seedQuestion?.id, hasProblem: !!seedQuestion?.problem, problemPreview: seedQuestion?.problem?.substring(0, 50), hasAnalysis: !!seedQuestion?.analysis });
+    console.log('[调试] benchmark:', { id: benchmark?.id, hasProblem: !!benchmark?.problem, problemPreview: benchmark?.problem?.substring(0, 50), hasAnalysis: !!benchmark?.analysis });
     
     // 🔥 【字段对齐修复】RAG 库字段映射
     // RAG 库字段: problem, answer, key_points, analysis
@@ -386,11 +368,7 @@ const WeeklyMission = ({
       return null;
     }
 
-      id: seedQuestion?.id || benchmark?.id,
-      questionLength: rawQuestion.length,
-      hasAnalysis: !!rawAnalysis,
-      hasAnswer: !!rawAnswer
-    });
+    console.log('[调试] 生成任务:', { id: seedQuestion?.id || benchmark?.id, questionLength: rawQuestion.length, hasAnalysis: !!rawAnalysis, hasAnswer: !!rawAnswer });
 
     const taskResult = {
       id: `task-${targetId}-${seedQuestion?.id || benchmark?.id || problemIndex}-${Date.now()}`,
@@ -439,13 +417,6 @@ const WeeklyMission = ({
         ));
       }
     }
-    
-      id: taskResult.id,
-      questionLength: taskResult.variant.question?.length || 0,
-      analysisLength: taskResult.variant.analysis?.length || 0,
-      linkedWeapons: taskResult.benchmark?.linked_weapons,
-      benchmarkId: taskResult.benchmark?.id
-    });
 
     return taskResult;
   }, [CROSS_FILE_INDEX, loadMotifData]);
@@ -493,8 +464,6 @@ const WeeklyMission = ({
               if (customSelection.specName) constraints.specName = customSelection.specName;
               if (customSelection.varName) constraints.varName = customSelection.varName;
             }
-          } else if (reinforcementMotifIdSet.has(motifId)) {
-            source = 'reinforcement';
           }
           
           selectedMotifTasks.push({
@@ -951,22 +920,7 @@ const WeeklyMission = ({
       const question = task.variant?.question || task.question || '';
       const correctAnswer = task.variant?.answer || task.answer || '';
       const level = task.targetLevel || 'L2';
-
-        motifId: task.motifId,
-        question: question.substring(0, 50) + '...',
-        level,
-        answerType
-      });
-
       const questionMeta = task.questionMeta || { questions: [{ level }] };
-
-        motifId: task.motifId,
-        motifName: task.motifName,
-        level,
-        targetLevel: task.targetLevel,
-        questionMeta,
-        questionLength: question?.length
-      });
 
       const aiResult = await judgeAnswerWithFallback(
         question,
@@ -980,13 +934,6 @@ const WeeklyMission = ({
         questionMeta,
         answerType
       );
-
-        isCorrect: aiResult.isCorrect,
-        delta: aiResult.delta,
-        reason: aiResult.reason,
-        isFallback: aiResult.isFallback,
-        details: aiResult.details
-      });
 
       const evaluationResult = {
         status: 'OK',

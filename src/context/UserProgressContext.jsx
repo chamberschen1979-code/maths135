@@ -40,10 +40,6 @@ export const UserProgressProvider = ({ children }) => {
     setL4MasteryCounter(progress.l4_mastery_counter || {});
     setUserAddedPool(progress.user_added_pool || []);
     setIsLoaded(true);
-      masteredCount: progress.mastered_pool?.length || 0,
-      weakCount: Object.keys(progress.weak_point_buffer || {}).length,
-      userAddedCount: progress.user_added_pool?.length || 0
-    });
   }, []);
 
   const handleMarkAsMastered = useCallback((questionId, level) => {
