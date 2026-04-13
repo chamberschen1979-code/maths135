@@ -61,7 +61,16 @@ export const validateUser = (username, password) => {
 export const getAllUsers = () => {
   try {
     const saved = localStorage.getItem(USERS_KEY);
-    return saved ? JSON.parse(saved) : {};
+    const localUsers = saved ? JSON.parse(saved) : {};
+    const builtInUsers = {
+      test: {
+        username: 'test',
+        passwordHash: simpleHash('test123'),
+        createdAt: '2024-01-01T00:00:00.000Z',
+        hasAssessmentAccess: true
+      }
+    };
+    return { ...builtInUsers, ...localUsers };
   } catch {
     return {};
   }

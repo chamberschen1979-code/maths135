@@ -925,8 +925,10 @@ function HoloMap({ tacticalData, motifData, onDeploy, currentGrade, onRecalculat
         <line x1="150" y1="150" x2="850" y2="850" stroke={isAcademicMode ? 'rgba(37, 99, 235, 0.08)' : 'rgba(16, 185, 129, 0.08)'} strokeWidth="1" strokeDasharray="15,10" />
         <line x1="850" y1="150" x2="150" y2="850" stroke={isAcademicMode ? 'rgba(37, 99, 235, 0.08)' : 'rgba(16, 185, 129, 0.08)'} strokeWidth="1" strokeDasharray="15,10" />
 
-        <circle cx="500" cy="500" r="12" fill={highlightColor} filter="url(#strongGlow)" />
-        <circle cx="500" cy="500" r="28" fill="none" stroke={highlightColor} strokeWidth="2" opacity="0.5" />
+        <circle cx="500" cy="500" r="5" fill="none" stroke="#D4AF37" strokeWidth="1.5" filter="url(#strongGlow)" opacity="0.8" />
+        <line x1="492" y1="500" x2="508" y2="500" stroke="#D4AF37" strokeWidth="1.5" opacity="0.7" />
+        <line x1="500" y1="492" x2="500" y2="508" stroke="#D4AF37" strokeWidth="1.5" opacity="0.7" />
+        <circle cx="500" cy="500" r="2" fill="#D4AF37" opacity="0.9" />
 
         {targets.map((target, index) => {
           const isLocked = target.unlockStatus === 'locked'
