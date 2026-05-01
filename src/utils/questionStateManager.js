@@ -3,16 +3,20 @@
  * 实现"做对即冻结、做错入循环"的核心逻辑
  */
 
-const STORAGE_KEY = 'user_question_progress';
 const DEFAULT_COOLDOWN_DAYS = 14;
 const L4_MASTERY_THRESHOLD = 2;
+
+const getStorageKey = () => {
+  const user = localStorage.getItem('maths_current_user');
+  return user ? `user_question_progress_${user}` : 'user_question_progress';
+};
 
 /**
  * 获取用户进度数据
  */
 export const getUserProgress = () => {
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
+    const data = localStorage.getItem(getStorageKey());
     if (data) {
       return JSON.parse(data);
     }
@@ -31,7 +35,7 @@ export const getUserProgress = () => {
  */
 const saveUserProgress = (progress) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    localStorage.setItem(getStorageKey(), JSON.stringify(progress));
     return true;
   } catch (e) {
     console.error('[questionStateManager] 保存进度失败:', e);
@@ -288,7 +292,7 @@ export const markAsWeak = (questionId, level, motifId) => {
  */
 export const resetAllProgress = () => {
   try {
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(getStorageKey());
     return true;
   } catch (e) {
     console.error('[Progress Reset] 重置失败:', e);
