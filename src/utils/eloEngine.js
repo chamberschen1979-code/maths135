@@ -22,7 +22,7 @@ const MASTERY_CONFIG = {
   CONSECUTIVE_CORRECT_REQUIRED: 3,
 }
 
-const ELO_SCORES = {
+export const ELO_SCORES = {
   L1: { correct: 20, wrong: -10 },
   L2: { correct: 40, wrong: -20 },
   L3: { correct: 60, wrong: -30 },
