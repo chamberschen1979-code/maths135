@@ -3,14 +3,12 @@
  * 实现"做对即冻结、做错入循环"的核心逻辑
  */
 
-import { getCurrentUser, isLoggedIn } from './userManager'
-
 const DEFAULT_COOLDOWN_DAYS = 14;
 const L4_MASTERY_THRESHOLD = 2;
 
 const getStorageKey = () => {
-  if (!isLoggedIn()) return 'user_question_progress';
-  return `user_question_progress_${getCurrentUser()}`;
+  const user = localStorage.getItem('maths_current_user');
+  return user ? `user_question_progress_${user}` : 'user_question_progress';
 };
 
 /**
