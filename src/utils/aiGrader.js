@@ -1,14 +1,9 @@
+import { ELO_SCORES } from './eloEngine'
+
 const API_KEY = import.meta.env.VITE_QWEN_API_KEY || 'YOUR_API_KEY';
 const BASE_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions';
 const MODEL_NAME = 'qwen-turbo';
 const VISION_MODEL_NAME = 'qwen-vl-max';
-
-const ELO_SCORES = {
-  L1: { correct: 20, wrong: -10 },
-  L2: { correct: 40, wrong: -20 },
-  L3: { correct: 60, wrong: -30 },
-  L4: { correct: 100, wrong: -50 }
-};
 
 const buildGraderPrompt = (question, standardAnswer, userAnswer, level, questionMeta) => {
   const questionCount = questionMeta?.questions?.length || 1;

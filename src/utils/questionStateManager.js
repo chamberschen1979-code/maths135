@@ -3,16 +3,23 @@
  * 实现"做对即冻结、做错入循环"的核心逻辑
  */
 
-const STORAGE_KEY = 'user_question_progress';
+import { getCurrentUser, isLoggedIn } from './userManager'
+
 const DEFAULT_COOLDOWN_DAYS = 14;
 const L4_MASTERY_THRESHOLD = 2;
+
+const getStorageKey = () => {
+  if (!isLoggedIn()) return 'user_question_progress';
+  return `user_question_progress_${getCurrentUser()}`;
+};
 
 /**
  * 获取用户进度数据
  */
 export const getUserProgress = () => {
   try {
-    const data = localStorage.getItem(STORAGE_KEY);
+    const key = getStorageKey();
+    const data = localStorage.getItem(key);
     if (data) {
       return JSON.parse(data);
     }
@@ -31,7 +38,8 @@ export const getUserProgress = () => {
  */
 const saveUserProgress = (progress) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    const key = getStorageKey();
+    localStorage.setItem(key, JSON.stringify(progress));
     return true;
   } catch (e) {
     console.error('[questionStateManager] 保存进度失败:', e);
@@ -288,7 +296,8 @@ export const markAsWeak = (questionId, level, motifId) => {
  */
 export const resetAllProgress = () => {
   try {
-    localStorage.removeItem(STORAGE_KEY);
+    const key = getStorageKey();
+    localStorage.removeItem(key);
     return true;
   } catch (e) {
     console.error('[Progress Reset] 重置失败:', e);
