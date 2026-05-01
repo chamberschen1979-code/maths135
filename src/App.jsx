@@ -176,7 +176,7 @@ function App() {
     if (!currentUser) {
       userIdRef.current = null;
     }
-  });
+  }, [isLoggedIn, loadTacticalDataForUser]);
 
   useEffect(() => {
     if (!userManager.isLoggedIn()) return
@@ -1259,15 +1259,11 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
             />
           )}
           {activeTab === 'training' && (
-            <TrainingCenter 
+            <TrainingCenter
               tacticalData={tacticalData}
               errorNotebook={errorNotebook}
               isAcademicMode={isAcademicMode}
               onNavigate={(tab) => setActiveTab(tab)}
-              onStartTraining={(params) => {
-              }}
-              onStartRemediation={(params) => {
-              }}
             />
           )}
           {activeTab === 'diagnosis' && (
