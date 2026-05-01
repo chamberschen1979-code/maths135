@@ -3,21 +3,16 @@
  * 实现"做对即冻结、做错入循环"的核心逻辑
  */
 
+const STORAGE_KEY = 'user_question_progress';
 const DEFAULT_COOLDOWN_DAYS = 14;
 const L4_MASTERY_THRESHOLD = 2;
-
-const getStorageKey = () => {
-  const user = localStorage.getItem('maths_current_user');
-  return user ? `user_question_progress_${user}` : 'user_question_progress';
-};
 
 /**
  * 获取用户进度数据
  */
 export const getUserProgress = () => {
   try {
-    const key = getStorageKey();
-    const data = localStorage.getItem(key);
+    const data = localStorage.getItem(STORAGE_KEY);
     if (data) {
       return JSON.parse(data);
     }
@@ -36,8 +31,7 @@ export const getUserProgress = () => {
  */
 const saveUserProgress = (progress) => {
   try {
-    const key = getStorageKey();
-    localStorage.setItem(key, JSON.stringify(progress));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
     return true;
   } catch (e) {
     console.error('[questionStateManager] 保存进度失败:', e);
@@ -58,13 +52,13 @@ export const getMasteredPool = () => {
  */
 export const addToMasteredPool = (questionId) => {
   const progress = getUserProgress();
-  
+
   if (!progress.mastered_pool.includes(questionId)) {
     progress.mastered_pool.push(questionId);
     saveUserProgress(progress);
     return true;
   }
-  
+
   return false;
 };
 
@@ -74,13 +68,13 @@ export const addToMasteredPool = (questionId) => {
 export const removeFromMasteredPool = (questionId) => {
   const progress = getUserProgress();
   const index = progress.mastered_pool.indexOf(questionId);
-  
+
   if (index > -1) {
     progress.mastered_pool.splice(index, 1);
     saveUserProgress(progress);
     return true;
   }
-  
+
   return false;
 };
 
@@ -97,14 +91,14 @@ export const getWeakPointBuffer = () => {
  */
 export const addToWeakPointBuffer = (questionId, level, motifId, cooldownDays = DEFAULT_COOLDOWN_DAYS) => {
   const progress = getUserProgress();
-  
+
   progress.weak_point_buffer[questionId] = {
     addedAt: new Date().toISOString(),
     level: level,
     motifId: motifId,
     cooldownDays: cooldownDays
   };
-  
+
   saveUserProgress(progress);
   return true;
 };
@@ -114,13 +108,13 @@ export const addToWeakPointBuffer = (questionId, level, motifId, cooldownDays = 
  */
 export const removeFromWeakPointBuffer = (questionId) => {
   const progress = getUserProgress();
-  
+
   if (progress.weak_point_buffer[questionId]) {
     delete progress.weak_point_buffer[questionId];
     saveUserProgress(progress);
     return true;
   }
-  
+
   return false;
 };
 
@@ -130,14 +124,14 @@ export const removeFromWeakPointBuffer = (questionId) => {
 export const isInCooldown = (questionId) => {
   const progress = getUserProgress();
   const errorRecord = progress.weak_point_buffer?.[questionId];
-  
+
   if (!errorRecord) return false;
-  
+
   const addedDate = new Date(errorRecord.addedAt);
   const now = new Date();
   const diffDays = (now - addedDate) / (1000 * 60 * 60 * 24);
   const cooldownDays = errorRecord.cooldownDays || DEFAULT_COOLDOWN_DAYS;
-  
+
   return diffDays < cooldownDays;
 };
 
@@ -147,15 +141,15 @@ export const isInCooldown = (questionId) => {
 export const getCooldownRemainingDays = (questionId) => {
   const progress = getUserProgress();
   const errorRecord = progress.weak_point_buffer?.[questionId];
-  
+
   if (!errorRecord) return 0;
-  
+
   const addedDate = new Date(errorRecord.addedAt);
   const now = new Date();
   const diffDays = (now - addedDate) / (1000 * 60 * 60 * 24);
   const cooldownDays = errorRecord.cooldownDays || DEFAULT_COOLDOWN_DAYS;
   const remaining = cooldownDays - diffDays;
-  
+
   return Math.max(0, Math.ceil(remaining));
 };
 
@@ -173,21 +167,21 @@ export const getL4MasteryCounter = () => {
  */
 export const incrementL4Mastery = (questionId) => {
   const progress = getUserProgress();
-  
+
   if (!progress.l4_mastery_counter) {
     progress.l4_mastery_counter = {};
   }
-  
+
   const current = progress.l4_mastery_counter[questionId] || { count: 0, lastCorrectAt: null };
   const newCount = current.count + 1;
-  
+
   progress.l4_mastery_counter[questionId] = {
     count: newCount,
     lastCorrectAt: new Date().toISOString()
   };
-  
+
   saveUserProgress(progress);
-  
+
   if (newCount >= L4_MASTERY_THRESHOLD) {
     return true;
   } else {
@@ -201,7 +195,7 @@ export const incrementL4Mastery = (questionId) => {
 export const checkL4Mastered = (questionId) => {
   const progress = getUserProgress();
   const counter = progress.l4_mastery_counter?.[questionId];
-  
+
   return counter && counter.count >= L4_MASTERY_THRESHOLD;
 };
 
@@ -214,11 +208,11 @@ export const filterAvailableSeeds = (originalPool, userProgress) => {
 
   return originalPool.filter(seed => {
     if (!seed || !seed.id) return false;
-    
+
     if (masteredPool.includes(seed.id)) {
       return false;
     }
-    
+
     const errorRecord = weakPointBuffer[seed.id];
     if (errorRecord) {
       const addedDate = new Date(errorRecord.addedAt);
@@ -227,7 +221,7 @@ export const filterAvailableSeeds = (originalPool, userProgress) => {
         return false;
       }
     }
-    
+
     return true;
   });
 };
@@ -238,12 +232,12 @@ export const filterAvailableSeeds = (originalPool, userProgress) => {
 export const getCooledQuestions = (weakPointBuffer) => {
   const now = new Date();
   const cooled = [];
-  
+
   for (const [questionId, record] of Object.entries(weakPointBuffer || {})) {
     const addedDate = new Date(record.addedAt);
     const diffDays = (now - addedDate) / (1000 * 60 * 60 * 24);
     const cooldownDays = record.cooldownDays || DEFAULT_COOLDOWN_DAYS;
-    
+
     if (diffDays >= cooldownDays) {
       cooled.push({
         id: questionId,
@@ -252,7 +246,7 @@ export const getCooledQuestions = (weakPointBuffer) => {
       });
     }
   }
-  
+
   return cooled.sort((a, b) => new Date(a.cooledAt) - new Date(b.cooledAt));
 };
 
@@ -269,9 +263,9 @@ export const markAsMastered = (questionId, level) => {
       return { mastered: true, message: `L4 题目累计做对 ${L4_MASTERY_THRESHOLD} 次，已冻结` };
     } else {
       const counter = getL4MasteryCounter()[questionId];
-      return { 
-        mastered: false, 
-        message: `L4 题目做对 ${counter?.count || 1} 次，还需 ${L4_MASTERY_THRESHOLD - (counter?.count || 1)} 次` 
+      return {
+        mastered: false,
+        message: `L4 题目做对 ${counter?.count || 1} 次，还需 ${L4_MASTERY_THRESHOLD - (counter?.count || 1)} 次`
       };
     }
   } else {
@@ -294,8 +288,7 @@ export const markAsWeak = (questionId, level, motifId) => {
  */
 export const resetAllProgress = () => {
   try {
-    const key = getStorageKey();
-    localStorage.removeItem(key);
+    localStorage.removeItem(STORAGE_KEY);
     return true;
   } catch (e) {
     console.error('[Progress Reset] 重置失败:', e);
@@ -311,10 +304,10 @@ export const getProgressStats = () => {
   const masteredCount = progress.mastered_pool?.length || 0;
   const weakCount = Object.keys(progress.weak_point_buffer || {}).length;
   const l4Progress = progress.l4_mastery_counter || {};
-  
+
   let coolingCount = 0;
   let cooledCount = 0;
-  
+
   for (const record of Object.values(progress.weak_point_buffer || {})) {
     if (isInCooldown(Object.keys(progress.weak_point_buffer).find(k => progress.weak_point_buffer[k] === record))) {
       coolingCount++;
@@ -322,7 +315,7 @@ export const getProgressStats = () => {
       cooledCount++;
     }
   }
-  
+
   return {
     masteredCount,
     weakCount,
@@ -346,14 +339,14 @@ export const getUserAddedPool = () => {
  */
 export const addToUserPool = (question) => {
   const progress = getUserProgress();
-  
+
   if (!progress.user_added_pool) {
     progress.user_added_pool = [];
   }
-  
+
   progress.user_added_pool.push(question);
   saveUserProgress(progress);
-  
+
   return true;
 };
 
@@ -363,13 +356,13 @@ export const addToUserPool = (question) => {
 export const removeFromUserPool = (questionId) => {
   const progress = getUserProgress();
   const index = progress.user_added_pool?.findIndex(q => q.id === questionId);
-  
+
   if (index > -1) {
     progress.user_added_pool.splice(index, 1);
     saveUserProgress(progress);
     return true;
   }
-  
+
   return false;
 };
 
