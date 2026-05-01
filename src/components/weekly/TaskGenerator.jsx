@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const TaskGenerator = ({
   allSelectedMotifs,
   onGenerate,
+  onRegenerate,
   onPrint,
   onClear,
   isGenerating,
@@ -16,6 +17,11 @@ const TaskGenerator = ({
   const handleGenerate = () => {
     if (allSelectedMotifs.length === 0) return;
     onGenerate?.();
+  };
+
+  const handleRegenerate = () => {
+    if (allSelectedMotifs.length === 0) return;
+    onRegenerate?.();
   };
 
   const handlePrint = () => {
@@ -68,27 +74,51 @@ const TaskGenerator = ({
       </div>
 
       <div className="flex gap-3">
-        <button
-          onClick={handleGenerate}
-          disabled={allSelectedMotifs.length === 0 || isGenerating}
-          className={`flex-1 py-3 rounded-xl font-bold text-sm transition-colors ${
-            allSelectedMotifs.length === 0 || isGenerating
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600'
-          }`}
-        >
-          {isGenerating ? (
-            <span className="flex items-center justify-center gap-2">
-              <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-              智能打磨中...
-            </span>
-          ) : (
-            `生成任务 (${allSelectedMotifs.length} 个母题)`
-          )}
-        </button>
+        {hasTasks ? (
+          <button
+            onClick={handleRegenerate}
+            disabled={allSelectedMotifs.length === 0 || isGenerating}
+            className={`flex-1 py-3 rounded-xl font-bold text-sm transition-colors ${
+              allSelectedMotifs.length === 0 || isGenerating
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-gradient-to-r from-orange-500 to-red-500 text-white hover:from-orange-600 hover:to-red-600'
+            }`}
+          >
+            {isGenerating ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                重新生成中...
+              </span>
+            ) : (
+              `🔄 重新生成`
+            )}
+          </button>
+        ) : (
+          <button
+            onClick={handleGenerate}
+            disabled={allSelectedMotifs.length === 0 || isGenerating}
+            className={`flex-1 py-3 rounded-xl font-bold text-sm transition-colors ${
+              allSelectedMotifs.length === 0 || isGenerating
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600'
+            }`}
+          >
+            {isGenerating ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                智能打磨中...
+              </span>
+            ) : (
+              `生成任务 (${allSelectedMotifs.length} 个母题)`
+            )}
+          </button>
+        )}
 
         <button
           onClick={handlePrint}

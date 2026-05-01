@@ -1107,6 +1107,7 @@ const WeeklyMission = ({
       <TaskGenerator
         allSelectedMotifs={allSelectedMotifs}
         onGenerate={handleGenerateTasks}
+        onRegenerate={handleGenerateTasks}
         onPrint={() => setShowPrintPreview(true)}
         onClear={() => {
           setWeeklyTasks([]);

@@ -411,12 +411,12 @@ export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constr
     
     const varNames = Object.keys(groupedByVar)
     if (varNames.length > 1) {
-      const selectedVarName = varNames[problemIndex % varNames.length]
+      const selectedVarName = varNames[Math.floor(Math.random() * varNames.length)]
       const benchmarksInVar = groupedByVar[selectedVarName]
-      return benchmarksInVar[problemIndex % benchmarksInVar.length]
+      return benchmarksInVar[Math.floor(Math.random() * benchmarksInVar.length)]
     }
     
-    return matchedLevelBenchmarks[problemIndex % matchedLevelBenchmarks.length]
+    return matchedLevelBenchmarks[Math.floor(Math.random() * matchedLevelBenchmarks.length)]
   }
 
   // 优先级2：同难度等级的 original_pool（随机选择，不区分杀手锏）
@@ -430,12 +430,12 @@ export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constr
     
     const varNames = Object.keys(groupedByVar)
     if (varNames.length > 1) {
-      const selectedVarName = varNames[problemIndex % varNames.length]
+      const selectedVarName = varNames[Math.floor(Math.random() * varNames.length)]
       const poolInVar = groupedByVar[selectedVarName]
-      return poolInVar[problemIndex % poolInVar.length]
+      return poolInVar[Math.floor(Math.random() * poolInVar.length)]
     }
     
-    return matchedLevelPool[problemIndex % matchedLevelPool.length]
+    return matchedLevelPool[Math.floor(Math.random() * matchedLevelPool.length)]
   }
 
   // 优先级3：其他难度等级的 master_benchmarks
@@ -449,17 +449,17 @@ export const selectBenchmark = (motifData, targetLevel, problemIndex = 0, constr
     
     const varNames = Object.keys(groupedByVar)
     if (varNames.length > 1) {
-      const selectedVarName = varNames[problemIndex % varNames.length]
+      const selectedVarName = varNames[Math.floor(Math.random() * varNames.length)]
       const benchmarksInVar = groupedByVar[selectedVarName]
-      return benchmarksInVar[problemIndex % benchmarksInVar.length]
+      return benchmarksInVar[Math.floor(Math.random() * benchmarksInVar.length)]
     }
     
-    return otherLevelBenchmarks[problemIndex % otherLevelBenchmarks.length]
+    return otherLevelBenchmarks[Math.floor(Math.random() * otherLevelBenchmarks.length)]
   }
 
   // 优先级4：其他难度等级的 original_pool
   if (otherLevelPool.length > 0) {
-    return otherLevelPool[problemIndex % otherLevelPool.length]
+    return otherLevelPool[Math.floor(Math.random() * otherLevelPool.length)]
   }
 
   return null
@@ -515,7 +515,7 @@ export const selectVariableKnobs = (motifData, targetLevel = 'L3', problemIndex 
     if (allVariations.length === 0) {
       return { fallback: true, message: '使用通用策略' }
     }
-    targetVariation = allVariations[problemIndex % allVariations.length]
+    targetVariation = allVariations[Math.floor(Math.random() * allVariations.length)]
   }
   
   if (!targetVariation?.variable_knobs) {
@@ -538,7 +538,7 @@ export const selectVariableKnobs = (motifData, targetLevel = 'L3', problemIndex 
 
     if (validOptions.length === 0) continue
 
-    const idx = problemIndex % validOptions.length
+    const idx = Math.floor(Math.random() * validOptions.length)
     selectedStrategy[dimension] = validOptions[idx]
   }
 

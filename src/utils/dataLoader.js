@@ -266,7 +266,8 @@ export const selectQuestionFromPool = (motifData, targetLevel, problemIndex = 0,
     }
   }
   
-  const selected = availableQuestions[problemIndex % availableQuestions.length]
+  const randomIndex = Math.floor(Math.random() * availableQuestions.length)
+  const selected = availableQuestions[randomIndex]
   
   return selected
 }
