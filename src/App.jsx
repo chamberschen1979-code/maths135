@@ -176,7 +176,7 @@ function App() {
     if (!currentUser) {
       userIdRef.current = null;
     }
-  });
+  }, [isLoggedIn, loadTacticalDataForUser]);
 
   useEffect(() => {
     if (!userManager.isLoggedIn()) return
