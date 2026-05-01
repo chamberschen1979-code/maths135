@@ -1,4 +1,3 @@
-// test
 import { useState, useRef, useEffect, createContext, useContext, useCallback } from 'react'
 import 'katex/dist/katex.min.css'
 import { X, Target, Trophy, AlertCircle, Moon, Sun, ChevronDown, Settings, UserPlus } from 'lucide-react'
@@ -737,7 +736,7 @@ function App() {
           
           encounter.elo_score = calculateEloFromSpecialties(encounter.specialties)
           encounter.gear_level = calculateGearLevelFromSpecialties(encounter.specialties)
-          encounter.health_status = encounter.elo_score >= 1700 ? 'healthy' : 'bleeding'
+          encounter.health_status = encounter.elo_score >= 2501 ? 'healthy' : 'bleeding'
           
           map.encounters[encounterIndex] = encounter
           break
@@ -770,7 +769,7 @@ function App() {
           }
           encounter.elo_score = calculateEloFromSpecialties(encounter.specialties)
           encounter.gear_level = calculateGearLevelFromSpecialties(encounter.specialties)
-          encounter.health_status = encounter.elo_score >= 1700 ? 'healthy' : 'bleeding'
+          encounter.health_status = encounter.elo_score >= 2501 ? 'healthy' : 'bleeding'
           break
         }
       }
