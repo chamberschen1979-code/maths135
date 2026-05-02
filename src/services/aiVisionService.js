@@ -33,10 +33,12 @@ ${structureInfo}
 
 【严格约束】
 1. 母题选择：必须从上述列表的 [Mxx] 中选择一个最匹配的。
-2. 专项/变例选择：
-   - 必须先确定母题，然后在该母题的专项列表中选择 specId。
-   - 必须在选定的专项中选择存在的 varId。
-   - 严禁编造列表中不存在的 ID（例如：如果 M08 只有 2.1，绝不能返回 2.3）。
+2. 专项/变例选择（极其重要！）：
+   - ⚠️ 不是叫你选第一个！必须逐项阅读该母题下所有专项名称和变例名称。
+   - 根据题目的实际数学内容（知识点、解法类型），选择最匹配的 specId 和 varId。
+   - 举例：如果题目考"线面平行证明"→ 选包含"平行垂直证明"的变例，不选"体积表面积"。
+   - 必须在选定的专项中选择存在的 varId，严禁编造不存在的 ID。
+   - ⚠️ 变例名称后面的 [关键词: xxx] 是重要线索，用来辅助判断。
 3. 难度评估：
    - 必须参考"支持难度"列表。
    - 如果题目看起来很难，但该变例不支持 L4，请选择该变例支持的最高难度。
@@ -44,16 +46,15 @@ ${structureInfo}
 【输出格式】纯JSON（无Markdown标记）：
 {
   "questionText": "提取的题干内容",
-  "motifId": "M03",
-  "specId": "V1",
-  "varId": "1.2",
-  "difficulty": "L3",
+  "motifId": "Mxx",
+  "specId": "Vx",
+  "varId": "x.x",
+  "difficulty": "L2",
   "keyPoints": ["考点1", "考点2"],
   "trapType": "陷阱类型",
   "message": "诊断评语（一句话指出问题所在）"
 }
-
-注意：只返回 motifId、specId、varId 编号，不需要返回名称。`
+其中 motifId/specId/varId 必须从上面列出的结构中选取真实存在的编号。`
   
   return diagnosisPromptCache
 }
@@ -405,53 +406,89 @@ const normalizeSpecId = (rawId) => {
   return id.toUpperCase()
 }
 
+const extractVariationKeywords = (variation) => {
+  const words = []
+
+  // 1. 变例名称拆词
+  const nameClean = (variation.name || '').replace(/[【】（）()]/g, ' ')
+  words.push(...nameClean.split(/[\s，,、]+/).filter(w => w.length >= 2))
+
+  // 2. variable_knobs 中的 desc 值（最精准的题目特征描述）
+  const knobs = variation.variable_knobs || {}
+  for (const entries of Object.values(knobs)) {
+    if (Array.isArray(entries)) {
+      for (const entry of entries) {
+        if (entry.desc && entry.desc.length >= 2) words.push(entry.desc)
+      }
+    }
+  }
+
+  // 3. logic_core 首句（通常概括了核心考点）
+  const core = variation.logic_core || ''
+  const firstSentence = core.split(/[。；;]/)[0]
+  if (firstSentence && firstSentence.length >= 4) words.push(firstSentence.slice(0, 30))
+
+  return [...new Set(words)]
+}
+
 const findBestVariation = (specialties, rawSpecId, rawVarId, questionText) => {
   const specId = normalizeSpecId(rawSpecId)
   const varId = normalizeId(rawVarId)
 
-  // 1. 精确匹配
+  let exactMatch = null
+
+  // 1. 精确匹配 AI 返回的 specId/varId
   for (const spec of (specialties || [])) {
     if (normalizeSpecId(spec.spec_id) === specId) {
       for (const vari of (spec.variations || [])) {
         if (normalizeId(vari.var_id) === varId) {
-          return { spec, variation: vari, matchType: 'exact' }
+          exactMatch = { spec, variation: vari, matchType: 'exact' }
+          break
         }
       }
-      // spec 对了但 var 没匹配 → 取该 spec 的第一个 variation
-      if (spec.variations?.length > 0) {
-        return { spec, variation: spec.variations[0], matchType: 'spec_exact_var_fallback' }
+      if (!exactMatch && spec.variations?.length > 0) {
+        exactMatch = { spec, variation: spec.variations[0], matchType: 'spec_exact_var_fallback' }
       }
+      break
     }
   }
 
-  // 2. 关键词匹配（用题干内容和变例名称/关键词做匹配）
-  if (questionText) {
-    let bestScore = 0
-    let bestSpec = null
-    let bestVari = null
+  // 2. 始终做关键词匹配，从 variable_knobs/name/logic_core 提取
+  let bestKeywordMatch = null
+  let bestKeywordScore = 0
 
+  if (questionText) {
     for (const spec of (specialties || [])) {
       for (const vari of (spec.variations || [])) {
+        const keywords = extractVariationKeywords(vari)
         let score = 0
-        const keywords = vari.keywords || []
-        const nameWords = (vari.name || '').replace(/[【】]/g, '').split(/[，,、\s]+/)
-
-        for (const kw of [...keywords, ...nameWords]) {
+        for (const kw of keywords) {
           if (kw.length >= 2 && questionText.includes(kw)) {
             score += kw.length
           }
         }
-        if (score > bestScore) {
-          bestScore = score
-          bestSpec = spec
-          bestVari = vari
+        if (score > bestKeywordScore) {
+          bestKeywordScore = score
+          bestKeywordMatch = { spec, variation: vari, matchType: 'keyword', score }
         }
       }
     }
-    if (bestVari && bestScore >= 3) {
-      return { spec: bestSpec, variation: bestVari, matchType: 'keyword', score: bestScore }
+  }
+
+  // 3. 决策：若关键词匹配分≥4 且匹配的变例不同于精确匹配结果，用关键词
+  if (bestKeywordMatch && bestKeywordScore >= 4) {
+    if (!exactMatch ||
+        normalizeId(bestKeywordMatch.variation.var_id) !== normalizeId(exactMatch.variation.var_id)) {
+      console.log(`[diagnosis] 关键词覆盖: AI返回 ${rawSpecId}/${rawVarId}, 实际最佳 ${bestKeywordMatch.spec.spec_id}/${bestKeywordMatch.variation.var_id} (分${bestKeywordScore})`)
+      return bestKeywordMatch
     }
   }
+
+  // 4. 精确匹配优先
+  if (exactMatch) return exactMatch
+
+  // 5. 任何关键词兜底
+  if (bestKeywordMatch) return bestKeywordMatch
 
   return null
 }
