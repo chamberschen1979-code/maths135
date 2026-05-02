@@ -406,89 +406,33 @@ const normalizeSpecId = (rawId) => {
   return id.toUpperCase()
 }
 
-const extractVariationKeywords = (variation) => {
-  const words = []
-
-  // 1. 变例名称拆词
-  const nameClean = (variation.name || '').replace(/[【】（）()]/g, ' ')
-  words.push(...nameClean.split(/[\s，,、]+/).filter(w => w.length >= 2))
-
-  // 2. variable_knobs 中的 desc 值（最精准的题目特征描述）
-  const knobs = variation.variable_knobs || {}
-  for (const entries of Object.values(knobs)) {
-    if (Array.isArray(entries)) {
-      for (const entry of entries) {
-        if (entry.desc && entry.desc.length >= 2) words.push(entry.desc)
-      }
-    }
-  }
-
-  // 3. logic_core 首句（通常概括了核心考点）
-  const core = variation.logic_core || ''
-  const firstSentence = core.split(/[。；;]/)[0]
-  if (firstSentence && firstSentence.length >= 4) words.push(firstSentence.slice(0, 30))
-
-  return [...new Set(words)]
-}
-
-const findBestVariation = (specialties, rawSpecId, rawVarId, questionText) => {
+const findVariation = (specialties, rawSpecId, rawVarId) => {
+  // 信任 AI 返回的结果，只做 ID 规范化匹配
   const specId = normalizeSpecId(rawSpecId)
   const varId = normalizeId(rawVarId)
 
-  let exactMatch = null
-
-  // 1. 精确匹配 AI 返回的 specId/varId
+  // 先精确匹配
   for (const spec of (specialties || [])) {
     if (normalizeSpecId(spec.spec_id) === specId) {
       for (const vari of (spec.variations || [])) {
         if (normalizeId(vari.var_id) === varId) {
-          exactMatch = { spec, variation: vari, matchType: 'exact' }
-          break
+          return { spec, variation: vari }
         }
       }
-      if (!exactMatch && spec.variations?.length > 0) {
-        exactMatch = { spec, variation: spec.variations[0], matchType: 'spec_exact_var_fallback' }
-      }
-      break
-    }
-  }
-
-  // 2. 始终做关键词匹配，从 variable_knobs/name/logic_core 提取
-  let bestKeywordMatch = null
-  let bestKeywordScore = 0
-
-  if (questionText) {
-    for (const spec of (specialties || [])) {
-      for (const vari of (spec.variations || [])) {
-        const keywords = extractVariationKeywords(vari)
-        let score = 0
-        for (const kw of keywords) {
-          if (kw.length >= 2 && questionText.includes(kw)) {
-            score += kw.length
-          }
-        }
-        if (score > bestKeywordScore) {
-          bestKeywordScore = score
-          bestKeywordMatch = { spec, variation: vari, matchType: 'keyword', score }
-        }
+      // spec 对了，取第一个 variation 兜底
+      if (spec.variations?.length > 0) {
+        return { spec, variation: spec.variations[0] }
       }
     }
   }
 
-  // 3. 决策：若关键词匹配分≥4 且匹配的变例不同于精确匹配结果，用关键词
-  if (bestKeywordMatch && bestKeywordScore >= 4) {
-    if (!exactMatch ||
-        normalizeId(bestKeywordMatch.variation.var_id) !== normalizeId(exactMatch.variation.var_id)) {
-      console.log(`[diagnosis] 关键词覆盖: AI返回 ${rawSpecId}/${rawVarId}, 实际最佳 ${bestKeywordMatch.spec.spec_id}/${bestKeywordMatch.variation.var_id} (分${bestKeywordScore})`)
-      return bestKeywordMatch
+  // ID 完全不匹配 → 回退第一个
+  if (specialties?.length > 0) {
+    const spec = specialties[0]
+    if (spec.variations?.length > 0) {
+      return { spec, variation: spec.variations[0] }
     }
   }
-
-  // 4. 精确匹配优先
-  if (exactMatch) return exactMatch
-
-  // 5. 任何关键词兜底
-  if (bestKeywordMatch) return bestKeywordMatch
 
   return null
 }
@@ -514,7 +458,7 @@ export const diagnoseError = async (base64Image) => {
       if (motifData) {
         motifName = motifData.motif_name || motifData.name || motifId
 
-        const match = findBestVariation(motifData.specialties, rawSpecId, rawVarId, questionText)
+        const match = findVariation(motifData.specialties, rawSpecId, rawVarId)
 
         if (match) {
           specId = normalizeSpecId(match.spec.spec_id)
