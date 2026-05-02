@@ -3,6 +3,8 @@ import { enhanceDiagnosisWithKeywords } from '../utils/classificationUtils'
 import { getWeaponNameById } from '../utils/weaponUtils'
 import { loadMotifData } from '../utils/dataLoader'
 import { buildStructurePrompt } from '../utils/motifStructureExtractor'
+import { findWeaponsByMotif, matchWeaponsByKeywords } from '../utils/weaponDetailsAdapter'
+import weaponDetails from '../data/weapon_details.json'
 
 const VISION_API_URL = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
 
@@ -390,75 +392,142 @@ export const processImageWithAI = async (base64Image, options = {}) => {
   }
 }
 
+const normalizeId = (id) => {
+  if (id === undefined || id === null) return null
+  return String(id).trim()
+}
+
+const normalizeSpecId = (rawId) => {
+  const id = normalizeId(rawId)
+  if (!id) return null
+  if (/^V\d+$/i.test(id)) return id.toUpperCase()
+  if (/^\d+$/.test(id)) return 'V' + id
+  return id.toUpperCase()
+}
+
+const findBestVariation = (specialties, rawSpecId, rawVarId, questionText) => {
+  const specId = normalizeSpecId(rawSpecId)
+  const varId = normalizeId(rawVarId)
+
+  // 1. 精确匹配
+  for (const spec of (specialties || [])) {
+    if (normalizeSpecId(spec.spec_id) === specId) {
+      for (const vari of (spec.variations || [])) {
+        if (normalizeId(vari.var_id) === varId) {
+          return { spec, variation: vari, matchType: 'exact' }
+        }
+      }
+      // spec 对了但 var 没匹配 → 取该 spec 的第一个 variation
+      if (spec.variations?.length > 0) {
+        return { spec, variation: spec.variations[0], matchType: 'spec_exact_var_fallback' }
+      }
+    }
+  }
+
+  // 2. 关键词匹配（用题干内容和变例名称/关键词做匹配）
+  if (questionText) {
+    let bestScore = 0
+    let bestSpec = null
+    let bestVari = null
+
+    for (const spec of (specialties || [])) {
+      for (const vari of (spec.variations || [])) {
+        let score = 0
+        const keywords = vari.keywords || []
+        const nameWords = (vari.name || '').replace(/[【】]/g, '').split(/[，,、\s]+/)
+
+        for (const kw of [...keywords, ...nameWords]) {
+          if (kw.length >= 2 && questionText.includes(kw)) {
+            score += kw.length
+          }
+        }
+        if (score > bestScore) {
+          bestScore = score
+          bestSpec = spec
+          bestVari = vari
+        }
+      }
+    }
+    if (bestVari && bestScore >= 3) {
+      return { spec: bestSpec, variation: bestVari, matchType: 'keyword', score: bestScore }
+    }
+  }
+
+  return null
+}
+
 export const diagnoseError = async (base64Image) => {
     const result = await processImageWithAI(base64Image, { mode: 'DIAGNOSIS' })
-    
-    
+
+    const rawSpecId = result.specId || 'V1'
+    const rawVarId = result.varId || '1.1'
     const motifId = result.motifId || 'M01'
-    let specId = result.specId || 'V1'
-    let varId = result.varId || '1.1'
-    
-    let motifName = ''
+    const questionText = result.questionText || ''
+
+    let specId = rawSpecId
+    let varId = rawVarId
     let specName = ''
     let varName = ''
-    let linkedWeapons = []
-    
+    let motifName = ''
+    let suggestedWeapons = []
+
     try {
       const motifData = await loadMotifData(motifId)
-      
+
       if (motifData) {
         motifName = motifData.motif_name || motifData.name || motifId
-        
-        const specialty = motifData.specialties?.find(
-          s => s.spec_id === specId
-        )
-        
-        if (specialty) {
-          specName = specialty.spec_name || specId
-          
-          const variation = specialty.variations?.find(
-            v => v.var_id === varId
-          )
-          
-          if (variation) {
-            varName = variation.name || varId
-            
-            if (variation.toolkit?.linked_weapons) {
-              linkedWeapons = variation.toolkit.linked_weapons
-            }
-          } else {
-            const firstVariation = specialty.variations?.[0]
-            if (firstVariation) {
-              varId = firstVariation.var_id
-              varName = firstVariation.name || varId
-              if (firstVariation.toolkit?.linked_weapons) {
-                linkedWeapons = firstVariation.toolkit.linked_weapons
-              }
-            }
+
+        const match = findBestVariation(motifData.specialties, rawSpecId, rawVarId, questionText)
+
+        if (match) {
+          specId = normalizeSpecId(match.spec.spec_id)
+          specName = match.spec.spec_name || specId
+          varId = normalizeId(match.variation.var_id)
+          varName = match.variation.name || varId
+        } else if (motifData.specialties?.length > 0) {
+          const firstSpec = motifData.specialties[0]
+          specId = normalizeSpecId(firstSpec.spec_id)
+          specName = firstSpec.spec_name || specId
+          if (firstSpec.variations?.length > 0) {
+            varId = normalizeId(firstSpec.variations[0].var_id)
+            varName = firstSpec.variations[0].name || varId
           }
-        } else {
-          const firstSpecialty = motifData.specialties?.[0]
-          if (firstSpecialty) {
-            specId = firstSpecialty.spec_id
-            specName = firstSpecialty.spec_name || specId
-            
-            const firstVariation = firstSpecialty.variations?.[0]
-            if (firstVariation) {
-              varId = firstVariation.var_id
-              varName = firstVariation.name || varId
-              if (firstVariation.toolkit?.linked_weapons) {
-                linkedWeapons = firstVariation.toolkit.linked_weapons
-              }
+        }
+
+        // 武器推荐：优先用适配器统一查找（与方法工具页保证一致）
+        const adapterWeapons = findWeaponsByMotif(motifId)
+        if (adapterWeapons.length > 0) {
+          suggestedWeapons = adapterWeapons.map(w => w.id)
+        }
+
+        // 补充关键词匹配的武器
+        if (questionText) {
+          const keywordMatches = matchWeaponsByKeywords(questionText)
+          for (const m of keywordMatches) {
+            if (!suggestedWeapons.includes(m.weaponId)) {
+              suggestedWeapons.push(m.weaponId)
             }
           }
         }
+
+        // 如果适配器没有结果，降级使用 variation 的 linked_weapons
+        if (suggestedWeapons.length === 0) {
+          const variation = match?.variation || motifData.specialties?.[0]?.variations?.[0]
+          if (variation?.toolkit?.linked_weapons) {
+            suggestedWeapons = variation.toolkit.linked_weapons
+          }
+        }
+
+        // 过滤：只保留在 weapon_details 中实际存在的武器
+        const allKnownIds = new Set(Object.keys(weaponDetails))
+        suggestedWeapons = suggestedWeapons.filter(id => allKnownIds.has(id)).slice(0, 5)
       }
     } catch (error) {
       console.error('[AI Vision Service] 加载母题数据失败:', error)
     }
-    
+
     const normalizedResult = {
-      questionText: result.questionText || '',
+      questionText,
       classification: {
         motifId,
         motifName,
@@ -471,14 +540,14 @@ export const diagnoseError = async (base64Image) => {
       diagnosis: {
         keyPoints: result.keyPoints || [],
         trapType: result.trapType || null,
-        suggestedWeapons: linkedWeapons,
+        suggestedWeapons,
         message: result.message || ''
       },
       targetId: motifId,
       greenSubIds: [],
       message: result.message || ''
     }
-    
+
     return normalizedResult
   }
 
