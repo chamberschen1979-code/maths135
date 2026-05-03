@@ -908,8 +908,22 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
           type: 'ai',
           content: diagnosisInfo,
         }
-        
+
         setMessages(prev => [...prev, aiMessage])
+        setIsLoading(false)
+
+        // 追加第二轮：AI 详细讲解
+        setTimeout(async () => {
+          setIsLoading(true)
+          const msgsWithDiag = [
+            ...newMessages,
+            { id: Date.now() + 1, type: 'ai', content: diagnosisInfo }
+          ]
+          const aiResponse = await callLLM(msgsWithDiag, base64Data)
+          const { cleanText } = processBattleResult(aiResponse, classification.motifId)
+          setMessages(prev => [...prev, { id: Date.now() + 10, type: 'ai', content: cleanText }])
+          setIsLoading(false)
+        }, 100)
       } else {
         const aiMessage = {
           id: Date.now() + 1,
@@ -917,6 +931,7 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
           content: '抱歉，AI 未能识别这道题目。请尝试上传更清晰的图片，或手动描述题目内容。',
         }
         setMessages(prev => [...prev, aiMessage])
+        setIsLoading(false)
       }
     } catch (error) {
       console.error('[App] 图片诊断失败:', error)
@@ -926,9 +941,8 @@ ${diagnosis?.message ? `💡 **诊断**：${diagnosis.message}` : ''}
         content: '诊断请求失败，请稍后重试。',
       }
       setMessages(prev => [...prev, aiMessage])
+      setIsLoading(false)
     }
-    
-    setIsLoading(false)
   }
 
   const handleDiagnosisComplete = (result) => {

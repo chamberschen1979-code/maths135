@@ -362,9 +362,13 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
   const [documentScale, setDocumentScale] = useState(1.5)
   const [isDocumentLoading, setIsDocumentLoading] = useState(false)
   const [isFromCamera, setIsFromCamera] = useState(false)
-  
+  const [showWebcam, setShowWebcam] = useState(false)
+  const [webcamStream, setWebcamStream] = useState(null)
+
   const fileInputRef = useRef(null)
   const cameraInputRef = useRef(null)
+  const webcamVideoRef = useRef(null)
+  const webcamCanvasRef = useRef(null)
   const imgRef = useRef(null)
   const previewCanvasRef = useRef(null)
   const documentCanvasRef = useRef(null)
@@ -635,8 +639,31 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
   }
 
   const handleCameraCapture = () => {
-    cameraInputRef.current?.click()
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(s => { setWebcamStream(s); setShowWebcam(true) })
+      .catch(() => cameraInputRef.current?.click())
   }
+
+  const stopWebcam = () => {
+    if (webcamStream) { webcamStream.getTracks().forEach(t => t.stop()); setWebcamStream(null) }
+    setShowWebcam(false)
+  }
+
+  const captureWebcamFrame = () => {
+    const v = webcamVideoRef.current, c = webcamCanvasRef.current
+    if (!v || !c) return
+    c.width = v.videoWidth; c.height = v.videoHeight
+    c.getContext('2d').drawImage(v, 0, 0)
+    const b64 = c.toDataURL('image/jpeg', 0.9)
+    stopWebcam()
+    if (onImageCapture) onImageCapture(b64)
+    setShowScanner(false)
+  }
+
+  useEffect(() => {
+    if (showWebcam && webcamStream && webcamVideoRef.current)
+      webcamVideoRef.current.srcObject = webcamStream
+  }, [showWebcam, webcamStream])
 
   const resetAllState = () => {
     setShowScanner(false)
@@ -707,7 +734,18 @@ function BattleScanner({ onDiagnosisComplete, isAcademicMode, tacticalData, onRe
                   }
                 </p>
 
-                <div className="space-y-3">
+                {showWebcam && (
+                  <div className="mb-4 bg-black rounded-lg overflow-hidden relative">
+                    <video ref={webcamVideoRef} autoPlay playsInline className="w-full max-h-80 object-cover" />
+                    <canvas ref={webcamCanvasRef} className="hidden" />
+                    <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-4">
+                      <button onClick={captureWebcamFrame} className="w-14 h-14 rounded-full bg-white border-4 border-blue-500 hover:scale-110 transition-transform" title="拍照" />
+                      <button onClick={stopWebcam} className="px-4 py-2 rounded-lg bg-zinc-800 text-white text-sm hover:bg-zinc-700">取消</button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-3" style={{ display: showWebcam ? 'none' : 'block' }}>
                   <input
                     ref={cameraInputRef}
                     type="file"
