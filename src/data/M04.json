@@ -616,7 +616,7 @@
               "data_source": "original",
               "source": "[24 全国甲卷变式]",
               "problem": "已知 $a = \\ln 2, b = \\frac{1}{e}, c = \\log_3 2$，比较 $a, b, c$ 的大小关系。",
-              "answer": "$b > c > a$",
+              "answer": "$a > c > b$",
               "key_points": [
                 "① $a = \\ln 2 \\approx 0.693$",
                 "② $b = \\frac{1}{e} \\approx 0.368$",

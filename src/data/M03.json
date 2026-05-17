@@ -695,7 +695,7 @@
               "data_source": "original",
               "source": "25 省实月考·T10",
               "problem": "已知 $2f(x) + f(-x) = 3x + 1$，求 $f(x)$ 的解析式。",
-              "answer": "$f(x) = 3x + 1$",
+              "answer": "$3x + \\frac{1}{3}$",
               "key_points": [
                 "$x$ 与 $-x$ 互换消元法",
                 "方程组构造解析式"
