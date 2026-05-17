@@ -279,34 +279,57 @@ const CertificationExam = ({ weapon, onComplete, onExit }) => {
   }, [scenarioTags, triggerKeywords])
 
   const generateNextQuestion = async (step) => {
+    const certQuestions = weapon.certification_questions
+    if (certQuestions && certQuestions[step]) {
+      // 从预置题库直接读题，不走 AI 生成
+      const q = certQuestions[step]
+      const dimension = FIVE_DIMENSIONS[step] || FIVE_DIMENSIONS[0]
+      const newQuestion = {
+        id: `Q${step + 1}`,
+        questionText: q.question,
+        answerKey: q.answer,
+        keyLogicPoint: q.name,
+        trapDescription: q.trap,
+        difficulty: q.level || 'L2',
+        dimension: dimension,
+        scenarioTag: q.name,
+        status: 'pending',
+        isRemedial: false,
+        isPreset: true
+      }
+      setQuestions(prev => { const u = [...prev]; u[step] = newQuestion; return u })
+      setCurrentStep(step)
+      setStatus('QUIZ')
+      return
+    }
+
+    // 兜底：AI 出题（仅当该武器没有预置认证题库时）
     setStatus('LOADING')
     setError(null)
     setGeneratingQuestion(step + 1)
-    
+
     try {
       const dimension = FIVE_DIMENSIONS[step] || FIVE_DIMENSIONS[0]
       const scenarioTag = getScenarioForStep(step)
-      const difficulty = dimension.difficulty
-      
-      
-      const questionData = await generateCertificationQuestion(weapon, scenarioTag, difficulty)
-      
+
+      const questionData = await generateCertificationQuestion(weapon, scenarioTag, 'L2')
+
       const newQuestion = {
         id: `Q${step + 1}`,
         ...questionData,
         dimension: dimension,
         scenarioTag: scenarioTag,
-        difficulty: difficulty,
+        difficulty: 'L2',
         status: 'pending',
         isRemedial: false
       }
-      
+
       setQuestions(prev => {
         const updated = [...prev]
         updated[step] = newQuestion
         return updated
       })
-      
+
       setCurrentStep(step)
       setGeneratingQuestion(null)
       setStatus('QUIZ')
@@ -344,20 +367,21 @@ const CertificationExam = ({ weapon, onComplete, onExit }) => {
     setStatus('GRADING')
     setError(null)
     
+    const currentQ = questions[currentStep]
+    const strategyCtx = {
+      name: weapon.name,
+      logic_flow: weapon.logic_flow,
+      certification: weapon.certification,
+      correctAnswer: currentQ?.answerKey || '',
+      questionText: currentQ?.questionText || ''
+    }
+
     try {
       let result
       if (mode === 'text') {
-        result = await gradeCertificationText(data, {
-          name: weapon.name,
-          logic_flow: weapon.logic_flow,
-          certification: weapon.certification
-        })
+        result = await gradeCertificationText(data, strategyCtx)
       } else {
-        result = await gradeCertification(data, {
-          name: weapon.name,
-          logic_flow: weapon.logic_flow,
-          certification: weapon.certification
-        })
+        result = await gradeCertification(data, strategyCtx)
       }
       
       setFeedback(result)
@@ -400,24 +424,36 @@ const CertificationExam = ({ weapon, onComplete, onExit }) => {
   }
 
   const handleRemedial = async () => {
+    const currentQ = questions[currentStep]
+    // 预置题：重试同一题，先显示 hint
+    if (currentQ?.isPreset) {
+      const certQuestions = weapon.certification_questions
+      const q = certQuestions?.[currentStep]
+      setQuestions(prev => { const u = [...prev]; u[currentStep] = { ...u[currentStep], status: 'failed', retryCount: (u[currentStep]?.retryCount || 0) + 1 }; return u })
+      if (q?.hint) {
+        setError(`💡 提示：${q.hint}`)
+      }
+      setSelectedImage(null)
+      setTextAnswer('')
+      setFeedback(null)
+      setShowSolution(false)
+      setStatus('QUIZ')
+      return
+    }
+
     setStatus('LOADING')
     setError(null)
     setGeneratingQuestion(`补考-Q${currentStep + 1}`)
-    
+
     try {
-      const currentQuestion = questions[currentStep]
-      
       const updatedQuestions = [...questions]
       if (updatedQuestions[currentStep] && updatedQuestions[currentStep].status !== 'passed') {
-        updatedQuestions[currentStep] = {
-          ...updatedQuestions[currentStep],
-          status: 'failed'
-        }
+        updatedQuestions[currentStep] = { ...updatedQuestions[currentStep], status: 'failed' }
       }
       setQuestions(updatedQuestions)
-      
+
       const failedQuestions = updatedQuestions.filter(q => q?.status === 'failed')
-      const targetQuestion = failedQuestions[0] || currentQuestion
+      const targetQuestion = failedQuestions[0] || currentQ
       
       const remedialData = await generateRemedialQuestion(
         weapon, 
@@ -646,7 +682,7 @@ const CertificationExam = ({ weapon, onComplete, onExit }) => {
           </div>
 
           <div className="bg-indigo-50 rounded-xl p-4 mb-6 border border-indigo-200">
-            <h4 className="font-bold text-indigo-800 mb-2">📝 答题要求</h4>
+            <h4 className="font-bold text-indigo-800 mb-2">{currentQuestion.isPreset ? `${currentQuestion.keyLogicPoint} — 第${currentStep+1}关` : `📝 答题要求`}</h4>
             <ul className="text-sm text-indigo-700 space-y-1 list-disc list-inside">
               <li>请手写完整解题过程，仅写答案无效</li>
               <li>必须显式体现核心解题步骤</li>

@@ -547,15 +547,21 @@ export const gradeCertificationText = async (textAnswer, strategy) => {
   const focusLogic = strategy?.certification?.focusLogic || strategy?.logic_flow || '核心解题步骤'
   const antiPattern = strategy?.certification?.antiPattern || '跳步或逻辑跳跃'
 
+  const correctAnswer = strategy?.correctAnswer || ''
+  const questionText = strategy?.questionText || ''
+
   const systemPrompt = `你是一位严格的数学教练，负责评判学生是否掌握了特定的解题方法（杀手锏）。
 
 当前考察的杀手锏是「${strategy?.name || '未知'}」。
 核心逻辑是：${strategy?.logic_flow || strategy?.description || '未提供'}
+${correctAnswer ? `\n【参考答案】${correctAnswer}` : ''}
+${questionText ? `\n【原题】${questionText}` : ''}
 
 【评分标准】
 1. 必须显式体现「${focusLogic}」这一逻辑步骤
 2. 严格检查是否出现「${antiPattern}」的情况
 3. 步骤完整、逻辑清晰、计算正确
+4. 对照参考答案判断正误，但不要求字面完全一致——思路对即可
 
 必须返回严格的纯 JSON 格式（不要包含任何 Markdown 标记）：
 {
@@ -569,7 +575,7 @@ export const gradeCertificationText = async (textAnswer, strategy) => {
 
 ${textAnswer}
 
-请评判该答案是否正确掌握了「${strategy?.name}」方法。`
+请参照参考答案评判该答案是否正确掌握了「${strategy?.name}」方法。`
 
 
   const requestBody = {
